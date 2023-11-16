@@ -35,8 +35,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
           height="100vh"
           display="flex"
           flexDirection="column"
-          justifyContent="center"
-        >
+          justifyContent="center">
           <Box>
             <Typography variant="h6">Loading...</Typography>
             <LinearProgress />
@@ -47,7 +46,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   }
 
   return (
-    <Container sx={{ px: "0!important" }} maxWidth={false}>
+    <Container sx={{ px: "0!important" }} maxWidth="xl">
       <Navbar />
       {children}
     </Container>

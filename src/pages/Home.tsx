@@ -16,6 +16,7 @@ import TextField from "../components/TextField.tsx";
 import PasswordField from "../components/PasswordField.tsx";
 import RadioButton from "../components/RadioButton.tsx";
 import Checkbox from "../components/Checkbox.tsx";
+import LinkButton from "../components/LinkButton.tsx";
 export interface HomeProps {}
 
 const ShowcaseBox = ({
@@ -116,6 +117,7 @@ const Home: React.FC<HomeProps> = ({}) => {
             <Button variant="text" color="primary">
               Text button
             </Button>
+            <LinkButton>Link button</LinkButton>
           </Box>
           <Box display="flex" gap={2}>
             <Button variant="contained" color="primary" startIcon={<Add />}>

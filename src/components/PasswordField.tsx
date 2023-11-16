@@ -12,21 +12,20 @@ export interface PasswordFieldProps {
   defaultVisible?: boolean;
 }
 
-const PasswordField: React.FC<TextFieldProps & PasswordFieldProps> = ({
-  InputProps = {},
-  defaultVisible = false,
-  ...props
-}) => {
-  const [visible, setVisible] = useState(defaultVisible);
-  InputProps.endAdornment = (
-    <InputAdornment position="end">
-      <IconButton onClick={() => setVisible(!visible)}>
-        {visible ? <ShowIcon /> : <HideIcon />}
-      </IconButton>
-    </InputAdornment>
+const PasswordField: React.FC<TextFieldProps & PasswordFieldProps> =
+  React.forwardRef(
+    ({ InputProps = {}, defaultVisible = false, ...props }, ref) => {
+      const [visible, setVisible] = useState(defaultVisible);
+      InputProps.endAdornment = (
+        <InputAdornment position="end">
+          <IconButton onClick={() => setVisible(!visible)}>
+            {visible ? <ShowIcon /> : <HideIcon />}
+          </IconButton>
+        </InputAdornment>
+      );
+      InputProps.type = visible ? "text" : "password";
+      return <BaseTextField ref={ref} {...props} InputProps={InputProps} />;
+    },
   );
-  InputProps.type = visible ? "text" : "password";
-  return <BaseTextField {...props} InputProps={InputProps} />;
-};
 
 export default PasswordField;

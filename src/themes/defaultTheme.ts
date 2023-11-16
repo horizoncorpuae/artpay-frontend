@@ -57,10 +57,27 @@ const defaultTheme = createTheme({
           height: "36px",
           textTransform: "none",
           boxShadow: "none",
+          fontWeight: 400,
         },
         sizeSmall: {
           fontSize: "14px",
           height: "30px",
+        },
+        // @ts-ignore
+        link: ({ theme }) => {
+          return {
+            textDecoration: "underline",
+            padding: "0 1px",
+            height: "auto",
+            color: theme.palette.text.secondary,
+            "&:hover": {
+              backgroundColor: "transparent",
+            },
+          };
+        },
+        linkSizeSmall: {
+          height: "18px",
+          minWidth: 0,
         },
       },
     },
@@ -198,6 +215,11 @@ const defaultTheme = createTheme({
         },
       },
     },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {},
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         positionFixed: {
@@ -235,6 +257,20 @@ const defaultTheme = createTheme({
         labelSmall: {
           fontSize: "12px",
           padding: 0,
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paperWidthSm: {
+          maxWidth: "530px",
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          padding: "0 48px",
         },
       },
     },

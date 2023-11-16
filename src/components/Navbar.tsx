@@ -10,11 +10,13 @@ import {
 } from "@mui/material";
 import Logo from "./icons/Logo";
 import { Search } from "@mui/icons-material";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface NavbarProps {}
 
 const Navbar: React.FC<NavbarProps> = ({}) => {
   const theme = useTheme();
+  const auth = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   if (isMobile) {
@@ -22,7 +24,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
   }
 
   return (
-    <AppBar color="default" elevation={0}>
+    <AppBar color="default" sx={{}} elevation={0}>
       <Box display="flex" alignItems="center" sx={{ height: "100%" }}>
         <Box sx={{ height: "24px" }}>
           <Logo />
@@ -30,8 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
         <Button
           sx={{ ml: { xs: 1, sm: 2, lg: 6 } }}
           color="inherit"
-          variant="text"
-        >
+          variant="text">
           Opere
         </Button>
         <Button sx={{ ml: 0 }} color="inherit" variant="text">
@@ -45,7 +46,11 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
         <Link sx={{ mr: 2, minWidth: "120px" }} href="#" color="tertiary.main">
           Sei una galleria?
         </Link>
-        <Button sx={{ minWidth: "150px" }} color="secondary" variant="outlined">
+        <Button
+          sx={{ minWidth: "150px" }}
+          onClick={() => auth.login()}
+          color="secondary"
+          variant="outlined">
           Login/Registrati
         </Button>
       </Box>

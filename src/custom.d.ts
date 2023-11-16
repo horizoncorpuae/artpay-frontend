@@ -17,6 +17,9 @@ declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
     tertiary: true;
   }
+  interface ButtonPropsVariantOverrides {
+    link: true;
+  }
 }
 
 declare module "@mui/material/styles/createPalette" {

@@ -8,27 +8,28 @@ import ErrorIcon from "./icons/ErrorIcon.tsx";
 import CheckIcon from "./icons/CheckIcon.tsx";
 export interface ExtendedTextFieldProp {}
 
-const TextField: React.FC<TextFieldProps & ExtendedTextFieldProp> = (props) => {
-  const extraProps: Partial<TextFieldProps> = {};
-  if (props.error) {
-    extraProps.InputProps = {
-      endAdornment: props.InputProps?.endAdornment || (
-        <InputAdornment position="end">
-          <ErrorIcon />
-        </InputAdornment>
-      ),
-    };
-  }
-  if (props.color === "success") {
-    extraProps.InputProps = {
-      endAdornment: props.InputProps?.endAdornment || (
-        <InputAdornment position="end">
-          <CheckIcon />
-        </InputAdornment>
-      ),
-    };
-  }
-  return <BaseTextField {...props} {...extraProps} />;
-};
+const TextField: React.FC<TextFieldProps & ExtendedTextFieldProp> =
+  React.forwardRef((props, ref) => {
+    const extraProps: Partial<TextFieldProps> = {};
+    if (props.error) {
+      extraProps.InputProps = {
+        endAdornment: props.InputProps?.endAdornment || (
+          <InputAdornment position="end">
+            <ErrorIcon />
+          </InputAdornment>
+        ),
+      };
+    }
+    if (props.color === "success") {
+      extraProps.InputProps = {
+        endAdornment: props.InputProps?.endAdornment || (
+          <InputAdornment position="end">
+            <CheckIcon />
+          </InputAdornment>
+        ),
+      };
+    }
+    return <BaseTextField ref={ref} {...props} {...extraProps} />;
+  });
 
 export default TextField;
