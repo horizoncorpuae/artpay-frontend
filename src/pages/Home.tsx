@@ -9,6 +9,7 @@ import {
   IconButton,
   Paper,
   RadioGroup,
+  SvgIconProps,
   Typography,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
@@ -17,8 +18,24 @@ import PasswordField from "../components/PasswordField.tsx";
 import RadioButton from "../components/RadioButton.tsx";
 import Checkbox from "../components/Checkbox.tsx";
 import LinkButton from "../components/LinkButton.tsx";
+import CheckboxIcon from "../components/icons/CheckboxIcon.tsx";
+import CheckIcon from "../components/icons/CheckIcon.tsx";
+import ErrorIcon from "../components/icons/ErrorIcon.tsx";
+import RadioIcon from "../components/icons/RadioIcon.tsx";
+import SearchIcon from "../components/icons/SearchIcon.tsx";
+import ShowIcon from "../components/icons/ShowIcon.tsx";
+import HideIcon from "../components/icons/HideIcon.tsx";
+import UserIcon from "../components/icons/UserIcon.tsx";
+import FavouriteIcon from "../components/icons/FavouriteIcon.tsx";
+import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
+import MenuIcon from "../components/icons/MenuIcon.tsx";
+import CloseIcon from "../components/icons/CloseIcon.tsx";
+import PlusCircleIcon from "../components/icons/PlusCircleIcon.tsx";
+import CheckFillIcon from "../components/icons/CheckFillIcon.tsx";
+import QrCodeIcon from "../components/icons/QrCodeIcon.tsx";
 export interface HomeProps {}
 
+type IconColor = SvgIconProps["color"];
 const ShowcaseBox = ({
   children,
   title,
@@ -184,6 +201,55 @@ const Home: React.FC<HomeProps> = ({}) => {
             <Checkbox size="small" label="Small" />
             <Checkbox size="small" defaultChecked label="Checked small" />
           </Box>
+        </ShowcaseBox>
+        <ShowcaseBox title="Icons" md={9}>
+          {(
+            [
+              "inherit",
+              "primary",
+              "secondary",
+              "error",
+              "success",
+            ] as IconColor[]
+          ).map((color, index) => (
+            <Box display="flex" key={index} flexDirection="row" gap={1}>
+              <CheckIcon color={color} />
+              <ErrorIcon color={color} />
+              <HideIcon color={color} />
+              <SearchIcon color={color} />
+              <ShowIcon color={color} />
+              <UserIcon color={color} />
+              <FavouriteIcon color={color} />
+              <FavouriteFilledIcon color={color} />
+              <CloseIcon color={color} />
+              <MenuIcon color={color} />
+              <PlusCircleIcon color={color} />
+              <CheckFillIcon color={color} />
+              <QrCodeIcon color={color} />
+            </Box>
+          ))}
+        </ShowcaseBox>
+        <ShowcaseBox title="Control icons" md={3}>
+          {(
+            [
+              "inherit",
+              "primary",
+              "secondary",
+              "error",
+              "success",
+            ] as IconColor[]
+          ).map((color, index) => (
+            <Box display="flex" key={index} flexDirection="row" gap={1}>
+              <CheckboxIcon color={color} />
+              <CheckboxIcon color={color} disabled />
+              <CheckboxIcon color={color} checked />
+              <CheckboxIcon color={color} checked disabled />
+              <RadioIcon color={color} />
+              <RadioIcon color={color} disabled />
+              <RadioIcon color={color} checked />
+              <RadioIcon color={color} checked disabled />
+            </Box>
+          ))}
         </ShowcaseBox>
         <ShowcaseBox title="Input" md={9}>
           {inputVariants.map((variant) => (

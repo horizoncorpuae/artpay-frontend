@@ -29,6 +29,38 @@ export default ${componentName};
 
   console.log(`Component "${componentName}" generated successfully!`);
 }
+function generateIcon(baseDir, componentName) {
+  const componentDir = path.join(baseDir, "icons"); // toLowerCamelCase(componentName)
+  const componentTemplate = `import React from "react";
+import { SvgIconProps } from "@mui/material";
+import Icon from "./Icon";
+
+const ${componentName}Icon: React.FC<SvgIconProps> = (props) => {
+  return (
+    <Icon
+      render={(color) => (
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 19 19"
+          xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path d="" fill={color} />
+          </g>
+        </svg>
+      )}
+      {...props}></Icon>
+  );
+};
+
+export default ${componentName}Icon;
+`;
+
+  const filePathTs = path.join(componentDir, `${componentName}Icon.tsx`);
+  fs.writeFileSync(filePathTs, componentTemplate);
+
+  console.log(`Icon "${componentName}Icon" generated successfully!`);
+}
 
 // Get command and component name from command-line arguments
 const [command, componentName] = process.argv.slice(2);
@@ -39,6 +71,9 @@ if (!componentName) {
 }
 
 switch (command) {
+  case "icon":
+    generateIcon(path.join(__dirname, "src", "components"), componentName);
+    break;
   case "component":
     generateComponent(path.join(__dirname, "src", "components"), componentName);
     break;

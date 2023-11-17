@@ -15,7 +15,7 @@ const TextField: React.FC<TextFieldProps & ExtendedTextFieldProp> =
       extraProps.InputProps = {
         endAdornment: props.InputProps?.endAdornment || (
           <InputAdornment position="end">
-            <ErrorIcon />
+            <ErrorIcon color="error" />
           </InputAdornment>
         ),
       };
@@ -24,7 +24,7 @@ const TextField: React.FC<TextFieldProps & ExtendedTextFieldProp> =
       extraProps.InputProps = {
         endAdornment: props.InputProps?.endAdornment || (
           <InputAdornment position="end">
-            <CheckIcon />
+            <CheckIcon color="success" />
           </InputAdornment>
         ),
       };
