@@ -28,8 +28,6 @@ function AppContent() {
           <Route path="/artworks" element={<Artworks />} />
           <Route path="/purchase" element={<Purchase />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </DataProvider>
     </AuthProvider>

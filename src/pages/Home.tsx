@@ -33,6 +33,9 @@ import CloseIcon from "../components/icons/CloseIcon.tsx";
 import PlusCircleIcon from "../components/icons/PlusCircleIcon.tsx";
 import CheckFillIcon from "../components/icons/CheckFillIcon.tsx";
 import QrCodeIcon from "../components/icons/QrCodeIcon.tsx";
+import GoogleIcon from "../components/icons/GoogleIcon.tsx";
+import AppleIcon from "../components/icons/AppleIcon.tsx";
+import FacebookIcon from "../components/icons/FacebookIcon.tsx";
 export interface HomeProps {}
 
 type IconColor = SvgIconProps["color"];
@@ -226,6 +229,9 @@ const Home: React.FC<HomeProps> = ({}) => {
               <PlusCircleIcon color={color} />
               <CheckFillIcon color={color} />
               <QrCodeIcon color={color} />
+              <AppleIcon color={color} />
+              <GoogleIcon color={color} />
+              <FacebookIcon color={color} />
             </Box>
           ))}
         </ShowcaseBox>

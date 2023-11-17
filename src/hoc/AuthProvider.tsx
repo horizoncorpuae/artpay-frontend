@@ -3,24 +3,20 @@ import axios, { AxiosResponse } from "axios";
 import {
   Dialog,
   DialogContent,
-  DialogTi,
-  Typographytle,
   IconButton,
   Typography,
-  DialogActions,
-  DialogTitle,
   Button,
   Box,
   Divider,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import Logo from "../components/icons/Logo";
-import TextField from "../components/TextField";
-import PasswordField from "../components/PasswordField";
-import Checkbox from "../components/Checkbox.tsx";
 import LinkButton from "../components/LinkButton.tsx";
 import SignUpForm from "../components/SignUpForm.tsx";
 import SignInForm from "../components/SignInForm.tsx";
+import AppleIcon from "../components/icons/AppleIcon.tsx";
+import GoogleIcon from "../components/icons/GoogleIcon.tsx";
+import FacebookIcon from "../components/icons/FacebookIcon.tsx";
 
 export interface UserInfo {
   id: number;
@@ -179,9 +175,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
           {isSignIn ? <SignInForm /> : <SignUpForm />}
           <Divider sx={{ maxWidth: "80%", marginLeft: "10%" }} />
           <Box display="flex" flexDirection="column" gap={1} py={2}>
-            <Button variant="outlined">Continua con Apple</Button>
-            <Button variant="outlined">Continua con Google</Button>
-            <Button variant="outlined">Continua con Facebook</Button>
+            <Button variant="outlined" endIcon={<AppleIcon color="primary" />}>
+              Continua con Apple
+            </Button>
+            <Button variant="outlined" endIcon={<GoogleIcon color="primary" />}>
+              Continua con Google
+            </Button>
+            <Button
+              variant="outlined"
+              endIcon={<FacebookIcon color="primary" />}>
+              Continua con Facebook
+            </Button>
           </Box>
           <Box display="flex" mt={1} gap={1} alignItems="center">
             <Typography variant="body2" color="textSecondary">
