@@ -7,12 +7,14 @@ export interface DefaultLayoutProps {
   authRequired?: boolean;
   background?: string;
   children: ReactNode | ReactNode[];
+  pageLoading: boolean;
 }
 
 const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   authRequired = false,
   children,
   background,
+  pageLoading = false,
 }) => {
   const [ready, setReady] = useState(false);
   const auth = useAuth();
@@ -28,7 +30,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
     document.body.style.setProperty("--background", background || "none");
   }, [background]);
 
-  if (!ready) {
+  if (!ready || pageLoading) {
     return (
       <Container maxWidth="md">
         <Box

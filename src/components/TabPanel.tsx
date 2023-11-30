@@ -8,6 +8,7 @@ export interface TabPanelProps {
 }
 
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
+  //sx={{ mx: { xs: 2, sm: 0 } }}
   return (
     <div
       role="tabpanel"
@@ -19,7 +20,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          sx={{ py: { xs: 3, md: 6 } }}>
+          sx={{ py: { xs: 3, md: 6 }, px: { xs: 2, sm: 3, md: 0 } }}>
           {children}
         </Box>
       )}

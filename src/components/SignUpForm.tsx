@@ -5,6 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import Checkbox from "./Checkbox.tsx";
 import { FormField } from "../types";
 import { useForm } from "react-hook-form";
+import { AxiosError, isAxiosError } from "axios";
 
 interface SignUpFormContent {
   fields: {
@@ -65,7 +66,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, disabled }) => {
       try {
         await onSubmit(data);
       } catch (e) {
-        setSubmitError(e.toString());
+        if (isAxiosError(e)) {
+          setSubmitError((e as AxiosError).message);
+        } else {
+          // @ts-ignore
+          setSubmitError(e.message);
+        }
       }
     }
   };

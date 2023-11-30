@@ -10,6 +10,8 @@ import GalleryEvents, {
 import GalleryContacts, {
   GalleryContactsProps,
 } from "../components/GalleryContacts.tsx";
+import { useData } from "../hoc/DataProvider.tsx";
+import { useNavigate, useParams } from "react-router-dom";
 
 export interface GalleryProps {}
 
@@ -21,22 +23,46 @@ interface GalleryContent {
   categories: string[];
 }
 
-const Gallery: React.FC<GalleryProps> = ({}) => {
-  const [selectedTabPanel, setSelectedTabPanel] = useState(0);
-
-  useEffect(() => {
-    // TODO: loadData
-  }, []);
-
-  const galleryContent: GalleryContent = {
-    imageSrc: "/gallery_example.jpg",
-    title: "Crag – Chiono Reisova Art Gallery",
-    subtitle: "Torino, 1992",
-    description: `CRAG – Chiono Reisova Art Gallery nasce nel 2016 in un loft
+const exampleGalleryContent: GalleryContent = {
+  imageSrc: "/gallery_example.jpg",
+  title: "Crag – Chiono Reisova Art Gallery",
+  subtitle: "Torino, 1992",
+  description: `CRAG – Chiono Reisova Art Gallery nasce nel 2016 in un loft
     nel centro Piero della Francesca di Torino, fondata
     da Elisabetta Chiono e Karin Reisovà con uno sguardo verso artisti emergenti, sia italiani che stranieri.`,
-    categories: ["CATEGORY1", "CATEGORY2", "CATEGORY3"],
-  };
+  categories: ["CATEGORY1", "CATEGORY2", "CATEGORY3"],
+};
+
+const Gallery: React.FC<GalleryProps> = ({}) => {
+  const [isReady, setIsReady] = useState(false);
+  const [selectedTabPanel, setSelectedTabPanel] = useState(0);
+  const [galleryContent, setGalleryContent] = useState({
+    ...exampleGalleryContent,
+  });
+
+  const data = useData();
+  const urlParams = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!urlParams.id) {
+      navigate("/");
+      return;
+    }
+    data
+      .getGallery(urlParams.id)
+      .then((gallery) => {
+        setGalleryContent({
+          ...exampleGalleryContent,
+          title: gallery.username,
+        });
+      })
+      .finally(() => {
+        setIsReady(true);
+      });
+    //data.getGallery()
+    // TODO: loadData
+  }, [data, navigate, urlParams.id]);
 
   const galleryInfo: GalleryInfoProps = {
     title:
@@ -77,7 +103,7 @@ const Gallery: React.FC<GalleryProps> = ({}) => {
   };
 
   return (
-    <DefaultLayout>
+    <DefaultLayout pageLoading={!isReady}>
       <Grid sx={{ p: 0, maxWidth: "1440px" }} container>
         <Grid
           item
@@ -99,7 +125,8 @@ const Gallery: React.FC<GalleryProps> = ({}) => {
           display="flex"
           justifyContent="center"
           flexDirection="column">
-          <Typography sx={{ typography: { sm: "h1", xs: "h3" } }}>
+          <Typography
+            sx={{ typography: { sm: "h1", xs: "h3" }, pr: { xs: 0, md: 5 } }}>
             {galleryContent.title}
           </Typography>
           <Typography variant="h6" color="textSecondary" sx={{ mt: 2 }}>
@@ -135,7 +162,12 @@ const Gallery: React.FC<GalleryProps> = ({}) => {
         </Grid>
       </Grid>
       <Box mt={12}>
-        <Box sx={{ borderBottom: 1, borderColor: "secondary", mx: 6 }}>
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: "secondary",
+            mx: { xs: 0, sm: 3, md: 6 },
+          }}>
           <Tabs
             value={selectedTabPanel}
             onChange={(_, newValue) => setSelectedTabPanel(newValue)}

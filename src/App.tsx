@@ -5,26 +5,26 @@ import defaultTheme from "./themes/defaultTheme";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthProvider from "./hoc/AuthProvider";
 import DataProvider from "./hoc/DataProvider";
-import Home from "./pages/Home";
+import Showcase from "./pages/Showcase.tsx";
 import Artwork from "./pages/Artwork";
 import Gallery from "./pages/Gallery";
 import Artworks from "./pages/Artworks";
 import Profile from "./pages/Profile";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
 import Purchase from "./pages/Purchase";
+import Home from "./pages/Home.tsx";
 
 function AppContent() {
+  const baseUrl = "https://artpay.art";
   return (
-    <AuthProvider baseUrl="https://artpay.art">
-      <DataProvider>
+    <AuthProvider baseUrl={baseUrl}>
+      <DataProvider baseUrl={baseUrl}>
         <Routes>
-          <Route path="/" element={<Gallery />} />
-          <Route path="/showcase" element={<Home />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/gallery/info" element={<Gallery />} />
-          <Route path="/gallery/events" element={<Gallery />} />
-          <Route path="/gallery/contacts" element={<Gallery />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/showcase" element={<Showcase />} />
+          <Route path="/gallery/:id" element={<Gallery />} />
+          <Route path="/gallery/:id/info" element={<Gallery />} />
+          <Route path="/gallery/:id/events" element={<Gallery />} />
+          <Route path="/gallery/:id/contacts" element={<Gallery />} />
           <Route path="/artwork/:id" element={<Artwork />} />
           <Route path="/artworks" element={<Artworks />} />
           <Route path="/purchase" element={<Purchase />} />

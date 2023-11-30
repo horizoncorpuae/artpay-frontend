@@ -13,7 +13,7 @@ import { Close } from "@mui/icons-material";
 import Logo from "../components/icons/Logo";
 import LinkButton from "../components/LinkButton.tsx";
 import SignUpForm, { SignUpFormData } from "../components/SignUpForm.tsx";
-import SignInForm from "../components/SignInForm.tsx";
+import SignInForm, { SignInFormData } from "../components/SignInForm.tsx";
 import AppleIcon from "../components/icons/AppleIcon.tsx";
 import GoogleIcon from "../components/icons/GoogleIcon.tsx";
 import FacebookIcon from "../components/icons/FacebookIcon.tsx";
@@ -94,32 +94,40 @@ export interface AuthState {
   isLoading: boolean;
   isAuthenticated: boolean;
   user?: UserInfo;
+  wcToken?: string;
 }
 
 export interface AuthContext extends AuthState {
   getRole: () => string;
   logout: () => Promise<boolean>;
   login: () => void;
+  getGuestAuth: () => string;
 }
 
 export interface AuthProviderProps extends React.PropsWithChildren {
   baseUrl?: string;
 }
 
-interface LoginArgs {
-  identifier: string;
-  password: string;
-}
-
-interface LoginResponse {
-  jwt: string;
-  user: UserInfo;
-}
-
 const userStorageKey = "artpay-user";
 
 const GUEST_CONSUMER_KEY = "ck_349ace6a3d417517d0140e415779ed924c65f5e1";
 const GUEST_CONSUMER_SECRET = "cs_b74f44b74eadd4718728c26a698fd73f9c5c9328";
+
+const getGuestAuth = () => {
+  const credentials = btoa(GUEST_CONSUMER_KEY + ":" + GUEST_CONSUMER_SECRET);
+  return "Basic " + credentials;
+};
+const getWcCredentials = ({
+  consumer_key,
+  consumer_secret,
+}: {
+  consumer_key: string;
+  consumer_secret: string;
+}) => {
+  const wcCredentials = btoa(`${consumer_key}:${consumer_secret}`);
+  const authToken = "Basic " + wcCredentials;
+  return authToken;
+};
 
 const Context = createContext<AuthContext>({
   isAuthenticated: false,
@@ -130,6 +138,7 @@ const Context = createContext<AuthContext>({
   },
   logout: () => Promise.reject("Auth not loaded"),
   login: () => {},
+  getGuestAuth: () => getGuestAuth(),
 });
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({
@@ -137,8 +146,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   baseUrl = "",
 }) => {
   const userInfoUrl = `${baseUrl}/api/users/me`;
-  const loginUrl = `${baseUrl}/api/auth/local`;
+  const loginUrl = `${baseUrl}/wp-json/wp/v2/users/me`;
   const signUpUrl = `${baseUrl}/wp-json/wp/v2/users`;
+
   const [loginOpen, setLoginOpen] = useState(false);
   const [isSignIn, setIsSignIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -147,25 +157,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     isAuthenticated: false,
     isLoading: true,
     user: undefined,
+    wcToken: undefined,
   });
 
-  const login = async ({ identifier, password }: LoginArgs) => {
+  const login = async ({ email, password }: SignInFormData) => {
+    setIsLoading(true);
     try {
-      const resp = await axios.post<LoginArgs, AxiosResponse<LoginResponse>>(
+      const resp = await axios.get<SignInFormData, AxiosResponse<User>>(
         loginUrl,
-        { identifier, password },
+        { auth: { username: email, password } },
       );
-      const userInfoResp = await axios.get<object, AxiosResponse<UserInfo>>(
+      /*const userInfoResp = await axios.get<object, AxiosResponse<UserInfo>>(
         userInfoUrl,
         { headers: { Authorization: `Bearer ${resp.data.jwt}` } },
-      );
+      );*/
       // TODO: save user to local storage
       // await storage.set('auth', JSON.stringify({jwt: resp.data.jwt, user: userInfoResp.data})) //TODO: local storage
+      localStorage.setItem(userStorageKey, JSON.stringify(resp.data));
       setAuthValues({
         ...authValues,
         isAuthenticated: true,
-        user: userInfoResp.data,
+        user: resp.data,
+        wcToken: getWcCredentials(resp.data.wc_api_user_keys),
       });
+      setLoginOpen(false);
       return {};
     } catch (err: unknown) {
       setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
@@ -179,6 +194,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
       }
       //TODO: handle error
       return { error: err?.toString() };
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -186,7 +203,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     setIsLoading(true);
     const credentials = btoa(GUEST_CONSUMER_KEY + ":" + GUEST_CONSUMER_SECRET);
     const basicAuth = "Basic " + credentials;
-    console.log("set auth", basicAuth);
     try {
       const resp = await axios.post<
         SignUpFormData,
@@ -203,6 +219,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         );
       }
       localStorage.setItem(userStorageKey, JSON.stringify(resp.data));
+      setAuthValues({
+        ...authValues,
+        isAuthenticated: true,
+        user: resp.data,
+        wcToken: getWcCredentials(resp.data.wc_api_user_keys),
+      });
+      setLoginOpen(false);
     } finally {
       setIsLoading(false);
     }
@@ -213,6 +236,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   const logout = async () => {
     // TODO: remove user from local storage
     // await storage.remove('auth')
+    localStorage.removeItem(userStorageKey);
     resetAuthValues();
     return Promise.resolve(true);
   };
@@ -234,20 +258,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     login: showLoginDialog,
     logout,
     getRole,
+    getGuestAuth: () => getGuestAuth(),
   };
 
+  // Guest auth interceptor
   useEffect(() => {
-    //TODO: check authentication
-    /*axios.get<UserInfo>(userInfoUrl).then(resp => {
-          setAuthValues({user: resp.data, isAuthenticated: true, isLoading: false})
-        })*/
+    const interceptorId = axios.interceptors.request.use((config) => {
+      const needsWcKey = config.url?.startsWith(`${baseUrl}/wp-json/wc/`);
+      if (!config.headers.Authorization) {
+        if (needsWcKey) {
+          config.headers.Authorization = authValues.wcToken;
+          //authValues.user
+        } else {
+          config.headers.Authorization = getGuestAuth();
+        }
+      }
+      return config;
+    });
+
     const userStr = localStorage.getItem(userStorageKey);
     if (userStr) {
       const userObj: User = JSON.parse(userStr);
+
       setAuthValues({
         user: userObj,
         isAuthenticated: true,
         isLoading: false,
+        wcToken: getWcCredentials(userObj.wc_api_user_keys),
       });
     } else {
       setAuthValues({
@@ -256,7 +293,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         isLoading: false,
       });
     }
-  }, [userInfoUrl]);
+
+    return () => {
+      axios.interceptors.request.eject(interceptorId);
+    };
+  }, [authValues.wcToken, baseUrl, userInfoUrl]);
 
   return (
     <Context.Provider value={state}>
@@ -281,7 +322,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
             Qui possiamo mettere payoff / claim di artpay
           </Typography>
           {isSignIn ? (
-            <SignInForm disabled={isLoading} />
+            <SignInForm disabled={isLoading} onSubmit={login} />
           ) : (
             <SignUpForm disabled={isLoading} onSubmit={register} />
           )}

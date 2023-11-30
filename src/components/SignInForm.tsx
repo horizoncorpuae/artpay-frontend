@@ -1,6 +1,6 @@
 import React from "react";
 import TextField from "./TextField.tsx";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { FormField } from "../types";
 import { useForm } from "react-hook-form";
 import LinkButton from "./LinkButton.tsx";
@@ -14,11 +14,9 @@ interface SignInFormContent {
   buttonLabel: string;
 }
 
-interface SignInFormData {
-  name: string;
+export interface SignInFormData {
   email: string;
   password: string;
-  privacy: undefined;
 }
 
 export interface SignInFormProps {
