@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import React from "react";
+import { Grid, Typography } from "@mui/material";
 import SocialLinks from "./SocialLinks.tsx";
 import Map from "./Map.tsx";
 
