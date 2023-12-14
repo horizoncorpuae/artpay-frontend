@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, Grid, Tab, Tabs, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { useData } from "../hoc/DataProvider.tsx";
@@ -77,23 +69,10 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
             alignItems: "center",
             justifyContent: "center",
           }}>
-          <img
-            src={artwork?.images?.length ? artwork.images[0].src : ""}
-            style={{ height: "100%" }}
-          />
+          <img src={artwork?.images?.length ? artwork.images[0].src : ""} style={{ height: "100%" }} />
         </Grid>
-        <Grid
-          item
-          xs={12}
-          p={3}
-          md
-          display="flex"
-          justifyContent="flex-start"
-          flexDirection="column">
-          <Typography
-            sx={{ typography: { sm: "h1", xs: "h3" }, pr: { xs: 0, md: 5 } }}>
-            {artwork?.name}
-          </Typography>
+        <Grid item xs={12} p={3} md display="flex" justifyContent="flex-start" flexDirection="column">
+          <Typography sx={{ typography: { sm: "h1", xs: "h3" }, pr: { xs: 0, md: 5 } }}>{artwork?.name}</Typography>
           <Typography variant="h4" color="textSecondary" sx={{ mt: 2 }}>
             {artwork?.store_name}
           </Typography>
@@ -107,10 +86,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
             <Typography variant="subtitle1" color="textSecondary">
               Opera unica
             </Typography>
-            <Typography
-              sx={{ mt: 1 }}
-              variant="subtitle1"
-              color="textSecondary">
+            <Typography sx={{ mt: 1 }} variant="subtitle1" color="textSecondary">
               Certificato di autenticità incluso
             </Typography>
           </Box>
@@ -124,11 +100,9 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           <Box display="flex" alignItems="center">
             <Box flexGrow={1} display="flex" flexDirection="column">
               <Typography variant="subtitle1" fontWeight={600}>
-                {galleryDetails?.username}
+                {galleryDetails?.display_name}
               </Typography>
-              <Typography variant="subtitle1">
-                {galleryDetails?.billing?.city}
-              </Typography>
+              <Typography variant="subtitle1">{galleryDetails?.address?.city}</Typography>
             </Box>
             <Box>
               <Button variant="outlined">Contatta la galleria</Button>
@@ -189,14 +163,8 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           }}
         />
       </Box>
-      <ArtworksList
-        title="Opere dello stesso artista"
-        items={artistArtworks || []}
-      />
-      <ArtworksList
-        title="Opere della galleria"
-        items={galleryArtworks || []}
-      />
+      <ArtworksList title="Opere dello stesso artista" items={artistArtworks || []} />
+      <ArtworksList title="Opere della galleria" items={galleryArtworks || []} />
       <ArtworksList title="Simili per prezzo" items={[]} />
     </DefaultLayout>
   );

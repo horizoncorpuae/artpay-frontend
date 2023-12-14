@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
 import FavouriteIcon from "./icons/FavouriteIcon.tsx";
 import QrCodeIcon from "./icons/QrCodeIcon.tsx";
 import { CardSize } from "../types";
@@ -18,7 +11,9 @@ export interface ArtworkCardProps {
   galleryName: string;
   price?: number;
   size?: CardSize;
+  imgUrl?: string;
   onClick?: () => void;
+  mode?: "grid" | "list";
 }
 
 const cardSizes: { [key in CardSize]: string } = {
@@ -33,7 +28,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
   galleryName,
   price,
   size = "medium",
+  imgUrl,
   onClick,
+  mode = "list",
 }) => {
   const cardSize = cardSizes[size];
   const cardSizeClass = `SwiperCard-${size}`;
@@ -47,15 +44,16 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
   const textMaxWidth = size === "large" ? "190px" : "152px";
   const imgMargin = size === "small" ? 1 : 2;
   return (
-    <Card elevation={0} className={cardSizeClass} sx={{ height: "100%" }}>
+    <Card elevation={0} className={cardSizeClass} sx={{ height: mode === "list" ? "100%" : "auto" }}>
       <CardMedia
         component="img"
-        image="/gallery_example.jpg"
+        image={imgUrl}
         height={cardSize}
         onClick={onClick}
         className="borderRadius"
         sx={{
-          backgroundColor: "#D9D9D9",
+          objectFit: "contain",
+          //backgroundColor: "#D9D9D9",
           cursor: onClick ? "pointer" : "auto",
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: imgMargin, height: "100%" }}>

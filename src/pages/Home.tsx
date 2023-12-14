@@ -14,6 +14,7 @@ const Home: React.FC<HomeProps> = ({}) => {
   const navigate = useNavigate();
 
   const [galleries, setGalleries] = useState<Gallery[]>([]);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -22,25 +23,27 @@ const Home: React.FC<HomeProps> = ({}) => {
         .then((resp) => setGalleries(resp))
         .catch((err) => {
           console.log("Error", err);
-        });
+        })
+        .finally(() => setIsReady(true));
+    } else {
+      setIsReady(true);
+      auth.login();
     }
-  }, [auth.isAuthenticated, data]);
+  }, [auth, auth.isAuthenticated, data]);
 
   return (
-    <DefaultLayout>
-      <Grid
-        sx={{ maxWidth: "1440px", pt: 12, px: 6, flexDirection: "column" }}
-        container>
+    <DefaultLayout pageLoading={!isReady}>
+      <Grid sx={{ maxWidth: "1440px", pt: 12, px: 6, flexDirection: "column" }} container>
         {auth.isAuthenticated ? (
           <>
             <Typography variant="h3">Seleziona galleria</Typography>
-            {galleries.map((gallery, i) => (
-              <Button
-                key={i}
-                onClick={() => navigate(`/gallery/${gallery.id}`)}>
-                {gallery.username}
-              </Button>
-            ))}
+            {galleries
+              .filter((gallery) => !!gallery?.shop?.slug)
+              .map((gallery, i) => (
+                <Button key={i} onClick={() => navigate(`/gallerie/${gallery.shop.slug}/tutte-le-opere`)}>
+                  {gallery.display_name}
+                </Button>
+              ))}
           </>
         ) : (
           <Typography variant="h5" color="error">

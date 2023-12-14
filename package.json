@@ -39,6 +39,6 @@
   },
   "prettier": {
     "bracketSameLine": true,
-    "printWidth": 80
+    "printWidth": 120
   }
 }
