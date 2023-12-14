@@ -25,7 +25,7 @@ interface GalleryContent {
   description: string;
   categories: string[];
 }
-const subPageSlugs = ["about", "tutte-le-opere", "tutti-gli-artisti", "contacts"];
+const subPageSlugs = ["tutte-le-opere", "about", "tutti-gli-artisti", "contacts"];
 
 const galleryInfoExample: GalleryInfoProps = {
   title:
@@ -82,7 +82,8 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
         setGalleryArtworks(artworksToGalleryItems(artworks, "large"));
         const artists = await data.listArtistsForGallery(gallery.id.toString());
         setGalleryArtists(artistsToGalleryItems(artists));
-        setGalleryInfo({ ...galleryInfoExample });
+        const galleryDescription = (gallery.shop?.description || "").split("\r\n").filter((val) => !!val);
+        setGalleryInfo({ description: galleryDescription });
       })
       .finally(() => {
         setIsReady(true);
@@ -169,17 +170,17 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
             }}
             color="secondary"
             centered>
-            <Tab label="Informazioni galleria" />
             <Tab label="Opere d'arte" />
+            <Tab label="Informazioni galleria" />
             <Tab label="Artisti" />
             <Tab label="Contatti" />
           </Tabs>
         </Box>
         <TabPanel value={selectedTabPanel} index={0}>
-          {galleryInfo && <GalleryInfo {...galleryInfo} />}
+          <GalleryArtworksList artworks={galleryArtworks} />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={1}>
-          <GalleryArtworksList artworks={galleryArtworks} />
+          {galleryInfo && <GalleryInfo {...galleryInfo} />}
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={2}>
           <GalleryArtistsList artists={galleryArtists || []} />

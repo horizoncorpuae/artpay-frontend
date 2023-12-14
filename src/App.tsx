@@ -24,10 +24,10 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/showcase" element={<Showcase />} />
-          <Route path="/gallerie/:slug" element={<Gallery selectedTab={1} />} />
-          <Route path="/gallerie/:slug/tutte-le-opere" element={<Gallery selectedTab={1} />} />
+          <Route path="/gallerie/:slug" element={<Gallery selectedTab={0} />} />
+          <Route path="/gallerie/:slug/tutte-le-opere" element={<Gallery selectedTab={0} />} />
           <Route path="/gallerie/:slug/tutti-gli-artisti" element={<Gallery selectedTab={2} />} />
-          <Route path="/gallerie/:slug/about" element={<Gallery selectedTab={0} />} />
+          <Route path="/gallerie/:slug/about" element={<Gallery selectedTab={1} />} />
           <Route path="/gallerie/:slug/events" element={<Gallery />} />
           <Route path="/gallerie/:slug/contacts" element={<Gallery selectedTab={3} />} />
           <Route path="/artwork/:id" element={<Artwork />} />
