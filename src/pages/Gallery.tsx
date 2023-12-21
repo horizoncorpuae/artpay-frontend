@@ -71,7 +71,6 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
 
   const handleSelectArtwork = (i: number) => {
     if (galleryArtworks?.length) {
-      console.log("handleSelectArtwork", galleryArtworks[i]);
       navigate(`/gallerie/${urlParams.slug}/opere/${galleryArtworks[i].slug}`);
     }
   };

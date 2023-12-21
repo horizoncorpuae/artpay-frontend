@@ -20,10 +20,11 @@ const DisplayImage: React.FC<DisplayImageProps> = ({ src, width, height, sx = {}
         maxWidth: width || "auto",
         //background: "rgba(0,0,0,0.2)",
         flexShrink: 0,
+        textAlign: "center",
       }}
       className="borderRadius">
       <img
-        style={{ maxHeight: height || "auto", maxWidth: width || "auto", cursor: !!onClick ? "pointer" : "auto" }}
+        style={{ maxHeight: height || "auto", maxWidth: width || "auto", cursor: onClick ? "pointer" : "auto" }}
         onClick={onClick}
         src={src}
       />

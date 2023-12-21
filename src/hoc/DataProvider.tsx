@@ -79,14 +79,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         categoryMap[categoryGroup.slug] = { ...categoryGroup };
       }
 
-      console.log("categoryGroups", categoryMap);
-
       return categoryMap;
     };
 
     loadCategories().then(() => {
       setIsLoading(false);
-      console.log("categories loaded");
     });
   }, [baseUrl]);
 

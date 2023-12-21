@@ -36,6 +36,15 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const artworkCertificate = artwork ? data.getCategoryMapValues(artwork, "certificato").join(" ") : "";
   const artworkUnique = artwork ? data.getCategoryMapValues(artwork, "rarita").join(" ") : "";
 
+  const heroImgUrl = artwork?.images.length ? artwork.images[artwork.images.length - 1].src : "";
+
+  const handleGalleryArtworkSelect = (i: number) => {
+    if (galleryDetails && galleryArtworks && galleryArtworks[i]) {
+      setIsReady(false);
+      navigate(`/gallerie/${galleryDetails.shop?.slug}/opere/${galleryArtworks[i].slug}`);
+    }
+  };
+
   useEffect(() => {
     //TODO: page loader
     // setIsReady(false);
@@ -59,7 +68,6 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         setArtistDetails(artistDetails);
         //TODO: filtro per artista
         const artworksIds = (artistDetails.artworks || []).map((a) => a.ID.toString());
-        console.log("artist.artworks", artworksIds, galleryArtworks);
         setArtistArtworks(
           artworksToGalleryItems(galleryArtworks.filter((a) => artworksIds.indexOf(a.id.toString()) !== -1)),
         );
@@ -71,7 +79,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
 
       setIsReady(true);
     });
-  }, [data, navigate, urlParams.id, urlParams.slug_opera]);
+  }, [data, navigate, urlParams.id, urlParams.slug_opera, urlParams.slug_galleria]);
 
   return (
     <DefaultLayout pageLoading={!isReady}>
@@ -157,6 +165,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           "Se ti interessa quest’opera puoi bloccarla in esclusiva per 24 ore. Clicca qui e scegli se procedere all’iter di finanziamento direttamente dalla tua area personale."
         }
         cta={"Blocca l'opera"}
+        imgUrl={heroImgUrl}
         sx={{ mt: { xs: 3, sm: 6, md: 15 }, mb: 5 }}
       />
       <Box id="artwork-info" sx={{ top: "-100px", position: "relative" }}></Box>
@@ -193,7 +202,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         />
       </Box>
       <ArtworksList title="Opere dello stesso artista" items={artistArtworks || []} />
-      <ArtworksList title="Opere della galleria" items={galleryArtworks || []} />
+      <ArtworksList title="Opere della galleria" items={galleryArtworks || []} onSelect={handleGalleryArtworkSelect} />
       <ArtworksList title="Simili per prezzo" items={[]} />
     </DefaultLayout>
   );
