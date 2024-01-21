@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import TextField from "./TextField.tsx";
 import Checkbox from "./Checkbox.tsx";
 
-export interface NewsletterBigProps {}
+export interface NewsletterBigProps {
+  title: string;
+  subtitle?: string;
+  checkboxText?: string;
+  ctaText?: string;
+}
 
-const NewsletterBig: React.FC<NewsletterBigProps> = ({}) => {
+const NewsletterBig: React.FC<NewsletterBigProps> = ({ title, subtitle, checkboxText, ctaText = "Prosegui" }) => {
   const theme = useTheme();
   return (
     <Box
@@ -15,13 +20,15 @@ const NewsletterBig: React.FC<NewsletterBigProps> = ({}) => {
       px={5}
       justifyContent="center"
       alignItems="center"
-      sx={{ backgroundColor: "#1B2738", color: theme.palette.contrast.main }}>
+      sx={{ backgroundColor: "#010F22", color: theme.palette.contrast.main }}>
       <Typography variant="h3" color="white">
-        Hai concluso! Scopri cosa abbiamo selezionato per te
+        {title}
       </Typography>
-      <Typography variant="h6" color="white">
-        Lasciaci un indirizzo email e ti invieremo una selezione di opere presenti su artpay
-      </Typography>
+      {subtitle && (
+        <Typography variant="h6" color="white">
+          Lasciaci un indirizzo email e ti invieremo una selezione di opere presenti su artpay
+        </Typography>
+      )}
       <Box sx={{ maxWidth: "667px", width: "100%" }} my={6}>
         <TextField
           placeholder="email"
@@ -34,10 +41,10 @@ const NewsletterBig: React.FC<NewsletterBigProps> = ({}) => {
           }}
           fullWidth
         />
-        <Checkbox label="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
+        {checkboxText && <Checkbox label={checkboxText} />}
       </Box>
       <Button color="contrast" size="large" sx={{ color: theme.palette.primary.main }} variant="contained">
-        Prosegui
+        {ctaText}
       </Button>
     </Box>
   );

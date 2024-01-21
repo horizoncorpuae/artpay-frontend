@@ -28,7 +28,7 @@ const ArtworkDetails: React.FC<ArtworkDetailsProps> = ({ artwork, artist }) => {
     epoch: data.getCategoryMapValues(artwork, "periodo").join(" "),
   };
   return (
-    <Box display="flex" flexDirection="column">
+    <Box display="flex" flexDirection="column" sx={{ maxWidth: "920px" }}>
       <Box mb={3}>
         <Typography variant="h4">{artwork.name}</Typography>
         <Typography variant="h6" color="textSecondary">

@@ -46,8 +46,11 @@ declare module "@mui/material/styles" {
   interface PaletteOptions {
     contrast: PaletteColorOptions;
   }
-}
-declare module "@mui/material/SvgIcon" {
+
+  interface ButtonPropsColorOverrides {
+    contrast: true;
+  }
+
   interface SvgIconPropsColorOverrides {
     contrast: true;
   }
@@ -59,5 +62,11 @@ declare module "@material-ui/core/styles/createPalette" {
   }
   interface PaletteOptions {
     contrast: PaletteOptions["contrast"];
+  }
+}
+
+declare module "@mui/material/styles/createMuiTheme" {
+  interface ThemeOptions {
+    themeName?: string; // optional
   }
 }

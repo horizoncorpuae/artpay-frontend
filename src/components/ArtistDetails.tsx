@@ -20,7 +20,7 @@ const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
   return (
     <Box
       sx={{
-        maxWidth: "900px",
+        maxWidth: "920px",
         width: "100%",
         flexDirection: { xs: "column", md: "row" },
         gap: { xs: 2, md: 0 },

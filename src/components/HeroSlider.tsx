@@ -1,16 +1,19 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Box, IconButton, useTheme } from "@mui/material";
-import { Navigation } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import HeroSlide, { HeroSlideItem } from "./HeroSlide.tsx";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
-export interface HeroSliderProps {}
+export interface HeroSliderProps {
+  slides?: HeroSlideItem[];
+}
 
-const HeroSlider: React.FC<HeroSliderProps> = ({}) => {
+const SLIDER_INTERVAL_MS = 5000;
+
+const HeroSlider: React.FC<HeroSliderProps> = ({ slides = [] }) => {
   const theme = useTheme();
   const sliderRef = useRef<SwiperRef>(null);
-  const [slides, setSlides] = useState<HeroSlideItem[]>([]);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -23,26 +26,19 @@ const HeroSlider: React.FC<HeroSliderProps> = ({}) => {
   }, []);
 
   useEffect(() => {
-    setSlides([
-      {
-        imgUrl: "/gallery_example.jpg",
-        subtitle:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        title: "Da oggi l’arte a portata di clic",
-      },
-      {
-        imgUrl: "/gallery-event.jpg",
-        subtitle:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        title: "Slide 2",
-      },
-      {
-        imgUrl: "/gallery_example.jpg",
-        subtitle: "",
-        title: "Slide 3",
-      },
-    ]);
-  }, []);
+    const timeoutHandler = () => {
+      handleNext();
+    };
+    let timeoutId: number;
+    if (SLIDER_INTERVAL_MS) {
+      timeoutId = setInterval(timeoutHandler, SLIDER_INTERVAL_MS);
+    }
+    return () => {
+      if (timeoutId) {
+        clearInterval(timeoutId);
+      }
+    };
+  }, [handleNext]);
 
   return (
     <Box
@@ -56,7 +52,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({}) => {
       }}
       display="flex"
       flexDirection="column">
-      <Box sx={{ width: "100%", maxWidth: "1440px", height: "100%", position: "relative" }}>
+      <Box sx={{ width: "100%", height: "100%", position: "relative" }}>
         <Box sx={{ display: { xs: "none", md: "flex" }, mb: 2, ml: -2 }} gap={2}>
           <IconButton onClick={handlePrev} variant="contained">
             <ChevronLeft color="primary" />
@@ -68,10 +64,11 @@ const HeroSlider: React.FC<HeroSliderProps> = ({}) => {
         <Swiper
           ref={sliderRef}
           navigation={true}
-          modules={[Navigation]}
+          pagination={true}
+          modules={[Navigation, Pagination]}
           className="heroSwiper"
           loop
-          style={{ maxHeight: "calc(100% - 50px)" }}>
+          style={{ maxHeight: "calc(100% - 50px)", paddingBottom: theme.spacing(5) }}>
           {slides.map((slideProps, i) => (
             <SwiperSlide key={`slide-${i}`}>
               <HeroSlide {...slideProps} />

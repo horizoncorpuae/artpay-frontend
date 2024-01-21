@@ -6,19 +6,44 @@ import { Artwork } from "../types/artwork.ts";
 import { Artist } from "../types/artist.ts";
 import { Category, CategoryGroup, CategoryMap } from "../types/category.ts";
 import { useAuth } from "./AuthProvider.tsx";
+import { Post, PostCategory, PostCategoryMap } from "../types/post.ts";
+import { Media } from "../types/media.ts";
+import { postAndMediaToHeroSlide, postAndMediaToPromoItem } from "../utils.ts";
+import { HomeContent } from "../types/home.ts";
+import { PromoComponentType } from "../components/PromoItem.tsx";
 
+export interface ArtworksFilter {
+  featured?: boolean;
+}
 export interface DataContext {
   info(): Promise<string>;
+
+  getHomeContent(): Promise<HomeContent>;
+
   listGalleries(): Promise<Gallery[]>;
+
   getGallery(id: string): Promise<Gallery>;
+
   getGalleryBySlug(slug: string): Promise<Gallery>;
+
   getArtwork(id: string): Promise<Artwork>;
+
   getArtworkBySlug(slug: string): Promise<Artwork>;
+
   listArtworks(): Promise<Artwork[]>;
+
+  listFeaturedArtworks(): Promise<Artwork[]>;
+
   listArtworksForArtist(galleryId: string): Promise<Artwork[]>;
+
   listArtworksForGallery(galleryId: string): Promise<Artwork[]>;
+
+  listFeaturedArtists(): Promise<Artist[]>;
+
   listArtistsForGallery(galleryId: string): Promise<Artist[]>;
+
   getArtist(id: string): Promise<Artist>;
+
   getCategoryMapValues(artwork: Artwork, key: string): string[];
 }
 
@@ -28,21 +53,28 @@ export interface DataProviderProps extends React.PropsWithChildren {
 
 const defaultContext: DataContext = {
   info: () => Promise.reject("Data provider loaded"),
+  getHomeContent: () => Promise.reject("Data provider loaded"),
   listGalleries: () => Promise.reject("Data provider loaded"),
   getGallery: () => Promise.reject("Data provider loaded"),
   getGalleryBySlug: () => Promise.reject("Data provider loaded"),
   getArtwork: () => Promise.reject("Data provider loaded"),
   getArtworkBySlug: () => Promise.reject("Data provider loaded"),
   listArtworks: () => Promise.reject("Data provider loaded"),
+  listFeaturedArtworks: () => Promise.reject("Data provider loaded"),
   listArtworksForArtist: () => Promise.reject("Data provider loaded"),
   listArtworksForGallery: () => Promise.reject("Data provider loaded"),
+  listFeaturedArtists: () => Promise.reject("Data provider loaded"),
   listArtistsForGallery: () => Promise.reject("Data provider loaded"),
   getArtist: () => Promise.reject("Data provider loaded"),
   getCategoryMapValues: () => [],
 };
 
+const PostCategoryMapStorageKey = "PostCategoryMap";
+const CategoryMapStorageKey = "CategoryMap";
+
 const Context = createContext<DataContext>({ ...defaultContext });
 const categoryMap: CategoryMap = {};
+const postCategoryMap: PostCategoryMap = {};
 export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl }) => {
   const [isLoading, setIsLoading] = useState(true);
   //const [categoryMap, setCategoryMap] = useState<CategoryMap | undefined>();
@@ -50,6 +82,16 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
 
   useEffect(() => {
     const loadCategories = async (): Promise<CategoryMap> => {
+      const cachedCategoryMap = localStorage.getItem(CategoryMapStorageKey);
+      if (cachedCategoryMap) {
+        try {
+          Object.assign(categoryMap, JSON.parse(cachedCategoryMap || "{}"));
+          return categoryMap;
+        } catch (e) {
+          console.log("postCategoryMap: json parse error", e);
+        }
+      }
+
       let categoriesResp = await axios.get<SignInFormData, AxiosResponse<Category[]>>(
         `${baseUrl}/wp-json/wc/v3/products/categories?per_page=100`,
         { headers: { Authorization: auth.getGuestAuth() } },
@@ -80,18 +122,95 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         const categoryGroup = categoryGroups[i];
         categoryMap[categoryGroup.slug] = { ...categoryGroup };
       }
-
+      localStorage.setItem(CategoryMapStorageKey, JSON.stringify(categoryMap));
       return categoryMap;
     };
 
-    loadCategories().then(() => {
+    const loadPostCategories = async (): Promise<PostCategoryMap> => {
+      const cachedPostCategoryMap = localStorage.getItem(PostCategoryMapStorageKey);
+      if (cachedPostCategoryMap) {
+        try {
+          Object.assign(postCategoryMap, JSON.parse(cachedPostCategoryMap || "{}"));
+          return postCategoryMap;
+        } catch (e) {
+          console.log("postCategoryMap: json parse error", e);
+        }
+      }
+      const postCategoriesResp = await axios.get<SignInFormData, AxiosResponse<PostCategory[]>>(
+        `${baseUrl}/wp-json/wp/v2/categories`,
+        { headers: { Authorization: auth.getGuestAuth() } },
+      );
+      for (let i = 0; i < postCategoriesResp.data.length; i++) {
+        const postCategory = postCategoriesResp.data[i];
+        postCategoryMap[postCategory.slug] = postCategory;
+      }
+      localStorage.setItem(PostCategoryMapStorageKey, JSON.stringify(postCategoryMap));
+      return postCategoryMap;
+    };
+
+    Promise.all([loadPostCategories(), loadCategories()]).then(() => {
       setIsLoading(false);
     });
   }, [auth, baseUrl]);
 
+  const loadMedia = async (ids: number[]): Promise<Media[]> => {
+    // https://artpay.art/wp-json/wp/v2/media?include=622,648
+    const mediaResp = await axios.get<unknown, AxiosResponse<Media[]>>(
+      `${baseUrl}/wp-json/wp/v2/media?include=${ids.join(",")}`,
+      {
+        headers: { Authorization: auth.getGuestAuth() },
+      },
+    );
+    return mediaResp.data;
+  };
+
   const dataContext: DataContext = {
     info(): Promise<string> {
       return Promise.resolve("");
+    },
+    async getHomeContent(): Promise<HomeContent> {
+      // 1: "hp-slider"
+      // 2: "promo-big"
+      // 3: "promo-small"
+      const heroSliderCategory = postCategoryMap["hp-slider"]?.id || 0;
+      const promoBigCategory = postCategoryMap["promo-big"]?.id || 0;
+      const promoSmallCategory = postCategoryMap["promo-small"]?.id || 0;
+
+      //TODO: categoryFilter
+      // const categoryIds = [heroSliderCategory, promoBigCategory, promoSmallCategory].filter((v) => !!v);
+      // const categoryFilter = categoryIds.map((id) => `categories[]=${id}`).join("&");
+      // ?${categoryFilter}
+
+      const postsResp = await axios.get<unknown, AxiosResponse<Post[]>>(`${baseUrl}/wp-json/wp/v2/posts`, {
+        headers: { Authorization: auth.getGuestAuth() },
+      });
+
+      const media = await loadMedia(postsResp.data.map((p) => p.featured_media).filter((id) => !!id));
+
+      const heroPosts = postsResp.data.filter((p) => p.categories.indexOf(heroSliderCategory) !== -1);
+      const mappedHeroPosts = heroPosts.map((post) => {
+        const postMedia = media.find((m) => m.id === post.featured_media);
+        return { post: post, media: postMedia };
+      });
+      const heroSlides = mappedHeroPosts.map(({ post, media }) => postAndMediaToHeroSlide(post, media));
+
+      const promoPosts = postsResp.data.filter(
+        (p) => p.categories.indexOf(promoBigCategory) !== -1 || p.categories.indexOf(promoSmallCategory) !== -1,
+      );
+      const mappedPromoPosts = promoPosts.map((post) => {
+        const postMedia = media.find((m) => m.id === post.featured_media);
+        const componentType: PromoComponentType =
+          post.categories.indexOf(promoBigCategory) !== -1 ? "promo-big" : "promo-small";
+        return { post: post, media: postMedia, componentType: componentType };
+      });
+      const promoItems = mappedPromoPosts
+        .map(({ post, media, componentType }) => postAndMediaToPromoItem(componentType, post, media))
+        .sort((a, b) => a.order - b.order);
+
+      return {
+        heroSlides: heroSlides.sort((a, b) => a.order - b.order),
+        promoItems: promoItems,
+      };
     },
     async getArtwork(id: string): Promise<Artwork> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork>>(`${baseUrl}/wp-json/wc/v3/products/${id}`);
@@ -125,7 +244,15 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data;
     },
     async listArtworks(): Promise<Artwork[]> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`);
+      const resp = await axios.get<unknown, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`);
+
+      return resp.data;
+    },
+    async listFeaturedArtworks(): Promise<Artwork[]> {
+      const resp = await axios.get<unknown, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, {
+        params: { featured: true },
+        headers: { Authorization: auth.getGuestAuth() },
+      });
 
       return resp.data;
     },
@@ -140,6 +267,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       //TODO: listArtworksForArtist filter
       console.log("artistId", artistId);
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`);
+      return resp.data;
+    },
+    async listFeaturedArtists(): Promise<Artist[]> {
+      //TODO: featured filter
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(`${baseUrl}/wp-json/wp/v2/artist`, {
+        headers: { Authorization: auth.getGuestAuth() },
+      });
       return resp.data;
     },
     async listArtistsForGallery(galleryId: string): Promise<Artist[]> {

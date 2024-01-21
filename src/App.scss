@@ -69,3 +69,12 @@ body {
     }
   }
 }
+
+.swiper {
+  .swiper-pagination{
+    text-align: left;
+    //--swiper-pagination-bullet-inactive-color: rgba(255,255,255,0.8)
+    --swiper-pagination-color: #FFF;
+    --swiper-pagination-bottom: 0;
+  }
+}

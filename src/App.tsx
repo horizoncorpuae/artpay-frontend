@@ -17,7 +17,7 @@ import Purchase from "./pages/Purchase";
 import Home from "./pages/Home.tsx";
 
 function AppContent() {
-  const baseUrl = "https://artpay.art";
+  const baseUrl = ""; // https://artpay.art
   return (
     <AuthProvider baseUrl={baseUrl}>
       <DataProvider baseUrl={baseUrl}>

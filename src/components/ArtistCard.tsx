@@ -53,11 +53,11 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
           <Box display="flex" flexDirection="column">
             {isFavourite ? (
               <IconButton color="primary" variant="outlined" size="small">
-                <Add />
+                <Check />
               </IconButton>
             ) : (
-              <IconButton color="primary" variant="contained" size="small">
-                <Check />
+              <IconButton color="primary" variant="outlined" size="small">
+                <Add />
               </IconButton>
             )}
           </Box>

@@ -1,27 +1,36 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
-import { Button, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
-import { Gallery } from "../types/gallery.ts";
-import { useAuth } from "../hoc/AuthProvider.tsx";
-import { useNavigate } from "react-router-dom";
 import HeroSlider from "../components/HeroSlider.tsx";
-import PromoBig from "../components/PromoBig.tsx";
-import PromoSmall from "../components/PromoSmall.tsx";
 import NewsletterBig from "../components/NewsletterBig.tsx";
+import ArtworksList from "../components/ArtworksList.tsx";
+import { HomeContent } from "../types/home.ts";
+import PromoItem from "../components/PromoItem.tsx";
+import { artistsToGalleryItems, artworksToGalleryItems } from "../utils.ts";
+import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
+import { ArtistCardProps } from "../components/ArtistCard.tsx";
+import ArtistsList from "../components/ArtistsList.tsx";
 
 export interface HomeProps {}
 
 const Home: React.FC<HomeProps> = ({}) => {
   const data = useData();
-  const auth = useAuth();
-  const navigate = useNavigate();
 
-  const [galleries, setGalleries] = useState<Gallery[]>([]);
+  const [featuredArtworks, setFeaturedArtworks] = useState<ArtworkCardProps[]>();
+  const [featuredArtists, setFeaturedArtists] = useState<ArtistCardProps[]>();
+  const [homeContent, setHomeContent] = useState<HomeContent>();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
+    Promise.all([
+      data.getHomeContent().then((resp) => setHomeContent(resp)),
+      data.listFeaturedArtworks().then((resp) => setFeaturedArtworks(artworksToGalleryItems(resp))),
+      data.listFeaturedArtists().then((resp) => setFeaturedArtists(artistsToGalleryItems(resp))),
+    ]).then(() => {
+      setIsReady(true);
+    });
+    /*if (auth.isAuthenticated) {
       data
         .listGalleries()
         .then((resp) => setGalleries(resp))
@@ -32,51 +41,26 @@ const Home: React.FC<HomeProps> = ({}) => {
     } else {
       setIsReady(true);
       auth.login();
-    }
-  }, [auth, auth.isAuthenticated, data]);
+    }*/
+    // auth, auth.isAuthenticated,
+  }, [data]);
 
   return (
     <DefaultLayout pageLoading={!isReady} maxWidth={false}>
-      <HeroSlider />
-      <PromoBig
-        title={"Promo big"}
-        subtitle={
-          "Euismod metus pellentesque porta aliquam ipsum aliquam aliquam consectetur dui. Massa diam egestas ultrices diam et eget et quis."
-        }
-        cta={"CTA promo big"}
-        imgUrl={"/promo-big-example.jpg"}
-        sx={{ mt: { xs: 3, sm: 6, md: 15 }, mb: 5 }}
-      />
-      <Grid sx={{ px: 6 }} spacing={2} container>
-        <Grid item xs={12} md={6}>
-          <PromoSmall title="Promo small" cta="CTA promo small" imgUrl="/gallery-info-image.png" />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <PromoSmall title="Promo small" cta="CTA promo small" imgUrl="/gallery-info-image.png" contrast />
-        </Grid>
+      <HeroSlider slides={homeContent?.heroSlides} />
+      <Grid sx={{ px: 6, mt: 4 }} container>
+        <ArtworksList items={featuredArtworks || []} title="Opere in evidenza" showEmpty />
+      </Grid>
+      <Grid spacing={4} sx={{ mt: 4 }} justifyContent="center" container>
+        {homeContent?.promoItems.map((promoItem, i) => <PromoItem key={`promo-${i}`} {...promoItem} />)}
       </Grid>
       <Grid container>
         <Grid mt={4} xs={12} item>
-          <NewsletterBig />
+          <NewsletterBig title="Iscriviti alla nostra newsletter" />
         </Grid>
       </Grid>
-      <Grid sx={{ maxWidth: "1440px", minHeight: "90vh", pt: 12, px: 6, flexDirection: "column" }} container>
-        {auth.isAuthenticated ? (
-          <Grid item xs={12} display="flex" flexDirection="column">
-            <Typography variant="h3">Seleziona galleria</Typography>
-            {galleries
-              .filter((gallery) => !!gallery?.shop?.slug)
-              .map((gallery, i) => (
-                <Button key={i} onClick={() => navigate(`/gallerie/${gallery.shop.slug}`)}>
-                  {gallery.display_name}
-                </Button>
-              ))}
-          </Grid>
-        ) : (
-          <Typography variant="h5" color="error">
-            Effettua il login
-          </Typography>
-        )}
+      <Grid sx={{ px: 6, my: 6 }} container>
+        <ArtistsList items={featuredArtists || []} title="Artisti in evidenza" />
       </Grid>
     </DefaultLayout>
   );

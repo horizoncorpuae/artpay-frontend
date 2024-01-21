@@ -1,17 +1,19 @@
 import React from "react";
 import { Box, Button, Grid, SxProps, Theme, Typography, useMediaQuery, useTheme } from "@mui/material";
 import DisplayImage from "./DisplayImage.tsx";
+import { Cta } from "../types/ui.ts";
+import sanitizeHtml from "sanitize-html";
 
-export interface HeroArtworkProps {
+export interface PromoBigProps {
   sx?: SxProps<Theme>;
   title: string;
-  subtitle: string;
-  cta: string;
+  content?: string;
+  cta?: Cta;
   imgUrl?: string;
   onClick?: () => void;
 }
 
-const PromoBig: React.FC<HeroArtworkProps> = ({ sx = {}, cta, imgUrl, title, subtitle, onClick }) => {
+const PromoBig: React.FC<PromoBigProps> = ({ sx = {}, cta, imgUrl, title, content, onClick }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -42,14 +44,19 @@ const PromoBig: React.FC<HeroArtworkProps> = ({ sx = {}, cta, imgUrl, title, sub
         <Typography variant="h2" color={textColor}>
           {title}
         </Typography>
-        <Typography variant="h4" sx={{ mt: 3 }} color={textColor}>
-          {subtitle}
-        </Typography>
-        <Box mt={3}>
-          <Button color="contrast" onClick={onClick}>
-            {cta}
-          </Button>
-        </Box>
+        <Typography
+          variant="h4"
+          sx={{ mt: 3 }}
+          color={textColor}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(content || "") }}
+        />
+        {cta && (
+          <Box mt={3}>
+            <Button color="contrast" href={cta.link} onClick={onClick}>
+              {cta.text}
+            </Button>
+          </Box>
+        )}
       </Grid>
     </Grid>
   );

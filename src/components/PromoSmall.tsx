@@ -1,10 +1,11 @@
 import React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { ChevronRight } from "@mui/icons-material";
+import { Cta } from "../types/ui.ts";
 
 export interface PromoSmallProps {
   title: string;
-  cta: string;
+  cta?: Cta;
   onClick?: () => void;
   imgUrl?: string;
   contrast?: boolean;
@@ -35,7 +36,7 @@ const PromoSmall: React.FC<PromoSmallProps> = ({ title, cta, onClick, imgUrl, co
       </Typography>
       <Box display="flex" flexDirection="row" alignItems="center">
         <Typography sx={{ typography: { xs: "h5" } }} color={textColor}>
-          {cta}
+          {cta?.text}
         </Typography>
         <ChevronRight color={iconColor} fontSize="large" />
       </Box>

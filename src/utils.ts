@@ -4,6 +4,11 @@ import { ArtworkCardProps } from "./components/ArtworkCard.tsx";
 import { ArtistCardProps } from "./components/ArtistCard.tsx";
 import { Artist } from "./types/artist.ts";
 import { Gallery, GalleryContent } from "./types/gallery.ts";
+import { Post } from "./types/post.ts";
+import { Media } from "./types/media.ts";
+import { HeroSlideItem } from "./components/HeroSlide.tsx";
+import { Cta } from "./types/ui.ts";
+import { PromoComponentType, PromoItemProps } from "./components/PromoItem.tsx";
 
 export const getPropertyFromMetadata = (metadata: MetadataItem[], key: string): { [key: string]: string } => {
   const item = metadata.find((p) => p.key === key);
@@ -67,4 +72,50 @@ export const getArtworkDimensions = (artwork?: Artwork): string => {
   return `${artwork?.dimensions.width || 0} x ${artwork?.dimensions.height || 0} x ${
     artwork?.dimensions.length || 0
   } cm`;
+};
+
+function ctaFromLink(htmlString: string): Cta | undefined {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+  const linkElement = doc.querySelector("a");
+
+  if (linkElement) {
+    const href = linkElement.getAttribute("href") || "";
+    const text = linkElement.textContent || "";
+    return { link: href, text };
+  } else {
+    return undefined;
+  }
+}
+
+interface SortableHeroSlideItem extends HeroSlideItem {
+  order: number;
+}
+export const postAndMediaToHeroSlide = (post: Post, media?: Media): SortableHeroSlideItem => {
+  return {
+    cta: post.excerpt?.rendered ? ctaFromLink(post.excerpt?.rendered) : undefined,
+    imgUrl: media?.source_url || "",
+    subtitle: post.content?.rendered || "",
+    title: post.title?.rendered || "",
+    order: +(post.acf.ordine || "0"),
+  };
+};
+
+interface SortablePromoItem extends PromoItemProps {
+  order: number;
+}
+
+export const postAndMediaToPromoItem = (
+  componentType: PromoComponentType,
+  post: Post,
+  media?: Media,
+): SortablePromoItem => {
+  return {
+    cta: post.excerpt?.rendered ? ctaFromLink(post.excerpt?.rendered) : undefined,
+    imgUrl: media?.source_url || "",
+    content: post.content?.rendered || "",
+    title: post.title?.rendered || "",
+    order: +(post.acf.ordine || "0"),
+    componentType: componentType,
+  };
 };

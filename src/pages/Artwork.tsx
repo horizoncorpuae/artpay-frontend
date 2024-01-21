@@ -177,10 +177,13 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       </Grid>
       <PromoBig
         title={"Vuoi acquistare a rate?"}
-        subtitle={
+        content={
           "Se ti interessa quest’opera puoi bloccarla in esclusiva per 24 ore. Clicca qui e scegli se procedere all’iter di finanziamento direttamente dalla tua area personale."
         }
-        cta={"Blocca l'opera"}
+        cta={{
+          text: "Blocca l'opera",
+          link: "#",
+        }}
         imgUrl={heroImgUrl}
         sx={{ mt: { xs: 3, sm: 6, md: 15 }, mb: 5 }}
       />

@@ -72,11 +72,19 @@ const defaultTheme: Theme = createTheme({
           fontSize: "14px",
           height: "30px",
         },
-        textContrast: ({ theme }) => ({
-          color: theme.palette.primary.main,
-          background: theme.palette.contrast.main,
-        }),
-        // @ts-ignore
+        // @ts-expect-error variante custom "contrast
+        textContrast: ({ theme }) => {
+          return {
+            color: theme.palette.primary.main,
+            background: theme.palette.contrast.main,
+            "&:hover": {
+              color: theme.palette.primary.main,
+              background: theme.palette.contrast.main,
+              opacity: "0.8",
+            },
+          };
+        },
+        // @ts-expect-error variante custom "link"
         link: ({ theme }) => {
           return {
             textDecoration: "underline",
@@ -111,6 +119,7 @@ const defaultTheme: Theme = createTheme({
             (ownerState?.color && ["primary", "secondary", "info", "error"].indexOf(ownerState?.color) !== -1
               ? theme.palette[ownerState?.color as PaletteColor]?.contrastText
               : null) || theme.palette.grey["600"];
+
           const variant = ownerState.variant || "default";
           switch (variant) {
             case "contained":
@@ -316,6 +325,7 @@ const defaultTheme: Theme = createTheme({
   },
 });
 
+// @ts-expect-error custom theme
 const responsiveTheme = createTheme(defaultTheme, {
   typography: {
     h4: {

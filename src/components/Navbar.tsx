@@ -41,7 +41,11 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
         </Box>
         {!isMobile && (
           <Box>
-            <Button sx={{ ml: { xs: 1, sm: 2, lg: 6 } }} color="inherit" variant="text">
+            <Button
+              sx={{ ml: { xs: 1, sm: 2, lg: 6 } }}
+              onClick={() => navigate("/artworks")}
+              color="inherit"
+              variant="text">
               Opere
             </Button>
             <Button sx={{ ml: 0 }} color="inherit" variant="text">
