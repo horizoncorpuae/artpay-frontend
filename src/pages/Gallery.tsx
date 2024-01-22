@@ -61,7 +61,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
         const artworks = await data.listArtworksForGallery(gallery.id.toString());
         setGalleryArtworks(artworksToGalleryItems(artworks, "large"));
         //TODO: sostituire endpoint quando funziona
-        const artists = await data.listFeaturedArtists(); // gallery.id.toString()
+        const artists = await data.listArtistsForGallery(gallery.id.toString());
         setGalleryArtists(artistsToGalleryItems(artists));
         const galleryDescription = (gallery.shop?.description || "").split("\r\n").filter((val) => !!val);
         setGalleryInfo({ description: galleryDescription });
