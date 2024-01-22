@@ -318,6 +318,16 @@ const defaultTheme: Theme = createTheme({
         },
       },
     },
+    MuiPopover: {
+      styleOverrides: {
+        paper: ({ theme }) => {
+          return {
+            color: theme.palette.contrast.main,
+            backgroundColor: theme.palette.grey["800"],
+          };
+        },
+      },
+    },
     MuiFooter: {
       styleOverrides: {
         root: {

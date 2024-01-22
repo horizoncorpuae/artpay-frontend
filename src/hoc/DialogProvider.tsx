@@ -7,11 +7,13 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Popover,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, { createContext, ReactNode, useContext, useRef, useState } from "react";
 import { FaFacebook, FaWhatsapp } from "react-icons/fa6";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 export interface DialogOptions {
   showActions?: boolean;
@@ -135,6 +137,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
     },
     share: (link, title, subtitle, options = {}) => {
       const {} = options;
+
       const DialogTitle = (
         <Box>
           <Typography variant="h5">{title || "Condividi"}</Typography>
@@ -143,17 +146,48 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
           </Typography>
         </Box>
       );
-      const DialogContent = (
-        <Box display="flex" gap={2}>
-          <Button startIcon={<FaWhatsapp />}>Whatsapp</Button>
-          <Button startIcon={<FaFacebook />}>Facebook</Button>
-          <Button startIcon={<CopyAll />}>Copia link</Button>
-        </Box>
-      );
+      const ShareDialogContent = ({}) => {
+        const copyButtonRef = useRef<HTMLButtonElement>(null);
+        const [copied, setCopied] = useState(false);
+
+        const handleCopy = () => {
+          setCopied(true);
+          setTimeout(() => {
+            setCopied(false);
+          }, 3000);
+        };
+
+        return (
+          <Box display="flex" gap={2}>
+            <Button href={`https://web.whatsapp.com/send?text=${link}`} target="_blank" startIcon={<FaWhatsapp />}>
+              Whatsapp
+            </Button>
+            <Button startIcon={<FaFacebook />}>Facebook</Button>
+            <CopyToClipboard text={link} onCopy={() => handleCopy()}>
+              <Button ref={copyButtonRef} startIcon={<CopyAll />}>
+                Copia link
+              </Button>
+            </CopyToClipboard>
+            {copyButtonRef?.current && (
+              <Popover
+                id="copy-link"
+                anchorEl={copyButtonRef.current}
+                open={copied}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}>
+                <Typography sx={{ p: 2 }}>Link copiato</Typography>
+              </Popover>
+            )}
+          </Box>
+        );
+      };
       return new Promise((resolve, reject) => {
         setDialog({
           title: DialogTitle,
-          content: DialogContent,
+          content: <ShareDialogContent />,
           resolve,
           reject,
           showActions: false,

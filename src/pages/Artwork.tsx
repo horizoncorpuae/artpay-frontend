@@ -50,7 +50,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   };
 
   const handleShare = async () => {
-    await dialogs.share("/");
+    await dialogs.share(window.location.href);
   };
 
   useEffect(() => {
