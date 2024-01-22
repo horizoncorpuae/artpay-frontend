@@ -15,6 +15,7 @@ import { ArtistCardProps } from "../components/ArtistCard.tsx";
 import { GalleryContent } from "../types/gallery.ts";
 import ResponsiveTabs from "../components/ResponsiveTabs.tsx";
 import { CardItem } from "../types";
+import { useDialogs } from "../hoc/DialogProvider.tsx";
 
 export interface GalleryProps {
   selectedTab?: number;
@@ -34,6 +35,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
   const data = useData();
   const urlParams = useParams();
   const navigate = useNavigate();
+  const dialogs = useDialogs();
 
   useEffect(() => {
     if (!urlParams.slug) {
@@ -58,7 +60,8 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
         });
         const artworks = await data.listArtworksForGallery(gallery.id.toString());
         setGalleryArtworks(artworksToGalleryItems(artworks, "large"));
-        const artists = await data.listArtistsForGallery(gallery.id.toString());
+        //TODO: sostituire endpoint quando funziona
+        const artists = await data.listFeaturedArtists(); // gallery.id.toString()
         setGalleryArtists(artistsToGalleryItems(artists));
         const galleryDescription = (gallery.shop?.description || "").split("\r\n").filter((val) => !!val);
         setGalleryInfo({ description: galleryDescription });
@@ -77,6 +80,10 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
   };
   const handleLoadMoreArtworks = async () => {
     navigate(`/gallerie/${urlParams.slug}/tutte-le-opere`);
+  };
+
+  const handleShare = async () => {
+    await dialogs.share(window.location.href);
   };
 
   /*const galleryContacts: GalleryContactsProps = {
@@ -153,7 +160,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
               <Button variant="outlined" endIcon={<Add />}>
                 Follow
               </Button>
-              <IconButton variant="outlined" color="primary" size="small">
+              <IconButton onClick={handleShare} variant="outlined" color="primary" size="small">
                 <Share />
               </IconButton>
             </Box>

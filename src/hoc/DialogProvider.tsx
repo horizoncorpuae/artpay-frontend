@@ -162,7 +162,9 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
             <Button href={`https://web.whatsapp.com/send?text=${link}`} target="_blank" startIcon={<FaWhatsapp />}>
               Whatsapp
             </Button>
-            <Button startIcon={<FaFacebook />}>Facebook</Button>
+            <Button href={`https://www.facebook.com/sharer.php?u=${link}`} target="_blank" startIcon={<FaFacebook />}>
+              Facebook
+            </Button>
             <CopyToClipboard text={link} onCopy={() => handleCopy()}>
               <Button ref={copyButtonRef} startIcon={<CopyAll />}>
                 Copia link

@@ -3,7 +3,7 @@ import { Gallery } from "../types/gallery.ts";
 import axios, { AxiosResponse } from "axios";
 import { SignInFormData } from "../components/SignInForm.tsx";
 import { Artwork } from "../types/artwork.ts";
-import { Artist } from "../types/artist.ts";
+import { Artist, ArtistPost } from "../types/artist.ts";
 import { Category, CategoryGroup, CategoryMap } from "../types/category.ts";
 import { useAuth } from "./AuthProvider.tsx";
 import { Post, PostCategory, PostCategoryMap } from "../types/post.ts";
@@ -40,7 +40,7 @@ export interface DataContext {
 
   listFeaturedArtists(): Promise<Artist[]>;
 
-  listArtistsForGallery(galleryId: string): Promise<Artist[]>;
+  listArtistsForGallery(galleryId: string): Promise<ArtistPost[]>;
 
   getArtist(id: string): Promise<Artist>;
 
@@ -276,9 +276,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       });
       return resp.data;
     },
-    async listArtistsForGallery(galleryId: string): Promise<Artist[]> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(
-        `${baseUrl}/wp-json/wp/v2/artist?vendor=${galleryId}`,
+    async listArtistsForGallery(galleryId: string): Promise<ArtistPost[]> {
+      const resp = await axios.get<SignInFormData, AxiosResponse<ArtistPost[]>>(
+        `${baseUrl}/wp-json/wp/v2/artistsOfVendor/${galleryId}`,
       );
       return resp.data;
     },
