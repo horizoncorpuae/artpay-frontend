@@ -64,7 +64,7 @@ const Home: React.FC<HomeProps> = ({}) => {
   return (
     <DefaultLayout pageLoading={!isReady} maxWidth={false}>
       <HeroSlider slides={homeContent?.heroSlides} />
-      <Grid sx={{ px: { xs: 0, md: 6 }, mt: 4 }} container>
+      <Grid sx={{ px: { xs: 0, md: 6 }, mt: 4, justifyContent: "center" }} container>
         {featuredArtworks && (
           <ArtworksList
             items={featuredArtworks || []}
