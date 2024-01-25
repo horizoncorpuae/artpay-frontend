@@ -5,6 +5,7 @@ import { Grid } from "@mui/material";
 import ContentCard from "../components/ContentCard.tsx";
 import UserIcon from "../components/icons/UserIcon.tsx";
 import { CreditCardOutlined, LocalShipping, ShoppingBagOutlined } from "@mui/icons-material";
+import UserDataForm from "../components/UserDataForm.tsx";
 
 export interface PurchaseProps {}
 
@@ -17,9 +18,11 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
   }, []);
   return (
     <DefaultLayout pageLoading={!isReady}>
-      <Grid mt={16} spacing={3} container>
+      <Grid mt={16} spacing={3} px={3} container>
         <Grid item gap={3} display="flex" flexDirection="column" xs={12} md={8}>
-          <ContentCard title="Informazioni di contatto" icon={<UserIcon />} />
+          <ContentCard title="Informazioni di contatto" icon={<UserIcon />}>
+            <UserDataForm />
+          </ContentCard>
           <ContentCard title="Metodo di spedizione" icon={<LocalShipping />} />
           <ContentCard title="Metodo di pagamento" icon={<CreditCardOutlined />} />
         </Grid>
