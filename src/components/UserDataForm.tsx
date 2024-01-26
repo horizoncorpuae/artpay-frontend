@@ -7,9 +7,10 @@ import { BillingData } from "../types/user.ts";
 export interface UserDataFormProps {
   defaultValues?: BillingData;
   onSubmit?: (formData: BillingData) => Promise<void>;
+  showEmail?: boolean;
 }
 
-const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) => {
+const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit, showEmail }) => {
   const {
     control,
     handleSubmit,
@@ -42,7 +43,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
             render={({ field }) => (
               <TextField
                 disabled={isSaving}
-                label="Nome"
+                label="Nome*"
                 variant="outlined"
                 fullWidth
                 {...field}
@@ -61,7 +62,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
             render={({ field }) => (
               <TextField
                 disabled={isSaving}
-                label="Cognome"
+                label="Cognome*"
                 variant="outlined"
                 fullWidth
                 {...field}
@@ -72,6 +73,29 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
           />
         </Grid>
 
+        {/*<Grid item xs={12} sm={6}>
+          <Controller
+            name="birth_date"
+            control={control}
+            rules={{ required: "Data di nascita richiesta" }}
+            render={({ field }) => (
+              <DatePicker
+                format="DD/MM/YYYY"
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: !!errors.birth_date,
+                    helperText: errors.birth_date?.message,
+                  },
+                }}
+                label="Data di Nascita"
+                {...field}
+                onChange={(date: Date | null) => field.onChange(date)}
+              />
+            )}
+          />
+        </Grid>*/}
+
         <Grid item xs={12}>
           <Controller
             name="address_1"
@@ -80,7 +104,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
             render={({ field }) => (
               <TextField
                 disabled={isSaving}
-                label="Indirizzo (linea 1: via/piazza,...)"
+                label="Indirizzo* (linea 1: via/piazza,...)"
                 variant="outlined"
                 fullWidth
                 {...field}
@@ -115,7 +139,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
             render={({ field }) => (
               <TextField
                 disabled={isSaving}
-                label="Città"
+                label="Città*"
                 variant="outlined"
                 fullWidth
                 {...field}
@@ -134,7 +158,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
             render={({ field }) => (
               <TextField
                 disabled={isSaving}
-                label="CAP"
+                label="CAP*"
                 variant="outlined"
                 fullWidth
                 {...field}
@@ -147,7 +171,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
 
         <Grid item xs={12} md={6}>
           <FormControl fullWidth error={!!errors.country}>
-            <InputLabel id="country-label">Paese</InputLabel>
+            <InputLabel id="country-label">Paese*</InputLabel>
             <Controller
               name="country"
               control={control}
@@ -174,7 +198,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
             render={({ field }) => (
               <TextField
                 disabled={isSaving}
-                label="Provincia"
+                label="Provincia*"
                 variant="outlined"
                 fullWidth
                 {...field}
@@ -193,7 +217,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
             render={({ field }) => (
               <TextField
                 disabled={isSaving}
-                label="Telefono"
+                label="Telefono*"
                 variant="outlined"
                 fullWidth
                 {...field}
@@ -204,24 +228,26 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit }) 
           />
         </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="email"
-            control={control}
-            rules={{ required: "Email richiesta" }}
-            render={({ field }) => (
-              <TextField
-                disabled={isSaving}
-                label="Email"
-                variant="outlined"
-                fullWidth
-                {...field}
-                error={!!errors.email}
-                helperText={errors.email?.message}
-              />
-            )}
-          />
-        </Grid>
+        {showEmail && (
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="email"
+              control={control}
+              rules={{ required: "Email richiesta" }}
+              render={({ field }) => (
+                <TextField
+                  disabled={isSaving}
+                  label="Email"
+                  variant="outlined"
+                  fullWidth
+                  {...field}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                />
+              )}
+            />
+          </Grid>
+        )}
 
         {/*        <Grid item xs={12}>
           <Controller

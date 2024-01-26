@@ -58,7 +58,7 @@ export interface DataContext {
 
   getUserProfile(): Promise<UserProfile>;
 
-  updateUserProfile(data: UserProfile): Promise<UserProfile>;
+  updateUserProfile(data: Partial<UserProfile>): Promise<UserProfile>;
 
   getCategoryMapValues(artwork: Artwork, key: string): string[];
 
@@ -458,13 +458,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const resp = await axios.get<unknown, AxiosResponse<UserProfile>>(`${baseUrl}/wp-json/wc/v3/customers/${userId}`);
       return resp.data;
     },
-    async updateUserProfile(body: UserProfile): Promise<UserProfile> {
+    async updateUserProfile(body: Partial<UserProfile>): Promise<UserProfile> {
       const userId = auth.user?.id;
       if (!userId) {
         throw "Not authenticated";
       }
       body.id = userId;
-      const resp = await axios.post<UserProfile, AxiosResponse<UserProfile>>(
+      const resp = await axios.put<Partial<UserProfile>, AxiosResponse<UserProfile>>(
         `${baseUrl}/wp-json/wc/v3/customers/${userId}`,
         body,
       );

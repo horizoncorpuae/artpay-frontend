@@ -9,7 +9,7 @@ import { Media } from "./types/media.ts";
 import { HeroSlideItem } from "./components/HeroSlide.tsx";
 import { Cta } from "./types/ui.ts";
 import { PromoComponentType, PromoItemProps } from "./components/PromoItem.tsx";
-import { User, UserInfo } from "./types/user.ts";
+import { BillingData, User, UserInfo } from "./types/user.ts";
 
 export const getPropertyFromMetadata = (metadata: MetadataItem[], key: string): { [key: string]: string } => {
   const item = metadata.find((p) => p.key === key);
@@ -140,4 +140,25 @@ export const postAndMediaToPromoItem = (
     order: +(post.acf.ordine || "0"),
     componentType: componentType,
   };
+};
+
+export const areBillingFieldsFilled = (data: BillingData): boolean => {
+  const requiredFields: (keyof BillingData)[] = [
+    "first_name",
+    "last_name",
+    "address_1",
+    "city",
+    "postcode",
+    "country",
+    "state",
+    "phone",
+  ];
+
+  for (const field of requiredFields) {
+    if (!data[field]) {
+      return false;
+    }
+  }
+
+  return true;
 };

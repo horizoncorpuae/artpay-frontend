@@ -16,28 +16,35 @@ import Profile from "./pages/Profile";
 import Purchase from "./pages/Purchase";
 import Home from "./pages/Home.tsx";
 import DialogProvider from "./hoc/DialogProvider.tsx";
+import SnackbarProvider from "./hoc/SnackbarProvider.tsx";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function AppContent() {
   const baseUrl = ""; // https://artpay.art
   return (
-    <DialogProvider>
-      <AuthProvider baseUrl={baseUrl}>
-        <DataProvider baseUrl={baseUrl}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/showcase" element={<Showcase />} />
-            <Route path="/gallerie/:slug" element={<Gallery selectedTab={0} />} />
-            <Route path="/gallerie/:slug/tutte-le-opere" element={<Artworks />} />
-            <Route path="/gallerie/:slug/tutti-gli-artisti" element={<Gallery selectedTab={1} />} />
-            <Route path="/gallerie/:slug/galleria" element={<Gallery selectedTab={2} />} />
-            <Route path="/gallerie/:slug_galleria/opere/:slug_opera" element={<Artwork />} />
-            <Route path="/artworks" element={<Artworks />} />
-            <Route path="/acquisti" element={<Purchase />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </DataProvider>
-      </AuthProvider>
-    </DialogProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="it">
+      <DialogProvider>
+        <SnackbarProvider>
+          <AuthProvider baseUrl={baseUrl}>
+            <DataProvider baseUrl={baseUrl}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/showcase" element={<Showcase />} />
+                <Route path="/gallerie/:slug" element={<Gallery selectedTab={0} />} />
+                <Route path="/gallerie/:slug/tutte-le-opere" element={<Artworks />} />
+                <Route path="/gallerie/:slug/tutti-gli-artisti" element={<Gallery selectedTab={1} />} />
+                <Route path="/gallerie/:slug/galleria" element={<Gallery selectedTab={2} />} />
+                <Route path="/gallerie/:slug_galleria/opere/:slug_opera" element={<Artwork />} />
+                <Route path="/artworks" element={<Artworks />} />
+                <Route path="/acquisti" element={<Purchase />} />
+                <Route path="/profile" element={<Profile />} />
+              </Routes>
+            </DataProvider>
+          </AuthProvider>
+        </SnackbarProvider>
+      </DialogProvider>
+    </LocalizationProvider>
   );
 }
 

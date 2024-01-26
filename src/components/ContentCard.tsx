@@ -5,15 +5,19 @@ export interface ContentCardProps {
   icon?: ReactNode;
   title: string;
   children?: ReactNode | ReactNode[];
+  headerButtons?: ReactNode[];
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ icon, title, children }) => {
+const ContentCard: React.FC<ContentCardProps> = ({ icon, title, headerButtons = [], children }) => {
   return (
     <Paper>
       <Box display="flex" p={2} flexDirection="column">
-        <Box gap={2} mb={3} display="flex">
+        <Box gap={2} mb={3} alignItems="center" display="flex">
           {icon}
-          <Typography variant="subtitle1">{title}</Typography>
+          <Typography sx={{ flexGrow: 1 }} variant="subtitle1">
+            {title}
+          </Typography>
+          <Box>{headerButtons}</Box>
         </Box>
         <Box px={3}>{children}</Box>
       </Box>

@@ -69,15 +69,16 @@ export type User = {
 export type BillingData = {
   first_name: string;
   last_name: string;
-  company: string;
+  company?: string;
   address_1: string;
-  address_2: string;
+  address_2?: string;
   city: string;
   postcode: string;
   country: string;
   state: string;
-  email?: string;
   phone: string;
+  email?: string;
+  //birth_date?: Date | null;
 };
 
 export type UserProfile = {
