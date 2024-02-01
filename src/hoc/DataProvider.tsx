@@ -58,6 +58,8 @@ export interface DataContext {
 
   getArtwork(id: string): Promise<Artwork>;
 
+  getArtworks(ids: number[]): Promise<Artwork[]>;
+
   getArtworkBySlug(slug: string): Promise<Artwork>;
 
   listArtworks(): Promise<Artwork[]>;
@@ -124,6 +126,7 @@ const defaultContext: DataContext = {
   getGallery: () => Promise.reject("Data provider loaded"),
   getGalleryBySlug: () => Promise.reject("Data provider loaded"),
   getArtwork: () => Promise.reject("Data provider loaded"),
+  getArtworks: () => Promise.reject("Data provider loaded"),
   getArtworkBySlug: () => Promise.reject("Data provider loaded"),
   listArtworks: () => Promise.reject("Data provider loaded"),
   listFeaturedArtworks: () => Promise.reject("Data provider loaded"),
@@ -411,6 +414,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async getArtwork(id: string): Promise<Artwork> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork>>(`${baseUrl}/wp-json/wc/v3/products/${id}`);
+      return resp.data;
+    },
+    async getArtworks(ids: number[]): Promise<Artwork[]> {
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(
+        `${baseUrl}/wp-json/wc/v3/products?include=[${ids.join(",")}]`,
+      );
       return resp.data;
     },
     async getArtworkBySlug(slug: string): Promise<Artwork> {

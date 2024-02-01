@@ -7,13 +7,21 @@ export interface ContentCardProps {
   children?: ReactNode | ReactNode[];
   headerButtons?: ReactNode[];
   contentPadding?: number;
+  contentPaddingMobile?: number;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ icon, title, headerButtons = [], children, contentPadding = 5 }) => {
+const ContentCard: React.FC<ContentCardProps> = ({
+  icon,
+  title,
+  headerButtons = [],
+  children,
+  contentPadding = 5,
+  contentPaddingMobile = 3,
+}) => {
   // const theme = useTheme();
   return (
     <Paper elevation={1}>
-      <Box display="flex" flexDirection="column">
+      <Box display="flex" pb={3} flexDirection="column">
         <Box gap={2} mb={1} p={2} alignItems="center" display="flex">
           {icon}
           <Typography sx={{ flexGrow: 1 }} variant="subtitle1">
@@ -21,7 +29,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ icon, title, headerButtons = 
           </Typography>
           <Box>{headerButtons}</Box>
         </Box>
-        <Box px={contentPadding}>{children}</Box>
+        <Box sx={{ px: { xs: contentPaddingMobile, md: contentPadding } }}>{children}</Box>
       </Box>
     </Paper>
   );

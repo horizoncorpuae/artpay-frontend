@@ -43,8 +43,6 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
     ? pendingOrder.shipping_lines[0].method_id
     : undefined;
 
-  console.log("selectedShippingMethod", currentShippingMethod);
-
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
     if (isAxiosError(err) && err.response?.data?.message) {
       text = err.response?.data?.message;
@@ -161,7 +159,6 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
     }
     updatedOrder.shipping_lines = [updatedShippingLine];
     try {
-      console.log("updatedShippingLine", updatedShippingLine);
       const updatedOrderResp = await data.updateOrder(pendingOrder.id, updatedOrder);
       setPendingOrder(updatedOrderResp);
     } catch (e) {
@@ -263,9 +260,13 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
           </ContentCard>
           <ContentCard title="Metodo di pagamento" icon={<PiCreditCardThin size="28px" />}></ContentCard>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <ContentCard title="Riassunto dell'ordine" icon={<ShoppingBagIcon />} contentPadding={0}>
-            <Box display="flex" flexDirection="column" gap={2} px={5}>
+        <Grid item xs={12} md={4} sx={{ mb: { xs: 4, md: 0 } }}>
+          <ContentCard
+            title="Riassunto dell'ordine"
+            icon={<ShoppingBagIcon />}
+            contentPadding={0}
+            contentPaddingMobile={0}>
+            <Box display="flex" flexDirection="column" gap={2} sx={{ px: { xs: 3, md: 5 } }}>
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="body1">Subtotale</Typography>
                 <Typography variant="body1">€ {formattedSubtotal}</Typography>
@@ -283,7 +284,7 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
               </Button>
             </Box>
             <Divider sx={{ my: 3 }} />
-            <Box display="flex" flexDirection="column" gap={3} px={5} my={3}>
+            <Box display="flex" sx={{ px: { xs: 3, md: 5 } }} flexDirection="column" gap={3} mt={3}>
               {pendingOrder?.line_items.map((item, i) => (
                 <Box key={item.id}>
                   <DisplayImage src={item.image.src} width="100%" height="230px" />
@@ -293,7 +294,7 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
                   <Typography variant="subtitle1" sx={{ my: 1 }}>
                     {item.name}
                   </Typography>
-                  <Typography variant="body1" color="textSecondary" sx={{ mb: 2 }}>
+                  <Typography variant="body1" color="textSecondary">
                     {artworks[i]?.galleryName}
                   </Typography>
                 </Box>
