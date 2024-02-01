@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import DisplayImage from "../components/DisplayImage.tsx";
 import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
 import { PiCreditCardThin, PiTruckThin } from "react-icons/pi";
+import { isAxiosError } from "axios";
 
 export interface PurchaseProps {}
 
@@ -39,6 +40,13 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
   const [artworks, setArtworks] = useState<ArtworkCardProps[]>([]);
 
   const selectedShippingMethod = pendingOrder?.shipping_lines?.length ? pendingOrder.shipping_lines[0].id : undefined;
+
+  const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
+    if (isAxiosError(err) && err.response?.data?.message) {
+      text = err.response?.data?.message;
+    }
+    return snackbar.error(text, { autoHideDuration: 60000 });
+  };
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -70,7 +78,7 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
           setIsReady(true);
         })
         .catch(async (e) => {
-          await snackbar.error("Si è verificato un errore", { autoHideDuration: 60000 });
+          await showError(e);
           console.error(e);
           navigate("/");
         });
@@ -126,7 +134,8 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
 
       setShippingDataEditing(false);
     } catch (e) {
-      await snackbar.error(e?.toString() || "Si è verificato un errore");
+      console.error(e);
+      await showError(e);
     }
     setIsSaving(false);
   };
@@ -151,7 +160,8 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
       const updatedOrderResp = await data.updateOrder(pendingOrder.id, updatedOrder);
       setPendingOrder(updatedOrderResp);
     } catch (e) {
-      await snackbar.error(e?.toString() || "Si è verificato un errore");
+      console.error(e);
+      await showError(e);
     }
     setIsSaving(false);
   };
