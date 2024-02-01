@@ -8,7 +8,7 @@ export const paletteColors: string[] = ["primary", "secondary", "error", "info",
 export type ColorValueHex = `#${string}`;
 export interface IconProps extends Omit<SvgIconProps, "color"> {
   render: (color: string) => React.ReactNode;
-  color: SvgIconProps["color"] | ColorValueHex;
+  color?: SvgIconProps["color"] | ColorValueHex;
 }
 //
 const Icon: React.FC<IconProps> = ({ render, color: colorProp, ...props }) => {

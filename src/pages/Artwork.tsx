@@ -21,6 +21,7 @@ import GalleryHeader from "../components/GalleryHeader.tsx";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
 import { FavouritesMap } from "../types/post.ts";
+import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
 export interface ArtworkProps {}
 
@@ -39,6 +40,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const navigate = useNavigate();
   const dialogs = useDialogs();
   const theme = useTheme();
+  const snackbar = useSnackbars();
 
   const artworkTechnique = artwork ? data.getCategoryMapValues(artwork, "tecnica").join(" ") : "";
   const artworkCertificate = artwork ? data.getCategoryMapValues(artwork, "certificato").join(" ") : "";
@@ -75,6 +77,23 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         console.log(e);
       }
     }
+  };
+
+  const handlePurchase = (artworkId?: number) => {
+    if (!artworkId) {
+      return;
+    }
+    setIsReady(false);
+    data
+      .purchaseArtwork(artworkId)
+      .then(() => {
+        navigate("/acquisti");
+      })
+      .catch((e) => {
+        console.error(e);
+        snackbar.error("Si è verificato un errore");
+        setIsReady(true);
+      });
   };
 
   useEffect(() => {
@@ -198,7 +217,9 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
               </IconButton>
             </Box>
             <Box mt={2} sx={{ mb: { xs: 0, md: 3 } }} display="flex" gap={1}>
-              <Button variant="outlined">Compra ora</Button>
+              <Button variant="outlined" onClick={() => handlePurchase(artwork?.id)}>
+                Compra ora
+              </Button>
               <Button variant="contained">Acquista a rate</Button>
             </Box>
             <Divider sx={{ my: 3 }} />

@@ -2,8 +2,8 @@ import { BillingData } from "./user.ts";
 
 export type OrderCreateRequest = {
   customer_id: number;
-  payment_method: string;
-  payment_method_title: string;
+  payment_method?: string;
+  payment_method_title?: string;
   set_paid: boolean;
   shipping: BillingData;
   billing?: BillingData;
@@ -12,9 +12,9 @@ export type OrderCreateRequest = {
 };
 
 export type OrderUpdateRequest = {
-  customer_id: number;
-  payment_method: string;
-  payment_method_title: string;
+  customer_id?: number;
+  payment_method?: string;
+  payment_method_title?: string;
   billing?: BillingData;
   shipping?: BillingData;
   shipping_lines?: ShippingLineUpdateRequest[];
@@ -22,13 +22,16 @@ export type OrderUpdateRequest = {
 };
 
 export type LineItemRequest = {
+  id?: number;
   product_id: number;
   quantity: number;
 };
 
 export type ShippingLineUpdateRequest = {
-  id: number;
   method_id: string | null;
+  id?: number;
+  instance_id?: string;
+  method_title?: string;
 };
 
 export type Order = {

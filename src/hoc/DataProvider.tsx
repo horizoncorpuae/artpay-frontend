@@ -11,7 +11,13 @@ import { Media } from "../types/media.ts";
 import { postAndMediaToHeroSlide, postAndMediaToPromoItem } from "../utils.ts";
 import { HomeContent } from "../types/home.ts";
 import { PromoComponentType } from "../components/PromoItem.tsx";
-import { Order, OrderCreateRequest, PaymentIntentRequest, ShippingMethodOption } from "../types/order.ts";
+import {
+  Order,
+  OrderCreateRequest,
+  OrderUpdateRequest,
+  PaymentIntentRequest,
+  ShippingMethodOption,
+} from "../types/order.ts";
 import { PaymentIntent } from "@stripe/stripe-js";
 import { UserProfile } from "../types/user.ts";
 
@@ -74,6 +80,10 @@ export interface DataContext {
 
   createOrder(body: OrderCreateRequest): Promise<Order>;
 
+  updateOrder(orderId: number, body: OrderUpdateRequest): Promise<Order>;
+
+  purchaseArtwork(artworkId: number): Promise<Order>;
+
   createPaymentIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
 
   getArtist(id: string): Promise<Artist>;
@@ -126,6 +136,8 @@ const defaultContext: DataContext = {
   listPendingOrders: () => Promise.reject("Data provider loaded"),
   getPendingOrder: () => Promise.reject("Data provider loaded"),
   createOrder: () => Promise.reject("Data provider loaded"),
+  updateOrder: () => Promise.reject("Data provider loaded"),
+  purchaseArtwork: () => Promise.reject("Data provider loaded"),
   createPaymentIntent: () => Promise.reject("Data provider loaded"),
   getUserProfile: () => Promise.reject("Data provider loaded"),
   updateUserProfile: () => Promise.reject("Data provider loaded"),
@@ -492,6 +504,34 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data.length ? resp.data[0] : null;
     },
     async createOrder(body: OrderCreateRequest): Promise<Order> {
+      const resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body);
+      return resp.data;
+    },
+    async updateOrder(orderId: number, body: OrderUpdateRequest): Promise<Order> {
+      const resp = await axios.put<OrderUpdateRequest, AxiosResponse<Order>>(
+        `${baseUrl}/wp-json/wc/v3/orders/${orderId}`,
+        body,
+      );
+      return resp.data;
+    },
+    async purchaseArtwork(artworkId: number): Promise<Order> {
+      const customerId = auth.user?.id;
+      if (!customerId) {
+        throw "No customer id";
+      }
+      const profile = await this.getUserProfile();
+      const body: OrderCreateRequest = {
+        customer_id: customerId,
+        line_items: [
+          {
+            product_id: artworkId,
+            quantity: 1,
+          },
+        ],
+        set_paid: false,
+        shipping: { ...profile.shipping },
+        shipping_lines: [],
+      };
       const resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body);
       return resp.data;
     },

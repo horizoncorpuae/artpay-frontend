@@ -6,21 +6,22 @@ export interface ContentCardProps {
   title: string;
   children?: ReactNode | ReactNode[];
   headerButtons?: ReactNode[];
+  contentPadding?: number;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ icon, title, headerButtons = [], children }) => {
+const ContentCard: React.FC<ContentCardProps> = ({ icon, title, headerButtons = [], children, contentPadding = 5 }) => {
   // const theme = useTheme();
   return (
     <Paper elevation={1}>
-      <Box display="flex" p={2} flexDirection="column">
-        <Box gap={2} mb={3} alignItems="center" display="flex">
+      <Box display="flex" flexDirection="column">
+        <Box gap={2} mb={1} p={2} alignItems="center" display="flex">
           {icon}
           <Typography sx={{ flexGrow: 1 }} variant="subtitle1">
             {title}
           </Typography>
           <Box>{headerButtons}</Box>
         </Box>
-        <Box px={3}>{children}</Box>
+        <Box px={contentPadding}>{children}</Box>
       </Box>
     </Paper>
   );
