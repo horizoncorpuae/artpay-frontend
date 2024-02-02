@@ -45,7 +45,7 @@ const FavouriteArtists: React.FC<FavouriteArtistsProps> = ({}) => {
         console.log("error!", e);
         showError(e);
       });
-  }, [data]);
+  }, [data, showError]);
 
   // <Skeleton variant="rectangular" height={520} width={320} animation="pulse" />
 

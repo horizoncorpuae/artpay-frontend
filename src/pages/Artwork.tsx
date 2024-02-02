@@ -154,7 +154,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       maxWidth={false}
       topBar={
         <GalleryHeader
-          slug={galleryDetails?.nice_name || ""}
+          slug={galleryDetails?.shop?.slug || ""}
           logo={galleryDetails?.shop?.image || ""}
           displayName={galleryDetails?.display_name || ""}
         />

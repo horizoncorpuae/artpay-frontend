@@ -56,7 +56,7 @@ const Artworks: React.FC<ArtworksProps> = ({}) => {
           <GalleryHeader
             slug={galleryDetails?.nice_name || ""}
             logo={galleryDetails?.shop?.image || ""}
-            displayName={galleryDetails?.display_name || ""}
+            displayName={galleryDetails?.shop?.slug || ""}
           />
         ) : undefined
       }>

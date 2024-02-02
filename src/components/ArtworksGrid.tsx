@@ -30,9 +30,10 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
   useEffect(() => {
     data.getFavouriteArtworks().then((resp) => setFavourites(resp));
   }, [data]);
-  const handleSelectArtwork = (index: number) => {
-    const selectedArtwork = items[index];
-    navigate(`/artwork/${selectedArtwork.id}`);
+  const handleSelect = (item: ArtworkCardProps) => {
+    data.getGallery(item.galleryId).then((gallery) => {
+      navigate(`/gallerie/${gallery.shop?.slug}/opere/${item.slug}`);
+    });
   };
   const handleLoadMore = () => {
     if (onLoadMore) {
@@ -92,7 +93,7 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
               {...item}
               size={cardSize}
               mode="grid"
-              onClick={() => (onSelect ? onSelect({ ...item }) : handleSelectArtwork(i))}
+              onClick={() => (onSelect ? onSelect({ ...item }) : handleSelect({ ...item }))}
               onSetFavourite={(currentValue) => handleSetFavourite(item.id, currentValue)}
               isFavourite={favourites.indexOf(+item.id) !== -1}
             />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import GalleryCard, { GalleryCardProps } from "./GalleryCard.tsx";
 import CardList from "./CardList.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
+import { useNavigate } from "react-router-dom";
 
 export interface GalleriesListProps {
   items: GalleryCardProps[];
@@ -11,6 +12,7 @@ export interface GalleriesListProps {
 
 const GalleriesList: React.FC<GalleriesListProps> = ({ items, title, onSelect }) => {
   const data = useData();
+  const navigate = useNavigate();
 
   const [favourites, setFavourites] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +27,6 @@ const GalleriesList: React.FC<GalleriesListProps> = ({ items, title, onSelect })
       document.removeEventListener(FAVOURITES_UPDATED_EVENT, handleFavouritesUpdated);
     };
   }, [data]);
-
   const handleSetFavourite = async (artistId: string, isFavourite: boolean) => {
     if (artistId) {
       setIsLoading(true);
@@ -47,13 +48,23 @@ const GalleriesList: React.FC<GalleriesListProps> = ({ items, title, onSelect })
     }
   };
 
+  const handleSelect = (index: number) => {
+    if (onSelect) {
+      onSelect(index);
+    } else {
+      const item = items[index];
+      navigate(`/gallerie/${item.slug}`);
+    }
+    //
+  };
+
   return (
     <CardList title={title} cardSize="large">
       {items.map((item, i) => (
         <GalleryCard
           key={i}
           {...item}
-          onClick={() => (onSelect ? onSelect(i) : null)}
+          onClick={() => handleSelect(i)}
           isLoading={isLoading}
           onSetFavourite={(currentValue) => handleSetFavourite(item.id.toString(), currentValue)}
           isFavourite={favourites.indexOf(+item.id) !== -1}
