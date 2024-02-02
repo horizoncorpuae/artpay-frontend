@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useData } from "../hoc/DataProvider.tsx";
-import { Box, useTheme } from "@mui/material";
+import { Box, Skeleton, useTheme } from "@mui/material";
 import { artistsToGalleryItems, galleriesToGalleryItems } from "../utils.ts";
 import { ArtistCardProps } from "./ArtistCard.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
@@ -51,17 +51,26 @@ const FavouriteArtists: React.FC<FavouriteArtistsProps> = ({}) => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      {favouriteArtists?.length ? (
-        <ListHeader
-          boxSx={{ maxWidth: theme.breakpoints.values.xl, width: "100%", marginLeft: "auto", marginRight: "auto" }}
-          title="Artisti che segui"
-          subtitle="In questa sezione troverai tutti gli artisti che stai tenendo d’occhio"
-        />
-      ) : (
-        ""
-      )}
-      <ArtistsList items={favouriteArtists} />
       <ListHeader
+        boxSx={{ maxWidth: theme.breakpoints.values.xl, width: "100%", marginLeft: "auto", marginRight: "auto" }}
+        title="Artisti che segui"
+        subtitle="In questa sezione troverai tutti gli artisti che stai tenendo d’occhio"
+      />
+      {favouriteArtists?.length ? (
+        <ArtistsList items={favouriteArtists} />
+      ) : (
+        <Skeleton
+          sx={{ borderRadius: "5px", mx: { xs: 0, md: 6 } }}
+          variant="rectangular"
+          height={430}
+          width={320}
+          animation="pulse"
+        />
+      )}
+      <ListHeader
+        boxSx={{
+          mt: { xs: 3, md: 6 },
+        }}
         title="Gallerie che segui"
         subtitle="In questa sezione troverai tutte le gallerie che stai seguendo"
       />

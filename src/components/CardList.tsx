@@ -9,14 +9,21 @@ export interface CardListProps {
   children?: ReactNode[];
   cardSize?: CardSize;
   showEmpty?: boolean;
+  disablePadding?: boolean;
 }
 
-const CardList: React.FC<CardListProps> = ({ title, children = [], cardSize = "medium", showEmpty = false }) => {
+const CardList: React.FC<CardListProps> = ({
+  title,
+  children = [],
+  cardSize = "medium",
+  showEmpty = false,
+  disablePadding,
+}) => {
   if (!showEmpty && !children?.length) {
     return <></>;
   }
   return (
-    <Box sx={{ px: { xs: 3, md: 6 }, maxWidth: "100%" }}>
+    <Box sx={{ px: disablePadding ? 0 : { xs: 3, md: 6 }, maxWidth: "100%" }}>
       {title && (
         <Typography sx={{ mb: { xs: 3, md: 6 }, typography: { xs: "h4", sm: "h3" } }} variant="h3">
           {title}

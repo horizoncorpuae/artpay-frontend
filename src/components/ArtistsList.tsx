@@ -7,9 +7,10 @@ export interface ArtistsListProps {
   items: ArtistCardProps[];
   title?: string;
   onSelect?: (index: number) => void;
+  disablePadding?: boolean;
 }
 
-const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect }) => {
+const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect, disablePadding }) => {
   const data = useData();
 
   const [favourites, setFavourites] = useState<number[]>([]);
@@ -48,7 +49,7 @@ const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect }) => 
   };
 
   return (
-    <CardList title={title} cardSize="large">
+    <CardList title={title} disablePadding={disablePadding} cardSize="large">
       {items.map((item, i) => (
         <ArtistCard
           key={i}

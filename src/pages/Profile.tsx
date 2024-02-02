@@ -40,7 +40,14 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         mt={14}
         display="flex"
         gap={3}
-        sx={{ px: { xs: 3, md: 6 }, maxWidth: theme.breakpoints.values.xl, marginLeft: "auto", marginRight: "auto" }}
+        sx={{
+          px: { xs: 3, md: 6 },
+          mt: { xs: 10, md: 14 },
+          maxWidth: theme.breakpoints.values.xl,
+          marginLeft: "auto",
+          marginRight: "auto",
+          flexDirection: { xs: "column", md: "row" },
+        }}
         alignItems="center">
         <Box
           sx={{ height: "150px", width: "150px", borderRadius: "5px", backgroundColor: "#D9D9D9", overflow: "hidden" }}>
@@ -50,25 +57,25 @@ const Profile: React.FC<ProfileProps> = ({}) => {
           />
         </Box>
         <Box display="flex" flexDirection="column" gap={1}>
-          <Typography variant="h1" sx={{ mt: { xs: 0, md: -1 } }}>
+          <Typography variant="h1" sx={{ mt: { xs: 0, md: -1 }, typography: { xs: "h3", md: "h1" } }}>
             {profile?.username}
           </Typography>
-          <Typography variant="h6" color="textSecondary">
+          <Typography variant="h6" color="textSecondary" sx={{ textAlign: { xs: "center", md: "left" } }}>
             membro dal {joinYear}
             {country && `, ${country}`}
           </Typography>
         </Box>
-        <Box flexGrow={1}></Box>
+        <Box sx={{ display: { xs: "none", md: "block" } }} flexGrow={1}></Box>
         <Box>
           <Button variant="outlined">Impostazioni profilo</Button>
         </Box>
       </Box>
       <Box
-        mt={6}
         sx={{
           borderBottom: 1,
           borderColor: "secondary",
           mx: { xs: 0 },
+          mt: { xs: 3, md: 6 },
         }}>
         <ResponsiveTabs
           value={selectedTabPanel}

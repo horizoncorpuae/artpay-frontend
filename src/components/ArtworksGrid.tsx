@@ -11,9 +11,17 @@ export interface ArtworksGridProps {
   cardSize?: CardSize;
   onSelect?: (item: CardItem) => void;
   onLoadMore?: () => Promise<void>;
+  disablePadding?: boolean;
 }
 
-const ArtworksGrid: React.FC<ArtworksGridProps> = ({ title, items, cardSize, onSelect, onLoadMore }) => {
+const ArtworksGrid: React.FC<ArtworksGridProps> = ({
+  title,
+  items,
+  cardSize,
+  onSelect,
+  onLoadMore,
+  disablePadding = false,
+}) => {
   const navigate = useNavigate();
   const data = useData();
 
@@ -49,9 +57,9 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({ title, items, cardSize, onS
       }
     }
   };
-
+  console.log("disablePadding", disablePadding);
   return (
-    <Box sx={{ px: { xs: 0, md: 6 }, maxWidth: "100%" }}>
+    <Box sx={{ px: disablePadding ? 0 : { xs: 0, md: 6 }, maxWidth: "100%" }}>
       {title && (
         <Typography sx={{ mb: { xs: 3, md: 6 } }} variant="h3">
           {title}

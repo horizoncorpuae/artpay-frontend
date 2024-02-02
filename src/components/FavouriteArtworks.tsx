@@ -31,7 +31,7 @@ const FavouriteArtworks: React.FC<FavouriteArtworksProps> = ({}) => {
           In questa sezione troverai tutte le tue opere salvate
         </Typography>
       </Box>
-      <ArtworksGrid cardSize="large" items={favouriteArtworks} />
+      <ArtworksGrid disablePadding cardSize="large" items={favouriteArtworks} />
     </Box>
   );
 };

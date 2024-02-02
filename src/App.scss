@@ -77,4 +77,7 @@ body {
     --swiper-pagination-color: #FFF;
     --swiper-pagination-bottom: 0;
   }
+  &.swiper-initialized{
+    margin-left: 0;
+  }
 }
