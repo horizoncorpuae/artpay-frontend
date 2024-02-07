@@ -26,6 +26,7 @@ const CheckoutForm = React.forwardRef<HTMLFormElement, CheckoutFormProps>(({ onR
 
     setIsLoading(true);
 
+    // data.clearCachedPaymentIntent({wc_order_key: ''})
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {

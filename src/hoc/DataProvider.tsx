@@ -91,6 +91,8 @@ export interface DataContext {
 
   createPaymentIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
 
+  clearCachedPaymentIntent(body: PaymentIntentRequest): Promise<void>;
+
   getArtist(id: string): Promise<Artist>;
 
   getArtists(ids: number[]): Promise<Artist[]>;
@@ -149,6 +151,7 @@ const defaultContext: DataContext = {
   updateOrder: () => Promise.reject("Data provider loaded"),
   purchaseArtwork: () => Promise.reject("Data provider loaded"),
   createPaymentIntent: () => Promise.reject("Data provider loaded"),
+  clearCachedPaymentIntent: () => Promise.reject("Data provider loaded"),
   getUserProfile: () => Promise.reject("Data provider loaded"),
   updateUserProfile: () => Promise.reject("Data provider loaded"),
 
@@ -607,6 +610,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       );
       localStorage.setItem(cacheKey, JSON.stringify(resp.data));
       return resp.data;
+    },
+    async clearCachedPaymentIntent(body: PaymentIntentRequest): Promise<void> {
+      const cacheKey = `payment-intents-${body.wc_order_key}`;
+      localStorage.removeItem(cacheKey);
     },
     async getUserProfile(): Promise<UserProfile> {
       const userId = auth.user?.id;
