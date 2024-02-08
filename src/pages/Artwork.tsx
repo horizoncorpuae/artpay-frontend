@@ -279,7 +279,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         </Box>
         <Box display="flex" justifyContent="center">
           <Box
-            sx={{ minHeight: { md: "120px", maxWidth: `${theme.breakpoints.values.xl}px` } }}
+            sx={{ minHeight: { md: "120px", maxWidth: `${theme.breakpoints.values.xl}px` }, width: "100%" }}
             display="flex"
             flexDirection="column"
             justifyContent="center">

@@ -40,6 +40,7 @@ function AppContent() {
                   <Route path="/gallerie/:slug/tutti-gli-artisti" element={<Gallery selectedTab={1} />} />
                   <Route path="/gallerie/:slug/galleria" element={<Gallery selectedTab={2} />} />
                   <Route path="/gallerie/:slug_galleria/opere/:slug_opera" element={<Artwork />} />
+                  <Route path="/opere/:slug_opera" element={<Artwork />} />
                   <Route path="/artworks" element={<Artworks />} />
                   <Route path="/acquisti" element={<Purchase />} />
                   <Route path="/profile" element={<Profile />} />

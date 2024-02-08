@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import DisplayProperty from "./DisplayProperty.tsx";
 
 export interface OrderCardProps {
@@ -21,13 +21,27 @@ const OrderCard: React.FC<OrderCardProps> = ({
   title,
   imgSrc,
 }) => {
+  const theme = useTheme();
+
+  console.log("theme", useMediaQuery(theme.breakpoints.down("sm")));
+
   return (
     <Box
-      sx={{ border: `1px solid #D9D9D9`, borderRadius: "5px", p: 3, flex: "200px 0", height: "100%" }}
+      sx={{
+        border: `1px solid #D9D9D9`,
+        borderRadius: "5px",
+        p: 3,
+        flex: "200px 0",
+        height: "100%",
+        flexDirection: { xs: "column", sm: "row" },
+      }}
       gap={3}
       display="flex">
       <Box>
-        <img style={{ width: "200px", borderRadius: "5px" }} src={imgSrc} />
+        <img
+          style={{ width: useMediaQuery(theme.breakpoints.down("sm")) ? "100%" : "200px", borderRadius: "5px" }}
+          src={imgSrc}
+        />
       </Box>
       <Box display="flex" flexDirection="column">
         <Typography

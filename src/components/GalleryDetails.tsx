@@ -66,7 +66,7 @@ const GalleryDetails: React.FC<GalleryDetailsProps> = ({ gallery }) => {
       }}
       display="flex">
       <DisplayImage src={galleryContent.coverImage} onClick={handleClick} width={320} height={320} />
-      <Box flexGrow={1} px={3} sx={{ mt: { xs: 2, md: 0 } }}>
+      <Box flexGrow={1} px={3} sx={{ mt: { xs: 2, md: 0 }, width: "100%" }}>
         <Box display="flex" flexDirection="row">
           <Box flexGrow={1}>
             <Typography variant="h6">{galleryContent.title}</Typography>
