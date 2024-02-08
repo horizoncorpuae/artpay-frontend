@@ -11,6 +11,8 @@ import { Cta } from "./types/ui.ts";
 import { PromoComponentType, PromoItemProps } from "./components/PromoItem.tsx";
 import { BillingData, User, UserInfo } from "./types/user.ts";
 import { GalleryCardProps } from "./components/GalleryCard.tsx";
+import { Order } from "./types/order.ts";
+import { OrderCardProps } from "./components/OrderCard.tsx";
 
 export const getPropertyFromMetadata = (metadata: MetadataItem[], key: string): { [key: string]: string } => {
   const item = metadata.find((p) => p.key === key);
@@ -87,6 +89,28 @@ export const galleryToGalleryItem = (gallery: Gallery): GalleryCardProps => ({
   imgUrl: gallery.shop.banner,
 });
 
+export const orderToOrderCardProps = (order: Order): OrderCardProps => {
+  const lineItem = order.line_items.length ? order.line_items[0] : undefined;
+  const galleryName = lineItem?.meta_data.find((m) => m.key?.toLowerCase() === "sold by")?.display_value;
+  let datePaid = "";
+  if (order.date_paid) {
+    try {
+      datePaid = new Date(order.date_paid).toLocaleDateString();
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+  return {
+    formattePrice: `€ ${order.total}`,
+    galleryName: galleryName || "",
+    purchaseDate: datePaid,
+    purchaseMode: order.payment_method || "",
+    subtitle: "",
+    title: lineItem?.name || "Opera senza titolo",
+    imgSrc: lineItem?.image?.src || "",
+  };
+};
+
 export const artworksToGalleryItems = (artworks: Artwork[], cardSize?: CardSize): ArtworkCardProps[] => {
   return artworks.map((a) => artworkToGalleryItem(a, cardSize));
 };
@@ -96,6 +120,9 @@ export const artistsToGalleryItems = (artists: Artist[]): ArtistCardProps[] => {
 };
 export const galleriesToGalleryItems = (galleries: Gallery[]): GalleryCardProps[] => {
   return galleries.map((a) => galleryToGalleryItem(a));
+};
+export const ordersToOrderCardProps = (orders: Order[]): OrderCardProps[] => {
+  return orders.map((a) => orderToOrderCardProps(a));
 };
 
 export const getArtworkDimensions = (artwork?: Artwork): string => {

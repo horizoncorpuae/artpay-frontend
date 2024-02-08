@@ -5,9 +5,9 @@ import { Alert, AlertTitle, Box, Button, Grid } from "@mui/material";
 
 type CheckoutFormProps = {
   onReady?: (element: StripePaymentElement) => any;
-  ref?: MutableRefObject<HTMLFormElement | null>;
+  ref?: MutableRefObject<HTMLButtonElement | null>;
 };
-const CheckoutForm = React.forwardRef<HTMLFormElement, CheckoutFormProps>(({ onReady }, ref) => {
+const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(({ onReady }, ref) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -40,17 +40,23 @@ const CheckoutForm = React.forwardRef<HTMLFormElement, CheckoutFormProps>(({ onR
     // your `return_url`. For some payment methods like iDEAL, your customer will
     // be redirected to an intermediate site first to authorize the payment, then
     // redirected to the `return_url`.
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setError(error.message);
-    } else {
-      setError("Si è verificato un errore");
+    switch (error.type) {
+      case "card_error":
+      case "validation_error":
+        setError(error.message);
+        break;
+      case "invalid_request_error":
+        setError(error.message);
+        break;
+      default:
+        setError("Si è verificato un errore");
     }
 
     setIsLoading(false);
   };
 
   return (
-    <form id="checkout-form" ref={ref} onSubmit={handleSubmit}>
+    <form id="checkout-form" onSubmit={handleSubmit}>
       {error && (
         <Alert severity="error" sx={{ width: "100%", my: 2 }}>
           <AlertTitle>Errore</AlertTitle>
@@ -72,11 +78,18 @@ const CheckoutForm = React.forwardRef<HTMLFormElement, CheckoutFormProps>(({ onR
       <Grid container>
         <Grid item></Grid>
       </Grid>
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" my={2}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ height: 0, overflow: "hidden" }}
+        my={2}>
         <Button
           color="primary"
           variant="contained"
           type="submit"
+          ref={ref}
           disabled={isLoading || !stripe || !elements}
           id="submit">
           <span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}</span>

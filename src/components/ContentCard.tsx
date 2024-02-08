@@ -20,8 +20,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
 }) => {
   // const theme = useTheme();
   return (
-    <Paper elevation={1}>
-      <Box display="flex" pb={3} flexDirection="column">
+    <Paper elevation={0} sx={{ border: "1px solid #d8ddfa" }}>
+      <Box display="flex" pb={2} flexDirection="column">
         <Box gap={2} mb={1} p={2} alignItems="center" display="flex">
           {icon}
           <Typography sx={{ flexGrow: 1 }} variant="subtitle1">

@@ -11,6 +11,7 @@ import FavouriteGalleries from "../components/FavouriteGalleries.tsx";
 import ProfileHeader from "../components/ProfileHeader.tsx";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hoc/AuthProvider.tsx";
+import OrdersHistory from "../components/OrdersHistory.tsx";
 
 export interface ProfileProps {}
 
@@ -82,8 +83,12 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         <TabPanel value={selectedTabPanel} index={3}>
           <FavouriteArtists />
         </TabPanel>
-        <TabPanel value={selectedTabPanel} index={4}></TabPanel>
-        <TabPanel value={selectedTabPanel} index={5}></TabPanel>
+        <TabPanel value={selectedTabPanel} index={4}>
+          <OrdersHistory />
+        </TabPanel>
+        <TabPanel value={selectedTabPanel} index={5}>
+          <OrdersHistory orderStates={["processing", "on-hold"]} />
+        </TabPanel>
       </Box>
     </DefaultLayout>
   );

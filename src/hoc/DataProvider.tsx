@@ -14,6 +14,7 @@ import { PromoComponentType } from "../components/PromoItem.tsx";
 import {
   Order,
   OrderCreateRequest,
+  OrderFilters,
   OrderUpdateRequest,
   PaymentIntentRequest,
   ShippingMethodOption,
@@ -79,7 +80,7 @@ export interface DataContext {
 
   getAvailableShippingMethods(): Promise<ShippingMethodOption[]>;
 
-  listPendingOrders(): Promise<Order[]>;
+  listOrders(params?: OrderFilters): Promise<Order[]>;
 
   getPendingOrder(): Promise<Order | null>;
 
@@ -145,7 +146,7 @@ const defaultContext: DataContext = {
   getArtist: () => Promise.reject("Data provider loaded"),
   getArtists: () => Promise.reject("Data provider loaded"),
   getAvailableShippingMethods: () => Promise.reject("Data provider loaded"),
-  listPendingOrders: () => Promise.reject("Data provider loaded"),
+  listOrders: () => Promise.reject("Data provider loaded"),
   getPendingOrder: () => Promise.reject("Data provider loaded"),
   createOrder: () => Promise.reject("Data provider loaded"),
   updateOrder: () => Promise.reject("Data provider loaded"),
@@ -446,10 +447,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data;
     },
     async getGalleries(ids: number[]): Promise<Gallery[]> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(
+      /*const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(
         `${baseUrl}/wp-json/mvx/v1/vendors?include=[${ids.join(",")}]`,
-      );
-      return resp.data;
+      );*/
+      return Promise.all(ids.map((id) => this.getGallery(id.toString())));
     },
     async getGalleryBySlug(slug: string): Promise<Gallery> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(
@@ -521,8 +522,14 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async getAvailableShippingMethods(): Promise<ShippingMethodOption[]> {
       return availableShippingMethods.map((s) => ({ ...s }));
     },
-    async listPendingOrders(): Promise<Order[]> {
-      const resp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders?status=pending`);
+    async listOrders({ status, ...params }: OrderFilters = {}): Promise<Order[]> {
+      const orderParams: OrderFilters = { ...params };
+      if (status) {
+        orderParams.status = Array.isArray(status) ? status.join(",") : (status as string);
+      }
+      const resp = await axios.get<OrderFilters, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
+        params: orderParams,
+      });
       return resp.data;
     },
     async getPendingOrder(): Promise<Order | null> {
@@ -573,21 +580,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         shipping: { ...profile.shipping },
         shipping_lines: [],
       };
-      let resp: AxiosResponse<Order>;
       if (pendingOrder) {
-        pendingOrder.line_items.forEach((item) => {
-          body.line_items.push({
-            id: item.id,
-            product_id: null,
-          });
-        });
-        resp = await axios.put<OrderCreateRequest, AxiosResponse<Order>>(
+        await axios.put<OrderCreateRequest, AxiosResponse<Order>>(
           `${baseUrl}/wp-json/wc/v3/orders/${pendingOrder.id}`,
-          body,
+          { status: "cancelled", set_paid: false, customer_id: customerId, id: pendingOrder.id },
         );
-      } else {
-        resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body);
       }
+      const resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body);
 
       return resp.data;
     },

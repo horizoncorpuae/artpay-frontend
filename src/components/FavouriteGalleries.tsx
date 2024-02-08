@@ -3,7 +3,6 @@ import { useData } from "../hoc/DataProvider.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import { Box } from "@mui/material";
 import { GalleryCardProps } from "./GalleryCard.tsx";
-import { isAxiosError } from "axios";
 import { galleriesToGalleryItems } from "../utils.ts";
 import ListHeader from "./ListHeader.tsx";
 import GalleriesGrid from "./GalleriesGrid.tsx";
@@ -16,16 +15,10 @@ const FavouriteGalleries: React.FC<FavouriteGalleriesProps> = ({}) => {
 
   const [favouriteGalleries, setFavouriteGalleries] = useState<GalleryCardProps[]>([]);
 
-  const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
-    if (isAxiosError(err) && err.response?.data?.message) {
-      text = err.response?.data?.message;
-    }
-    return snackbar.error(text, { autoHideDuration: 60000 });
-  };
-
   useEffect(() => {
     Promise.all([
       data.getFavouriteGalleries().then((ids) => {
+        console.log("getFavouriteGalleries", ids);
         return data.getGalleries(ids).then((resp) => {
           setFavouriteGalleries(galleriesToGalleryItems(resp));
         });
@@ -34,9 +27,9 @@ const FavouriteGalleries: React.FC<FavouriteGalleriesProps> = ({}) => {
       .then(() => {})
       .catch((e) => {
         console.log("error!", e);
-        return showError(e);
+        return snackbar.error(e, { autoHideDuration: 60000 });
       });
-  }, [data, showError]);
+  }, [data, snackbar]);
 
   // <Skeleton variant="rectangular" height={520} width={320} animation="pulse" />
 

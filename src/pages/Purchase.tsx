@@ -34,7 +34,7 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
   const navigate = useNavigate();
   const payments = usePayments();
 
-  const checkoutFormRef = useRef<HTMLFormElement>(null);
+  const checkoutButtonRef = useRef<HTMLButtonElement>(null);
 
   const [isReady, setIsReady] = useState(false);
   const [paymentsReady, setPaymentsReady] = useState(false);
@@ -86,6 +86,9 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
             setArtworks(artworksToGalleryItems(artworks));
             const paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
             setPaymentIntent(paymentIntent);
+          } else {
+            console.log("No orders");
+            //TODO: no orders page
           }
         }),
       ])
@@ -187,9 +190,18 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
     setIsSaving(false);
   };
 
-  const handlePurchase = () => {
-    if (checkoutFormRef?.current) {
-      checkoutFormRef.current.dispatchEvent(new Event("submit"));
+  const handlePurchase = async () => {
+    if (checkoutButtonRef?.current && pendingOrder && userProfile?.shipping) {
+      setIsSaving(true);
+      setCheckoutReady(false);
+      await data.updateOrder(pendingOrder.id, {
+        shipping: { ...userProfile?.shipping },
+        billing:
+          billingDataEnabled && userProfile?.billing ? { ...userProfile?.billing } : { ...userProfile?.shipping },
+      });
+      checkoutButtonRef.current.click();
+      setIsSaving(false);
+      setCheckoutReady(true);
     }
   };
 
@@ -283,7 +295,11 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
               ))}
             </RadioGroup>
           </ContentCard>
-          <ContentCard title="Metodo di pagamento" icon={<PiCreditCardThin size="28px" />}>
+          <ContentCard
+            title="Metodo di pagamento"
+            icon={<PiCreditCardThin size="28px" />}
+            contentPadding={0}
+            contentPaddingMobile={0}>
             {paymentIntent && (
               <Elements
                 stripe={payments.stripe}
@@ -291,19 +307,20 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
                   clientSecret: paymentIntent.client_secret || undefined,
                   loader: "always",
                   appearance: {
-                    theme: "flat",
+                    theme: "stripe",
                     variables: {
                       borderRadius: "24px",
                     },
                     rules: {
                       ".AccordionItem": {
                         border: "none",
-                        paddingLeft: "8px",
+                        paddingLeft: "24px",
+                        paddingRight: "24px",
                       },
                     },
                   },
                 }}>
-                <CheckoutForm ref={checkoutFormRef} onReady={() => setCheckoutReady(true)} />
+                <CheckoutForm ref={checkoutButtonRef} onReady={() => setCheckoutReady(true)} />
               </Elements>
             )}
           </ContentCard>
@@ -337,7 +354,7 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
                 Acquista ora
               </Button>
             </Box>
-            <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: 3, borderColor: "#d8ddfa" }} />
             <Box display="flex" sx={{ px: { xs: 3, md: 5 } }} flexDirection="column" gap={3} mt={3}>
               {pendingOrder?.line_items.map((item, i) => (
                 <Box key={item.id}>

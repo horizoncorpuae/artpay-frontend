@@ -1,6 +1,7 @@
 import { BillingData } from "./user.ts";
 
 export type OrderCreateRequest = {
+  id?: number;
   customer_id: number;
   payment_method?: string;
   payment_method_title?: string;
@@ -230,4 +231,14 @@ export type PaymentIntentResponse = {
   status: string;
   transfer_data: null | string;
   transfer_group: null | string;
+};
+export type OrderStatus = "pending" | "processing" | "on-hold" | "completed" | "cancelled" | "refunded" | "failed";
+export type OrderFilters = {
+  status?: OrderStatus | OrderStatus[] | string;
+  orderby?: string;
+  order?: string;
+  page?: number;
+  per_page?: number;
+  parent?: number;
+  customer?: number;
 };

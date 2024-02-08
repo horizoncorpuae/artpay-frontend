@@ -12,12 +12,14 @@ import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
 import { ArtistCardProps } from "../components/ArtistCard.tsx";
 import ArtistsList from "../components/ArtistsList.tsx";
 import { useNavigate } from "react-router-dom";
+import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
 export interface HomeProps {}
 
 const Home: React.FC<HomeProps> = ({}) => {
   const data = useData();
   const navigate = useNavigate();
+  const snackbar = useSnackbars();
 
   const [featuredArtworks, setFeaturedArtworks] = useState<ArtworkCardProps[]>();
   const [featuredArtists, setFeaturedArtists] = useState<ArtistCardProps[]>();
@@ -43,9 +45,13 @@ const Home: React.FC<HomeProps> = ({}) => {
       data.getHomeContent().then((resp) => setHomeContent(resp)),
       data.listFeaturedArtworks().then((resp) => setFeaturedArtworks(artworksToGalleryItems(resp))),
       data.listFeaturedArtists().then((resp) => setFeaturedArtists(artistsToGalleryItems(resp))),
-    ]).then(() => {
-      setIsReady(true);
-    });
+    ])
+      .then(() => {
+        setIsReady(true);
+      })
+      .catch(async (err) => {
+        await snackbar.error(err, { autoHideDuration: 60000 });
+      });
     /*if (auth.isAuthenticated) {
       data
         .listGalleries()
@@ -59,7 +65,7 @@ const Home: React.FC<HomeProps> = ({}) => {
       auth.login();
     }*/
     // auth, auth.isAuthenticated,
-  }, [data]);
+  }, [data, snackbar]);
 
   return (
     <DefaultLayout pageLoading={!isReady} maxWidth={false}>
