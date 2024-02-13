@@ -55,6 +55,8 @@ export const artworkToOrderLoanItem = (artwork: Artwork): OrderLoanCardProps => 
     title: artwork.name,
     slug: artwork.slug,
     imgUrl: artwork?.images?.length ? artwork.images[0].src : "",
+    artworkSize: getArtworkDimensions(artwork),
+    artworkTechnique: "",
   };
 };
 export const artistToGalleryItem = (artist: Artist): ArtistCardProps => {

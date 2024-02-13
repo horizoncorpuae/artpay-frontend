@@ -4,9 +4,10 @@ import { Box, useMediaQuery, useTheme } from "@mui/material";
 export interface OrderCardProps {
   children?: ReactNode | ReactNode[];
   imgSrc?: string;
+  leftCta?: ReactNode | ReactNode[];
 }
 
-const OrderCard: React.FC<OrderCardProps> = ({ children, imgSrc }) => {
+const OrderCard: React.FC<OrderCardProps> = ({ children, imgSrc, leftCta }) => {
   const theme = useTheme();
 
   return (
@@ -26,6 +27,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ children, imgSrc }) => {
           style={{ width: useMediaQuery(theme.breakpoints.down("sm")) ? "100%" : "200px", borderRadius: "5px" }}
           src={imgSrc}
         />
+        {leftCta}
       </Box>
       <Box display="flex" flexDirection="column">
         {children}

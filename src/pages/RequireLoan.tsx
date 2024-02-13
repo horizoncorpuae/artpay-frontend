@@ -1,39 +1,53 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, Button, Grid, Typography } from "@mui/material";
-import InfoCard from "../components/InfoCard.tsx";
+import { Grid, Typography, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useNavigate, useParams } from "react-router-dom";
-import OrderCard from "../components/OrderCard.tsx";
-import { Artwork } from "../types/artwork.ts";
 import { artworkToOrderLoanItem } from "../utils.ts";
 import OrderLoanCard, { OrderLoanCardProps } from "../components/OrderLoanCard.tsx";
+import { UserProfile } from "../types/user.ts";
+import PurchaseLoanStepOne from "../components/PurchaseLoanStepOne.tsx";
+import PurchaseLoanStepTwo from "../components/PurchaseLoanStepTwo.tsx";
 
-export interface RequireLoanProps {}
+export interface RequireLoanProps {
+  step?: number;
+}
 
-const RequireLoan: React.FC<RequireLoanProps> = ({}) => {
+const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
   const data = useData();
   const urlParams = useParams();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const [ready, setReady] = useState(false);
   const [artwork, setArtwork] = useState<OrderLoanCardProps>();
+  const [profile, setProfile] = useState<UserProfile>();
+
+  const maxWidth = `${theme.breakpoints.values.xl}px`;
+
+  const handleReserveArtwork = () => {};
 
   useEffect(() => {
     if (!urlParams.slug_opera) {
       navigate("/");
       return;
     }
-    console.log("navigate back?", urlParams.slug_opera, !urlParams.slug_opera);
-    data.getArtworkBySlug(urlParams.slug_opera).then((resp) => {
-      setArtwork(artworkToOrderLoanItem(resp));
+    Promise.all([
+      data.getArtworkBySlug(urlParams.slug_opera).then((resp) => {
+        const artworkTechnique = artwork ? data.getCategoryMapValues(resp, "tecnica").join(" ") : "";
+        const artworkForCard = artworkToOrderLoanItem(resp);
+        artworkForCard.artworkTechnique = artworkTechnique;
+        setArtwork(artworkForCard);
+      }),
+      data.getUserProfile().then((resp) => setProfile(resp)),
+    ]).then(() => {
       setReady(true);
     });
   }, [data, navigate, urlParams.slug_opera]);
 
   return (
-    <DefaultLayout pageLoading={!ready}>
-      <Grid mt={16} mb={6} spacing={3} sx={{ px: { xs: 3, md: 6 } }} container>
+    <DefaultLayout pageLoading={!ready} maxWidth={false}>
+      <Grid mt={16} sx={{ px: { xs: 3, md: 6 }, maxWidth: maxWidth, ml: "auto", mr: "auto" }} container>
         <Grid xs={12} sx={{ mb: { xs: 6, md: 12, lg: 18 } }} item>
           <Typography sx={{ mb: { xs: 3, md: 6 } }} variant="h2">
             Richiedi finanziamento
@@ -45,49 +59,19 @@ const RequireLoan: React.FC<RequireLoanProps> = ({}) => {
             consectetur odio est interdum.
           </Typography>
         </Grid>
-        <Grid xs={12} mb={6} item>
-          <Typography sx={{ mb: { xs: 2 } }} variant="h3">
-            Non vuoi farti sfuggire l’opera? Bloccala!
-          </Typography>
-          <Typography variant="subtitle1">
-            Se sei intenzionato a richiedere un finanziamento, ti consigliamo di bloccare l'opera per non fartela
-            scappare!
-          </Typography>
-        </Grid>
-        <Grid xs={12} md={4} item>
-          <InfoCard
-            title="Versa un acconto"
-            subtitle="Questa operazione blocca l'opera e garantisce l'esclusiva sull'acquisto. Alla ricezione dell'acconto Artpay bloccherà l'opera per 7 giorni."
-            imgSrc="/boat.svg"
-          />
-        </Grid>
-        <Grid xs={12} md={4} item>
-          <InfoCard
-            title="Richiedi il finanziamento"
-            subtitle="Normalmente viene erogato in poche ore*."
-            imgSrc="/boat.svg"
-          />
-        </Grid>
-        <Grid xs={12} md={4} item>
-          <InfoCard
-            title="Compra l’opera d’arte"
-            subtitle="Completato l'iter di richiesta e ricevuto il finanziamento, l'acquirente può procedere all'acquisto dell'opera dal sito Artpay"
-            imgSrc="/boat.svg"
-          />
-        </Grid>
-        <Grid xs={12} my={6} p={`0!important`} display="flex" flexDirection="column" alignItems="center" item>
-          <Button variant="contained">Blocca l'opera</Button>
-          <Typography sx={{ mt: 1 }} variant="body2">
-            *L'erogazione del finanziamento dipende dalle garanzie fornite dal richiedente e dai tempi di risposta della
-            finanziaria
-          </Typography>
-        </Grid>
-        <Grid xs={12} sx={{ mt: { xs: 4, md: 12 } }} item />
+      </Grid>
+      {step === 0 ? <PurchaseLoanStepOne onClick={handleReserveArtwork} /> : <PurchaseLoanStepTwo />}
+      <Grid
+        mb={6}
+        sx={{ maxWidth: maxWidth, ml: "auto", mr: "auto", mt: { xs: 4, md: 12 }, px: { xs: 3, md: 6 } }}
+        container>
         <Grid xs={12} md={6} item>
           <Typography variant="h3">Scegli la finanziaria</Typography>
         </Grid>
         <Grid xs={12} md={6} item>
-          {artwork && <OrderLoanCard {...artwork} />}
+          {artwork && (
+            <OrderLoanCard {...artwork} profile={profile} onClick={handleReserveArtwork} showCta={step === 0} />
+          )}
         </Grid>
       </Grid>
     </DefaultLayout>

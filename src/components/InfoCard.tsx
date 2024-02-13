@@ -10,7 +10,7 @@ export interface InfoCardProps {
 const InfoCard: React.FC<InfoCardProps> = ({ title, subtitle, imgSrc }) => {
   const theme = useTheme();
   return (
-    <Box sx={{ minHeight: "496px", background: theme.palette.secondary.light, px: 3, pt: 3 }}>
+    <Box sx={{ minHeight: "496px", height: "100%", background: theme.palette.secondary.light, p: 3 }}>
       <Box sx={{ height: "150px", mb: 6 }}>
         <img style={{ height: "100%" }} src={imgSrc} />
       </Box>

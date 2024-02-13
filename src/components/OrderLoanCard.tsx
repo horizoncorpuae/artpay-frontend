@@ -1,6 +1,7 @@
 import React from "react";
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Button, Link, Typography } from "@mui/material";
 import OrderCard from "./OrderCard.tsx";
+import { UserProfile } from "../types/user.ts";
 
 export interface OrderLoanCardProps {
   id: string;
@@ -9,14 +10,43 @@ export interface OrderLoanCardProps {
   slug: string;
   galleryName: string;
   galleryId: string;
+  artworkSize: string;
+  artworkTechnique?: string;
   isFavourite?: boolean;
   price?: number;
   imgUrl?: string;
+  profile?: UserProfile;
+  onClick?: () => void;
+  showCta?: boolean;
 }
 
-const OrderLoanCard: React.FC<OrderLoanCardProps> = ({ title, artistName, galleryName, price, imgUrl }) => {
+const OrderLoanCard: React.FC<OrderLoanCardProps> = ({
+  title,
+  artistName,
+  galleryName,
+  price,
+  imgUrl,
+  profile,
+  onClick,
+  showCta,
+  artworkSize,
+  artworkTechnique,
+}) => {
+  const cta = (
+    <Box display="flex" flexDirection="column" alignItems="center" mt={2}>
+      <Button sx={{ mb: 2 }} onClick={onClick} variant="outlined">
+        Blocca l'opera
+      </Button>
+      <Typography variant="body1" color="textSecondary">
+        Non sai come funziona?
+      </Typography>
+      <Link href="" color="textSecondary" onClick={() => {}}>
+        Scopri di più!
+      </Link>
+    </Box>
+  );
   return (
-    <OrderCard imgSrc={imgUrl}>
+    <OrderCard imgSrc={imgUrl} leftCta={showCta ? cta : undefined}>
       <Typography sx={{ mb: 1 }} variant="h4">
         {title}
       </Typography>
@@ -24,10 +54,10 @@ const OrderLoanCard: React.FC<OrderLoanCardProps> = ({ title, artistName, galler
         {artistName}
       </Typography>
       <Typography variant="subtitle1" color="textSecondary">
-        Acrylic & ink on paper
+        {artworkTechnique}
       </Typography>
       <Typography variant="subtitle1" color="textSecondary">
-        91,4 x 61 cm
+        {artworkSize}
       </Typography>
       <Typography sx={{ mt: 2 }} variant="h6" fontWeight={600}>
         {galleryName}
@@ -39,7 +69,15 @@ const OrderLoanCard: React.FC<OrderLoanCardProps> = ({ title, artistName, galler
         <Typography variant="h6" color="textSecondary">
           Riepilogo dati personali
         </Typography>
-        <Link href="/profile/settings" color="textSecondary" onClick={() => {}}>
+        <Typography variant="body1">
+          {profile?.first_name} {profile?.last_name}
+        </Typography>
+        <Typography variant="body1">{profile?.email}</Typography>
+        {profile?.billing?.phone && <Typography variant="body1">{profile?.billing?.phone}</Typography>}
+        <Typography variant="body1">
+          {profile?.shipping?.address_1}, {profile?.shipping?.city}
+        </Typography>
+        <Link href="/profile/settings" sx={{ mt: 1 }} color="textSecondary" onClick={() => {}}>
           Modifica dati personali
         </Link>
       </Box>
