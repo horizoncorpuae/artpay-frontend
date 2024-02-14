@@ -44,6 +44,7 @@ function AppContent() {
                   <Route path="/opere/:slug_opera" element={<Artwork />} />
                   <Route path="/artworks" element={<Artworks />} />
                   <Route path="/acquisti" element={<Purchase />} />
+                  <Route path="/accconto-blocca-opera" element={<Purchase orderMode="loan" />} />
                   <Route path="/blocca-opera/:slug_opera" element={<RequireLoan />} />
                   <Route path="/opera-bloccata/:slug_opera" element={<RequireLoan step={1} />} />
                   <Route path="/profile" element={<Profile />} />

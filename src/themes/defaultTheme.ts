@@ -110,9 +110,10 @@ const defaultTheme: Theme = createTheme({
           minWidth: 0,
         },
         sizeLarge: {
-          height: "65px",
+          height: "auto!important",
+          minHeight: "65px",
           minWidth: "160px",
-          borderRadius: "33px",
+          borderRadius: "64px",
           fontSize: "24px",
         },
       },

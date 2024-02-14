@@ -3,11 +3,12 @@ import DefaultLayout from "../components/DefaultLayout.tsx";
 import { Grid, Typography, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useNavigate, useParams } from "react-router-dom";
-import { artworkToOrderLoanItem } from "../utils.ts";
+import { artworkToOrderItem } from "../utils.ts";
 import OrderLoanCard, { OrderLoanCardProps } from "../components/OrderLoanCard.tsx";
 import { UserProfile } from "../types/user.ts";
 import PurchaseLoanStepOne from "../components/PurchaseLoanStepOne.tsx";
 import PurchaseLoanStepTwo from "../components/PurchaseLoanStepTwo.tsx";
+import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
 export interface RequireLoanProps {
   step?: number;
@@ -18,6 +19,7 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
   const urlParams = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
+  const snackbar = useSnackbars();
 
   const [ready, setReady] = useState(false);
   const [artwork, setArtwork] = useState<OrderLoanCardProps>();
@@ -25,7 +27,19 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
 
   const maxWidth = `${theme.breakpoints.values.xl}px`;
 
-  const handleReserveArtwork = () => {};
+  const handleReserveArtwork = () => {
+    if (!artwork?.id) {
+      return;
+    }
+    setReady(false);
+    data
+      .purchaseArtwork(+artwork.id)
+      .then(() => {
+        navigate("/accconto-blocca-opera");
+      })
+      .catch((e) => snackbar.error(e))
+      .finally(() => setReady(true));
+  };
 
   useEffect(() => {
     if (!urlParams.slug_opera) {
@@ -35,7 +49,7 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
     Promise.all([
       data.getArtworkBySlug(urlParams.slug_opera).then((resp) => {
         const artworkTechnique = artwork ? data.getCategoryMapValues(resp, "tecnica").join(" ") : "";
-        const artworkForCard = artworkToOrderLoanItem(resp);
+        const artworkForCard = artworkToOrderItem(resp);
         artworkForCard.artworkTechnique = artworkTechnique;
         setArtwork(artworkForCard);
       }),

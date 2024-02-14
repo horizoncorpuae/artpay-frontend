@@ -90,7 +90,7 @@ export interface DataContext {
 
   updateOrder(orderId: number, body: OrderUpdateRequest): Promise<Order>;
 
-  purchaseArtwork(artworkId: number): Promise<Order>;
+  purchaseArtwork(artworkId: number, loan?: boolean): Promise<Order>;
 
   createPaymentIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
 
@@ -566,7 +566,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       );
       return resp.data;
     },
-    async purchaseArtwork(artworkId: number): Promise<Order> {
+    async purchaseArtwork(artworkId: number, loan = false): Promise<Order> {
       const customerId = auth.user?.id;
       if (!customerId) {
         throw "No customer id";

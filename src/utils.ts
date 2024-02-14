@@ -15,6 +15,9 @@ import { Order } from "./types/order.ts";
 import { OrderHistoryCardProps } from "./components/OrderHistoryCard.tsx";
 import { OrderLoanCardProps } from "./components/OrderLoanCard.tsx";
 
+interface categoryValueMatcher {
+  getCategoryMapValues(artwork: Artwork, key: string): string[];
+}
 export const getPropertyFromMetadata = (metadata: MetadataItem[], key: string): { [key: string]: string } => {
   const item = metadata.find((p) => p.key === key);
   if (!item) {
@@ -31,7 +34,11 @@ export const userToUserInfo = (user: User): UserInfo => {
   };
 };
 
-export const artworkToGalleryItem = (artwork: Artwork, cardSize?: CardSize): ArtworkCardProps => {
+export const artworkToGalleryItem = (
+  artwork: Artwork,
+  cardSize?: CardSize,
+  valueMatcher?: categoryValueMatcher,
+): ArtworkCardProps => {
   return {
     id: artwork.id.toString(),
     artistName: getPropertyFromMetadata(artwork.meta_data, "artist")?.artist_name,
@@ -43,9 +50,12 @@ export const artworkToGalleryItem = (artwork: Artwork, cardSize?: CardSize): Art
     slug: artwork.slug,
     imgUrl: artwork?.images?.length ? artwork.images[0].src : "",
     estimatedShippingCost: artwork?.acf?.estimated_shipping_cost,
+    dimensions: getArtworkDimensions(artwork),
+    technique: valueMatcher?.getCategoryMapValues(artwork, "tecnica").join(" ") || "",
+    year: getPropertyFromMetadata(artwork?.meta_data || [], "anno_di_produzione")?.value,
   };
 };
-export const artworkToOrderLoanItem = (artwork: Artwork): OrderLoanCardProps => {
+export const artworkToOrderItem = (artwork: Artwork, valueMatcher?: categoryValueMatcher): OrderLoanCardProps => {
   return {
     id: artwork.id.toString(),
     artistName: getPropertyFromMetadata(artwork.meta_data, "artist")?.artist_name,
@@ -56,7 +66,7 @@ export const artworkToOrderLoanItem = (artwork: Artwork): OrderLoanCardProps => 
     slug: artwork.slug,
     imgUrl: artwork?.images?.length ? artwork.images[0].src : "",
     artworkSize: getArtworkDimensions(artwork),
-    artworkTechnique: "",
+    artworkTechnique: valueMatcher?.getCategoryMapValues(artwork, "tecnica").join(" ") || "",
   };
 };
 export const artistToGalleryItem = (artist: Artist): ArtistCardProps => {
@@ -128,8 +138,15 @@ export const orderToOrderHistoryCardProps = (order: Order): OrderHistoryCardProp
   };
 };
 
-export const artworksToGalleryItems = (artworks: Artwork[], cardSize?: CardSize): ArtworkCardProps[] => {
-  return artworks.map((a) => artworkToGalleryItem(a, cardSize));
+export const artworkToOrderItems = (artworks: Artwork[], valueMatcher: categoryValueMatcher): OrderLoanCardProps[] => {
+  return artworks.map((a) => artworkToOrderItem(a, valueMatcher));
+};
+export const artworksToGalleryItems = (
+  artworks: Artwork[],
+  cardSize?: CardSize,
+  valueMatcher?: categoryValueMatcher,
+): ArtworkCardProps[] => {
+  return artworks.map((a) => artworkToGalleryItem(a, cardSize, valueMatcher));
 };
 
 export const artistsToGalleryItems = (artists: Artist[]): ArtistCardProps[] => {

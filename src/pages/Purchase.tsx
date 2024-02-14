@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { useData } from "../hoc/DataProvider.tsx";
-import { Box, Button, CircularProgress, Divider, Grid, RadioGroup, Typography, useTheme } from "@mui/material";
+import { Box, Button, CircularProgress, Divider, Grid, RadioGroup, Typography } from "@mui/material";
 import ContentCard from "../components/ContentCard.tsx";
 import UserIcon from "../components/icons/UserIcon.tsx";
 import { Cancel, Edit } from "@mui/icons-material";
@@ -18,22 +18,22 @@ import RadioButton from "../components/RadioButton.tsx";
 import { useNavigate } from "react-router-dom";
 import DisplayImage from "../components/DisplayImage.tsx";
 import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
-import { PiCreditCardThin, PiTruckThin } from "react-icons/pi";
+import { PiTruckThin } from "react-icons/pi";
 import { isAxiosError } from "axios";
-import CheckoutForm from "../components/CheckoutForm.tsx";
-import { Elements } from "@stripe/react-stripe-js";
 import { usePayments } from "../hoc/PaymentProvider.tsx";
 import { PaymentIntent } from "@stripe/stripe-js";
+import PaymentCard from "../components/PaymentCard.tsx";
 
-export interface PurchaseProps {}
+export interface PurchaseProps {
+  orderMode?: "standard" | "loan";
+}
 
-const Purchase: React.FC<PurchaseProps> = ({}) => {
+const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const data = useData();
   const auth = useAuth();
   const snackbar = useSnackbars();
   const navigate = useNavigate();
   const payments = usePayments();
-  const theme = useTheme();
 
   const checkoutButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -45,17 +45,12 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [shippingDataEditing, setShippingDataEditing] = useState(false);
   const [billingDataEnabled, setBillingDataEnabled] = useState(false);
+  const [privacyChecked, setPrivacyChecked] = useState(false);
 
   const [availableShippingMethods, setAvailableShippingMethods] = useState<ShippingMethodOption[]>([]);
   const [pendingOrder, setPendingOrder] = useState<Order>();
   const [paymentIntent, setPaymentIntent] = useState<PaymentIntent>();
   const [artworks, setArtworks] = useState<ArtworkCardProps[]>([]);
-
-  const currentShippingMethod = pendingOrder?.shipping_lines?.length
-    ? pendingOrder.shipping_lines[0].method_id
-    : undefined;
-
-  const estimatedShippingCost = [0, ...artworks.map((a) => +(a.estimatedShippingCost || "0"))].reduce((a, b) => a + b);
 
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
     if (isAxiosError(err) && err.response?.data?.message) {
@@ -86,7 +81,7 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
             const artworks = await Promise.all(
               resp.line_items.map((item) => data.getArtwork(item.product_id.toString())),
             );
-            setArtworks(artworksToGalleryItems(artworks));
+            setArtworks(artworksToGalleryItems(artworks, undefined, data));
             const paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
             setPaymentIntent(paymentIntent);
           } else {
@@ -230,7 +225,14 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
     }
   }
 
+  const currentShippingMethod = pendingOrder?.shipping_lines?.length
+    ? pendingOrder.shipping_lines[0].method_id
+    : undefined;
+  const estimatedShippingCost = [0, ...artworks.map((a) => +(a.estimatedShippingCost || "0"))].reduce((a, b) => a + b);
   const formattedSubtotal = (+(pendingOrder?.total || 0) - +(pendingOrder?.total_tax || 0)).toFixed(2);
+  const thankYouPage =
+    orderMode === "loan" ? `/opera-bloccata/${artworks.length ? artworks[0].slug : ""}` : "/thank-you-page";
+  const checkoutEnabled = checkoutReady && privacyChecked && !isSaving && currentShippingMethod;
 
   const shoppingBagIcon = <ShoppingBagIcon color="#FFFFFF" />;
   // background={theme.palette.secondary.light}
@@ -298,43 +300,12 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
               ))}
             </RadioGroup>
           </ContentCard>
-          <ContentCard
-            title="Metodo di pagamento"
-            icon={<PiCreditCardThin size="28px" />}
-            contentPadding={0}
-            contentPaddingMobile={0}>
-            {paymentIntent && (
-              <Elements
-                stripe={payments.stripe}
-                options={{
-                  clientSecret: paymentIntent.client_secret || undefined,
-                  loader: "always",
-                  appearance: {
-                    theme: "stripe",
-                    variables: {
-                      borderRadius: "24px",
-                    },
-                    rules: {
-                      ".AccordionItem": {
-                        border: "none",
-                        paddingLeft: "24px",
-                        paddingRight: "24px",
-                      },
-                      ".Input:focus": {
-                        boxShadow: "none",
-                        borderColor: theme.palette.primary.main,
-                        borderWidth: "2px",
-                      },
-                      ".Input:hover": {
-                        borderColor: theme.palette.primary.main,
-                      },
-                    },
-                  },
-                }}>
-                <CheckoutForm ref={checkoutButtonRef} onReady={() => setCheckoutReady(true)} />
-              </Elements>
-            )}
-          </ContentCard>
+          <PaymentCard
+            checkoutButtonRef={checkoutButtonRef}
+            onReady={() => setCheckoutReady(true)}
+            paymentIntent={paymentIntent}
+            thankYouPage={thankYouPage}
+          />
         </Grid>
         <Grid item xs={12} md={4} sx={{ mb: { xs: 4, md: 0 } }}>
           <ContentCard
@@ -344,26 +315,52 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
             contentPaddingMobile={0}
             sx={{ position: "sticky", top: "96px" }}>
             <Box display="flex" flexDirection="column" gap={2} sx={{ px: { xs: 3, md: 5 } }}>
-              <Box display="flex" justifyContent="space-between">
-                <Typography variant="body1">Subtotale</Typography>
-                <Typography variant="body1">€ {formattedSubtotal}</Typography>
-              </Box>
-              <Box display="flex" justifyContent="space-between">
-                <Typography variant="body1">IVA</Typography>
-                <Typography variant="body1">€ {pendingOrder?.total_tax}</Typography>
-              </Box>
-              <Box display="flex" justifyContent="space-between">
-                <Typography variant="subtitle1">Totale</Typography>
-                <Typography variant="subtitle1">€ {pendingOrder?.total}</Typography>
-              </Box>
-              <Button
+              {orderMode === "loan" ? (
+                <>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body1">Costo opera</Typography>
+                    <Typography variant="body1">€ {pendingOrder?.total}</Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="subtitle1">Acconto</Typography>
+                    <Typography variant="subtitle1">€ {(+(pendingOrder?.total || 0) * 0.1).toFixed(2)}</Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="subtitle1">Totale</Typography>
+                    <Typography variant="subtitle1">€ {pendingOrder?.total}</Typography>
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body1">Subtotale</Typography>
+                    <Typography variant="body1">€ {formattedSubtotal}</Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body1">IVA</Typography>
+                    <Typography variant="body1">€ {pendingOrder?.total_tax}</Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="subtitle1">Totale</Typography>
+                    <Typography variant="subtitle1">€ {pendingOrder?.total}</Typography>
+                  </Box>
+                </>
+              )}
+              <Checkbox
+                sx={{ my: 1 }}
                 disabled={isSaving || !checkoutReady}
+                checked={privacyChecked}
+                onChange={(e) => setPrivacyChecked(e.target.checked)}
+                label="Accetto le condizioni generali d'acquisto e l'informativa sulla privacy di Artpay."
+              />
+              <Button
+                disabled={!checkoutEnabled}
                 startIcon={checkoutReady ? shoppingBagIcon : <CircularProgress size="20px" />}
                 onClick={handlePurchase}
                 variant="contained"
                 fullWidth
                 size="large">
-                Acquista ora
+                {orderMode === "loan" ? "Procedi al pagamento dell'acconto" : "Acquista ora"}
               </Button>
             </Box>
             <Divider sx={{ my: 3, borderColor: "#d8ddfa" }} />
@@ -371,13 +368,19 @@ const Purchase: React.FC<PurchaseProps> = ({}) => {
               {pendingOrder?.line_items.map((item, i) => (
                 <Box key={item.id}>
                   <DisplayImage src={item.image.src} width="100%" height="230px" />
-                  <Typography variant="body1" color="textSecondary" sx={{ mb: 0, mt: 2 }}>
-                    {artworks[i]?.artistName}
-                  </Typography>
-                  <Typography variant="subtitle1" sx={{ my: 1 }}>
+                  <Typography variant="h6" sx={{ mt: 1 }}>
                     {item.name}
                   </Typography>
+                  <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 1, mt: 0 }}>
+                    {artworks[i]?.artistName}
+                  </Typography>
                   <Typography variant="body1" color="textSecondary">
+                    {artworks[i]?.dimensions}
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary">
+                    {artworks[i]?.technique}
+                  </Typography>
+                  <Typography variant="subtitle1" sx={{ mt: 1 }}>
                     {artworks[i]?.galleryName}
                   </Typography>
                 </Box>
