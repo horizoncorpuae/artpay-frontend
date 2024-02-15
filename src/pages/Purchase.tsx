@@ -71,6 +71,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           if (areBillingFieldsFilled(userProfile.billing)) {
             setBillingDataEnabled(true);
           }
+          if (!areBillingFieldsFilled(userProfile.billing) && orderMode === "loan") {
+            setShippingDataEditing(true);
+          }
         }),
         data.getAvailableShippingMethods().then((resp) => {
           setAvailableShippingMethods(resp);
@@ -232,7 +235,11 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const formattedSubtotal = (+(pendingOrder?.total || 0) - +(pendingOrder?.total_tax || 0)).toFixed(2);
   const thankYouPage =
     orderMode === "loan" ? `/opera-bloccata/${artworks.length ? artworks[0].slug : ""}` : "/thank-you-page";
-  const checkoutEnabled = checkoutReady && privacyChecked && !isSaving && currentShippingMethod;
+  const checkoutEnabled =
+    checkoutReady &&
+    privacyChecked &&
+    !isSaving &&
+    (currentShippingMethod || (orderMode === "loan" && areBillingFieldsFilled(userProfile?.billing)));
 
   const shoppingBagIcon = <ShoppingBagIcon color="#FFFFFF" />;
   // background={theme.palette.secondary.light}
@@ -246,20 +253,24 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 Effettua il login
               </Button>
             )}
-            <Typography variant="h6" sx={{ mb: 1 }} color="textSecondary">
-              Dati di spedizione
-            </Typography>
-            {userProfile &&
-              (shippingDataEditing ? (
-                <UserDataForm
-                  defaultValues={userProfile.shipping}
-                  onSubmit={(formData) => handleProfileDataSubmit(formData, false)}
-                />
-              ) : (
-                <UserDataPreview value={userProfile.shipping} />
-              ))}
-            {userProfile && billingDataEnabled && (
-              <Box mt={4}>
+            {orderMode !== "loan" && (
+              <>
+                <Typography variant="h6" sx={{ mb: 1 }} color="textSecondary">
+                  Dati di spedizione
+                </Typography>
+                {userProfile &&
+                  (shippingDataEditing ? (
+                    <UserDataForm
+                      defaultValues={userProfile.shipping}
+                      onSubmit={(formData) => handleProfileDataSubmit(formData, false)}
+                    />
+                  ) : (
+                    <UserDataPreview value={userProfile.shipping} />
+                  ))}
+              </>
+            )}
+            {userProfile && (billingDataEnabled || orderMode === "loan") && (
+              <Box mt={orderMode === "loan" ? 0 : 4}>
                 <Typography variant="h6" sx={{ mb: 1 }} color="textSecondary">
                   Dati di fatturazione
                 </Typography>
@@ -273,7 +284,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 )}
               </Box>
             )}
-            {userProfile && (
+            {userProfile && orderMode !== "loan" && (
               <Box mt={2}>
                 <Checkbox
                   disabled={!shippingDataEditing}
@@ -284,22 +295,25 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               </Box>
             )}
           </ContentCard>
-          <ContentCard title="Metodo di spedizione" icon={<PiTruckThin size="28px" />}>
-            <RadioGroup defaultValue="selected" name="radio-buttons-group">
-              {availableShippingMethods.map((s) => (
-                <RadioButton
-                  sx={{ mb: 2 }}
-                  key={s.method_id}
-                  value={s.method_id}
-                  disabled={isSaving}
-                  onClick={() => handleSelectShippingMethod(s)}
-                  checked={currentShippingMethod === s.method_id}
-                  label={s.method_title}
-                  description={s.method_description(estimatedShippingCost)}
-                />
-              ))}
-            </RadioGroup>
-          </ContentCard>
+          {orderMode !== "loan" && (
+            <ContentCard title="Metodo di spedizione" icon={<PiTruckThin size="28px" />}>
+              <RadioGroup defaultValue="selected" name="radio-buttons-group">
+                {availableShippingMethods.map((s) => (
+                  <RadioButton
+                    sx={{ mb: 2 }}
+                    key={s.method_id}
+                    value={s.method_id}
+                    disabled={isSaving}
+                    onClick={() => handleSelectShippingMethod(s)}
+                    checked={currentShippingMethod === s.method_id}
+                    label={s.method_title}
+                    description={s.method_description(estimatedShippingCost)}
+                  />
+                ))}
+              </RadioGroup>
+            </ContentCard>
+          )}
+
           <PaymentCard
             checkoutButtonRef={checkoutButtonRef}
             onReady={() => setCheckoutReady(true)}

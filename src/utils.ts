@@ -214,7 +214,10 @@ export const postAndMediaToPromoItem = (
   };
 };
 
-export const areBillingFieldsFilled = (data: BillingData): boolean => {
+export const areBillingFieldsFilled = (data?: BillingData): boolean => {
+  if (!data) {
+    return false;
+  }
   const requiredFields: (keyof BillingData)[] = [
     "first_name",
     "last_name",
