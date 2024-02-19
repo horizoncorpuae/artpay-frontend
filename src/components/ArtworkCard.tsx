@@ -79,7 +79,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: imgMargin, height: "100%" }}>
         <Box display="flex">
-          <Box display="flex" flexDirection="column" flexGrow={1}>
+          <Box display="flex" onClick={onClick} sx={{ cursor: "pointer" }} flexDirection="column" flexGrow={1}>
             <Typography variant="body2" color="textSecondary">
               {artistName || "-"}
             </Typography>

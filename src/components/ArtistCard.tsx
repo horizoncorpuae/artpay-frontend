@@ -55,8 +55,10 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
       <CardContent sx={{ p: 0, mt: 2 }}>
         <Box display="flex">
           <Box display="flex" flexDirection="column" flexGrow={1}>
-            <Typography variant={isMobile ? "subtitle1" : "h6"}>{title}</Typography>
-            <Typography variant="subtitle1" color="textSecondary">
+            <Typography onClick={onClick} sx={{ cursor: "pointer" }} variant={isMobile ? "subtitle1" : "h6"}>
+              {title}
+            </Typography>
+            <Typography onClick={onClick} sx={{ cursor: "pointer" }} variant="subtitle1" color="textSecondary">
               {subtitle}
             </Typography>
           </Box>

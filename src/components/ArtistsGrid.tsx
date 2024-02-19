@@ -9,12 +9,13 @@ export interface ArtistsGridProps {
   items: ArtistCardProps[];
   title?: string;
   subtitle?: string;
+  emptyText?: string;
   cardSize?: CardSize;
   onSelect?: (index: number) => void;
   onLoadMore?: () => Promise<void>;
 }
 
-const ArtistsGrid: React.FC<ArtistsGridProps> = ({ title, subtitle, items, onSelect, onLoadMore }) => {
+const ArtistsGrid: React.FC<ArtistsGridProps> = ({ title, subtitle, emptyText, items, onSelect, onLoadMore }) => {
   const navigate = useNavigate();
   const data = useData();
 
@@ -106,6 +107,11 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({ title, subtitle, items, onSel
             />
           ))}
         </Box>
+        {emptyText && !items.length && (
+          <Box>
+            <Typography variant="subtitle1">{emptyText}</Typography>
+          </Box>
+        )}
         {onLoadMore && (
           <Box display="flex" mt={4} justifyContent="center">
             <Button onClick={handleLoadMore} variant="outlined" color="primary" size="large">

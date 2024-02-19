@@ -94,6 +94,8 @@ export interface DataContext {
 
   createPaymentIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
 
+  createBlockIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
+
   clearCachedPaymentIntent(body: PaymentIntentRequest): Promise<void>;
 
   getArtist(id: string): Promise<Artist>;
@@ -156,6 +158,7 @@ const defaultContext: DataContext = {
   updateOrder: () => Promise.reject("Data provider loaded"),
   purchaseArtwork: () => Promise.reject("Data provider loaded"),
   createPaymentIntent: () => Promise.reject("Data provider loaded"),
+  createBlockIntent: () => Promise.reject("Data provider loaded"),
   clearCachedPaymentIntent: () => Promise.reject("Data provider loaded"),
   getUserInfo: () => Promise.reject("Data provider loaded"),
   getUserProfile: () => Promise.reject("Data provider loaded"),
@@ -613,6 +616,26 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         body,
       );
       localStorage.setItem(cacheKey, JSON.stringify(resp.data));
+      return resp.data;
+    },
+    async createBlockIntent(body: PaymentIntentRequest): Promise<PaymentIntent> {
+      // const cacheKey = `payment-intents-block-${body.wc_order_key}`;
+      /*const cachedItem = localStorage.getItem(cacheKey);
+      if (cachedItem) {
+        try {
+          const paymentIntent: PaymentIntent = JSON.parse(cachedItem);
+          if (isTimestampAfter(paymentIntent.created, 60 * 60)) {
+            return paymentIntent;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }*/
+      const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
+        `${baseUrl}/wp-json/wc/v3/stripe/block_intent`,
+        body,
+      );
+      // localStorage.setItem(cacheKey, JSON.stringify(resp.data));
       return resp.data;
     },
     async clearCachedPaymentIntent(body: PaymentIntentRequest): Promise<void> {

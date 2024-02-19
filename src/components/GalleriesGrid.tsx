@@ -11,10 +11,11 @@ export interface GaleriesGridProps {
   subtitle?: string;
   cardSize?: CardSize;
   onSelect?: (index: number) => void;
+  emptyText?: string;
   onLoadMore?: () => Promise<void>;
 }
 
-const GaleriesGrid: React.FC<GaleriesGridProps> = ({ title, subtitle, items, onSelect }) => {
+const GaleriesGrid: React.FC<GaleriesGridProps> = ({ title, subtitle, emptyText, items, onSelect }) => {
   const navigate = useNavigate();
   const data = useData();
 
@@ -97,6 +98,11 @@ const GaleriesGrid: React.FC<GaleriesGridProps> = ({ title, subtitle, items, onS
             />
           ))}
         </Box>
+        {emptyText && !items.length && (
+          <Box>
+            <Typography variant="subtitle1">{emptyText}</Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );

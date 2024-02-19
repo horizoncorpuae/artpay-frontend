@@ -8,6 +8,7 @@ import { useData } from "../hoc/DataProvider.tsx";
 export interface ArtworksGridProps {
   items: ArtworkCardProps[];
   title?: string;
+  emptyText?: string;
   cardSize?: CardSize;
   onSelect?: (item: CardItem) => void;
   onLoadMore?: () => Promise<void>;
@@ -17,6 +18,7 @@ export interface ArtworksGridProps {
 const ArtworksGrid: React.FC<ArtworksGridProps> = ({
   title,
   items,
+  emptyText,
   cardSize,
   onSelect,
   onLoadMore,
@@ -103,6 +105,11 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
             />
           ))}
         </Box>
+        {emptyText && !items.length && (
+          <Box>
+            <Typography variant="subtitle1">{emptyText}</Typography>
+          </Box>
+        )}
         {onLoadMore && (
           <Box display="flex" mt={4} justifyContent="center">
             <Button onClick={handleLoadMore} variant="outlined" color="primary" size="large">

@@ -85,7 +85,12 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               resp.line_items.map((item) => data.getArtwork(item.product_id.toString())),
             );
             setArtworks(artworksToGalleryItems(artworks, undefined, data));
-            const paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
+            let paymentIntent: PaymentIntent;
+            if (orderMode === "loan") {
+              paymentIntent = await data.createBlockIntent({ wc_order_key: resp.order_key });
+            } else {
+              paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
+            }
             setPaymentIntent(paymentIntent);
           } else {
             console.log("No orders");

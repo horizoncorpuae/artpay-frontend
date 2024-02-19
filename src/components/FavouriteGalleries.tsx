@@ -10,6 +10,8 @@ import Loader from "./Loader.tsx";
 
 export interface FavouriteGalleriesProps {}
 
+const emptyText =
+  'Non ci sono gallerie seguite, clicca sul pulsante "follow" a fianco di ogni galleria per salvare in questa sezione le gallerie che vuoi tenere d\'occhio';
 const FavouriteGalleries: React.FC<FavouriteGalleriesProps> = ({}) => {
   const data = useData();
   const snackbar = useSnackbars();
@@ -42,7 +44,11 @@ const FavouriteGalleries: React.FC<FavouriteGalleriesProps> = ({}) => {
         title="Gallerie che segui"
         subtitle="In questa sezione troverai tutte le gallerie che stai seguendo"
       />
-      {ready ? <GalleriesGrid items={favouriteGalleries} /> : <Loader sx={{ px: { xs: 0, md: 6 } }} />}
+      {ready ? (
+        <GalleriesGrid items={favouriteGalleries} emptyText={emptyText} />
+      ) : (
+        <Loader sx={{ px: { xs: 0, md: 6 } }} />
+      )}
     </Box>
   );
 };

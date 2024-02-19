@@ -64,7 +64,6 @@ const Profile: React.FC<ProfileProps> = ({}) => {
           onChange={(_, newValue) => {
             setSelectedTabPanel(newValue);
           }}>
-          <Tab label="Home" />
           <Tab label="Opere preferite" />
           <Tab label="Gallerie seguite" />
           <Tab label="Artisti seguiti" />
@@ -73,20 +72,19 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         </ResponsiveTabs>
       </Box>
       <Box>
-        <TabPanel value={selectedTabPanel} index={0}></TabPanel>
-        <TabPanel value={selectedTabPanel} index={1}>
+        <TabPanel value={selectedTabPanel} index={0}>
           <FavouriteArtworks />
         </TabPanel>
-        <TabPanel value={selectedTabPanel} index={2}>
+        <TabPanel value={selectedTabPanel} index={1}>
           <FavouriteGalleries />
         </TabPanel>
-        <TabPanel value={selectedTabPanel} index={3}>
+        <TabPanel value={selectedTabPanel} index={2}>
           <FavouriteArtists />
         </TabPanel>
-        <TabPanel value={selectedTabPanel} index={4}>
+        <TabPanel value={selectedTabPanel} index={3}>
           <OrdersHistory />
         </TabPanel>
-        <TabPanel value={selectedTabPanel} index={5}>
+        <TabPanel value={selectedTabPanel} index={4}>
           <OrdersHistory orderStates={["processing", "on-hold"]} />
         </TabPanel>
       </Box>

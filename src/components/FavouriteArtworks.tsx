@@ -8,6 +8,9 @@ import Loader from "./Loader.tsx";
 
 export interface FavouriteArtworksProps {}
 
+const emptyText =
+  "Non ci sono opere preferite, clicca sul cuoricino a fianco di ogni opera per salvare in questa sezione le opere che vuoi tenere d'occhio";
+
 const FavouriteArtworks: React.FC<FavouriteArtworksProps> = ({}) => {
   const theme = useTheme();
   const data = useData();
@@ -34,7 +37,11 @@ const FavouriteArtworks: React.FC<FavouriteArtworksProps> = ({}) => {
           In questa sezione troverai tutte le tue opere salvate
         </Typography>
       </Box>
-      {ready ? <ArtworksGrid disablePadding cardSize="large" items={favouriteArtworks} /> : <Loader />}
+      {ready ? (
+        <ArtworksGrid disablePadding cardSize="large" items={favouriteArtworks} emptyText={emptyText} />
+      ) : (
+        <Loader />
+      )}
     </Box>
   );
 };
