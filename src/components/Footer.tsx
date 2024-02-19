@@ -58,7 +58,7 @@ const Footer: React.FC<FooterProps> = ({}) => {
           </Typography>
           <Box display="flex" flexDirection="column" my={1} gap={1}>
             <Typography variant="body2">
-              <a href="#">Chi siamo</a>
+              <a href="/chi-siamo">Chi siamo</a>
             </Typography>
             <Typography variant="body2">
               <a href="#">Lavora con noi</a>
