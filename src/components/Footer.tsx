@@ -92,7 +92,7 @@ const Footer: React.FC<FooterProps> = ({}) => {
               <a href="#">ArtPay per Banche e Fintech</a>
             </Typography>
             <Typography variant="body2">
-              <a href="#">FAQ</a>
+              <a href="/faq">FAQ</a>
             </Typography>
           </Box>
         </Grid>

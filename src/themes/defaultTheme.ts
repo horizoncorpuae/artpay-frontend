@@ -351,6 +351,35 @@ const defaultTheme: Theme = createTheme({
         },
       },
     },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        expandIconWrapper: {
+          "&.Mui-expanded": {
+            transform: "rotate(225deg)",
+          },
+        },
+        content: {
+          fontSize: "39px",
+          margin: "48px 0",
+          "&.Mui-expanded": {
+            margin: "16px 0",
+          },
+        },
+      },
+    },
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          boxShadow: "none",
+          "&::before": {
+            backgroundColor: "black",
+          },
+          "&.Mui-expanded::before": {
+            opacity: 1,
+          },
+        },
+      },
+    },
   },
 });
 

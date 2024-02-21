@@ -72,7 +72,7 @@ const About: React.FC<AboutProps> = ({}) => {
     px: { xs: 3, md: 6 },
     py: { xs: 6, md: 12 },
     position: "relative",
-    flexDirection: isMobile ? "column-reverse" : undefined,
+    //flexDirection: isMobile ? "column-reverse" : undefined,
   };
 
   return (
@@ -81,9 +81,12 @@ const About: React.FC<AboutProps> = ({}) => {
       {promoContent.map((content, i) => (
         <PromoSide {...content} reverse={i % 2 === 1} key={`promo-side-${i}`} />
       ))}
-      <Grid sx={centeredGridSx} maxWidth="xl" container>
-        <Grid xs={12} sm={4} sx={{ pb: { xs: 3, sm: 0 } }} item>
-          <img style={{ width: imgWidth, maxWidth: "300px" }} src="/logo.svg" />
+      <Grid sx={{ ...centeredGridSx, flexDirection: isMobile ? "column" : undefined }} maxWidth="xl" container>
+        <Grid xs={12} sm={4} sx={{ pb: { xs: 3, sm: 0 }, height: "auto" }} item>
+          <img
+            style={{ width: imgWidth, maxWidth: "300px", minHeight: isMobile ? "70px" : undefined }}
+            src="/logo.svg"
+          />
         </Grid>
         <Grid xs={12} sm={8} item>
           <Typography sx={{ typography: { xs: "h4" }, maxWidth: "860px" }} variant="h3">
@@ -93,7 +96,7 @@ const About: React.FC<AboutProps> = ({}) => {
           </Typography>
         </Grid>
       </Grid>
-      <Grid sx={centeredGridSx} maxWidth="xl" container>
+      <Grid sx={{ ...centeredGridSx, flexDirection: isMobile ? "column-reverse" : undefined }} maxWidth="xl" container>
         <Grid xs={12} sm={8} item>
           <Typography variant="h1" sx={{ fontSize: { xs: "3.5rem", sm: "5rem", md: "7rem", lg: "8rem", xl: "9rem" } }}>
             Tante opere d'arte, facilità di acquisto
@@ -115,9 +118,26 @@ const About: React.FC<AboutProps> = ({}) => {
         {featuredArtworks && <ArtworksList items={featuredArtworks || []} showEmpty />}
       </Grid>
       <Box sx={{ width: "100%", background: theme.palette.primary.light }} mt={6}>
-        <Grid sx={centeredGridSx} maxWidth="xl" container>
-          <Grid xs={12} sm={8} sx={{ display: "flex", flexDirection: "column", justifyContent: "center", pr: 6 }} item>
-            <Typography sx={{ maxWidth: "672px" }} variant="h1">
+        <Grid
+          sx={{
+            ...centeredGridSx,
+            pr: "0!important",
+            pl: { xs: "0!important", sm: "undefined" },
+            pb: { xs: "0!important", sm: "undefined" },
+          }}
+          container>
+          <Grid
+            xs={12}
+            sm={8}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              px: { xs: 3, sm: 0 },
+              pb: { xs: 3, sm: 0 },
+            }}
+            item>
+            <Typography sx={{ maxWidth: "672px", typography: { xs: "h2", sm: "h1" } }} variant="h1">
               Sei una gelleria e vuoi entrare nel circuito artpay?
             </Typography>
             <Typography sx={{ mt: 3 }} variant="h3">
@@ -129,8 +149,12 @@ const About: React.FC<AboutProps> = ({}) => {
               </Button>
             </Box>
           </Grid>
-          <Grid xs={12} sm={4} item>
-            <img src="/image-gallery-about.png" />
+          <Grid
+            xs={12}
+            sm={4}
+            sx={{ textAlign: "right", overflow: "hidden", display: { xs: "flex", sm: undefined } }}
+            item>
+            <img style={{ width: isMobile ? "100%" : undefined }} src="/image-gallery-about.png" />
           </Grid>
         </Grid>
       </Box>

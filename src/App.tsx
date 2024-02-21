@@ -24,6 +24,7 @@ import PaymentProvider from "./hoc/PaymentProvider.tsx";
 import PurchaseComplete from "./pages/PurchaseComplete.tsx";
 import RequireLoan from "./pages/RequireLoan.tsx";
 import About from "./pages/About.tsx";
+import Faq from "./pages/Faq.tsx";
 
 function AppContent() {
   const baseUrl = ""; // https://artpay.art
@@ -52,6 +53,7 @@ function AppContent() {
                   <Route path="/profile/settings" element={<ProfileSettings />} />
                   <Route path="/thank-you-page" element={<PurchaseComplete />} />
                   <Route path="/chi-siamo" element={<About />} />
+                  <Route path="/faq" element={<Faq />} />
                 </Routes>
               </PaymentProvider>
             </DataProvider>
