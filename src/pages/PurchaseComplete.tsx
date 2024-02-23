@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { useStripe } from "@stripe/react-stripe-js";
 import { usePayments } from "../hoc/PaymentProvider.tsx";
@@ -20,7 +20,7 @@ interface BankTransferInstructions {
 }
 interface Message {
   title: string;
-  text: string;
+  text: string | ReactElement;
   cta?: string;
   bankTransferInstructions?: BankTransferInstructions;
   status: "success" | "failure" | "processing" | "requires_action";
@@ -30,6 +30,15 @@ const exampleSuccessMessage = `Bla bla bla grazie per il tuo acquisto, bla bla, 
               pellentesque porta aliquam ipsum aliquam aliquam consectetur dui. Massa diam egestas ultrices diam et eget
               et quis. Enim ipsum praesent venenatis auctor ultrices morbi posuere sit scelerisque. Sit nisl eu sit at
               consectetur odio est interdum.`;
+const bankTransferMessage = (
+  <span>
+    Riportiamo qui sotto gli estremi per effettuare il bonifico, copiali per essere sicuro di non perdere questa
+    informazione. Ti consigliamo di procedere con il pagamento il prima possibile! Comprando infatti con bonifico
+    l'opera è riservata a te per 7 giorni, scaduti i quali l'opera ritorna sul mercato e potrebbe essere acquistata da
+    altri utenti. <br /> Non appena Artpay riceverà la notifica di avvenuto pagamento, la galleria ti contatterà per
+    organizzare la spedizione o il pickup dell'opera in galleria.
+  </span>
+);
 const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
   const auth = useAuth();
   const stripe = useStripe();
@@ -98,8 +107,8 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               });
             } else {
               setMessage({
-                title: "Effettua il bonifico",
-                text: "Per completare il pagamento effettua il bonifico seguendo le indicazioni riportate nel box qui sotto",
+                title: "Grazie per il tuo acquisto!",
+                text: bankTransferMessage,
                 cta: "",
                 status: "requires_action",
                 bankTransferInstructions: {
