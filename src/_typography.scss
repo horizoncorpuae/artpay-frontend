@@ -1,0 +1,57 @@
+$typography-font-family: "intertight";
+$typography: (
+        h1: (font-size: 76px, line-height: 105%, font-weight: 400),
+        h2: (font-size: 61px, line-height: 100%, font-weight: 400),
+        h3: (
+                font-size: 48px,
+                line-height: 120%,
+                font-weight: 400,
+                xs: 40px
+        ),
+        h4: (
+                font-size: 39px,
+                line-height: 110%,
+                font-weight: 400,
+                xs: 36px
+        ),
+        h5: (
+                font-size: 31px,
+                line-height: 120%,
+                font-weight: 400,
+                xs: 25px
+        ),
+        h6: (
+                font-size: 25px,
+                line-height: 115%,
+                font-weight: 400,
+                xs: 20px
+        ),
+        ".subtitle1": (
+                font-size: 20px,
+                line-height: 125%,
+                font-weight: 400,
+                xs: 14px
+        ),
+        p: (font-size: 16px, line-height: 125%, font-weight: 400),
+        ".body2": (font-size: 14px, line-height: 125%, font-weight: 400),
+        ".caption": (font-size: 12px, font-weight: 400)
+);
+
+
+
+@mixin typography() {
+  @each $key, $value in $typography {
+    #{$key} {
+      @each $prop, $val in $value {
+        @if type-of($val) == 'list' {
+          #{$prop}: nth($val, 1);
+          @media only screen and (max-width: 600px) {
+            #{$prop}: map-get($val, xs);
+          }
+        } @else {
+          #{$prop}: $val;
+        }
+      }
+    }
+  }
+}

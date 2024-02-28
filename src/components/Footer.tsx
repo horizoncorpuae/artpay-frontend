@@ -118,13 +118,13 @@ const Footer: React.FC<FooterProps> = ({}) => {
         </Grid>
         <Grid xs={12} md={4} display="flex" gap={2} alignItems="center" item>
           <Typography variant="body2">
-            <a href="#">Privacy Policy</a>
+            <a href="/informativa-sulla-privacy">Privacy Policy</a>
           </Typography>
           <Typography variant="body2">
-            <a href="#">Terms of Use</a>
+            <a href="/termini-e-condizioni">Terms of Use</a>
           </Typography>
           <Typography variant="body2">
-            <a href="#">Cookie Policy</a>
+            <a href="/informativa-e-gestione-dei-cookies">Cookie Policy</a>
           </Typography>
         </Grid>
         <Grid xs={12} md={4} display="flex" sx={{ justifyContent: { xs: "flex-start", md: "flex-end" } }} item>

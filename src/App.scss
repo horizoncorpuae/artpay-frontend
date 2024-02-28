@@ -1,4 +1,5 @@
 @import "_interTight.scss";
+@import "typography";
 
 #root {
 }
@@ -80,4 +81,22 @@ body {
   &.swiper-initialized{
     margin-left: 0;
   }
+}
+
+.styled-page {
+  @include typography();
+  font-family: $typography-font-family;
+  img {
+    max-width: 100%;
+    height: auto;
+    &::before{
+      display: none;
+    }
+  }
+  figure{
+    figcaption{
+      display: none;
+    }
+  }
+  // Additional styling for .styled-page if needed
 }

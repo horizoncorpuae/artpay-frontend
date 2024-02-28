@@ -87,6 +87,13 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
         }}
         justifyContent="center"
         container>
+        {step === 0 ? (
+          <></>
+        ) : (
+          <Grid xs={12}>
+            <PurchaseLoanStepTwo />
+          </Grid>
+        )}
         <Grid xs={12} lg={6} xl={7} sx={{ pr: { xs: 0, lg: 3 }, mb: { xs: 3, lg: 0 } }} item>
           <Typography sx={{ mb: { xs: 3, md: 6 }, typography: { xs: "h3", sm: "h2" } }} variant="h2">
             Richiedi finanziamento
@@ -104,7 +111,7 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
           )}
         </Grid>
       </Grid>
-      {step === 0 ? <PurchaseLoanStepOne onClick={handleReserveArtwork} /> : <PurchaseLoanStepTwo />}
+      {step === 0 ? <PurchaseLoanStepOne onClick={handleReserveArtwork} /> : <></>}
       <Grid
         mb={6}
         sx={{ maxWidth: maxWidth, ml: "auto", mr: "auto", mt: { xs: 4, md: 12 }, px: { xs: 3, md: 6 } }}

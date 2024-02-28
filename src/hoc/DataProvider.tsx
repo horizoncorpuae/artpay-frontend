@@ -54,6 +54,8 @@ export interface DataContext {
 
   getHomeContent(): Promise<HomeContent>;
 
+  getPageBySlug(slug: string): Promise<Post>;
+
   listGalleries(): Promise<Gallery[]>;
 
   getGallery(id: string): Promise<Gallery>;
@@ -136,6 +138,7 @@ export interface DataProviderProps extends React.PropsWithChildren {
 const defaultContext: DataContext = {
   info: () => Promise.reject("Data provider loaded"),
   getHomeContent: () => Promise.reject("Data provider loaded"),
+  getPageBySlug: () => Promise.reject("Data provider loaded"),
   listGalleries: () => Promise.reject("Data provider loaded"),
   getGallery: () => Promise.reject("Data provider loaded"),
   getGalleries: () => Promise.reject("Data provider loaded"),
@@ -431,6 +434,18 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         promoItems: promoItems,
       };
     },
+    async getPageBySlug(slug: string): Promise<Post> {
+      // /wp-json/wp/v2/pages?slug=informativa-e-gestione-dei-cookies
+      const resp = await axios.get<SignInFormData, AxiosResponse<Post[]>>(`/wp-json/wp/v2/pages`, {
+        params: {
+          slug: slug,
+        },
+      });
+      if (resp.data.length === 0) {
+        throw "Pagina non trovata";
+      }
+      return resp.data[0];
+    },
     async getArtwork(id: string): Promise<Artwork> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork>>(`${baseUrl}/wp-json/wc/v3/products/${id}`);
       return resp.data;
@@ -569,7 +584,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       );
       return resp.data;
     },
-    async purchaseArtwork(artworkId: number, loan = false): Promise<Order> {
+    async purchaseArtwork(artworkId: number): Promise<Order> {
+      // , loan = false
       const customerId = auth.user?.id;
       if (!customerId) {
         throw "No customer id";

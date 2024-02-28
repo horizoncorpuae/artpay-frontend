@@ -25,6 +25,7 @@ import PurchaseComplete from "./pages/PurchaseComplete.tsx";
 import RequireLoan from "./pages/RequireLoan.tsx";
 import About from "./pages/About.tsx";
 import Faq from "./pages/Faq.tsx";
+import ContentPage from "./pages/ContentPage.tsx";
 
 function AppContent() {
   const baseUrl = ""; // https://artpay.art
@@ -54,6 +55,19 @@ function AppContent() {
                   <Route path="/thank-you-page" element={<PurchaseComplete />} />
                   <Route path="/chi-siamo" element={<About />} />
                   <Route path="/faq" element={<Faq />} />
+                  <Route
+                    path="/informativa-e-gestione-dei-cookies"
+                    element={<ContentPage slug="informativa-e-gestione-dei-cookies" />}
+                  />
+                  <Route
+                    path="/informativa-sulla-privacy"
+                    element={<ContentPage slug="informativa-e-gestione-dei-cookies" />}
+                  />
+                  <Route path="/termini-e-condizioni" element={<ContentPage slug="termini-e-condizioni" />} />
+                  <Route
+                    path="/condizioni-generali-di-acquisto"
+                    element={<ContentPage slug="condizioni-generali-di-acquisto" />}
+                  />
                 </Routes>
               </PaymentProvider>
             </DataProvider>
