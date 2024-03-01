@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Card, CardContent, CardMedia, IconButton, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Add, Check } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export interface ArtistCardProps {
   id: string;
@@ -17,6 +18,7 @@ export interface ArtistCardProps {
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({
+  id,
   title,
   subtitle,
   isFavourite = false,
@@ -28,6 +30,8 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
   // artworksCount = 0,
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
   const imgHeight = "430px";
   const cardWidth = "320px";
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -38,6 +42,14 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
     }
   };
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/artisti/${id}`);
+    }
+  };
+
   return (
     <Card elevation={0} className="SwiperCard-large" sx={{ minWidth: cardWidth }}>
       <CardMedia
@@ -45,7 +57,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
         image={imgUrl}
         height={isMobile && mode === "grid" ? "auto" : imgHeight}
         className="borderRadius"
-        onClick={onClick}
+        onClick={handleClick}
         sx={{
           objectFit: mode === "list" ? "conver" : "contain",
           minHeight: "100px",

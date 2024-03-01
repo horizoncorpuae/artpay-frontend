@@ -102,6 +102,8 @@ export interface DataContext {
 
   getArtist(id: string): Promise<Artist>;
 
+  getArtistBySlug(slug: string): Promise<Artist>;
+
   getArtists(ids: number[]): Promise<Artist[]>;
 
   getUserInfo(): Promise<User>;
@@ -111,6 +113,8 @@ export interface DataContext {
   updateUserProfile(data: Partial<UserProfile>): Promise<UserProfile>;
 
   getCategoryMapValues(artwork: Artwork, key: string): string[];
+
+  getArtistCategories(artist: Artist): string[];
 
   getFavouriteArtists(): Promise<number[]>;
 
@@ -153,6 +157,7 @@ const defaultContext: DataContext = {
   listFeaturedArtists: () => Promise.reject("Data provider loaded"),
   listArtistsForGallery: () => Promise.reject("Data provider loaded"),
   getArtist: () => Promise.reject("Data provider loaded"),
+  getArtistBySlug: () => Promise.reject("Data provider loaded"),
   getArtists: () => Promise.reject("Data provider loaded"),
   getAvailableShippingMethods: () => Promise.reject("Data provider loaded"),
   listOrders: () => Promise.reject("Data provider loaded"),
@@ -180,13 +185,16 @@ const defaultContext: DataContext = {
   removeFavouriteGallery: () => Promise.reject("Data provider loaded"),
 
   getCategoryMapValues: () => [],
+  getArtistCategories: () => [],
 };
 
 const PostCategoryMapStorageKey = "PostCategoryMap";
+const ArtistCategoryMapStorageKey = "ArtistCategoryMap";
 const CategoryMapStorageKey = "CategoryMap";
 
 const Context = createContext<DataContext>({ ...defaultContext });
 const categoryMap: CategoryMap = {};
+const artistCategoryMap: CategoryMap = {};
 const postCategoryMap: PostCategoryMap = {};
 const favouritesMap: FavouritesMap = {
   galleries: null,
@@ -207,29 +215,30 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
   const auth = useAuth();
 
   useEffect(() => {
-    const loadCategories = async (): Promise<CategoryMap> => {
-      const cachedCategoryMap = localStorage.getItem(CategoryMapStorageKey);
+    const loadCategories = async (storageKey: string, endpoint: string): Promise<CategoryMap> => {
+      const cachedCategoryMap = localStorage.getItem(storageKey);
       if (cachedCategoryMap) {
         try {
-          Object.assign(categoryMap, JSON.parse(cachedCategoryMap || "{}"));
-          return categoryMap;
+          return JSON.parse(cachedCategoryMap || "{}");
         } catch (e) {
-          console.log("postCategoryMap: json parse error", e);
+          console.log("categoryMap: json parse error", e);
         }
       }
 
-      let categoriesResp = await axios.get<SignInFormData, AxiosResponse<Category[]>>(
-        `${baseUrl}/wp-json/wc/v3/products/categories?per_page=100`,
-        { headers: { Authorization: auth.getGuestAuth() } },
-      );
+      const endpointUrl = `${baseUrl}${endpoint}`;
+
+      let categoriesResp = await axios.get<SignInFormData, AxiosResponse<Category[]>>(endpointUrl, {
+        headers: { Authorization: auth.getGuestAuth() },
+        params: { per_page: 100 },
+      });
       const categoriesData = [...categoriesResp.data];
       let page = 1;
       while (categoriesResp.data?.length > 0) {
         page++;
-        categoriesResp = await axios.get<SignInFormData, AxiosResponse<Category[]>>(
-          `${baseUrl}/wp-json/wc/v3/products/categories?per_page=100&page=${page}`,
-          { headers: { Authorization: auth.getGuestAuth() } },
-        );
+        categoriesResp = await axios.get<SignInFormData, AxiosResponse<Category[]>>(endpointUrl, {
+          headers: { Authorization: auth.getGuestAuth() },
+          params: { per_page: 100, page: page },
+        });
         categoriesData.push(...categoriesResp.data);
       }
 
@@ -244,11 +253,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         return categoryGroup;
       });
 
+      const categoryMap: CategoryMap = {};
+
       for (let i = 0; i < categoryGroups.length; i++) {
         const categoryGroup = categoryGroups[i];
         categoryMap[categoryGroup.slug] = { ...categoryGroup };
       }
-      localStorage.setItem(CategoryMapStorageKey, JSON.stringify(categoryMap));
+      localStorage.setItem(storageKey, JSON.stringify(categoryMap));
       return categoryMap;
     };
     const loadPostCategories = async (): Promise<PostCategoryMap> => {
@@ -273,7 +284,15 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return postCategoryMap;
     };
 
-    Promise.all([loadPostCategories(), loadCategories()]).then(() => {
+    Promise.all([
+      loadPostCategories(),
+      loadCategories(CategoryMapStorageKey, "/wp-json/wc/v3/products/categories").then((categoryMapResp) => {
+        Object.assign(categoryMap, categoryMapResp);
+      }),
+      loadCategories(ArtistCategoryMapStorageKey, "/wp-json/wp/v2/categoria_artisti").then((categoryMapResp) => {
+        Object.assign(artistCategoryMap, categoryMapResp);
+      }),
+    ]).then(() => {
       setIsLoading(false);
     });
   }, [auth, baseUrl]);
@@ -453,6 +472,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async getArtworks(ids: number[]): Promise<Artwork[]> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(
         `${baseUrl}/wp-json/wc/v3/products?include=[${ids.join(",")}]`,
+        { headers: { Authorization: auth.getGuestAuth() } },
       );
       return resp.data;
     },
@@ -471,8 +491,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async getGalleries(ids: number[]): Promise<Gallery[]> {
       /*const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(
-        `${baseUrl}/wp-json/mvx/v1/vendors?include=[${ids.join(",")}]`,
-      );*/
+              `${baseUrl}/wp-json/mvx/v1/vendors?include=[${ids.join(",")}]`,
+            );*/
       return Promise.all(ids.map((id) => this.getGallery(id.toString())));
     },
     async getGalleryBySlug(slug: string): Promise<Gallery> {
@@ -534,12 +554,21 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       );
       return resp.data;
     },
+    async getArtistBySlug(artistSlug: string): Promise<Artist> {
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(`${baseUrl}/wp-json/wp/v2/artist`, {
+        params: { slug: artistSlug },
+      });
+      if (resp.data.length === 0) {
+        throw "Pagina non trovata";
+      }
+      return resp.data[0];
+    },
     async getArtists(artistIds: number[]): Promise<Artist[]> {
       //TODO: filtro "include"
       const resp = Promise.all(artistIds.map((id) => this.getArtist(id.toString())));
       /*const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(
-        `${baseUrl}/wp-json/wp/v2/artist?include=[${artistIds.join(",")}]`,
-      );*/
+              `${baseUrl}/wp-json/wp/v2/artist?include=[${artistIds.join(",")}]`,
+            );*/
       return resp;
     },
     async getAvailableShippingMethods(): Promise<ShippingMethodOption[]> {
@@ -637,16 +666,16 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async createBlockIntent(body: PaymentIntentRequest): Promise<PaymentIntent> {
       // const cacheKey = `payment-intents-block-${body.wc_order_key}`;
       /*const cachedItem = localStorage.getItem(cacheKey);
-      if (cachedItem) {
-        try {
-          const paymentIntent: PaymentIntent = JSON.parse(cachedItem);
-          if (isTimestampAfter(paymentIntent.created, 60 * 60)) {
-            return paymentIntent;
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }*/
+            if (cachedItem) {
+              try {
+                const paymentIntent: PaymentIntent = JSON.parse(cachedItem);
+                if (isTimestampAfter(paymentIntent.created, 60 * 60)) {
+                  return paymentIntent;
+                }
+              } catch (e) {
+                console.error(e);
+              }
+            }*/
       const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
         `${baseUrl}/wp-json/wc/v3/stripe/block_intent`,
         body,
@@ -693,6 +722,27 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const childrenIds = categoryGroup.children.map((c) => c.id);
 
       return artwork.categories.filter((c) => childrenIds.indexOf(c.id) !== -1).map((c) => c.name);
+    },
+
+    getArtistCategories(artist: Artist): string[] {
+      const flatArtistCategories: string[] = [];
+      const categoryIds = artist.categoria_artisti;
+      for (const artistCategoryMapKey in artistCategoryMap) {
+        const categoryNames = (artistCategoryMap[artistCategoryMapKey].children || [])
+          .filter((c) => categoryIds.indexOf(c.id) !== -1)
+          .map((c) => c.name);
+        flatArtistCategories.push(...categoryNames);
+      }
+      console.log("artistCategories");
+
+      return flatArtistCategories;
+      /*if (!categoryMap || !categoryMap[key]) {
+              return [];
+            }
+            const categoryGroup = categoryMap[key];
+            const childrenIds = categoryGroup.children.map((c) => c.id);
+      
+            return artist.categoria_artisti.filter((c) => childrenIds.indexOf(c) !== -1).map((c) => c.name);*/
     },
 
     ...favourites,

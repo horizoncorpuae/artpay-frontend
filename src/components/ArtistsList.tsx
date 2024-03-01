@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ArtistCard, { ArtistCardProps } from "./ArtistCard.tsx";
 import CardList from "./CardList.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
+import { useNavigate } from "react-router-dom";
 
 export interface ArtistsListProps {
   items: ArtistCardProps[];
@@ -12,6 +13,7 @@ export interface ArtistsListProps {
 
 const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect, disablePadding }) => {
   const data = useData();
+  const navigate = useNavigate();
 
   const [favourites, setFavourites] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,13 +50,21 @@ const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect, disab
     }
   };
 
+  const handleClick = (i: number) => {
+    if (onSelect) {
+      onSelect(i);
+    } else {
+      navigate(`/artisti/${items[i].id}`);
+    }
+  };
+
   return (
     <CardList title={title} disablePadding={disablePadding} cardSize="large">
       {items.map((item, i) => (
         <ArtistCard
           key={i}
           {...item}
-          onClick={() => (onSelect ? onSelect(i) : null)}
+          onClick={() => handleClick(i)}
           isLoading={isLoading}
           onSetFavourite={(currentValue) => handleSetFavourite(item.id, currentValue)}
           isFavourite={favourites.indexOf(+item.id) !== -1}

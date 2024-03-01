@@ -72,8 +72,16 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({ onSubmit, disab
                 message: "La password deve avere almeno 8 caratteri",
               },
               maxLength: {
-                value: 32,
+                value: 50,
                 message: "La password deve avere massimo 32 caratteri",
+              },
+              validate: {
+                hasLetter: (value) => /[A-Za-z]/.test(value) || "La password deve contenere almeno una lettera",
+                hasNumber: (value) => /\d/.test(value) || "La password deve contenere almeno un numero",
+                hasSymbol: (value) =>
+                  /[!@#%^*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value) || "La password deve contenere almeno un simbolo",
+                noDisallowedChars: (value) =>
+                  !/[\$&#<>]/.test(value) || "La password non deve contenere i caratteri: $, &, #, <, >",
               },
             }}
             render={({ field }) => (

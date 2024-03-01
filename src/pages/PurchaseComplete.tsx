@@ -145,6 +145,8 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
     }
   }, [payments.isReady, stripe]);
 
+  //TODO: pulsanti copia
+
   return (
     <DefaultLayout pageLoading={!ready} minHeight="30vh" authRequired>
       {message && (

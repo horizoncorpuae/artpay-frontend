@@ -26,6 +26,7 @@ import RequireLoan from "./pages/RequireLoan.tsx";
 import About from "./pages/About.tsx";
 import Faq from "./pages/Faq.tsx";
 import ContentPage from "./pages/ContentPage.tsx";
+import Artist from "./pages/Artist.tsx";
 
 function AppContent() {
   const baseUrl = ""; // https://artpay.art
@@ -45,6 +46,7 @@ function AppContent() {
                   <Route path="/gallerie/:slug/galleria" element={<Gallery selectedTab={2} />} />
                   <Route path="/gallerie/:slug_galleria/opere/:slug_opera" element={<Artwork />} />
                   <Route path="/opere/:slug_opera" element={<Artwork />} />
+                  <Route path="/artisti/:id" element={<Artist />} />
                   <Route path="/artworks" element={<Artworks />} />
                   <Route path="/acquisti" element={<Purchase />} />
                   <Route path="/accconto-blocca-opera" element={<Purchase orderMode="loan" />} />

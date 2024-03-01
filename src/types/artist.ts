@@ -32,6 +32,7 @@ export type Artist = {
   author: number;
   featured_media: number;
   template: string;
+  categoria_artisti: number[];
   meta: [];
   artworks?: ArtistArtwork[];
   featured_img?: [string, number, number, boolean];
