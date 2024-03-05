@@ -2,21 +2,21 @@ import React, { useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Grid, FormHelperText } from "@mui/material";
 import countries from "../countries";
-import { BillingData } from "../types/user.ts";
+import { ShippingData } from "../types/user.ts";
 
 export interface UserDataFormProps {
-  defaultValues?: BillingData;
-  onSubmit?: (formData: BillingData) => Promise<void>;
+  defaultValues?: ShippingData;
+  onSubmit?: (formData: ShippingData) => Promise<void>;
   showEmail?: boolean;
   disabled?: boolean;
 }
 
-const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit, showEmail, disabled = false }) => {
+const ShippingDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit, showEmail, disabled = false }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<BillingData>({
+  } = useForm<ShippingData>({
     defaultValues: {
       ...defaultValues,
       country: defaultValues?.country || "IT",
@@ -24,7 +24,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit, sh
   });
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleFormSubmit: SubmitHandler<BillingData> = (data) => {
+  const handleFormSubmit: SubmitHandler<ShippingData> = (data) => {
     if (onSubmit) {
       setIsSaving(true);
       onSubmit(data).then(() => {
@@ -278,4 +278,4 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ defaultValues, onSubmit, sh
   );
 };
 
-export default UserDataForm;
+export default ShippingDataForm;

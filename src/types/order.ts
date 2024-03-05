@@ -1,4 +1,4 @@
-import { BillingData } from "./user.ts";
+import { BillingData, ShippingData } from "./user.ts";
 import { ReactNode } from "react";
 
 export type OrderCreateRequest = {
@@ -7,7 +7,7 @@ export type OrderCreateRequest = {
   payment_method?: string;
   payment_method_title?: string;
   set_paid: boolean;
-  shipping: BillingData;
+  shipping: ShippingData;
   billing?: BillingData;
   shipping_lines?: ShippingLineUpdateRequest[];
   line_items: LineItemRequest[];
@@ -18,7 +18,7 @@ export type OrderUpdateRequest = {
   payment_method?: string;
   payment_method_title?: string;
   billing?: BillingData;
-  shipping?: BillingData;
+  shipping?: ShippingData;
   shipping_lines?: ShippingLineUpdateRequest[];
   line_items?: LineItemRequest[];
 };

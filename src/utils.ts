@@ -9,7 +9,7 @@ import { Media } from "./types/media.ts";
 import { HeroSlideItem } from "./components/HeroSlide.tsx";
 import { Cta } from "./types/ui.ts";
 import { PromoComponentType, PromoItemProps } from "./components/PromoItem.tsx";
-import { BillingData, User, UserInfo } from "./types/user.ts";
+import { BaseUserData, User, UserInfo } from "./types/user.ts";
 import { GalleryCardProps } from "./components/GalleryCard.tsx";
 import { Order } from "./types/order.ts";
 import { OrderHistoryCardProps } from "./components/OrderHistoryCard.tsx";
@@ -214,11 +214,11 @@ export const postAndMediaToPromoItem = (
   };
 };
 
-export const areBillingFieldsFilled = (data?: BillingData): boolean => {
+export const areBillingFieldsFilled = (data?: BaseUserData): boolean => {
   if (!data) {
     return false;
   }
-  const requiredFields: (keyof BillingData)[] = [
+  const requiredFields: (keyof BaseUserData)[] = [
     "first_name",
     "last_name",
     "address_1",

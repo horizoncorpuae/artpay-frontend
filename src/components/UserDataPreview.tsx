@@ -1,10 +1,10 @@
 import React from "react";
-import { BillingData } from "../types/user.ts";
+import { ShippingData } from "../types/user.ts";
 import { Box, Typography } from "@mui/material";
 import countries from "../countries.ts";
 
 export interface UserDataPreviewProps {
-  value?: BillingData;
+  value?: ShippingData;
 }
 
 const UserDataPreview: React.FC<UserDataPreviewProps> = ({ value }) => {

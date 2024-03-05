@@ -4,7 +4,7 @@ import { BillingData, User, UserProfile } from "../types/user.ts";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import ProfileHeader from "../components/ProfileHeader.tsx";
 import { Box, Button, Typography, useTheme } from "@mui/material";
-import UserDataForm from "../components/UserDataForm.tsx";
+import ShippingDataForm from "../components/ShippingDataForm.tsx";
 import { isAxiosError } from "axios";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import Checkbox from "../components/Checkbox.tsx";
@@ -152,7 +152,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
         <Typography variant="h5" sx={{ mb: 2 }}>
           Dati di spedizione
         </Typography>
-        <UserDataForm
+        <ShippingDataForm
           defaultValues={profile?.shipping}
           onSubmit={(formData) => handleProfileDataSubmit(formData, false)}
           disabled={isSaving}
@@ -171,7 +171,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
           <Typography variant="h5" sx={{ mb: 2 }}>
             Dati di fatturazione
           </Typography>
-          <UserDataForm
+          <ShippingDataForm
             defaultValues={profile?.billing}
             disabled={isSaving}
             onSubmit={(formData) => handleProfileDataSubmit(formData, true)}

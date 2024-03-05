@@ -5,8 +5,8 @@ import { Box, Button, CircularProgress, Divider, Grid, RadioGroup, Typography } 
 import ContentCard from "../components/ContentCard.tsx";
 import UserIcon from "../components/icons/UserIcon.tsx";
 import { Cancel, Edit } from "@mui/icons-material";
-import UserDataForm from "../components/UserDataForm.tsx";
-import { BillingData, UserProfile } from "../types/user.ts";
+import ShippingDataForm from "../components/ShippingDataForm.tsx";
+import { BillingData, ShippingData, UserProfile } from "../types/user.ts";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import { areBillingFieldsFilled, artworksToGalleryItems } from "../utils.ts";
 import UserDataPreview from "../components/UserDataPreview.tsx";
@@ -23,6 +23,7 @@ import { isAxiosError } from "axios";
 import { usePayments } from "../hoc/PaymentProvider.tsx";
 import { PaymentIntent } from "@stripe/stripe-js";
 import PaymentCard from "../components/PaymentCard.tsx";
+import BillingDataForm from "../components/BillingDataForm.tsx";
 
 export interface PurchaseProps {
   orderMode?: "standard" | "loan";
@@ -44,7 +45,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [shippingDataEditing, setShippingDataEditing] = useState(false);
-  const [billingDataEnabled, setBillingDataEnabled] = useState(false);
+  const [requireInvoice, setRequireInvoice] = useState(false);
   const [privacyChecked, setPrivacyChecked] = useState(false);
 
   const [availableShippingMethods, setAvailableShippingMethods] = useState<ShippingMethodOption[]>([]);
@@ -68,8 +69,8 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           userProfile.billing.email = userProfile.billing.email || userProfile.email || "";
           setShippingDataEditing(!areBillingFieldsFilled(userProfile.shipping));
           setUserProfile(userProfile);
-          if (areBillingFieldsFilled(userProfile.billing)) {
-            setBillingDataEnabled(true);
+          if (userProfile?.billing?.same_as_shipping !== "true") {
+            setRequireInvoice(true);
           }
           if (!areBillingFieldsFilled(userProfile.billing) && orderMode === "loan") {
             setShippingDataEditing(true);
@@ -82,7 +83,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           if (resp) {
             setPendingOrder(resp);
             const artworks = await Promise.all(
-              resp.line_items.map((item) => data.getArtwork(item.product_id.toString())),
+              resp.line_items.map((item) => data.getArtwork(item.product_id.toString()))
             );
             setArtworks(artworksToGalleryItems(artworks, undefined, data));
             let paymentIntent: PaymentIntent;
@@ -96,7 +97,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             console.log("No orders");
             //TODO: no orders page
           }
-        }),
+        })
       ])
         .then(() => {
           setIsReady(true);
@@ -117,38 +118,24 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     }
   }, [payments.isReady]);
 
-  const handleEnableBillingData = () => {
+  const handleRequireInvoice = (newVal: boolean) => {
     if (!userProfile) {
       return;
     }
-    if (billingDataEnabled) {
-      setIsSaving(true);
-      setBillingDataEnabled(false);
-      data
-        .updateUserProfile({
-          billing: {
-            address_1: "",
-            address_2: "",
-            city: "",
-            company: "",
-            country: "",
-            first_name: "",
-            last_name: "",
-            phone: "",
-            postcode: "",
-            state: "",
-          },
-        })
-        .then(() => {
-          setIsSaving(false);
-        });
-    } else {
-      setUserProfile({ ...userProfile, billing: { ...userProfile.shipping } });
-      setBillingDataEnabled(true);
-    }
+    setIsSaving(true);
+    console.log('handleRequireInvoice', requireInvoice, newVal)
+    data.updateUserProfile({
+        billing: {
+          same_as_shipping: newVal ? "false" : "true"
+        }
+      })
+      .then((resp) => {
+        setIsSaving(false);
+        setRequireInvoice(resp.billing?.same_as_shipping !== "true");
+      });
   };
 
-  const handleProfileDataSubmit = async (formData: BillingData, isBilling = false) => {
+  const handleProfileDataSubmit = async (formData: BillingData|ShippingData, isBilling = false) => {
     if (!userProfile?.id) {
       return;
     }
@@ -156,7 +143,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       setIsSaving(true);
       let updatedProfile: UserProfile;
       if (isBilling) {
-        updatedProfile = await data.updateUserProfile({ billing: formData });
+        updatedProfile = await data.updateUserProfile({ billing: formData as BillingData });
       } else {
         updatedProfile = await data.updateUserProfile({ shipping: formData });
       }
@@ -180,7 +167,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     const updatedShippingLine: ShippingLineUpdateRequest = {
       instance_id: selectedShippingMethod.instance_id.toString(),
       method_id: selectedShippingMethod.method_id,
-      method_title: selectedShippingMethod.method_title,
+      method_title: selectedShippingMethod.method_title
     };
     if (existingShippingLine) {
       updatedShippingLine.id = existingShippingLine.id;
@@ -203,7 +190,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       await data.updateOrder(pendingOrder.id, {
         shipping: { ...userProfile?.shipping },
         billing:
-          billingDataEnabled && userProfile?.billing ? { ...userProfile?.billing } : { ...userProfile?.shipping },
+          requireInvoice && userProfile?.billing ? { ...userProfile?.billing } : { ...userProfile?.shipping }
       });
       checkoutButtonRef.current.click();
       setIsSaving(false);
@@ -222,13 +209,13 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           onClick={() => setShippingDataEditing(false)}
           startIcon={<Cancel />}>
           Annulla
-        </Button>,
+        </Button>
       );
     } else {
       contactHeaderButtons.push(
         <Button key="edit-btn" disabled={isSaving} onClick={() => setShippingDataEditing(true)} startIcon={<Edit />}>
           Modifica
-        </Button>,
+        </Button>
       );
     }
   }
@@ -250,8 +237,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
   const shippingPrice = currentShippingMethod === "local_pickup" ? 0 : estimatedShippingCost || 0;
 
-  console.log("currentShippingMethod", currentShippingMethod);
-  // background={theme.palette.secondary.light}
   return (
     <DefaultLayout pageLoading={!isReady || !paymentsReady} pb={6}>
       <Grid mt={16} spacing={3} px={3} container>
@@ -269,7 +254,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 </Typography>
                 {userProfile &&
                   (shippingDataEditing ? (
-                    <UserDataForm
+                    <ShippingDataForm
                       defaultValues={userProfile.shipping}
                       onSubmit={(formData) => handleProfileDataSubmit(formData, false)}
                     />
@@ -278,13 +263,13 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                   ))}
               </>
             )}
-            {userProfile && (billingDataEnabled || orderMode === "loan") && (
+            {userProfile && (requireInvoice || orderMode === "loan") && (
               <Box pt={orderMode === "loan" ? 0 : 3}>
                 <Typography variant="h6" sx={{ mb: 1 }} color="textSecondary">
                   Dati di fatturazione
                 </Typography>
                 {shippingDataEditing ? (
-                  <UserDataForm
+                  <BillingDataForm
                     defaultValues={userProfile.billing}
                     onSubmit={(formData) => handleProfileDataSubmit(formData, true)}
                   />
@@ -297,9 +282,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               <Box mt={2}>
                 <Checkbox
                   disabled={!shippingDataEditing}
-                  checked={!billingDataEnabled}
-                  onClick={handleEnableBillingData}
-                  label="I dati di fatturazione coincidono con quelli di spedizione"
+                  checked={requireInvoice}
+                  onClick={() => handleRequireInvoice(!requireInvoice)}
+                  label="Richiedi fattura"
                 />
               </Box>
             )}

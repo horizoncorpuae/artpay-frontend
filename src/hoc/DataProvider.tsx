@@ -20,7 +20,7 @@ import {
   ShippingMethodOption,
 } from "../types/order.ts";
 import { PaymentIntent } from "@stripe/stripe-js";
-import { User, UserProfile } from "../types/user.ts";
+import { BillingData, UpdateUserProfile, User, UserProfile } from "../types/user.ts";
 
 export interface ArtworksFilter {
   featured?: boolean;
@@ -110,7 +110,7 @@ export interface DataContext {
 
   getUserProfile(): Promise<UserProfile>;
 
-  updateUserProfile(data: Partial<UserProfile>): Promise<UserProfile>;
+  updateUserProfile(data: Partial<UpdateUserProfile>): Promise<UserProfile>;
 
   subscribeNewsletter(email: string, optIn: string, formUrl: string): Promise<void>;
 
@@ -705,10 +705,23 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const resp = await axios.get<unknown, AxiosResponse<UserProfile>>(`${baseUrl}/wp-json/wc/v3/customers/${userId}`);
       return resp.data;
     },
-    async updateUserProfile(body: Partial<UserProfile>): Promise<UserProfile> {
+    async updateUserProfile(body: Partial<UpdateUserProfile>): Promise<UserProfile> {
       const userId = auth.user?.id;
       if (!userId) {
         throw "Not authenticated";
+      }
+      const billingMetadataProps: (keyof BillingData)[] = ["cf", "invoice_type", "PEC", "private_customer", "same_as_shipping"];
+      if (body?.billing) {
+        billingMetadataProps.forEach((prop) => {
+          if (!body.billing) {
+            return
+          }
+          const propValue: string|undefined = body.billing[prop]
+          if (typeof propValue !== "undefined") {
+            body.meta_data = body.meta_data || [];
+            body.meta_data.push({ key: `billing_${prop}`, value: propValue });
+          }
+        })
       }
       body.id = userId;
       const resp = await axios.put<Partial<UserProfile>, AxiosResponse<UserProfile>>(

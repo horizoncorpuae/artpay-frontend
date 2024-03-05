@@ -68,7 +68,7 @@ export type User = {
   };
 };
 
-export type BillingData = {
+export interface BaseUserData {
   first_name: string;
   last_name: string;
   company?: string;
@@ -80,8 +80,19 @@ export type BillingData = {
   state: string;
   phone: string;
   email?: string;
-  //birth_date?: Date | null;
-};
+}
+export interface ShippingData extends BaseUserData{
+
+}
+
+export interface BillingData extends BaseUserData {
+  cf?: string;
+  invoice_type?: string;
+  PEC?: string;
+  private_customer?: string;
+  same_as_shipping?: string;
+}
+/*	""*/
 
 export type UserProfile = {
   id: number;
@@ -95,9 +106,10 @@ export type UserProfile = {
   role: string;
   username: string;
   billing: BillingData;
-  shipping: BillingData;
+  shipping: ShippingData;
   is_paying_customer: boolean;
   avatar_url: string;
+  meta_data?: {key: string, value: string}[];
   _links: {
     self: {
       href: string;
@@ -107,3 +119,15 @@ export type UserProfile = {
     }[];
   };
 };
+export interface UpdateUserProfile {
+  id?: number;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+  billing?: Partial<BillingData>;
+  shipping?: Partial<ShippingData>;
+  is_paying_customer?: boolean;
+  avatar_url?: string;
+  meta_data?: {key: string, value: string}[];
+}
