@@ -1,11 +1,9 @@
 import React from "react";
-import { Box, Button, Divider, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Divider, Grid, IconButton, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { FaPaypal, FaCcVisa, FaCcMastercard } from "react-icons/fa";
-import TextField from "./TextField.tsx";
 import { ArrowUpward } from "@mui/icons-material";
 import SocialLinks from "./SocialLinks.tsx";
-import NewsletterSmallBrevo from "./NewsletterSmallBrevo.tsx";
 import NewsletterSmall from "./NewsletterSmall.tsx";
 
 export interface FooterProps {}
@@ -111,7 +109,6 @@ const Footer: React.FC<FooterProps> = ({}) => {
             </Typography>
           </Box>
         </Grid>*/}
-        <NewsletterSmallBrevo />
         <NewsletterSmall />
       </Grid>
       <Divider sx={{ width: "100%", borderColor: "white", pt: 4 }} />

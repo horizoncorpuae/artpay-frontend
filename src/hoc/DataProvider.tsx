@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Gallery } from "../types/gallery.ts";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, isAxiosError } from "axios";
 import { SignInFormData } from "../components/SignInForm.tsx";
 import { Artwork } from "../types/artwork.ts";
 import { Artist } from "../types/artist.ts";
@@ -722,7 +722,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const formData = new FormData();
       formData.append("EMAIL", email);
       formData.append("OPT_IN", optIn);
-      await axios.post<FormData, AxiosResponse<unknown>>(formUrl, formData);
+      await axios.post<FormData, AxiosResponse<unknown>>(formUrl, formData, {headers:  {Authorization: undefined}}).catch((err) => {
+        if (isAxiosError(err) && err.code === "ERR_NETWORK") {
+          return
+        } else {
+          throw err
+        }
+      });
     },
 
     getCategoryMapValues(artwork: Artwork, key: string): string[] {

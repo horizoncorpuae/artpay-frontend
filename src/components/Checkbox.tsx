@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   FormControlLabel,
   Checkbox as BaseCheckbox,
@@ -9,7 +9,7 @@ import {
 import CheckboxIcon from "./icons/CheckboxIcon.tsx";
 
 export interface ExtendedCheckboxProps {
-  label: string;
+  label: string|ReactNode;
   checkboxSx?: SxProps<Theme>;
   alignTop?: boolean;
   error?: boolean;
