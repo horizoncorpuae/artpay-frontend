@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useData } from "../hoc/DataProvider.tsx";
-import { BillingData, User, UserProfile } from "../types/user.ts";
+import { BillingData, UserProfile } from "../types/user.ts";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import ProfileHeader from "../components/ProfileHeader.tsx";
 import { Box, Button, Typography, useTheme } from "@mui/material";
@@ -11,6 +11,7 @@ import Checkbox from "../components/Checkbox.tsx";
 import PasswordChangeForm, { PasswordChangeFormData } from "../components/PasswordChangeForm.tsx";
 import PersonalDataForm, { PersonalDataFormData } from "../components/PersonalDataForm.tsx";
 import AvatarSelector from "../components/AvatarSelector.tsx";
+import BillingDataForm from "../components/BillingDataForm.tsx";
 
 export interface ProfileSettingsProps {}
 
@@ -22,8 +23,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
   const [isReady, setIsReady] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState<UserProfile>();
-  const [userInfo, setUserInfo] = useState<User>();
-  const [billingDataEnabled, setBillingDataEnabled] = useState(false);
+  const [requireInvoice, setRequireInvoice] = useState(false);
 
   const personalDataDefaultValues: PersonalDataFormData = {
     first_name: profile?.first_name || "",
@@ -57,36 +57,22 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
     setIsSaving(false);
   };
 
-  const handleEnableBillingData = () => {
+  const handleRequireInvoice = (newVal: boolean) => {
     if (!profile) {
       return;
     }
-    // userInfo?.acf.same_shipping_billing_address
-    if (billingDataEnabled) {
-      setIsSaving(true);
-      setBillingDataEnabled(false);
-      data
-        .updateUserProfile({
-          billing: {
-            address_1: "",
-            address_2: "",
-            city: "",
-            company: "",
-            country: "",
-            first_name: "",
-            last_name: "",
-            phone: "",
-            postcode: "",
-            state: "",
-          },
-        })
-        .then(() => {
-          setIsSaving(false);
-        });
-    } else {
-      setProfile({ ...profile, billing: { ...profile.shipping } });
-      setBillingDataEnabled(true);
-    }
+    setIsSaving(true);
+    console.log('handleRequireInvoice', requireInvoice, newVal)
+    data.updateUserProfile({
+      billing: {
+        invoice_type: newVal ? "receipt" : ""
+      }
+    })
+      .then((resp) => {
+        setIsSaving(false);
+        console.log('resp.billing?.invoice_type', resp.billing?.invoice_type)
+        setRequireInvoice(resp.billing?.invoice_type !== "");
+      });
   };
 
   const handlePersonalDataSubmit = async (formData: PersonalDataFormData) => {
@@ -121,11 +107,9 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
 
   useEffect(() => {
     Promise.all([
-      data.getUserInfo().then((resp) => {
-        setUserInfo(resp);
-      }),
       data.getUserProfile().then((resp) => {
         setProfile(resp);
+        setRequireInvoice(resp.billing?.invoice_type !== "")
       }),
     ]).then(() => {
       setIsReady(true);
@@ -160,19 +144,20 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
         <Box mt={2}>
           <Checkbox
             disabled={isSaving}
-            checked={userInfo?.acf.same_shipping_billing_address || false}
-            onClick={handleEnableBillingData}
-            label="I dati di fatturazione coincidono con quelli di spedizione"
+            checked={requireInvoice}
+            onChange={(_e, checked) => handleRequireInvoice(checked)}
+            label="Inserisci dati per la richiesta fattura"
           />
         </Box>
       </Box>
-      {billingDataEnabled && (
+      {requireInvoice && (
         <Box px={6} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
           <Typography variant="h5" sx={{ mb: 2 }}>
             Dati di fatturazione
           </Typography>
-          <ShippingDataForm
+          <BillingDataForm
             defaultValues={profile?.billing}
+            shippingData={profile?.shipping}
             disabled={isSaving}
             onSubmit={(formData) => handleProfileDataSubmit(formData, true)}
           />
@@ -190,7 +175,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
         </Typography>
         <Checkbox
           disabled={isSaving}
-          checked={!billingDataEnabled}
+          checked={!requireInvoice}
           onClick={() => {}}
           label="Sei iscrittə alla newsletter di artpay"
         />
