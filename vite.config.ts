@@ -9,8 +9,8 @@ export default defineConfig({
   resolve: {
     alias: {
       // @ts-expect-error __dirname
-      "@": path.resolve(__dirname, "src"),
-    },
+      "@": path.resolve(__dirname, "src")
+    }
   },
   server: {
     proxy: {
@@ -21,8 +21,8 @@ export default defineConfig({
         ws: true,
         rewrite: (path) => {
           return path;
-        },
-      },
-    },
-  },
+        }
+      }
+    }
+  }
 });

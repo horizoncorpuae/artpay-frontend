@@ -339,7 +339,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async addFavouriteArtist(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/addUserFavoriteArtist/${id}`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/addUserFavoriteArtist/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
       );
       favouritesMap.artists = resp.data || favouritesMap.artists;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -347,7 +347,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async removeFavouriteArtist(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteArtist/${id}`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteArtist/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
       );
       favouritesMap.artists = resp.data || favouritesMap.artists;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -366,7 +366,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async addFavouriteArtwork(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/addUserFavoriteArtwork/${id}`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/addUserFavoriteArtwork/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
       );
       favouritesMap.artworks = resp.data || favouritesMap.artworks;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -374,7 +374,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async removeFavouriteArtwork(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteArtwork/${id}`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteArtwork/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
       );
       favouritesMap.artworks = resp.data || favouritesMap.artworks;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -393,7 +393,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async addFavouriteGallery(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/addUserFavoriteGallery/${id}`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/addUserFavoriteGallery/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
       );
       favouritesMap.galleries = resp.data || favouritesMap.galleries;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -401,7 +401,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async removeFavouriteGallery(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteGallery/${id}`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteGallery/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
       );
       favouritesMap.galleries = resp.data || favouritesMap.galleries;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -470,7 +470,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data[0];
     },
     async getArtwork(id: string): Promise<Artwork> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork>>(`${baseUrl}/wp-json/wc/v3/products/${id}`, {headers: { Authorization: auth.getGuestAuth() }});
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork>>(`${baseUrl}/wp-json/wc/v3/products/${id}`, { headers: { Authorization: auth.getGuestAuth() } });
       return resp.data;
     },
     async getArtworks(ids: number[]): Promise<Artwork[]> {
@@ -483,7 +483,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async getArtworkBySlug(slug: string): Promise<Artwork> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(
         `${baseUrl}/wp-json/wc/v3/products?slug=${slug}`,
-        {headers: { Authorization: auth.getGuestAuth() }}
+        { headers: { Authorization: auth.getGuestAuth() } }
       );
       if (!resp.data?.length) {
         throw "Not found";
@@ -511,11 +511,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return gallery;
     },
     async listGalleries(): Promise<Gallery[]> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(`${baseUrl}/wp-json/mvx/v1/vendors`, {headers: { Authorization: auth.getGuestAuth() }});
+      const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(`${baseUrl}/wp-json/mvx/v1/vendors`, { headers: { Authorization: auth.getGuestAuth() } });
       return resp.data;
     },
     async listArtworks(): Promise<Artwork[]> {
-      const resp = await axios.get<unknown, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, {headers: { Authorization: auth.getGuestAuth() }});
+      const resp = await axios.get<unknown, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, { headers: { Authorization: auth.getGuestAuth() } });
 
       return resp.data;
     },
@@ -530,7 +530,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async listArtworksForGallery(galleryId: string): Promise<Artwork[]> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(
         `${baseUrl}/wp-json/wc/v2/products/?vendor=[${galleryId}]`,
-        {headers: { Authorization: auth.getGuestAuth() }}
+        { headers: { Authorization: auth.getGuestAuth() } }
       );
 
       return resp.data;
@@ -538,7 +538,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async listArtworksForArtist(artistId: string): Promise<Artwork[]> {
       //TODO: listArtworksForArtist filter
       console.log("artistId", artistId);
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, {headers: { Authorization: auth.getGuestAuth() }});
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, { headers: { Authorization: auth.getGuestAuth() } });
       return resp.data;
     },
     async listFeaturedArtists(): Promise<Artist[]> {
@@ -561,9 +561,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data;
     },
     async getArtistBySlug(artistSlug: string): Promise<Artist> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(`${baseUrl}/wp-json/wp/v2/artist`, {
-        params: { slug: artistSlug }
-      });
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(`${baseUrl}/wp-json/wp/v2/artistBySlug/${artistSlug}`, {});
       if (resp.data.length === 0) {
         throw "Pagina non trovata";
       }
