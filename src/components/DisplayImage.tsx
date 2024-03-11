@@ -11,6 +11,7 @@ export interface DisplayImageProps {
 }
 
 const DisplayImage: React.FC<DisplayImageProps> = ({ src, width, height, sx = {}, objectFit, onClick }) => {
+
   return (
     <Box
       sx={{
@@ -19,9 +20,10 @@ const DisplayImage: React.FC<DisplayImageProps> = ({ src, width, height, sx = {}
         maxHeight: height || "auto",
         //width: width || "auto",
         maxWidth: width || "auto",
+        cursor: onClick ? "pointer" : undefined,
         //background: "rgba(0,0,0,0.2)",
         flexShrink: 0,
-        textAlign: "center",
+        textAlign: "center"
       }}
       className="borderRadius">
       <img
@@ -29,7 +31,7 @@ const DisplayImage: React.FC<DisplayImageProps> = ({ src, width, height, sx = {}
           maxHeight: height || "auto",
           maxWidth: width || "auto",
           cursor: onClick ? "pointer" : "auto",
-          objectFit: objectFit,
+          objectFit: objectFit
         }}
         onClick={onClick}
         src={src}

@@ -45,10 +45,10 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ slides = [] }) => {
       sx={{
         width: "100%",
         height: { xs: "auto" },
-        pt: { xs: 3, md: 14 },
+        pt: { xs: 12, md: 14 },
         pb: { xs: 4, md: 3 },
         px: { xs: 2, md: 6, lg: 12 },
-        background: theme.palette.primary.main,
+        background: theme.palette.primary.main
       }}
       display="flex"
       alignItems="center"
@@ -62,7 +62,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ slides = [] }) => {
             right: 0,
             mb: 2,
             ml: -2,
-            gap: { xs: 1, sm: 2 },
+            gap: { xs: 1, sm: 2 }
           }}>
           <IconButton onClick={handlePrev} variant="contained" size="small">
             <ChevronLeft color="primary" />

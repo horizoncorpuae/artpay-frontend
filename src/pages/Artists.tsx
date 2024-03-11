@@ -26,7 +26,7 @@ const Artists: React.FC<ArtistsProps> = ({}) => {
   }, []);
 
   return (<DefaultLayout pageLoading={!isReady} maxWidth={false}>
-    <VerticalSlider />
+    <VerticalSlider sx={{ pt: { xs: 10, sm: 0 } }} />
     <Box sx={{ px: { xs: 0, md: 6 }, my: 6 }}>
       <ArtistsGrid items={featuredArtists || []} title="Tutti gli artisti" />
     </Box>

@@ -73,7 +73,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         minHeight: (menuOpen && isMobile) ? undefined : minHeight,
         overflow: (menuOpen && isMobile) ? "hidden" : undefined
       }} maxWidth={maxWidth}>
-        {isMobile && <Box mt={8}></Box>}
+        {/*isMobile && <Box mt={8}></Box>*/}
         {children}
       </Container>
       {(menuOpen && isMobile) ? <></> : <Footer />}

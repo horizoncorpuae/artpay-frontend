@@ -7,11 +7,11 @@ interface ReadMoreTypographyProps {
 }
 
 const ReadMoreTypography: React.FC<ReadMoreTypographyProps & TypographyProps> = ({
-  children,
-  heightLimit,
-  sx,
-  ...props
-}) => {
+                                                                                   children,
+                                                                                   heightLimit,
+                                                                                   sx,
+                                                                                   ...props
+                                                                                 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
@@ -38,7 +38,7 @@ const ReadMoreTypography: React.FC<ReadMoreTypographyProps & TypographyProps> = 
         sx={{
           ...sx,
           maxHeight: isExpanded ? "none" : `${heightLimit}px`,
-          overflow: "hidden",
+          overflow: "hidden"
         }}>
         {children}
       </Typography>

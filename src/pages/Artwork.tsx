@@ -23,7 +23,8 @@ import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
 import { FavouritesMap } from "../types/post.ts";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
-export interface ArtworkProps {}
+export interface ArtworkProps {
+}
 
 const Artwork: React.FC<ArtworkProps> = ({}) => {
   const [isReady, setIsReady] = useState(false);
@@ -115,7 +116,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       setArtwork(resp);
       const [galleryArtworks, favouriteArtworks] = await Promise.all([
         data.listArtworksForGallery(resp.vendor),
-        data.getFavouriteArtworks(),
+        data.getFavouriteArtworks()
         //data.getGallery(resp.vendor),
       ]);
       setFavouriteArtworks(favouriteArtworks);
@@ -130,7 +131,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         //TODO: filtro per artista
         const artworksIds = (artistDetails.artworks || []).map((a) => a.ID.toString());
         setArtistArtworks(
-          artworksToGalleryItems(galleryArtworks.filter((a) => artworksIds.indexOf(a.id.toString()) !== -1)),
+          artworksToGalleryItems(galleryArtworks.filter((a) => artworksIds.indexOf(a.id.toString()) !== -1))
         );
       }
 
@@ -158,7 +159,6 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   return (
     <DefaultLayout
       pageLoading={!isReady}
-      authRequired
       maxWidth={false}
       topBar={
         <GalleryHeader
@@ -168,7 +168,8 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         />
       }>
       <Box display="flex" justifyContent="center">
-        <Grid sx={{ p: 0, mt: 1, justifyContent: "center", alignItems: "center" }} maxWidth="xl" container>
+        <Grid sx={{ p: 0, mt: { xs: 0, md: 1 }, justifyContent: "center", alignItems: "center" }} maxWidth="xl"
+              container>
           <Grid
             item
             xs={12}
@@ -178,7 +179,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
               overflow: "hidden",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "center"
             }}>
             <img
               src={artwork?.images?.length ? artwork.images[0].src : ""}
@@ -268,7 +269,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         }
         cta={{
           text: "Blocca l'opera",
-          link: "#",
+          link: "#"
         }}
         imgUrl={heroImgUrl}
         onClick={handleLoanPurchase}
@@ -280,7 +281,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           sx={{
             borderBottom: 1,
             borderColor: "secondary",
-            mx: { xs: 0 },
+            mx: { xs: 0 }
           }}>
           <ResponsiveTabs value={selectedTabPanel} onChange={(_, newValue) => setSelectedTabPanel(newValue)}>
             <Tab label="Informazioni sull' opera" />
@@ -309,7 +310,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           sx={{
             borderColor: "rgba(0, 0, 0, 0.87)",
             mb: { xs: 3, md: 8 },
-            mx: { xs: 0 },
+            mx: { xs: 0 }
           }}
         />
       </Box>

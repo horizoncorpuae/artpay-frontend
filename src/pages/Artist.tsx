@@ -15,7 +15,8 @@ import FavouriteIcon from "../components/icons/FavouriteIcon.tsx";
 import { Share } from "@mui/icons-material";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 
-export interface ArtistProps {}
+export interface ArtistProps {
+}
 
 const Artist: React.FC<ArtistProps> = ({}) => {
   const [isReady, setIsReady] = useState(false);
@@ -26,7 +27,7 @@ const Artist: React.FC<ArtistProps> = ({}) => {
   const [isArtistFavourite, setIsArtistFavourite] = useState(false);
 
   const data = useData();
-  const dialogs = useDialogs()
+  const dialogs = useDialogs();
   const snackbar = useSnackbars();
   const urlParams = useParams<{ slug?: string }>();
 
@@ -37,17 +38,17 @@ const Artist: React.FC<ArtistProps> = ({}) => {
   };
   const handleSetArtistFavourite = async () => {
     if (!artist?.id) {
-      return
+      return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
     if (isArtistFavourite) {
-      await data.removeFavouriteArtist(artist.id.toString())
-      setIsArtistFavourite(false)
+      await data.removeFavouriteArtist(artist.id.toString());
+      setIsArtistFavourite(false);
     } else {
-      await data.addFavouriteArtist(artist.id.toString())
-      setIsArtistFavourite(true)
+      await data.addFavouriteArtist(artist.id.toString());
+      setIsArtistFavourite(true);
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -66,9 +67,9 @@ const Artist: React.FC<ArtistProps> = ({}) => {
         const artworksIds = (resp.artworks || []).map((a) => +a.ID);
         const artistArtworks = await data.getArtworks(artworksIds);
         setArtworks(artworksToGalleryItems(artistArtworks));
-        const favouriteArtists = await data.getFavouriteArtists()
+        const favouriteArtists = await data.getFavouriteArtists();
 
-        setIsArtistFavourite(favouriteArtists.indexOf(resp?.id||0) !== -1 );
+        setIsArtistFavourite(favouriteArtists.indexOf(resp?.id || 0) !== -1);
 
         setIsReady(true);
       })
@@ -87,9 +88,9 @@ const Artist: React.FC<ArtistProps> = ({}) => {
         sx={{
           px: { xs: 3, sm: 6, md: 8 },
           pb: 1,
-          mt: { xs: 8, sm: 12, md: 14 },
+          mt: { xs: 10, sm: 12, md: 14 },
           flexDirection: { xs: "column", md: "row" },
-          alignItems: { xs: "center", md: "start" },
+          alignItems: { xs: "center", md: "start" }
         }}
         gap={2}
         display="flex">

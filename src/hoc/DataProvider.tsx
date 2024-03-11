@@ -328,6 +328,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
 
   const favourites = {
     async getFavouriteArtists(): Promise<number[]> {
+      if (!auth.isAuthenticated) {
+        return [];
+      }
       if (favouritesMap.artists !== null) {
         return favouritesMap.artists;
       }
@@ -355,6 +358,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
 
     async getFavouriteArtworks(): Promise<number[]> {
+      if (!auth.isAuthenticated) {
+        return [];
+      }
       if (favouritesMap.artworks !== null) {
         return favouritesMap.artworks;
       }
@@ -382,6 +388,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
 
     async getFavouriteGalleries(): Promise<number[]> {
+      if (!auth.isAuthenticated) {
+        return [];
+      }
       if (favouritesMap.galleries !== null) {
         return favouritesMap.galleries;
       }

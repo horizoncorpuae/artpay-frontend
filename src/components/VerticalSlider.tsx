@@ -1,14 +1,14 @@
 import React from "react";
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box, BoxProps, useMediaQuery, useTheme } from "@mui/material";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import VerticalSlide, { VerticalSlideProps } from "./VerticalSlide.tsx";
 
 export interface VerticalSliderProps {
-
+  sx?: BoxProps["sx"];
 }
 
-const VerticalSlider: React.FC<VerticalSliderProps> = ({}) => {
+const VerticalSlider: React.FC<VerticalSliderProps> = ({ sx }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -42,7 +42,7 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({}) => {
     }
   ];
 
-  return (<Box>
+  return (<Box sx={{ ...sx }}>
     <Swiper
       direction={isMobile ? "horizontal" : "vertical"}
       pagination={{

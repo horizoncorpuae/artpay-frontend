@@ -6,6 +6,7 @@ import { Artist } from "../types/artist.ts";
 import sanitizeHtml from "sanitize-html";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import FollowButton from "./FollowButton.tsx";
+import { useNavigate } from "react-router-dom";
 
 export interface ArtistDetailsProps {
   artist: Artist;
@@ -16,6 +17,7 @@ export interface ArtistDetailsProps {
 const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
   const artistContent = artistToGalleryItem(artist);
   const theme = useTheme();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const data = useData();
 
@@ -60,10 +62,11 @@ const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
         width: "100%",
         flexDirection: { xs: "column", md: "row" },
         gap: { xs: 2, md: 0 },
-        alignItems: { xs: "center" },
+        alignItems: { xs: "center" }
       }}
       display="flex">
-      <DisplayImage src={artistContent.imgUrl} width={320} height={isMobile ? "auto" : 320} />
+      <DisplayImage src={artistContent.imgUrl} onClick={() => navigate(`/artisti/${artistContent.slug}`)} width={320}
+                    height={isMobile ? "auto" : 320} />
       <Box flexGrow={1} px={3}>
         <Box display="flex" flexDirection="row">
           <Box flexGrow={1}>
