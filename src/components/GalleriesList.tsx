@@ -3,6 +3,7 @@ import GalleryCard, { GalleryCardProps } from "./GalleryCard.tsx";
 import CardList from "./CardList.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface GalleriesListProps {
   items: GalleryCardProps[];
@@ -12,6 +13,7 @@ export interface GalleriesListProps {
 
 const GalleriesList: React.FC<GalleriesListProps> = ({ items, title, onSelect }) => {
   const data = useData();
+  const auth = useAuth();
   const navigate = useNavigate();
 
   const [favourites, setFavourites] = useState<number[]>([]);
@@ -28,6 +30,10 @@ const GalleriesList: React.FC<GalleriesListProps> = ({ items, title, onSelect })
     };
   }, [data]);
   const handleSetFavourite = async (artistId: string, isFavourite: boolean) => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (artistId) {
       setIsLoading(true);
       try {

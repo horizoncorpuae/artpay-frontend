@@ -65,6 +65,14 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     }
   };
 
+  const handleProfileClick = () => {
+    if (auth.isAuthenticated) {
+      handleNavigate("/profile");
+    } else {
+      handleLogin();
+    }
+  };
+
   const handleNavigate = (link: string) => {
     handleShowMenu(false);
     navigate(link);
@@ -79,26 +87,29 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     Sei una galleria?
   </Link>;
 
+  const menuLinks = [
+    { label: "Gallerie", href: "/artpay-per-gallerie " },
+    { label: "Collezionisti", href: "/artpay-per-collezionisti " },
+    { label: "Chi siamo", href: "/chi-siamo" },
+    { label: "ArtMatch", href: "/art-match" }
+  ];
+
   //onMenuToggle
 
   return (
-    <AppBar color="default" sx={isMobile ? mobileStyleOverrides : {}} elevation={0}>
+    <AppBar color="default" sx={isMobile ? mobileStyleOverrides : { mx: { xs: 8, lg: 12 }, right: 0 }} elevation={0}>
       <Box display="flex" alignItems="center" sx={{}}>
         <Box sx={{ height: "24px", cursor: "pointer" }} onClick={() => handleNavigate("/")}>
           <Logo />
         </Box>
         {!isMobile && (
-          <Box>
-            <Button
-              sx={{ ml: { xs: 1, sm: 2, lg: 6 } }}
-              onClick={() => handleNavigate("/artworks")}
-              color="inherit"
-              variant="text">
-              Opere
-            </Button>
-            <Button sx={{ ml: 0 }} color="inherit" variant="text">
-              Come funziona
-            </Button>
+          <Box sx={{ ml: 3 }}>
+            {menuLinks.map((link, i) => <Button key={`btn-link-${i}`} sx={{ px: 1 }}
+                                                onClick={() => handleNavigate(link.href)}
+                                                color="inherit"
+                                                variant="text">
+              {link.label}
+            </Button>)}
           </Box>
         )}
         {/*<TextField sx={{flexGrow:0, ml: 1}} variant="standard" InputProps={{startAdornment: <InputAdornment position="start"><Search/></InputAdornment>}}/>*/}
@@ -123,32 +134,28 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             <IconButton onClick={() => handleCheckout()} color="primary">
               <ShoppingBagIcon color="primary" />
             </IconButton>
-            <IconButton onClick={() => navigate("/profile")} color="primary">
+            <IconButton onClick={() => handleProfileClick()} color="primary">
               <UserIcon color="primary" />
             </IconButton>
           </>
         ) : (
           <>
             {!isMobile && galleryLink}
-            {!isMobile ? authButton : <></>}
+            {!isMobile ? authButton : <IconButton onClick={() => handleProfileClick()} color="primary">
+              <UserIcon color="primary" />
+            </IconButton>}
           </>
         )}
         {isMobile && <IconButton onClick={() => handleShowMenu(!showMenu)}><MenuIcon /></IconButton>}
       </Box>
       {menuOpen && <Box flexGrow={1} pt={3} display="flex" flexDirection="column" sx={{ height: "auto" }}>
-        <Button
-          sx={{ ml: { xs: 1, sm: 2, lg: 6 } }}
-          onClick={() => navigate("/artworks")}
-          color="inherit"
-          variant="text">
-          Opere
-        </Button>
-        <Button sx={{ ml: 0 }} color="inherit" variant="text">
-          Come funziona
-        </Button>
-        <Box my={1} sx={{ textAlign: "center" }}>
-          {galleryLink}
-        </Box>
+        {menuLinks.map((link, i) => <Button key={`btn-link-mobile-${i}`} sx={{}}
+                                            onClick={() => handleNavigate(link.href)}
+                                            color="inherit"
+                                            variant="text">
+          {link.label}
+        </Button>)}
+
 
         <Box flexGrow={1}></Box>
         {auth.isAuthenticated ? <>
@@ -159,6 +166,9 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             Logout
           </Button>
         </> : <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{ mb: 12 }}>
+          <Box my={1} sx={{ textAlign: "center" }}>
+            {galleryLink}
+          </Box>
           {authButton}
         </Box>}
       </Box>}

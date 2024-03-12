@@ -9,10 +9,11 @@ import ListHeader from "./ListHeader.tsx";
 import ArtistsGrid from "./ArtistsGrid.tsx";
 import Loader from "./Loader.tsx";
 
-export interface FavouriteArtistsProps {}
+export interface FavouriteArtistsProps {
+}
 
 const emptyText =
-  'Non ci sono artisti seguiti, clicca sul pulsante "+" a fianco di ogni artista per salvare in questa sezione gli artisti che vuoi tenere d\'occhio';
+  "Non ci sono artisti seguiti, clicca sul pulsante \"+\" a fianco di ogni artista per salvare in questa sezione gli artisti che vuoi tenere d'occhio";
 const FavouriteArtists: React.FC<FavouriteArtistsProps> = ({}) => {
   const data = useData();
   const snackbar = useSnackbars();
@@ -33,13 +34,13 @@ const FavouriteArtists: React.FC<FavouriteArtistsProps> = ({}) => {
         return data.getArtists(ids).then((resp) => {
           setFavouriteArtists(artistsToGalleryItems(resp));
         });
-      }),
+      })
     ])
       .then(() => {
         setReady(true);
       })
       .catch((e) => {
-        console.log("error!", e);
+        console.error(e);
         showError(e);
       });
   }, [data, snackbar]);

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Card, CardContent, CardMedia, IconButton, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
 import FavouriteIcon from "./icons/FavouriteIcon.tsx";
 import QrCodeIcon from "./icons/QrCodeIcon.tsx";
 import { CardSize } from "../types";
@@ -28,30 +28,30 @@ export interface ArtworkCardProps {
 const cardSizes: { [key in CardSize]: string } = {
   small: "180px",
   medium: "230px",
-  large: "320px",
+  large: "320px"
 };
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({
-  artistName,
-  title,
-  galleryName,
-  price,
-  size = "medium",
-  imgUrl,
-  isFavourite = false,
-  onClick,
-  onSetFavourite,
-  mode = "list",
-}) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+                                                   artistName,
+                                                   title,
+                                                   galleryName,
+                                                   price,
+                                                   size = "medium",
+                                                   imgUrl,
+                                                   isFavourite = false,
+                                                   onClick,
+                                                   onSetFavourite,
+                                                   mode = "list"
+                                                 }) => {
+  // const theme = useTheme();
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const cardSize = cardSizes[size];
   const cardSizeClass = `SwiperCard-${size}`;
   const formattedPrice = price
     ? `€ ${price.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-      })}`
+      minimumFractionDigits: 2
+    })}`
     : "";
   const titleVariant = size === "large" ? "h6" : "subtitle1";
   const priceVariant = size === "large" ? "subtitle1" : "subtitle2";
@@ -69,13 +69,13 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
       <CardMedia
         component="img"
         image={imgUrl}
-        height={isMobile && mode === "grid" ? "auto" : cardSize}
+        height={cardSize}
         onClick={onClick}
         className="borderRadius"
         sx={{
           objectFit: "cover",
           //backgroundColor: "#D9D9D9",
-          cursor: onClick ? "pointer" : "auto",
+          cursor: onClick ? "pointer" : "auto"
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: imgMargin, height: "100%" }}>
         <Box display="flex">
@@ -91,7 +91,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
                 mb: 1,
                 maxWidth: textMaxWidth,
                 minHeight: "50px",
-                cursor: "pointer",
+                cursor: "pointer"
               }}>
               {title}
             </Typography>

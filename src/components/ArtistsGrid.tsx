@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import ArtistCard, { ArtistCardProps } from "./ArtistCard.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface ArtistsGridProps {
   items: ArtistCardProps[];
@@ -17,6 +18,7 @@ export interface ArtistsGridProps {
 
 const ArtistsGrid: React.FC<ArtistsGridProps> = ({ title, subtitle, emptyText, items, onSelect, onLoadMore }) => {
   const navigate = useNavigate();
+  const auth = useAuth();
   const data = useData();
 
   const [favourites, setFavourites] = useState<number[]>([]);
@@ -34,6 +36,10 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({ title, subtitle, emptyText, i
   }, [data]);
 
   const handleSetFavourite = async (artistId: string, isFavourite: boolean) => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (artistId) {
       setIsLoading(true);
       try {

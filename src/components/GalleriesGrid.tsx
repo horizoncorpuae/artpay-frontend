@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import GalleryCard, { GalleryCardProps } from "./GalleryCard.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface GaleriesGridProps {
   items: GalleryCardProps[];
@@ -18,6 +19,7 @@ export interface GaleriesGridProps {
 const GaleriesGrid: React.FC<GaleriesGridProps> = ({ title, subtitle, emptyText, items, onSelect }) => {
   const navigate = useNavigate();
   const data = useData();
+  const auth = useAuth();
 
   const [favourites, setFavourites] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +36,10 @@ const GaleriesGrid: React.FC<GaleriesGridProps> = ({ title, subtitle, emptyText,
   }, [data]);
 
   const handleSetFavourite = async (galleryId: string, isFavourite: boolean) => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (galleryId) {
       setIsLoading(true);
       try {
@@ -76,14 +82,14 @@ const GaleriesGrid: React.FC<GaleriesGridProps> = ({ title, subtitle, emptyText,
         sx={{
           maxWidth: "100%",
           overflow: "auto",
-          px: { xs: 1, sm: 4, md: 0 },
+          px: { xs: 1, sm: 4, md: 0 }
         }}>
         <Box
           display="grid"
           sx={{
             gridTemplateColumns: { xs: `repeat(auto-fill, minmax(320px, 1fr))` },
             justifyItems: "center",
-            width: "auto",
+            width: "auto"
           }}
           gap={1}>
           {items.map((item, i) => (

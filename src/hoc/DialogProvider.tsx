@@ -9,11 +9,12 @@ import {
   IconButton,
   Popover,
   Typography,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import React, { createContext, ReactNode, useContext, useRef, useState } from "react";
 import { FaFacebook, FaWhatsapp } from "react-icons/fa6";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { ButtonProps } from "@mui/material/Button/Button";
 
 export interface DialogOptions {
   showActions?: boolean;
@@ -21,7 +22,10 @@ export interface DialogOptions {
 
 export interface OkOnlyDialogOptions {
   txtOk?: string;
+  okButtonVariant?: ButtonProps["variant"];
+  okButtonColor?: ButtonProps["color"];
 }
+
 export interface ShareDialogOptions {
   txtOk?: string;
 }
@@ -31,6 +35,7 @@ export interface YesNoDialogOptions {
   txtNo?: string;
   invertColors?: boolean;
 }
+
 export interface DialogProvider {
   okOnly(title: string | ReactNode, content: string | ReactNode, options?: OkOnlyDialogOptions): Promise<boolean>;
 
@@ -41,7 +46,7 @@ export interface DialogProvider {
   custom<T>(
     title: string | ReactNode,
     renderContent: (closeDialog: (value: T) => void) => string | ReactNode,
-    options?: DialogOptions,
+    options?: DialogOptions
   ): Promise<unknown>;
 }
 
@@ -56,13 +61,14 @@ interface DialogState<T> {
   padding?: number;
 }
 
-export interface DialogProviderProps extends React.PropsWithChildren {}
+export interface DialogProviderProps extends React.PropsWithChildren {
+}
 
 const defaultContext: DialogProvider = {
   okOnly: () => Promise.reject("Dialogs not loaded"),
   yesNo: () => Promise.reject("Dialogs not loaded"),
   share: () => Promise.reject("Dialogs not loaded"),
-  custom: () => Promise.reject("Dialogs not loaded"),
+  custom: () => Promise.reject("Dialogs not loaded")
 };
 
 const Context = createContext<DialogProvider>({ ...defaultContext });
@@ -74,6 +80,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
 
   const handleClose = (value?: unknown) => {
     setOpen(false);
+    console.log("handleClose", value, dialog?.resolve);
     dialog?.resolve(value);
     setDialog(undefined);
   };
@@ -108,8 +115,8 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
             autoFocus
             onClick={() => resolveDialog(resolve, false)}>
             {txtNo}
-          </Button>,
-        ],
+          </Button>
+        ]
       });
       setOpen(true);
     });
@@ -117,25 +124,34 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
 
   const dialogs: DialogProvider = {
     okOnly: (title, content, options = {}) => {
-      const { txtOk = "Ok" } = options;
+      const { txtOk = "Ok", okButtonVariant, okButtonColor } = options;
+
       return new Promise((resolve, reject) => {
+        const handleOk = () => {
+          setOpen(false);
+          resolve(true);
+          setDialog(undefined);
+        };
+
         setDialog({
           title,
           content,
           resolve,
           reject,
-          showActions: false,
+          showActions: true,
           padding: 3,
           actions: [
-            <Button autoFocus onClick={handleClose}>
+            <Button sx={{ mb: 2 }} autoFocus variant={okButtonVariant} color={okButtonColor}
+                    onClick={() => handleOk()}>
               {txtOk}
-            </Button>,
-          ],
+            </Button>
+          ]
         });
         setOpen(true);
       });
     },
     share: (link, title, subtitle, options = {}) => {
+      // eslint-disable-next-line no-empty-pattern
       const {} = options;
 
       const DialogTitle = (
@@ -178,7 +194,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
                 onClose={handleClose}
                 anchorOrigin={{
                   vertical: "bottom",
-                  horizontal: "left",
+                  horizontal: "left"
                 }}>
                 <Typography sx={{ p: 2 }}>Link copiato</Typography>
               </Popover>
@@ -194,7 +210,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
           reject,
           showActions: false,
           padding: 3,
-          actions: [],
+          actions: []
         });
         setOpen(true);
       });
@@ -214,11 +230,11 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
           reject,
           showActions: options?.showActions || false,
           actions: [],
-          padding: 0,
+          padding: 0
         });
         setOpen(true);
       });
-    },
+    }
   };
 
   return (

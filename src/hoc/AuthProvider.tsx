@@ -106,7 +106,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       // TODO: save user to local storage
       // await storage.set('auth', JSON.stringify({jwt: resp.data.jwt, user: userInfoResp.data})) //TODO: local storage
       localStorage.setItem(userStorageKey, JSON.stringify(resp.data));
-      console.log("userinfo", resp.data);
       setAuthValues({
         ...authValues,
         isAuthenticated: true,

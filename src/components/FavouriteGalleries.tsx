@@ -8,10 +8,11 @@ import ListHeader from "./ListHeader.tsx";
 import GalleriesGrid from "./GalleriesGrid.tsx";
 import Loader from "./Loader.tsx";
 
-export interface FavouriteGalleriesProps {}
+export interface FavouriteGalleriesProps {
+}
 
 const emptyText =
-  'Non ci sono gallerie seguite, clicca sul pulsante "follow" a fianco di ogni galleria per salvare in questa sezione le gallerie che vuoi tenere d\'occhio';
+  "Non ci sono gallerie seguite, clicca sul pulsante \"follow\" a fianco di ogni galleria per salvare in questa sezione le gallerie che vuoi tenere d'occhio";
 const FavouriteGalleries: React.FC<FavouriteGalleriesProps> = ({}) => {
   const data = useData();
   const snackbar = useSnackbars();
@@ -22,14 +23,14 @@ const FavouriteGalleries: React.FC<FavouriteGalleriesProps> = ({}) => {
   useEffect(() => {
     Promise.all([
       data.getFavouriteGalleries().then((ids) => {
-        console.log("getFavouriteGalleries", ids);
         return data.getGalleries(ids).then((resp) => {
           setFavouriteGalleries(galleriesToGalleryItems(resp));
           setReady(true);
         });
-      }),
+      })
     ])
-      .then(() => {})
+      .then(() => {
+      })
       .catch((e) => {
         console.log("error!", e);
         return snackbar.error(e, { autoHideDuration: 60000 });

@@ -7,6 +7,7 @@ import sanitizeHtml from "sanitize-html";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import FollowButton from "./FollowButton.tsx";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface ArtistDetailsProps {
   artist: Artist;
@@ -20,6 +21,7 @@ const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const data = useData();
+  const auth = useAuth();
 
   const [favourites, setFavourites] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +37,10 @@ const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
     };
   }, [data]);
   const handleSetFavourite = async (isFavourite: boolean) => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (artist?.id) {
       setIsLoading(true);
       try {

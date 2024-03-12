@@ -124,19 +124,18 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       return;
     }
     setIsSaving(true);
-    console.log('handleRequireInvoice', requireInvoice, newVal)
     data.updateUserProfile({
-        billing: {
-          invoice_type: newVal ? "receipt" : ""
-        }
-      })
+      billing: {
+        invoice_type: newVal ? "receipt" : ""
+      }
+    })
       .then((resp) => {
         setIsSaving(false);
         setRequireInvoice(resp.billing?.invoice_type !== "");
       });
   };
 
-  const handleProfileDataSubmit = async (formData: BillingData|ShippingData, isBilling = false) => {
+  const handleProfileDataSubmit = async (formData: BillingData | ShippingData, isBilling = false) => {
     if (!userProfile?.id) {
       return;
     }

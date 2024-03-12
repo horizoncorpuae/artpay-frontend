@@ -225,7 +225,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         try {
           return JSON.parse(cachedCategoryMap || "{}");
         } catch (e) {
-          console.log("categoryMap: json parse error", e);
+          console.error("categoryMap: json parse error", e);
         }
       }
 
@@ -273,7 +273,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           Object.assign(postCategoryMap, JSON.parse(cachedPostCategoryMap || "{}"));
           return postCategoryMap;
         } catch (e) {
-          console.log("postCategoryMap: json parse error", e);
+          console.error("postCategoryMap: json parse error", e);
         }
       }
       const postCategoriesResp = await axios.get<SignInFormData, AxiosResponse<PostCategory[]>>(
@@ -546,7 +546,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async listArtworksForArtist(artistId: string): Promise<Artwork[]> {
       //TODO: listArtworksForArtist filter
-      console.log("artistId", artistId);
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, { headers: { Authorization: auth.getGuestAuth() } });
       return resp.data;
     },
@@ -602,7 +601,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       if (!customerId) {
         throw "Not authenticated";
       }
-      console.log("customerId", customerId);
       const resp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
         params: {
           status: "pending",
@@ -776,7 +774,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           .map((c) => c.name);
         flatArtistCategories.push(...categoryNames);
       }
-      console.log("artistCategories");
 
       return flatArtistCategories;
       /*if (!categoryMap || !categoryMap[key]) {

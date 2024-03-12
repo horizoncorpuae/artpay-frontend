@@ -6,6 +6,7 @@ import { galleryToGalleryContent } from "../utils.ts";
 import { useNavigate } from "react-router-dom";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import FollowButton from "./FollowButton.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface GalleryDetailsProps {
   gallery: Gallery;
@@ -15,6 +16,7 @@ const GalleryDetails: React.FC<GalleryDetailsProps> = ({ gallery }) => {
   const galleryContent = galleryToGalleryContent(gallery);
   const navigate = useNavigate();
   const data = useData();
+  const auth = useAuth();
 
   const [favourites, setFavourites] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +32,10 @@ const GalleryDetails: React.FC<GalleryDetailsProps> = ({ gallery }) => {
     };
   }, [data]);
   const handleSetFavourite = async (isFavourite: boolean) => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (galleryContent?.id) {
       setIsLoading(true);
       try {
@@ -62,7 +68,7 @@ const GalleryDetails: React.FC<GalleryDetailsProps> = ({ gallery }) => {
         maxWidth: "920px",
         width: "100%",
         flexDirection: { xs: "column", md: "row" },
-        alignItems: { xs: "center" },
+        alignItems: { xs: "center" }
       }}
       display="flex">
       <DisplayImage src={galleryContent.coverImage} onClick={handleClick} width={320} height={320} />

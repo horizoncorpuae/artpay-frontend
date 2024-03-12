@@ -7,7 +7,8 @@ export interface PaymentProvider {
   stripe: Stripe | null;
 }
 
-export interface PaymentProviderProps extends React.PropsWithChildren {}
+export interface PaymentProviderProps extends React.PropsWithChildren {
+}
 
 const defaultContext: PaymentProvider = {
   get isReady() {
@@ -15,7 +16,7 @@ const defaultContext: PaymentProvider = {
   },
   get stripe() {
     return null;
-  },
+  }
 };
 
 const Context = createContext<PaymentProvider>({ ...defaultContext });
@@ -25,7 +26,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({ children }) =>
   const [stripe, setStripe] = useState<Stripe | null>(null);
 
   useEffect(() => {
-    const stripeKey = document.querySelector('meta[name="stripe-key"]')?.getAttribute("content") || "";
+    const stripeKey = document.querySelector("meta[name=\"stripe-key\"]")?.getAttribute("content") || "";
     if (!stripeKey) {
       //throw new Error(`No stripe key (${stripeKey})`)
       console.error("No stripe key");
@@ -35,7 +36,6 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({ children }) =>
     loadStripe(stripeKey).then((stripe) => {
       setStripe(stripe);
       setReady(true);
-      console.log("stripe loaded", stripeKey);
     });
   }, []);
 
@@ -45,7 +45,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({ children }) =>
     },
     get stripe() {
       return stripe;
-    },
+    }
   };
   //
   return (

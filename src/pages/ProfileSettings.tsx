@@ -12,13 +12,25 @@ import PasswordChangeForm, { PasswordChangeFormData } from "../components/Passwo
 import PersonalDataForm, { PersonalDataFormData } from "../components/PersonalDataForm.tsx";
 import AvatarSelector from "../components/AvatarSelector.tsx";
 import BillingDataForm from "../components/BillingDataForm.tsx";
+import { useDialogs } from "../hoc/DialogProvider.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
+import { useNavigate } from "react-router-dom";
 
-export interface ProfileSettingsProps {}
+export interface ProfileSettingsProps {
+}
+
+const confirmDeleteContent = {
+  title: "Cancellazione account",
+  text: "Siamo dispiaciuti che te ne vuoi andare: se elimini questo account, sappi che l'operazione non è reversibile, il tuo profilo non sarà più disponibile e non potrai più registrarti e acquistare su Artpay."
+};
 
 const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
   const data = useData();
+  const auth = useAuth();
+  const navigate = useNavigate();
   const theme = useTheme();
   const snackbar = useSnackbars();
+  const dialogs = useDialogs();
 
   const [isReady, setIsReady] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,7 +39,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
 
   const personalDataDefaultValues: PersonalDataFormData = {
     first_name: profile?.first_name || "",
-    last_name: profile?.last_name || "",
+    last_name: profile?.last_name || ""
   };
 
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
@@ -56,13 +68,11 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
     }
     setIsSaving(false);
   };
-
   const handleRequireInvoice = (newVal: boolean) => {
     if (!profile) {
       return;
     }
     setIsSaving(true);
-    console.log('handleRequireInvoice', requireInvoice, newVal)
     data.updateUserProfile({
       billing: {
         invoice_type: newVal ? "receipt" : ""
@@ -70,11 +80,9 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
     })
       .then((resp) => {
         setIsSaving(false);
-        console.log('resp.billing?.invoice_type', resp.billing?.invoice_type)
         setRequireInvoice(resp.billing?.invoice_type !== "");
       });
   };
-
   const handlePersonalDataSubmit = async (formData: PersonalDataFormData) => {
     if (!profile?.id) {
       return;
@@ -105,12 +113,27 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
     setIsSaving(false);
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      const confirmDelete = await dialogs.okOnly(confirmDeleteContent.title, confirmDeleteContent.text, {
+        txtOk: "PROCEDI",
+        okButtonColor: "error",
+        okButtonVariant: "outlined"
+      });
+      if (confirmDelete) {
+        navigate("/");
+        await auth.logout();
+      }
+    } catch (e) { /* empty */
+    }
+  };
+
   useEffect(() => {
     Promise.all([
       data.getUserProfile().then((resp) => {
         setProfile(resp);
-        setRequireInvoice(resp.billing?.invoice_type !== "")
-      }),
+        setRequireInvoice(resp.billing?.invoice_type !== "");
+      })
     ]).then(() => {
       setIsReady(true);
     });
@@ -176,7 +199,8 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
         <Checkbox
           disabled={isSaving}
           checked={!requireInvoice}
-          onClick={() => {}}
+          onClick={() => {
+          }}
           label="Sei iscrittə alla newsletter di artpay"
         />
       </Box>
@@ -185,7 +209,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
         <Typography variant="body1" sx={{ mb: 2 }}>
           Eliminazione permanente account
         </Typography>
-        <Button color="error" variant="outlined">
+        <Button onClick={handleDeleteAccount} color="error" variant="outlined">
           Cancella account
         </Button>
       </Box>

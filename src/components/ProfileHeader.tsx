@@ -33,12 +33,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile, controls }) => {
       display="flex"
       gap={3}
       sx={{
-        px: { xs: 3, md: 6 },
+        px: { xs: 3, lg: 6 },
         mt: { xs: 10, md: 14 },
         maxWidth: theme.breakpoints.values.xl,
         marginLeft: "auto",
         marginRight: "auto",
-        flexDirection: { xs: "column", md: "row" },
+        flexDirection: { xs: "column", md: "row" }
       }}
       alignItems="center">
       <Avatar src={profile?.avatar_url} />

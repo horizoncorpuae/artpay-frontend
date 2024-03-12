@@ -18,42 +18,45 @@ import Checkbox from "./Checkbox.tsx";
 
 export interface UserDataFormProps {
   defaultValues?: BillingData;
-  shippingData?: ShippingData
+  shippingData?: ShippingData;
   onSubmit?: (formData: BillingData) => Promise<void>;
   disabled?: boolean;
 }
 
-const BillingDataForm: React.FC<UserDataFormProps> = ({ defaultValues, shippingData={}, onSubmit, disabled = false }) => {
+const BillingDataForm: React.FC<UserDataFormProps> = ({
+                                                        defaultValues,
+                                                        shippingData = {},
+                                                        onSubmit,
+                                                        disabled = false
+                                                      }) => {
   const {
     control,
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, disabled: formDisabled },
+    formState: { errors, disabled: formDisabled }
   } = useForm<BillingData>({
     defaultValues: {
       ...defaultValues,
-      country: defaultValues?.country || "IT",
-    },
+      country: defaultValues?.country || "IT"
+    }
   });
   const [isSaving, setIsSaving] = useState(false);
 
-  const isPrivateCustomer = watch("private_customer") !== "false"
-  const sameAsShipping = watch("same_as_shipping")
+  const isPrivateCustomer = watch("private_customer") !== "false";
+  const sameAsShipping = watch("same_as_shipping");
 
   const handleCopyShippingData = (checked: boolean) => {
     if (checked) {
-      setIsSaving(true)
+      setIsSaving(true);
       Object.keys(shippingData).forEach((key: string) => {
-        const userDataKey = key as keyof BaseUserData
-        setValue(userDataKey, shippingData[userDataKey])
-      })
-      setIsSaving(false)
-      console.log('copy shipping data', checked, shippingData)
+        const userDataKey = key as keyof BaseUserData;
+        setValue(userDataKey, shippingData[userDataKey]);
+      });
+      setIsSaving(false);
+      console.log("copy shipping data", checked, shippingData);
     }
-  }
-
-  console.log('sameAsShipping', sameAsShipping)
+  };
 
   const handleFormSubmit: SubmitHandler<BillingData> = (data) => {
     if (onSubmit) {
@@ -64,8 +67,8 @@ const BillingDataForm: React.FC<UserDataFormProps> = ({ defaultValues, shippingD
     }
   };
 
-  const isDisabled = disabled || isSaving || formDisabled || (isPrivateCustomer && sameAsShipping)
-  const submitDisabled = disabled || isSaving || formDisabled
+  const isDisabled = disabled || isSaving || formDisabled || (isPrivateCustomer && sameAsShipping);
+  const submitDisabled = disabled || isSaving || formDisabled;
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -78,8 +81,8 @@ const BillingDataForm: React.FC<UserDataFormProps> = ({ defaultValues, shippingD
               rules={{ required: "Questo campo è obbligatorio" }}
               render={({ field }) => (
                 <RadioGroup row {...field}>
-                  <RadioButton value="true" label="Persona fisica"/>
-                  <RadioButton value="false" label="Titolare di P.IVA / Persona giuridica"/>
+                  <RadioButton value="true" label="Persona fisica" />
+                  <RadioButton value="false" label="Titolare di P.IVA / Persona giuridica" />
                 </RadioGroup>
               )}
             />
@@ -332,14 +335,14 @@ const BillingDataForm: React.FC<UserDataFormProps> = ({ defaultValues, shippingD
                 <Controller
                   name="same_as_shipping"
                   control={control}
-                  rules={{  }}
-                  render={({ field: {onChange, ...field} }) => (
+                  rules={{}}
+                  render={({ field: { onChange, ...field } }) => (
                     <Checkbox
                       disabled={submitDisabled}
                       label="I dati di fatturazione coincidono con quelli di spedizione"
                       onChange={(e, checked) => {
-                        handleCopyShippingData(checked)
-                        onChange(e, checked)
+                        handleCopyShippingData(checked);
+                        onChange(e, checked);
                       }}
                       checked={sameAsShipping}
                       {...field}

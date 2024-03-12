@@ -4,6 +4,7 @@ import CardList from "./CardList.tsx";
 import { CardSize } from "../types";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface ArtworksListProps {
   items: ArtworkCardProps[];
@@ -15,6 +16,7 @@ export interface ArtworksListProps {
 
 const ArtworksList: React.FC<ArtworksListProps> = ({ title, items, cardSize, onSelect, showEmpty }) => {
   const data = useData();
+  const auth = useAuth();
   const navigate = useNavigate();
 
   const [favourites, setFavourites] = useState<number[]>([]);
@@ -37,6 +39,10 @@ const ArtworksList: React.FC<ArtworksListProps> = ({ title, items, cardSize, onS
   };
 
   const handleSetFavourite = async (artworkId: string, isFavourite: boolean) => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (artworkId) {
       try {
         if (isFavourite) {

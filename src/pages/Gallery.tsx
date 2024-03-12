@@ -17,6 +17,7 @@ import ResponsiveTabs from "../components/ResponsiveTabs.tsx";
 import { CardItem } from "../types";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import FollowButton from "../components/FollowButton.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface GalleryProps {
   selectedTab?: number;
@@ -35,6 +36,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
   const [galleryInfo, setGalleryInfo] = useState<GalleryInfoProps>();
 
   const data = useData();
+  const auth = useAuth();
   const urlParams = useParams();
   const navigate = useNavigate();
   const dialogs = useDialogs();
@@ -58,12 +60,12 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
           email: gallery.email,
           phoneNumbers: [gallery.address.phone],
           website: gallery.shop.url,
-          social: { linkedin: gallery.social.linkdin, ...gallery.social },
+          social: { linkedin: gallery.social.linkdin, ...gallery.social }
         });
         const [artworks, artists, favouriteGalleries] = await Promise.all([
           data.listArtworksForGallery(gallery.id.toString()),
           data.listArtistsForGallery(gallery.id.toString()),
-          data.getFavouriteGalleries(),
+          data.getFavouriteGalleries()
         ]);
         setGalleryArtworks(artworksToGalleryItems(artworks, "large"));
         setGalleryArtists(artistsToGalleryItems(artists));
@@ -81,6 +83,10 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
   }, [data, navigate, urlParams.slug]);
 
   const handleSetFavourite = async (isFavourite: boolean) => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (galleryContent?.id) {
       try {
         if (isFavourite) {
@@ -131,7 +137,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
             overflow: "hidden",
             display: "flex",
             alignItems: "center",
-            position: "relative",
+            position: "relative"
           }}>
           <img src={galleryContent?.coverImage} style={{ width: "100%" }} />
           <Box
@@ -141,7 +147,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
               width: { xs: "64px", sm: "100px" },
               bottom: { xs: "24px", sm: "48px" },
               left: { xs: "24px", sm: "48px" },
-              display: { xs: "block" },
+              display: { xs: "block" }
             }}>
             <img className="borderRadius" src={galleryContent?.logoImage} style={{ width: "100%" }} />
           </Box>
@@ -197,7 +203,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
           sx={{
             borderBottom: 1,
             borderColor: "secondary",
-            mx: { xs: 0, sm: 3, md: 6 },
+            mx: { xs: 0, sm: 3, md: 6 }
           }}>
           <ResponsiveTabs
             value={selectedTabPanel}

@@ -3,6 +3,7 @@ import ArtistCard, { ArtistCardProps } from "./ArtistCard.tsx";
 import CardList from "./CardList.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface ArtistsListProps {
   items: ArtistCardProps[];
@@ -13,6 +14,7 @@ export interface ArtistsListProps {
 
 const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect, disablePadding }) => {
   const data = useData();
+  const auth = useAuth();
   const navigate = useNavigate();
 
   const [favourites, setFavourites] = useState<number[]>([]);
@@ -30,6 +32,10 @@ const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect, disab
   }, [data]);
 
   const handleSetFavourite = async (artistId: string, isFavourite: boolean) => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (artistId) {
       setIsLoading(true);
       try {

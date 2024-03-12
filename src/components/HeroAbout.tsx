@@ -13,7 +13,7 @@ const HeroAbout: React.FC<HeroAboutProps> = ({ subtitle, mainTitle, description,
   const theme = useTheme();
   return (
     <Box
-      sx={{ background: theme.palette.primary.main, pt: { xs: 8, md: 16, lg: 24 }, pb: 6 }}
+      sx={{ background: theme.palette.primary.main, pt: { xs: 12, md: 16, lg: 24 }, pb: 6 }}
       display="flex"
       flexDirection="column"
       justifyContent="center"
