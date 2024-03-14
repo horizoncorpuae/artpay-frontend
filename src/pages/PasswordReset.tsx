@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import PasswordChangeForm, { PasswordChangeFormData } from "../components/PasswordChangeForm.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +25,7 @@ const PasswordRecovery: React.FC<PasswordRecoveryProps> = ({}) => {
   const [resetCode, setResetCode] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [isSaving, setIsSaving] = useState(false);
+  const [complete, setComplete] = useState(false);
 
   const handleFormSubmit = async (data: PasswordChangeFormData) => {
     if (!resetCode || !email) {
@@ -33,6 +34,7 @@ const PasswordRecovery: React.FC<PasswordRecoveryProps> = ({}) => {
     setIsSaving(true);
     try {
       await auth.resetPassword({ code: resetCode, email: email, password: data.newPassword });
+      setComplete(true);
     } catch (e) {
       await snackbar.error(e);
     }
@@ -68,12 +70,22 @@ const PasswordRecovery: React.FC<PasswordRecoveryProps> = ({}) => {
         gap={2}
         display="flex">
         <Typography variant="h2" sx={{ mb: 2 }}>Reimpostazione password</Typography>
-        <Typography variant="body1" color="textSecondary" sx={{ mb: 0 }}>
-          {subtitle}
-        </Typography>
-        <PasswordChangeForm oneColumn sx={{ maxWidth: "500px", textAlign: "center", mt: 0 }}
-                            disabled={isSaving}
-                            onSubmit={handleFormSubmit} />
+        {complete ? <>
+          <Typography variant="subtitle1" color="primary" sx={{ my: 3 }}>
+            Password reimpostata con successo
+          </Typography>
+          <Button variant="contained" sx={{ width: "200px" }} href="/">Vai alla home</Button>
+          <Button variant="outlined" sx={{ width: "200px" }} onClick={() => auth.login(true)}>Effettua il login</Button>
+        </> : <>
+          <Typography variant="body1" color="textSecondary" sx={{ mb: 0 }}>
+            {subtitle}
+          </Typography>
+          <PasswordChangeForm oneColumn sx={{ maxWidth: "500px", textAlign: "center", mt: 0 }}
+                              disabled={isSaving}
+                              onSubmit={handleFormSubmit} />
+        </>}
+
+
       </Box>
     </DefaultLayout>
   );

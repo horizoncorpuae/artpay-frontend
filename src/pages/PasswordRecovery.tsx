@@ -60,20 +60,19 @@ const PasswordRecovery: React.FC<PasswordRecoveryProps> = ({}) => {
         display="flex">
         <Typography variant="h2" sx={{ mb: 1 }}>Recupero password</Typography>
         {emailSent ?
-          <><Typography variant="subtitle1" color="primary" textAlign="center" sx={{ my: { xs: 3, md: 6 } }}>Link di
-            reimpostazione
-            inviato.</Typography>
+          <><Typography variant="subtitle1" color="primary" textAlign="center" sx={{ my: { xs: 3, md: 6 } }}>
+            Link di reimpostazione inviato.
+          </Typography>
             <Typography variant="body1" textAlign="center" color="textSecondary" sx={{ mb: 3 }}>Se non ricevi l'email
-              entro pochi minuti, verifica la cartella
-              dello spam e assicurati di aver inserito l'indirizzo email correttamente</Typography>
+              entro pochi minuti, verifica la cartella dello spam e assicurati di aver inserito l'indirizzo email
+              correttamente</Typography>
           </> :
           <Typography variant="body1" color="textSecondary" textAlign="center" sx={{ mb: 1 }}> Per reimpostare la tua
-            password, inserisci
-            il tuo indirizzo
-            email nel campo sottostante.<br /> Assicurati di utilizzare l'indirizzo email associato al tuo account e
-            clicca su
-            "Invia email di recupero".<br /> Ti invieremo un'email con un link per la reimpostazione della
-            password.</Typography>}
+            password, inserisci il tuo indirizzo email nel campo sottostante.<br />
+            Assicurati di utilizzare l'indirizzo email associato al tuo account e clicca su "Invia email di recupero".
+            <br /> Ti invieremo un'email con un link per la reimpostazione della password.
+          </Typography>
+        }
         {emailSent ? <Box></Box> : <Box>
           <form onSubmit={handleSubmit(handleFormSubmit)}>
             <Controller
