@@ -87,7 +87,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     Login/Registrati
   </Button>;
 
-  const galleryLink = <Link sx={{ mr: isMobile ? 0 : 2, minWidth: "120px" }} href="#" color="tertiary.main">
+  const galleryLink = <Link sx={{ mr: isMobile ? 0 : 2, minWidth: "120px" }} href="https://gallerie.artpay.art"
+                            color="tertiary.main">
     Sei una galleria?
   </Link>;
 

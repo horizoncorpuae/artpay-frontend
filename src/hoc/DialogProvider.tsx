@@ -124,7 +124,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
 
   const dialogs: DialogProvider = {
     okOnly: (title, content, options = {}) => {
-      const { txtOk = "Ok", okButtonVariant, okButtonColor } = options;
+      const { txtOk = "Ok", okButtonVariant = "outlined", okButtonColor } = options;
 
       return new Promise((resolve, reject) => {
         const handleOk = () => {

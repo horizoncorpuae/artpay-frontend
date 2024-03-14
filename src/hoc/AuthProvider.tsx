@@ -115,16 +115,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       setLoginOpen(false);
       return {};
     } catch (err: unknown) {
+
       setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
       if (axios.isAxiosError(err) && err.response) {
         const data = err.response.data;
         return {
-          error: data,
+          error: err.message || JSON.stringify(data),
           status: err.response.status,
           message: err.message
         };
       } else {
         setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
+
       }
       //TODO: handle error
       return { error: err?.toString() };

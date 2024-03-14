@@ -23,6 +23,10 @@ const confirmDeleteContent = {
   title: "Cancellazione account",
   text: "Siamo dispiaciuti che te ne vuoi andare: se elimini questo account, sappi che l'operazione non è reversibile, il tuo profilo non sarà più disponibile e non potrai più registrarti e acquistare su Artpay."
 };
+const accountDeletedContent = {
+  title: "Account cancellato",
+  text: "Il tuo account è stato cancellato, riceverai un'email che conferma questa operazione"
+};
 
 const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
   const data = useData();
@@ -123,6 +127,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
       if (confirmDelete) {
         navigate("/");
         await auth.logout();
+        await dialogs.okOnly(accountDeletedContent.title, accountDeletedContent.text);
       }
     } catch (e) { /* empty */
     }

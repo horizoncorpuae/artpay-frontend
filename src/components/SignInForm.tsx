@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import TextField from "./TextField.tsx";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { FormField } from "../types";
 import { useForm } from "react-hook-form";
 import LinkButton from "./LinkButton.tsx";
@@ -20,39 +20,44 @@ export interface SignInFormData {
 }
 
 export interface SignInFormProps {
-  onSubmit?: (data: SignInFormData) => void;
+  onSubmit?: (data: SignInFormData) => Promise<{ error?: unknown }>;
   disabled?: boolean;
 }
 
 const SignInForm: React.FC<SignInFormProps> = ({
-  onSubmit,
-  disabled = false,
-}) => {
+                                                 onSubmit,
+                                                 disabled = false
+                                               }) => {
   const registrationFormContent: SignInFormContent = {
     fields: {
       email: { label: "Email" },
-      password: { label: "Password" },
+      password: { label: "Password" }
     },
-    buttonLabel: "Accedi",
+    buttonLabel: "Accedi"
   };
+  const [error, setError] = useState<string | undefined>();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
     //handleSubmit
     defaultValues: {
       name: "",
       email: "",
       password: "",
-      privacy: undefined,
-    } as SignInFormData,
+      privacy: undefined
+    } as SignInFormData
   });
 
   console.log("errors", errors);
-  const handleSubmitClick = (data: SignInFormData) => {
+  const handleSubmitClick = async (data: SignInFormData) => {
+    setError(undefined);
     if (onSubmit) {
-      onSubmit(data);
+      const { error } = await onSubmit(data);
+      if (error) {
+        setError("Nome utente o password errati");
+      }
     }
   };
 
@@ -74,6 +79,7 @@ const SignInForm: React.FC<SignInFormProps> = ({
           helperText={errors?.email?.message}
           disabled={disabled}
         />
+        {error && <Typography variant="body1" color="error" sx={{ mt: 0 }}>{error}</Typography>}
         <LinkButton sx={{ alignSelf: "flex-start" }} size="small">
           Hai perso la password?
         </LinkButton>
