@@ -25,6 +25,7 @@ import { PaymentIntent } from "@stripe/stripe-js";
 import PaymentCard from "../components/PaymentCard.tsx";
 import BillingDataForm from "../components/BillingDataForm.tsx";
 import BillingDataPreview from "../components/BillingDataPreview.tsx";
+import ErrorIcon from "../components/icons/ErrorIcon.tsx";
 
 export interface PurchaseProps {
   orderMode?: "standard" | "loan";
@@ -43,6 +44,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const [paymentsReady, setPaymentsReady] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [checkoutReady, setCheckoutReady] = useState(false);
+  const [noPendingOrder, setNoPendingOrder] = useState(false);
 
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [shippingDataEditing, setShippingDataEditing] = useState(false);
@@ -82,6 +84,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
         }),
         data.getPendingOrder().then(async (resp) => {
           if (resp) {
+            console.log("resp", resp);
             setPendingOrder(resp);
             const artworks = await Promise.all(
               resp.line_items.map((item) => data.getArtwork(item.product_id.toString()))
@@ -96,6 +99,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             setPaymentIntent(paymentIntent);
           } else {
             console.log("No orders");
+            setNoPendingOrder(true);
             //TODO: no orders page
           }
         })
@@ -109,6 +113,15 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           navigate("/");
         });
     } else {
+      data.getPendingOrder().then(async (resp) => {
+        if (resp) {
+          setPendingOrder(resp);
+          const artworks = await Promise.all(
+            resp.line_items.map((item) => data.getArtwork(item.product_id.toString()))
+          );
+          setArtworks(artworksToGalleryItems(artworks, undefined, data));
+        }
+      });
       setIsReady(true);
     }
   }, [auth.isAuthenticated, data]);
@@ -237,17 +250,31 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
   const shippingPrice = currentShippingMethod === "local_pickup" ? 0 : estimatedShippingCost || 0;
 
+  if (noPendingOrder) {
+    return <DefaultLayout pageLoading={!isReady || !paymentsReady} pb={6}>
+      <Grid mt={16} spacing={3} px={3} container>
+        <Grid item xs={12}>
+          <Typography variant="h3"><ErrorIcon color="error" fontSize="large" /> Non ci sono opere nel
+            carrello</Typography>
+          <Typography sx={{ mt: 1 }} variant="subtitle1" color="textSecondary">
+            Esplora Artpay e inizia ad acquistare
+          </Typography>
+        </Grid>
+      </Grid>
+    </DefaultLayout>;
+  }
+
   return (
     <DefaultLayout pageLoading={!isReady || !paymentsReady} pb={6}>
       <Grid mt={16} spacing={3} px={3} container>
         <Grid item gap={3} display="flex" flexDirection="column" xs={12} md={8}>
           <ContentCard title="Informazioni di contatto" icon={<UserIcon />} headerButtons={contactHeaderButtons}>
             {!auth.isAuthenticated && (
-              <Button onClick={() => auth.login()} variant="contained" fullWidth>
+              <Button onClick={() => auth.login()} sx={{ maxWidth: "320px", mb: 2 }} variant="contained" fullWidth>
                 Effettua il login
               </Button>
             )}
-            {orderMode !== "loan" && (
+            {(orderMode !== "loan" && auth.isAuthenticated) && (
               <>
                 <Typography variant="h6" sx={{ mb: 1 }} color="textSecondary">
                   Dati di spedizione
@@ -366,7 +393,8 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               />
               <Button
                 disabled={!checkoutEnabled}
-                startIcon={checkoutReady ? shoppingBagIcon : <CircularProgress size="20px" />}
+                startIcon={(checkoutReady || !auth.isAuthenticated) ? shoppingBagIcon :
+                  <CircularProgress size="20px" />}
                 onClick={handlePurchase}
                 variant="contained"
                 fullWidth

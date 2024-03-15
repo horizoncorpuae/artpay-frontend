@@ -14,6 +14,7 @@ import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
 import FavouriteIcon from "../components/icons/FavouriteIcon.tsx";
 import { Share } from "@mui/icons-material";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface ArtistProps {
 }
@@ -27,6 +28,7 @@ const Artist: React.FC<ArtistProps> = ({}) => {
   const [isArtistFavourite, setIsArtistFavourite] = useState(false);
 
   const data = useData();
+  const auth = useAuth();
   const dialogs = useDialogs();
   const snackbar = useSnackbars();
   const urlParams = useParams<{ slug?: string }>();
@@ -37,6 +39,10 @@ const Artist: React.FC<ArtistProps> = ({}) => {
     await dialogs.share(window.location.href);
   };
   const handleSetArtistFavourite = async () => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (!artist?.id) {
       return;
     }

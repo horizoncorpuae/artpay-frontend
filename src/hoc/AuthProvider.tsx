@@ -23,6 +23,7 @@ import { User, UserInfo } from "../types/user.ts";
 import { userToUserInfo } from "../utils.ts";
 import { useDialogs } from "./DialogProvider.tsx";
 
+
 type RequestError = {
   message?: string;
 };
@@ -58,6 +59,16 @@ const userStorageKey = "artpay-user";
 
 const GUEST_CONSUMER_KEY = "ck_349ace6a3d417517d0140e415779ed924c65f5e1";
 const GUEST_CONSUMER_SECRET = "cs_b74f44b74eadd4718728c26a698fd73f9c5c9328";
+
+export const USER_LOGIN_EVENT = "user:login";
+export const USER_LOGOUT_EVENT = "user:logout";
+
+const dispatchUserEvent = (event: "user:login" | "user:logout", userId: number) =>
+  document.dispatchEvent(
+    new CustomEvent<{ userId: number }>(event, {
+      detail: { userId }
+    })
+  );
 
 const getGuestAuth = () => {
   const credentials = btoa(GUEST_CONSUMER_KEY + ":" + GUEST_CONSUMER_SECRET);
@@ -127,6 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         wcToken: getWcCredentials(resp.data.wc_api_user_keys)
       });
       setLoginOpen(false);
+      dispatchUserEvent(USER_LOGIN_EVENT, resp.data.id);
       return {};
     } catch (err: unknown) {
 

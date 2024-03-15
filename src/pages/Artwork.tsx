@@ -22,6 +22,7 @@ import { useDialogs } from "../hoc/DialogProvider.tsx";
 import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
 import { FavouritesMap } from "../types/post.ts";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface ArtworkProps {
 }
@@ -37,6 +38,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const [favouriteArtworks, setFavouriteArtworks] = useState<number[]>([]);
 
   const data = useData();
+  const auth = useAuth();
   const urlParams = useParams();
   const navigate = useNavigate();
   const dialogs = useDialogs();
@@ -64,6 +66,10 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   };
 
   const handleSetArtworkFavourite = async () => {
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     if (artwork?.id) {
       try {
         if (isArtworkFavourite) {
@@ -78,6 +84,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       } catch (e) {
         //TODO: notify error
         console.log(e);
+        await snackbar.error(e);
       }
     }
   };

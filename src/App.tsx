@@ -78,6 +78,14 @@ function AppContent() {
                     path="/condizioni-generali-di-acquisto"
                     element={<ContentPage slug="condizioni-generali-di-acquisto" />}
                   />
+                  <Route
+                    path="/artpay-per-collezionisti"
+                    element={<ContentPage slug="artpay-per-collezionisti" />}
+                  />
+                  <Route
+                    path="/artpay-per-gallerie"
+                    element={<ContentPage slug="artpay-per-gallerie" />}
+                  />
                 </Routes>
               </PaymentProvider>
             </DataProvider>

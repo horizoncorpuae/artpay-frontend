@@ -93,8 +93,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   </Link>;
 
   const menuLinks = [
-    { label: "Gallerie", href: "https://artpay.art/artpay-per-gallerie " },
-    { label: "Collezionisti", href: "https://artpay.art/artpay-per-collezionisti " },
+    { label: "Gallerie", href: "/artpay-per-gallerie " },
+    { label: "Collezionisti", href: "/artpay-per-collezionisti " },
     { label: "Chi siamo", href: "/chi-siamo" },
     { label: "ArtMatch", href: "https://artpay.art/art-match" }
   ];

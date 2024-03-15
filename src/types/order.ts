@@ -86,8 +86,8 @@ export type Order = {
   customer_user_agent: string;
   created_via: string;
   customer_note: string;
-  date_completed: null | string;
-  date_paid: null | string;
+  date_completed?: null | string;
+  date_paid?: null | string;
   cart_hash: string;
   number: string;
   meta_data: {
@@ -107,10 +107,10 @@ export type Order = {
   needs_processing: boolean;
   date_created_gmt: string;
   date_modified_gmt: string;
-  date_completed_gmt: null | string;
-  date_paid_gmt: null | string;
+  date_completed_gmt?: null | string;
+  date_paid_gmt?: null | string;
   currency_symbol: string;
-  _links: {
+  _links?: {
     self: {
       href: string;
     }[];
@@ -151,14 +151,14 @@ export type LineItem = {
   id: number;
   name: string;
   product_id: number;
-  variation_id: number;
+  variation_id?: number;
   quantity: number;
   tax_class: string;
   subtotal: string;
   subtotal_tax: string;
   total: string;
   total_tax: string;
-  taxes: any[];
+  taxes?: any[];
   meta_data: {
     id: number;
     key: string;
@@ -172,7 +172,7 @@ export type LineItem = {
     id: string;
     src: string;
   };
-  parent_name: null | string;
+  parent_name?: null | string;
 };
 
 export type PaymentIntentRequest = {

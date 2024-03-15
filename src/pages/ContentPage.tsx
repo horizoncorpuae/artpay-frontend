@@ -15,6 +15,9 @@ const ContentPage: React.FC<ContentPageProps> = ({ slug }) => {
   const data = useData();
 
   useEffect(() => {
+    if (ready) {
+      setReady(false);
+    }
     data.getPageBySlug(slug).then((page) => {
       setPageContent(page);
       setReady(true);
@@ -100,9 +103,9 @@ const ContentPage: React.FC<ContentPageProps> = ({ slug }) => {
                 "th",
                 "thead",
                 "tr",
-                "img",
-              ],
-            }),
+                "img"
+              ]
+            })
           }}></Box>
       </Box>
     </DefaultLayout>

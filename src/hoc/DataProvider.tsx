@@ -5,10 +5,16 @@ import { SignInFormData } from "../components/SignInForm.tsx";
 import { Artwork } from "../types/artwork.ts";
 import { Artist } from "../types/artist.ts";
 import { Category, CategoryGroup, CategoryMap } from "../types/category.ts";
-import { useAuth } from "./AuthProvider.tsx";
+import { useAuth, USER_LOGIN_EVENT } from "./AuthProvider.tsx";
 import { FavouritesMap, Post, PostCategory, PostCategoryMap } from "../types/post.ts";
 import { Media } from "../types/media.ts";
-import { isTimestampAfter, postAndMediaToHeroSlide, postAndMediaToPromoItem, processUserProfile } from "../utils.ts";
+import {
+  isTimestampAfter,
+  newOrder,
+  postAndMediaToHeroSlide,
+  postAndMediaToPromoItem,
+  processUserProfile
+} from "../utils.ts";
 import { HomeContent } from "../types/home.ts";
 import { PromoComponentType } from "../components/PromoItem.tsx";
 import {
@@ -196,6 +202,8 @@ const PostCategoryMapStorageKey = "PostCategoryMap";
 const ArtistCategoryMapStorageKey = "ArtistCategoryMap";
 const CategoryMapStorageKey = "CategoryMap";
 
+const PendingOrderStorageKey = "PendingOrder";
+
 const Context = createContext<DataContext>({ ...defaultContext });
 const categoryMap: CategoryMap = {};
 const artistCategoryMap: CategoryMap = {};
@@ -314,6 +322,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       axios.interceptors.request.eject(interceptorId);
     };
   }, []);
+
 
   const loadMedia = async (ids: number[]): Promise<Media[]> => {
     // https://artpay.art/wp-json/wp/v2/media?include=622,648
@@ -599,7 +608,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async getPendingOrder(): Promise<Order | null> {
       const customerId = auth.user?.id;
       if (!customerId) {
-        throw "Not authenticated";
+        const pendingOrderStr = localStorage.getItem(PendingOrderStorageKey);
+        if (!pendingOrderStr) {
+          return null;
+        }
+        const pendingOrder: Order = JSON.parse(pendingOrderStr);
+        return pendingOrder;
+        //throw "Not authenticated";
       }
       const resp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
         params: {
@@ -628,7 +643,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       // , loan = false
       const customerId = auth.user?.id;
       if (!customerId) {
-        throw "No customer id";
+        const artwork = await this.getArtwork(artworkId.toString());
+        const order = newOrder(artwork);
+        localStorage.setItem(PendingOrderStorageKey, JSON.stringify(order));
+        return order;
+        // throw "No customer id";
       }
       const pendingOrder = await this.getPendingOrder();
       const profile = await this.getUserProfile();
@@ -787,6 +806,31 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
 
     ...favourites
   };
+
+  // Auth event listeners
+  useEffect(() => {
+    const handleUserLoggedIn = () => {
+      const pendingOrderStr = localStorage.getItem(PendingOrderStorageKey);
+      if (!pendingOrderStr) {
+        return;
+      }
+      const pendingOrder: Order = JSON.parse(pendingOrderStr);
+      if (pendingOrder.line_items.length) {
+        setIsLoading(true);
+        dataContext.purchaseArtwork(pendingOrder.line_items[0].product_id).then(() => {
+          localStorage.removeItem(PendingOrderStorageKey);
+        }).finally(() => {
+          setIsLoading(false);
+          console.log("handleUserLoggedIn", pendingOrder.line_items[0].product_id, dataContext.purchaseArtwork);
+        });
+      }
+
+    };
+    document.addEventListener(USER_LOGIN_EVENT, handleUserLoggedIn);
+    return () => {
+      document.removeEventListener(USER_LOGIN_EVENT, handleUserLoggedIn);
+    };
+  }, [dataContext.purchaseArtwork]);
 
   return <Context.Provider value={dataContext}>{isLoading ? <></> : children}</Context.Provider>;
 };

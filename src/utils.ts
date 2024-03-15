@@ -26,6 +26,7 @@ import { OrderLoanCardProps } from "./components/OrderLoanCard.tsx";
 interface categoryValueMatcher {
   getCategoryMapValues(artwork: Artwork, key: string): string[];
 }
+
 export const getPropertyFromMetadata = (metadata: MetadataItem[], key: string): { [key: string]: string } => {
   const item = metadata.find((p) => p.key === key);
   if (!item) {
@@ -38,14 +39,14 @@ export const userToUserInfo = (user: User): UserInfo => {
   return {
     email: user.email,
     id: user.id,
-    username: user.name,
+    username: user.name
   };
 };
 
 export const artworkToGalleryItem = (
   artwork: Artwork,
   cardSize?: CardSize,
-  valueMatcher?: categoryValueMatcher,
+  valueMatcher?: categoryValueMatcher
 ): ArtworkCardProps => {
   return {
     id: artwork.id.toString(),
@@ -60,7 +61,7 @@ export const artworkToGalleryItem = (
     estimatedShippingCost: artwork?.acf?.estimated_shipping_cost,
     dimensions: getArtworkDimensions(artwork),
     technique: valueMatcher?.getCategoryMapValues(artwork, "tecnica").join(" ") || "",
-    year: getPropertyFromMetadata(artwork?.meta_data || [], "anno_di_produzione")?.value,
+    year: getPropertyFromMetadata(artwork?.meta_data || [], "anno_di_produzione")?.value
   };
 };
 export const artworkToOrderItem = (artwork: Artwork, valueMatcher?: categoryValueMatcher): OrderLoanCardProps => {
@@ -74,7 +75,7 @@ export const artworkToOrderItem = (artwork: Artwork, valueMatcher?: categoryValu
     slug: artwork.slug,
     imgUrl: artwork?.images?.length ? artwork.images[0].src : "",
     artworkSize: getArtworkDimensions(artwork),
-    artworkTechnique: valueMatcher?.getCategoryMapValues(artwork, "tecnica").join(" ") || "",
+    artworkTechnique: valueMatcher?.getCategoryMapValues(artwork, "tecnica").join(" ") || ""
   };
 };
 export const artistToGalleryItem = (artist: Artist): ArtistCardProps => {
@@ -91,7 +92,7 @@ export const artistToGalleryItem = (artist: Artist): ArtistCardProps => {
     title: artist.title?.rendered || "",
     description: artist.excerpt?.rendered || "",
     artworksCount: artist.artworks?.length || 0,
-    imgUrl: imgUrl,
+    imgUrl: imgUrl
   };
 };
 
@@ -104,14 +105,14 @@ export const galleryToGalleryContent = (gallery: Gallery): GalleryContent => ({
   categories: [],
   description: gallery.message_to_buyers,
   productsCount: gallery.products_count,
-  foundationYear: gallery.shop?.foundation_year,
+  foundationYear: gallery.shop?.foundation_year
 });
 export const galleryToGalleryItem = (gallery: Gallery): GalleryCardProps => ({
   id: gallery.id,
   title: gallery.display_name,
   slug: gallery.nice_name,
   subtitle: `${gallery.address?.city}`,
-  imgUrl: gallery.shop.banner,
+  imgUrl: gallery.shop.banner
 });
 
 export const orderToOrderHistoryCardProps = (order: Order): OrderHistoryCardProps => {
@@ -132,7 +133,7 @@ export const orderToOrderHistoryCardProps = (order: Order): OrderHistoryCardProp
     purchaseMode: order.payment_method || "",
     subtitle: "",
     title: lineItem?.name || "Opera senza titolo",
-    imgSrc: lineItem?.image?.src || "",
+    imgSrc: lineItem?.image?.src || ""
   };
 };
 
@@ -142,7 +143,7 @@ export const artworkToOrderItems = (artworks: Artwork[], valueMatcher: categoryV
 export const artworksToGalleryItems = (
   artworks: Artwork[],
   cardSize?: CardSize,
-  valueMatcher?: categoryValueMatcher,
+  valueMatcher?: categoryValueMatcher
 ): ArtworkCardProps[] => {
   return artworks.map((a) => artworkToGalleryItem(a, cardSize, valueMatcher));
 };
@@ -183,13 +184,14 @@ function ctaFromLink(htmlString: string): Cta | undefined {
 interface SortableHeroSlideItem extends HeroSlideItem {
   order: number;
 }
+
 export const postAndMediaToHeroSlide = (post: Post, media?: Media): SortableHeroSlideItem => {
   return {
     cta: post.excerpt?.rendered ? ctaFromLink(post.excerpt?.rendered) : undefined,
     imgUrl: media?.source_url || "",
     subtitle: post.content?.rendered || "",
     title: post.title?.rendered || "",
-    order: +(post.acf.ordine || "0"),
+    order: +(post.acf.ordine || "0")
   };
 };
 
@@ -200,7 +202,7 @@ interface SortablePromoItem extends PromoItemProps {
 export const postAndMediaToPromoItem = (
   componentType: PromoComponentType,
   post: Post,
-  media?: Media,
+  media?: Media
 ): SortablePromoItem => {
   return {
     cta: post.excerpt?.rendered ? ctaFromLink(post.excerpt?.rendered) : undefined,
@@ -208,7 +210,7 @@ export const postAndMediaToPromoItem = (
     content: post.content?.rendered || "",
     title: post.title?.rendered || "",
     order: +(post.acf.ordine || "0"),
-    componentType: componentType,
+    componentType: componentType
   };
 };
 
@@ -224,7 +226,7 @@ export const areBillingFieldsFilled = (data?: BaseUserData): boolean => {
     "postcode",
     "country",
     "state",
-    "phone",
+    "phone"
   ];
 
   for (const field of requiredFields) {
@@ -237,14 +239,147 @@ export const areBillingFieldsFilled = (data?: BaseUserData): boolean => {
 };
 
 export const processBillingData = ({ same_as_shipping, ...billingData }: UnprocessedBillingData): BillingData => {
-  const processedBillingData: BillingData = {...billingData}
-  processedBillingData.same_as_shipping = Boolean(same_as_shipping)
-  return processedBillingData
-}
+  const processedBillingData: BillingData = { ...billingData };
+  processedBillingData.same_as_shipping = Boolean(same_as_shipping);
+  return processedBillingData;
+};
 export const processUserProfile = ({ billing, ...userProfile }: UnprocessedUserProfile): UserProfile => {
-  return { ...userProfile, billing: processBillingData(billing) }
-}
+  return { ...userProfile, billing: processBillingData(billing) };
+};
 
+export const newOrder = (artwork: Artwork) => {
+  const now = new Date().toJSON();
+  const tax = ((+artwork.price) * 0.22).toFixed(2);
+  const image = artwork?.images?.length ? artwork.images[0] : undefined;
+  const order: Order = {
+    id: 0,
+    parent_id: 0,
+    status: "pending",
+    currency: "EUR",
+    version: "",
+    prices_include_tax: true,
+    date_created: now,
+    date_modified: now,
+    discount_total: "0.00",
+    discount_tax: "0.00",
+    shipping_total: "0.00",
+    shipping_tax: "0.00",
+    cart_tax: ((+artwork.price) * 0.22).toFixed(2),
+    total: artwork.price,
+    total_tax: ((+artwork.price) * 0.22).toFixed(2),
+    customer_id: 0,
+    order_key: "",
+    billing: {
+      first_name: "",
+      last_name: "",
+      company: "",
+      address_1: "",
+      address_2: "",
+      city: "",
+      state: "",
+      postcode: "",
+      country: "",
+      email: "",
+      phone: ""
+    },
+    shipping: {
+      first_name: "",
+      last_name: "",
+      company: "",
+      address_1: "",
+      address_2: "",
+      city: "",
+      state: "",
+      postcode: "",
+      country: "",
+      phone: ""
+    },
+    payment_method: "",
+    payment_method_title: "",
+    transaction_id: "",
+    customer_ip_address: "",
+    customer_user_agent: "",
+    created_via: "rest-api",
+    customer_note: "",
+    date_completed: null,
+    date_paid: null,
+    cart_hash: "",
+    number: "",
+    meta_data: [],
+    line_items: [
+      {
+        id: 0,
+        name: artwork.name,
+        product_id: artwork.id,
+        variation_id: 0,
+        quantity: 1,
+        tax_class: "",
+        subtotal: artwork.price,
+        subtotal_tax: tax,
+        total: artwork.price,
+        total_tax: tax,
+        taxes: [
+          {
+            id: 1,
+            total: tax,
+            subtotal: tax
+          }
+        ],
+        meta_data: [
+          {
+            id: 19859,
+            key: "_vendor_id",
+            value: artwork.vendor,
+            display_key: "_vendor_id",
+            display_value: artwork.vendor
+          },
+          {
+            id: 19860,
+            key: "Venduto da",
+            value: "Art Luxury Gallery",
+            display_key: "Venduto da",
+            display_value: "Art Luxury Gallery"
+          }
+        ],
+        sku: "",
+        price: +artwork.price,
+        image: {
+          id: image?.id?.toString() || "",
+          src: image?.src || ""
+        },
+        parent_name: null
+      }
+    ],
+    tax_lines: [
+      {
+        id: 1669,
+        rate_code: "IT-IVA 22%-1",
+        rate_id: 1,
+        label: "IVA 22%",
+        compound: false,
+        tax_total: tax,
+        shipping_tax_total: "0.00",
+        rate_percent: 22,
+        meta_data: []
+      }
+    ],
+    shipping_lines: [],
+    fee_lines: [],
+    coupon_lines: [],
+    refunds: [],
+    payment_url: "",
+    is_editable: true,
+    needs_payment: true,
+    needs_processing: true,
+    date_created_gmt: now,
+    date_modified_gmt: now,
+    date_completed_gmt: null,
+    date_paid_gmt: null,
+    currency_symbol: "€"
+  };
+
+  return order;
+};
 
 export const isTimestampAfter = (timestampInSeconds: number, durationInSeconds: number) => {
   // Get current timestamp in seconds
@@ -256,3 +391,4 @@ export const isTimestampAfter = (timestampInSeconds: number, durationInSeconds: 
   // Check if the given timestamp is in the last hour
   return timestampInSeconds > oneHourAgoInSeconds;
 };
+
