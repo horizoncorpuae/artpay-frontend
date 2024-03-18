@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, IconButton, Tab, Typography, useTheme } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, Tab, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
@@ -45,6 +45,10 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const theme = useTheme();
   const snackbar = useSnackbars();
 
+  const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMd = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const isLg = useMediaQuery(theme.breakpoints.only("lg"));
+
   const artworkTechnique = artwork ? data.getCategoryMapValues(artwork, "tecnica").join(" ") : "";
   const artworkCertificate = artwork ? data.getCategoryMapValues(artwork, "certificato").join(" ") : "";
   const artworkUnique = artwork ? data.getCategoryMapValues(artwork, "rarita").join(" ") : "";
@@ -53,6 +57,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const isArtworkFavourite = artwork?.id ? favouriteArtworks.indexOf(artwork.id) !== -1 : false;
 
   const isOutOfStock = artwork?.stock_status === "outofstock";
+
 
   const handleGalleryArtworkSelect = (i: number) => {
     if (galleryDetails && galleryArtworks && galleryArtworks[i]) {
@@ -122,6 +127,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       return;
     }
     data.getArtworkBySlug(urlParams.slug_opera).then(async (resp) => {
+      setIsReady(false);
       setArtwork(resp);
       const [galleryArtworks, favouriteArtworks] = await Promise.all([
         data.listArtworksForGallery(resp.vendor),
@@ -165,6 +171,15 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
     };
   }, [artwork?.id]);
 
+  let sliderHeight = "720px";
+  if (belowSm) {
+    sliderHeight = "315px";
+  } else if (isMd) {
+    sliderHeight = "660px";
+  } else if (isLg) {
+    sliderHeight = "720px";
+  }
+
   return (
     <DefaultLayout
       pageLoading={!isReady}
@@ -192,7 +207,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
             }}>
             <img
               src={artwork?.images?.length ? artwork.images[0].src : ""}
-              style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}
+              style={{ maxHeight: sliderHeight, maxWidth: "100%", objectFit: "contain" }}
             />
           </Grid>
           <Grid item xs={12} p={3} md display="flex" justifyContent="flex-start" flexDirection="column">
@@ -281,6 +296,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           text: "Blocca l'opera",
           link: "#"
         }}
+        disabled={isOutOfStock}
         imgUrl={heroImgUrl}
         onClick={handleLoanPurchase}
         sx={{ mt: { xs: 3, sm: 6, md: 15 }, mb: 5 }}

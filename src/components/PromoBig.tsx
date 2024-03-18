@@ -10,10 +10,11 @@ export interface PromoBigProps {
   content?: string;
   cta?: Cta;
   imgUrl?: string;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
-const PromoBig: React.FC<PromoBigProps> = ({ sx = {}, cta, imgUrl, title, content, onClick }) => {
+const PromoBig: React.FC<PromoBigProps> = ({ sx = {}, cta, imgUrl, title, content, disabled = false, onClick }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -27,12 +28,12 @@ const PromoBig: React.FC<PromoBigProps> = ({ sx = {}, cta, imgUrl, title, conten
       sx={{
         width: "100%",
         background: theme.palette.primary.main,
-        p: { xs: 2, md: 6 },
+        p: { xs: 2, md: 6 }
       }}>
       <Grid
         sx={{
           flexDirection: { xs: "column-reverse", md: "row" },
-          ...sx,
+          ...sx
         }}
         maxWidth="xl"
         container>
@@ -44,7 +45,7 @@ const PromoBig: React.FC<PromoBigProps> = ({ sx = {}, cta, imgUrl, title, conten
               justifyContent: "center",
               borderRadius: "5px",
               background: imgUrl ? "" : theme.palette.primary.light,
-              pt: { xs: 3, md: 0 },
+              pt: { xs: 3, md: 0 }
             }}>
             {imgUrl && (
               <DisplayImage
@@ -69,7 +70,7 @@ const PromoBig: React.FC<PromoBigProps> = ({ sx = {}, cta, imgUrl, title, conten
           />
           {cta && (
             <Box mt={3}>
-              <Button color="contrast" href={cta.link} onClick={onClick}>
+              <Button color="contrast" href={cta.link} onClick={onClick} disabled={disabled}>
                 {cta.text}
               </Button>
             </Box>

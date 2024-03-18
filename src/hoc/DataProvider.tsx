@@ -641,6 +641,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async purchaseArtwork(artworkId: number): Promise<Order> {
       // , loan = false
+      console.log("purchaseArtwork", auth?.isAuthenticated, auth.user?.id);
       const customerId = auth.user?.id;
       if (!customerId) {
         const artwork = await this.getArtwork(artworkId.toString());
@@ -653,6 +654,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const profile = await this.getUserProfile();
       const body: OrderCreateRequest = {
         customer_id: customerId,
+        // status: "draft",
         line_items: [
           {
             product_id: artworkId,
@@ -817,7 +819,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const pendingOrder: Order = JSON.parse(pendingOrderStr);
       if (pendingOrder.line_items.length) {
         setIsLoading(true);
-        dataContext.purchaseArtwork(pendingOrder.line_items[0].product_id).then(() => {
+
+        dataContext.purchaseArtwork(pendingOrder.line_items[0].product_id).then((resp) => {
+          console.log("purchase artwork", pendingOrder.line_items[0].product_id, resp);
           localStorage.removeItem(PendingOrderStorageKey);
         }).finally(() => {
           setIsLoading(false);

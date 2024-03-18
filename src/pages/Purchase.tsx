@@ -64,7 +64,10 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   };
 
   useEffect(() => {
+    console.log("Purchase", auth.isAuthenticated, auth.user?.id);
+
     if (auth.isAuthenticated) {
+
       Promise.all([
         data.getUserProfile().then((resp) => {
           const userProfile = { ...resp };
@@ -124,7 +127,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       });
       setIsReady(true);
     }
-  }, [auth.isAuthenticated, data]);
+  }, [data]);
 
   useEffect(() => {
     if (payments.isReady) {
@@ -180,7 +183,8 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     const updatedShippingLine: ShippingLineUpdateRequest = {
       instance_id: selectedShippingMethod.instance_id.toString(),
       method_id: selectedShippingMethod.method_id,
-      method_title: selectedShippingMethod.method_title
+      method_title: selectedShippingMethod.method_title,
+      total: estimatedShippingCost.toFixed(2)
     };
     if (existingShippingLine) {
       updatedShippingLine.id = existingShippingLine.id;
@@ -317,7 +321,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               </Box>
             )}
           </ContentCard>
-          {orderMode !== "loan" && (
+          {(orderMode !== "loan" && auth.isAuthenticated) && (
             <ContentCard title="Metodo di spedizione" icon={<PiTruckThin size="28px" />}>
               <RadioGroup defaultValue="selected" name="radio-buttons-group">
                 {availableShippingMethods.map((s) => (

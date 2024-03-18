@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 export type OrderCreateRequest = {
   id?: number;
   customer_id: number;
+  status?: string;
   payment_method?: string;
   payment_method_title?: string;
   set_paid: boolean;
@@ -34,6 +35,7 @@ export type ShippingLineUpdateRequest = {
   id?: number;
   instance_id?: string;
   method_title?: string;
+  total?: string
 };
 
 export type Order = {

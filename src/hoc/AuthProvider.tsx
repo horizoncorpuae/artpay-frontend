@@ -138,10 +138,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         wcToken: getWcCredentials(resp.data.wc_api_user_keys)
       });
       setLoginOpen(false);
-      dispatchUserEvent(USER_LOGIN_EVENT, resp.data.id);
       return {};
     } catch (err: unknown) {
-
       setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
       if (axios.isAxiosError(err) && err.response) {
         const data = err.response.data;
@@ -152,12 +150,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         };
       } else {
         setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
-
       }
       //TODO: handle error
       return { error: err?.toString() };
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        console.log("login done");
+        setIsLoading(false);
+      }, 500);
     }
   };
   const register = async ({ email, username, password }: SignUpFormData) => {
@@ -275,9 +275,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     };
   }, [authValues.wcToken, baseUrl, userInfoUrl]);
 
+  useEffect(() => {
+    if (authValues.user && authValues.wcToken) {
+      dispatchUserEvent(USER_LOGIN_EVENT, authValues.user.id);
+    } else {
+      dispatchUserEvent(USER_LOGOUT_EVENT, 0);
+    }
+  }, [authValues.user, authValues.wcToken]);
+
   return (
     <Context.Provider value={state}>
-      {authValues.isLoading ? <></> : children}
+      {(authValues.isLoading || isLoading) ? <></> : children}
       <Dialog fullScreen={isMobile} onClose={() => setLoginOpen(false)} aria-labelledby="auth-dialog-title"
               maxWidth="sm"
               open={loginOpen}>
