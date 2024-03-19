@@ -75,7 +75,7 @@ const PasswordRecovery: React.FC<PasswordRecoveryProps> = ({}) => {
             Password reimpostata con successo
           </Typography>
           <Button variant="contained" sx={{ width: "200px" }} href="/">Vai alla home</Button>
-          <Button variant="outlined" sx={{ width: "200px" }} onClick={() => auth.login(true)}>Effettua il login</Button>
+          {/*          <Button variant="outlined" sx={{ width: "200px" }} onClick={() => auth.login(true)}>Effettua il login</Button>*/}
         </> : <>
           <Typography variant="body1" color="textSecondary" sx={{ mb: 0 }}>
             {subtitle}

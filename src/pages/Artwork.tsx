@@ -60,9 +60,9 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
 
 
   const handleGalleryArtworkSelect = (i: number) => {
-    if (galleryDetails && galleryArtworks && galleryArtworks[i]) {
+    if (galleryArtworks && galleryArtworks[i]) {
       setIsReady(false);
-      navigate(`/gallerie/${galleryDetails.shop?.slug}/opere/${galleryArtworks[i].slug}`);
+      navigate(`/opere/${galleryArtworks[i].slug}`);
     }
   };
 

@@ -197,7 +197,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
         </Typography>
         <PasswordChangeForm askOldPassword onSubmit={handlePasswordChange} />
       </Box>
-      <Box px={6} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
+      {/*<Box px={6} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
           Newsletter
         </Typography>
@@ -208,7 +208,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
           }}
           label="Sei iscrittə alla newsletter di artpay"
         />
-      </Box>
+      </Box>*/}
       <Box px={6} mt={12} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
         <Typography variant="h5">Cancellazione account</Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>

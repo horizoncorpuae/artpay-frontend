@@ -42,7 +42,7 @@ const Artworks: React.FC<ArtworksProps> = ({}) => {
 
   const handleSelectArtwork = (item: CardItem) => {
     if (artworks?.length) {
-      navigate(`/gallerie/${gallerySlug}/opere/${item.slug}`);
+      navigate(`/opere/${item.slug}`);
     }
   };
 

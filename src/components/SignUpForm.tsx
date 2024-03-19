@@ -41,7 +41,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, disabled }) => {
       password: { label: "Password" }
     },
     passwordRequirements:
-      "La password dovrebbe essere composta da almeno 12 caratteri e una combinazione di almeno i seguenti elementi: lettere maiuscole (A-Z), lettere minuscole (a-z), numeri (0-9), caratteri speciali (come !, @, #, $, %, ecc.)",
+      "La password dovrebbe essere composta da almeno 8 caratteri e una combinazione di almeno i seguenti elementi: lettere maiuscole (A-Z), lettere minuscole (a-z), numeri (0-9), caratteri speciali (come !, @, #, $, %, ecc.)",
     privacyLabel:
       "La tua privacy è importante per noi. Qui trovi l’informativa sulla privacy che spiega come raccogliamo, utilizziamo e proteggiamo le tue informazioni personali.",
     privacyDescription: "",
@@ -96,7 +96,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, disabled }) => {
         />
         <PasswordField
           label={registrationFormContent.fields.password.label}
-          {...register("password", { required: true, minLength: 12 })}
+          {...register("password", { required: true, minLength: 8 })}
           error={!!errors?.password}
           helperText={errors?.email?.message}
           disabled={disabled}

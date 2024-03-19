@@ -33,9 +33,7 @@ const ArtworksList: React.FC<ArtworksListProps> = ({ title, items, cardSize, onS
   }, [data]);
 
   const handleSelect = (item: ArtworkCardProps) => {
-    data.getGallery(item.galleryId).then((gallery) => {
-      navigate(`/gallerie/${gallery.shop?.slug}/opere/${item.slug}`);
-    });
+    navigate(`/opere/${item.slug}`);
   };
 
   const handleSetFavourite = async (artworkId: string, isFavourite: boolean) => {

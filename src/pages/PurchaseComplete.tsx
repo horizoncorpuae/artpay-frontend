@@ -51,6 +51,8 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
   const [ready, setReady] = useState(false);
   const [message, setMessage] = useState<Message>();
 
+  //TODO: aggiornamento ordine: payment method, stato ordine, nota per blocco opera
+
   useEffect(() => {
     if (payments.isReady) {
       const urlParams = new URLSearchParams(window.location.search);

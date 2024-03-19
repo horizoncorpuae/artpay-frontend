@@ -107,7 +107,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
 
   const handleSelectArtwork = (item: CardItem) => {
     if (galleryArtworks?.length) {
-      navigate(`/gallerie/${urlParams.slug}/opere/${item.slug}`);
+      navigate(`/opere/${item.slug}`);
     }
   };
   const handleLoadMoreArtworks = async () => {

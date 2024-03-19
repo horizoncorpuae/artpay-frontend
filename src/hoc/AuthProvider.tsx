@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import {
+  Alert,
   Box,
   Button,
   Dialog,
@@ -19,9 +20,11 @@ import SignInForm, { SignInFormData } from "../components/SignInForm.tsx";
 import AppleIcon from "../components/icons/AppleIcon.tsx";
 import GoogleIcon from "../components/icons/GoogleIcon.tsx";
 import FacebookIcon from "../components/icons/FacebookIcon.tsx";
-import { User, UserInfo } from "../types/user.ts";
+import { GoogleUserInfo, User, UserInfo } from "../types/user.ts";
 import { userToUserInfo } from "../utils.ts";
 import { useDialogs } from "./DialogProvider.tsx";
+import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
+import ErrorIcon from "../components/icons/ErrorIcon.tsx";
 
 
 type RequestError = {
@@ -32,6 +35,11 @@ type PasswordResetParams = {
   email: string
   password: string
   code: string
+}
+
+type VerifyTokenData = {
+  email: string;
+  token: string;
 }
 
 export interface AuthState {
@@ -102,6 +110,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const signUpUrl = `${baseUrl}/wp-json/wp/v2/users`;
   const sendPasswordResetLinkUrl = `${baseUrl}/wp-json/wp/v2/user/reset-password`;
   const passwordResetUrl = `${baseUrl}/wp-json/wp/v2/user/set-password`;
+  const verifyGoogleTokenUrl = `${baseUrl}/wp-json/wp/v2/verifyGoogleToken`;
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -110,6 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const [loginOpen, setLoginOpen] = useState(false);
   const [isSignIn, setIsSignIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>();
 
   const [authValues, setAuthValues] = React.useState<AuthState>({
     isAuthenticated: false,
@@ -118,7 +128,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     wcToken: undefined
   });
 
+  const handleError = (err: unknown) => {
+    if (axios.isAxiosError(err) && err.response) {
+      setError(err.response?.data?.message || err.message || JSON.stringify(err));
+    } else {
+      setError("Si è verificato un errore");
+    }
+    setIsLoading(false);
+  };
+
+  const googleLogin = useGoogleLogin({
+    // redirect_uri: "https://artpay.art/openidcallback/google",
+    onSuccess: (tokenResponse: TokenResponse) => {
+      console.log("tokenResponse", tokenResponse);
+      axios.get<GoogleUserInfo>(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenResponse.access_token}`).then(resp => {
+        console.log("userinfo", resp.data);
+        axios.post<VerifyTokenData, AxiosResponse<User>>(verifyGoogleTokenUrl, {
+          token: tokenResponse.access_token,
+          email: resp.data.email
+        }).then(() => {
+          setIsLoading(false);
+          setLoginOpen(false);
+        }).catch(handleError);
+      }).catch(handleError);
+    },
+    onError: (errorResponse) => {
+      setIsLoading(false);
+      setError(errorResponse.error_description);
+      console.log("errorResponse", errorResponse);
+    },
+    onNonOAuthError: (errorResponse) => {
+      switch (errorResponse.type) {
+        case "popup_closed":
+          setError("Finestra di login chiusa");
+          break;
+        case "popup_failed_to_open":
+          setError("Impossibile aprire la finestra di login");
+          break;
+        default:
+          setError("Si è verificato un errore");
+      }
+      setIsLoading(false);
+    },
+    flow: "implicit",
+    scope: "openid"
+  });
+
+  const handleGoogleLogin = () => {
+    setIsLoading(true);
+    setError(undefined);
+    googleLogin();
+  };
+
   const login = async ({ email, password }: SignInFormData) => {
+    setError(undefined);
     setIsLoading(true);
     try {
       const resp = await axios.get<SignInFormData, AxiosResponse<User>>(loginUrl, {
@@ -198,7 +261,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     resetAuthValues();
     return Promise.resolve(true);
   };
-
   const sendPasswordResetLink = async (email: string): Promise<{ error?: unknown }> => {
     try {
       await axios.post<SignInFormData, AxiosResponse<User>>(sendPasswordResetLinkUrl, { email: email });
@@ -210,10 +272,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const resetPassword = async ({ email, password, code }: PasswordResetParams): Promise<void> => {
     await axios.post<SignInFormData, AxiosResponse<User>>(passwordResetUrl, { email, password, code });
   };
-
   const getRole = () => {
     //TODO: get role
     return "";
+  };
+
+  const handleClose = () => {
+    setError(undefined);
+    setLoginOpen(false);
   };
 
   const resetAuthValues = () =>
@@ -286,7 +352,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   return (
     <Context.Provider value={state}>
       {(authValues.isLoading || isLoading) ? <></> : children}
-      <Dialog fullScreen={isMobile} onClose={() => setLoginOpen(false)} aria-labelledby="auth-dialog-title"
+      <Dialog fullScreen={isMobile} onClose={() => handleClose()} aria-labelledby="auth-dialog-title"
               maxWidth="sm"
               open={loginOpen}>
         <Box px={6} sx={{ pt: { xs: 3, md: 6 } }} alignItems="center" display="flex">
@@ -294,7 +360,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
           <Box flexGrow={1} />
           <IconButton
             aria-label="close"
-            onClick={() => setLoginOpen(false)}
+            onClick={() => handleClose()}
             sx={{ color: (theme) => theme.palette.grey[500] }}>
             <Close />
           </IconButton>
@@ -307,14 +373,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
             <SignUpForm disabled={isLoading} onSubmit={register} />
           )}
           <Divider sx={{ maxWidth: "80%", marginLeft: "10%" }} />
+          {error && <Alert variant="outlined" color="error" onClose={() => setError(undefined)}
+                           icon={<ErrorIcon sx={{ transform: "translateY(-1px)" }} color="error" />}>{error}</Alert>}
           <Box display="flex" flexDirection="column" gap={1} py={2}>
-            <Button variant="outlined" endIcon={<AppleIcon color="primary" />}>
+            <Button variant="outlined" disabled={isLoading}
+                    endIcon={<AppleIcon color={isLoading ? "disabled" : "primary"} />}>
               Continua con Apple
             </Button>
-            <Button variant="outlined" endIcon={<GoogleIcon color="primary" />}>
+            <Button variant="outlined" disabled={isLoading} onClick={() => handleGoogleLogin()}
+                    endIcon={<GoogleIcon color={isLoading ? "disabled" : "primary"} />}>
               Continua con Google
             </Button>
-            <Button variant="outlined" endIcon={<FacebookIcon color="primary" />}>
+            <Button variant="outlined" disabled={isLoading}
+                    endIcon={<FacebookIcon color={isLoading ? "disabled" : "primary"} />}>
               Continua con Facebook
             </Button>
           </Box>

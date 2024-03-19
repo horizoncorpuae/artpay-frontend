@@ -14,7 +14,8 @@ import ArtistsList from "../components/ArtistsList.tsx";
 import { useNavigate } from "react-router-dom";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
-export interface HomeProps {}
+export interface HomeProps {
+}
 
 const Home: React.FC<HomeProps> = ({}) => {
   const data = useData();
@@ -28,15 +29,7 @@ const Home: React.FC<HomeProps> = ({}) => {
 
   const handleSelectArtwork = (item?: ArtworkCardProps) => {
     if (item) {
-      setIsReady(false);
-      data
-        .getGallery(item.galleryId)
-        .then((gallery) => {
-          navigate(`/gallerie/${gallery.shop?.slug}/opere/${item.slug}`);
-        })
-        .catch(() => {
-          setIsReady(true);
-        });
+      navigate(`/opere/${item.slug}`);
     }
   };
 
@@ -44,7 +37,7 @@ const Home: React.FC<HomeProps> = ({}) => {
     Promise.all([
       data.getHomeContent().then((resp) => setHomeContent(resp)),
       data.listFeaturedArtworks().then((resp) => setFeaturedArtworks(artworksToGalleryItems(resp))),
-      data.listFeaturedArtists().then((resp) => setFeaturedArtists(artistsToGalleryItems(resp))),
+      data.listFeaturedArtists().then((resp) => setFeaturedArtists(artistsToGalleryItems(resp)))
     ])
       .then(() => {
         setIsReady(true);

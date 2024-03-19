@@ -81,7 +81,8 @@ export interface BaseUserData {
   phone: string;
   email?: string;
 }
-export interface ShippingData extends BaseUserData{
+
+export interface ShippingData extends BaseUserData {
 
 }
 
@@ -93,7 +94,7 @@ export interface BillingData extends BaseUserData {
   same_as_shipping?: boolean;
 }
 
-export type UnprocessedBillingData = Exclude<BillingData, 'same_as_shipping'> & {same_as_shipping?: string}
+export type UnprocessedBillingData = Exclude<BillingData, "same_as_shipping"> & { same_as_shipping?: string }
 
 
 export interface UserProfile {
@@ -111,7 +112,7 @@ export interface UserProfile {
   shipping: ShippingData;
   is_paying_customer: boolean;
   avatar_url: string;
-  meta_data?: {key: string, value: string}[];
+  meta_data?: { key: string, value: string }[];
   _links: {
     self: {
       href: string;
@@ -125,6 +126,7 @@ export interface UserProfile {
 export interface UnprocessedUserProfile extends UserProfile {
   billing: UnprocessedBillingData;
 }
+
 export interface UpdateUserProfile {
   id?: number;
   email?: string;
@@ -135,5 +137,15 @@ export interface UpdateUserProfile {
   shipping?: Partial<ShippingData>;
   is_paying_customer?: boolean;
   avatar_url?: string;
-  meta_data?: {key: string, value: string}[];
+  meta_data?: { key: string, value: string }[];
 }
+
+export type GoogleUserInfo = {
+  sub: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  email: string;
+  email_verified: boolean;
+};

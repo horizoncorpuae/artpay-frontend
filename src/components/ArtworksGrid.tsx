@@ -39,13 +39,7 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
     }
   }, [data, auth.isAuthenticated]);
   const handleSelect = (item: ArtworkCardProps) => {
-    if (!item.galleryId) {
-      navigate(`/opere/${item.slug}`);
-      return;
-    }
-    data.getGallery(item.galleryId).then((gallery) => {
-      navigate(`/gallerie/${gallery.shop?.slug}/opere/${item.slug}`);
-    });
+    navigate(`/opere/${item.slug}`);
   };
   const handleLoadMore = () => {
     if (onLoadMore) {
