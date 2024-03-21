@@ -56,6 +56,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const [paymentIntent, setPaymentIntent] = useState<PaymentIntent>();
   const [artworks, setArtworks] = useState<ArtworkCardProps[]>([]);
 
+  orderMode = (orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera") ? "loan" : "standard";
+
+  console.log("orderMode", orderMode, pendingOrder?.customer_note);
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
     if (isAxiosError(err) && err.response?.data?.message) {
       text = err.response?.data?.message;

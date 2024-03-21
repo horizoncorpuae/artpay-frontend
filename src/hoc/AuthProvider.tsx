@@ -303,10 +303,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   // Guest auth interceptor
   useEffect(() => {
     const interceptorId = axios.interceptors.request.use((config) => {
+      const needsWcKey = config.url?.startsWith(`${baseUrl}/wp-json/wc/`); //
+      //console.log("auth interceptor", needsWcKey, !!config.headers.Authorization, !!authValues.wcToken, config.url);
       if (!config.url?.startsWith(`${baseUrl}/wp-json/`)) {
         return config;
       }
-      const needsWcKey = config.url?.startsWith(`${baseUrl}/wp-json/wc/`); //
       if (!config.headers.Authorization) {
         if (needsWcKey) {
           config.headers.Authorization = authValues.wcToken;

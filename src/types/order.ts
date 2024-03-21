@@ -5,6 +5,7 @@ export type OrderCreateRequest = {
   id?: number;
   customer_id: number;
   status?: string;
+  customer_note?: string;
   payment_method?: string;
   payment_method_title?: string;
   set_paid: boolean;
@@ -16,6 +17,7 @@ export type OrderCreateRequest = {
 
 export type OrderUpdateRequest = {
   customer_id?: number;
+  customer_note?: string;
   payment_method?: string;
   payment_method_title?: string;
   billing?: BillingData;

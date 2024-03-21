@@ -630,7 +630,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           per_page: 1,
           parent: 0,
           customer: customerId
-        }
+        },
+        headers: { Authorization: auth.getAuthToken() }
       });
       return resp.data.length === 1 ? resp.data[0] : null;
     },
@@ -652,7 +653,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       );
       return resp.data;
     },
-    async purchaseArtwork(artworkId: number): Promise<Order> {
+    async purchaseArtwork(artworkId: number, loan = false): Promise<Order> {
       // , loan = false
       console.log("purchaseArtwork", auth?.isAuthenticated, auth.user?.id);
       const customerId = auth.user?.id;
@@ -678,6 +679,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         shipping: { ...profile.shipping },
         shipping_lines: []
       };
+      if (loan) {
+        //body.payment_method = "card";
+        body.customer_note = "Blocco opera";
+      }
       if (pendingOrder) {
         await axios.put<OrderCreateRequest, AxiosResponse<Order>>(
           `${baseUrl}/wp-json/wc/v3/orders/${pendingOrder.id}`,
@@ -743,7 +748,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       if (!userId) {
         throw "Not authenticated";
       }
-      const resp = await axios.get<unknown, AxiosResponse<UnprocessedUserProfile>>(`${baseUrl}/wp-json/wc/v3/customers/${userId}`);
+      const resp = await axios.get<unknown, AxiosResponse<UnprocessedUserProfile>>(`${baseUrl}/wp-json/wc/v3/customers/${userId}`, {
+        headers: { Authorization: auth.getAuthToken() }
+      });
       return processUserProfile(resp.data);
     },
     async deleteUser(): Promise<void> {

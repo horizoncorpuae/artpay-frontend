@@ -45,7 +45,7 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
     }
     setReady(false);
     data
-      .purchaseArtwork(+artwork.id)
+      .purchaseArtwork(+artwork.id, true)
       .then(() => {
         navigate("/accconto-blocca-opera");
       })
