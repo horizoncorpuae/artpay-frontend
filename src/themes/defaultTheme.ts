@@ -173,6 +173,17 @@ const defaultTheme: Theme = createTheme({
         },
         notchedOutline: {
           padding: "0 24px"
+        },
+        adornedEnd: {
+          paddingRight: 0,
+          "button": {
+            height: "38px"
+          }
+        },
+        adornedStart: {
+          "input": {
+            paddingLeft: "8px"
+          }
         }
       }
     },
@@ -192,7 +203,7 @@ const defaultTheme: Theme = createTheme({
           borderRadius: "20px"
         },
         adornedEnd: {
-          paddingRight: 0,
+          paddingRight: "0!important",
           "button": {
             height: "40px"
           }
@@ -373,13 +384,18 @@ const defaultTheme: Theme = createTheme({
     MuiFooter: {
       styleOverrides: {
         root: {
-          //backgroundColor: "#010F22",
-          "& a": {
+          backgroundColor: "#FAFAFB",
+          "& a.link": {
             //color: "white"
             color: "#010F22",
-            textDecoration: "none"
+            textDecoration: "none",
+            fontWeight: 500
           },
-          "& a:visited": {
+          "& a.link-secondary": {
+            //color: "white"
+            color: "#010F22"
+          },
+          "& a.link:visited": {
             //color: "#96b1d7"
           }
         }

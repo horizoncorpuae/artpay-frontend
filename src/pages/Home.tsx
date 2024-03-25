@@ -63,7 +63,7 @@ const Home: React.FC<HomeProps> = ({}) => {
   return (
     <DefaultLayout pageLoading={!isReady} maxWidth={false}>
       <HeroSlider slides={homeContent?.heroSlides} />
-      <Grid sx={{ px: { xs: 0, md: 6 }, mt: 4, justifyContent: "center" }} container>
+      <Grid sx={{ px: { xs: 0, md: 4, lg: 8 }, mt: 4, justifyContent: "center" }} container>
         {featuredArtworks && (
           <ArtworksList
             items={featuredArtworks || []}
@@ -81,7 +81,7 @@ const Home: React.FC<HomeProps> = ({}) => {
           <NewsletterBig title="Iscriviti alla nostra newsletter" />
         </Grid>
       </Grid>
-      <Grid sx={{ px: { xs: 0, md: 6 }, my: 6 }} container>
+      <Grid sx={{ px: { xs: 0, md: 4, lg: 8 }, my: 6 }} container>
         <ArtistsList items={featuredArtists || []} title="Artisti in evidenza" />
       </Grid>
     </DefaultLayout>

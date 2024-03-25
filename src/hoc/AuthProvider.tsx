@@ -141,7 +141,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     // redirect_uri: "https://artpay.art/openidcallback/google",
     onSuccess: (tokenResponse: TokenResponse) => {
       console.log("tokenResponse", tokenResponse);
-      axios.get<GoogleUserInfo>(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenResponse.access_token}`).then(resp => {
+      axios.get<GoogleUserInfo>(`https://www.googleapis.com/oauth2/v3/userinfo`,
+        { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } }).then(resp => {
         console.log("userinfo", resp.data);
         axios.post<VerifyTokenData, AxiosResponse<User>>(verifyGoogleTokenUrl, {
           token: tokenResponse.access_token,

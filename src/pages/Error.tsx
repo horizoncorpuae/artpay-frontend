@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, Button, Link, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import TextField from "../components/TextField.tsx";
 import SearchIcon from "../components/icons/SearchIcon.tsx";
@@ -9,7 +9,7 @@ export interface ErrorProps {
   errorCode?: number;
 }
 
-const Error: React.FC<ErrorProps> = ({ errorCode }) => {
+const Error: React.FC<ErrorProps> = () => {
   const urlParams = useParams();
 
   const errorText: { title: string | ReactNode, text: string | ReactNode, showSearch: boolean, showRetry: boolean } = {
@@ -22,7 +22,7 @@ const Error: React.FC<ErrorProps> = ({ errorCode }) => {
     case "404":
       errorText.title = <>Ooooops! Error 404!<br />Page not found!</>;
       errorText.text = <>Non hai trovato quello che cercavi!<br />Tenta una nuova ricerca!</>;
-      errorText.showSearch = true;
+      // errorText.showSearch = true;
       break;
     default:
       errorText.title = <>Ooooops! Error {urlParams.code || ""}!<br />Qualocosa non ha funzionato!</>;
@@ -50,8 +50,8 @@ const Error: React.FC<ErrorProps> = ({ errorCode }) => {
         }} />
       </Box>}
       <Box sx={{ mt: 3 }} display="flex" justifyContent="space-between" alignItems="center">
-        <Button variant="outlined">Segnala un errore</Button>
-        <Link href="#">Contatta Artpay</Link>
+        <Button variant="contained" href="/">Torna alla home</Button>
+        <Button variant="outlined" href="mailto:info@artpay.art">Segnala un errore</Button>
       </Box>
     </Box>
 

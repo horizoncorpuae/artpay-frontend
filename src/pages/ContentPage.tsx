@@ -26,7 +26,7 @@ const ContentPage: React.FC<ContentPageProps> = ({ slug }) => {
 
   return (
     <DefaultLayout pb={3} pageLoading={!ready}>
-      <Box sx={{ pt: { xs: 8, md: 16 }, pb: 6, px: { xs: 3, md: 6 } }}>
+      <Box sx={{ pt: { xs: 8, sm: 12, md: 16 }, pb: 6, px: { xs: 3, md: 10, lg: 14 } }}>
         <Typography variant="h1">{pageContent?.title?.rendered || ""}</Typography>
         <Box
           className="styled-page"

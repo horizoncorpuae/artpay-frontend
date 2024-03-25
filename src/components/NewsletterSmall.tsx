@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, Link, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import Checkbox from "./Checkbox.tsx";
 import { useData } from "../hoc/DataProvider.tsx";
@@ -36,11 +36,11 @@ const NewsletterSmall: React.FC<NewsletterSmallProps> = ({}) => {
   };
 
   return (
-    <Grid xs={12} md={4} py={1} px={2} sx={{ backgroundColor: "rgba(255,255,255,.90)", borderRadius: "8px" }} item>
-      <Typography variant="body1" color="textPrimary" sx={{ mb: 1 }} fontWeight={600}>
-        Newsletter
+    <Grid xs={12} md={4} py={3} px={3} sx={{ backgroundColor: "rgba(255,255,255,.90)", borderRadius: "5px" }} item>
+      <Typography variant="body1" color="textPrimary" sx={{ mb: 1 }} fontWeight={400}>
+        Iscriviti alla newsletter di artpay
       </Typography>
-      <Box sx={{ textAlign: "center", pt: 1, pb: 2 }}>
+      <Box sx={{ textAlign: "center", pt: 1, pb: 0 }}>
         {formState === "new" ?
           <form onSubmit={handleSubmit(handleFormSubmit)} datatype="subscription">
             <Controller
@@ -56,6 +56,9 @@ const NewsletterSmall: React.FC<NewsletterSmallProps> = ({}) => {
                   {...field}
                   error={!!errors.email}
                   helperText={errors.email?.message}
+                  InputProps={{
+                    endAdornment: <Button variant="contained" type="submit">Iscriviti</Button>
+                  }}
                 />
               )}
             />
@@ -65,16 +68,14 @@ const NewsletterSmall: React.FC<NewsletterSmallProps> = ({}) => {
               sx={{ mt: 2, mb: 3, textAlign: "left" }}
               label={<Typography variant="body2" color={errors.optIn ? "error" : "textSecondary"}>
                 * Dichiaro di aver preso visione dell'{" "}
-                <a href="https://artpay.art/informativa-sulla-privacy" target="_blank" rel="noopener noreferrer">
+                <Link color="inherit"
+                      href="https://artpay.art/informativa-sulla-privacy" target="_blank" rel="noopener noreferrer">
                   informativa riguardante il trattamento dei dati personali
-                </a>
+                </Link>
               </Typography>}
               error={!!errors?.optIn}
               {...register("optIn", { required: true })}
             />
-            <Button variant="contained" color="primary" type="submit" fullWidth>
-              Iscriviti
-            </Button>
           </form> : <NewsletterFormMessage formState={formState} />}
       </Box>
     </Grid>

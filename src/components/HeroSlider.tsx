@@ -29,7 +29,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ slides = [] }) => {
     const timeoutHandler = () => {
       handleNext();
     };
-    let timeoutId: number;
+    let timeoutId: any;
     if (SLIDER_INTERVAL_MS) {
       timeoutId = setInterval(timeoutHandler, SLIDER_INTERVAL_MS);
     }
@@ -47,7 +47,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ slides = [] }) => {
         height: { xs: "auto" },
         pt: { xs: 12, md: 14 },
         pb: { xs: 4, md: 3 },
-        px: { xs: 2, md: 6, lg: 12 },
+        px: { xs: 2, md: 10, lg: 14 },
         background: theme.palette.primary.main
       }}
       display="flex"

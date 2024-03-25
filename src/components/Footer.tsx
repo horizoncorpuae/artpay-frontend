@@ -1,7 +1,6 @@
 import React from "react";
-import { Box, Divider, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Divider, Grid, IconButton, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { FaPaypal, FaCcVisa, FaCcMastercard } from "react-icons/fa";
 import { ArrowUpward } from "@mui/icons-material";
 import SocialLinks from "./SocialLinks.tsx";
 import NewsletterSmall from "./NewsletterSmall.tsx";
@@ -23,7 +22,7 @@ const FooterRoot = styled("div", {
   //color: theme.palette.contrast.main
 }));
 const Footer: React.FC<FooterProps> = ({}) => {
-  const gridProps = { maxWidth: "1036px", px: { xs: 4, md: 3 }, pt: { xs: 2, md: 6 }, gap: { xs: 2, md: 0 } };
+  const gridProps = { maxWidth: "1036px", px: { xs: 4, md: 3, lg: 0 }, pt: { xs: 2, md: 6 }, gap: { xs: 2, md: 0 } };
 
   return (
     <FooterRoot>
@@ -55,46 +54,57 @@ const Footer: React.FC<FooterProps> = ({}) => {
       </Grid>*/}
       <Grid sx={gridProps} container>
         <Grid xs={12} md={4} item>
+          <Typography variant="body1" fontWeight={400}>
+            Artpay S.R.L. <br />
+            Via Carloforte, 60, 09123, Cagliari <br />
+            Partita IVA 04065160923
+          </Typography>
+          <Typography sx={{ mt: 3 }} variant="body1" fontWeight={400}>
+            hi@artpay.com <br />
+            <Link className="link-secondary" href="mailto:info@artpay.art">Restiamo in contatto</Link>
+          </Typography>
+        </Grid>
+        <Grid xs={12} md={2} item>
           <Typography variant="body1" fontWeight={600}>
             Chi siamo
           </Typography>
           <Box display="flex" flexDirection="column" my={1} gap={1}>
-            <Typography variant="body2">
-              <a href="/chi-siamo">Chi siamo</a>
+            <Typography color="textPrimary" variant="body2">
+              <Link className="link" href="/chi-siamo">Chi siamo</Link>
             </Typography>
             <Typography variant="body2">
-              <a href="#">Lavora con noi</a>
+              <a className="link" href="#">Lavora con noi</a>
             </Typography>
             <Typography variant="body2">
-              <a href="#">Contatti</a>
+              <a className="link" href="#">Contatti</a>
             </Typography>
             <Typography variant="body2">
-              <a href="#">Press</a>
+              <a className="link" href="#">Press</a>
             </Typography>
             <Typography variant="body2">
-              <a href="#1">Il nostro blog sull’arte</a>
+              <a className="link" href="#1">Il nostro blog sull’arte</a>
             </Typography>
           </Box>
         </Grid>
-        <Grid xs={12} md={4} item>
+        <Grid xs={12} md={2} item>
           <Typography variant="body1" fontWeight={600}>
             I nostri servizi
           </Typography>
           <Box display="flex" flexDirection="column" my={1} gap={1}>
             <Typography variant="body2">
-              <a href="https://artpay.art/artpay-per-gallerie">ArtPay per gallerie</a>
+              <a className="link" href="https://artpay.art/artpay-per-gallerie">ArtPay per gallerie</a>
             </Typography>
             <Typography variant="body2">
-              <a href="https://artpay.art/artpay-per-collezionisti/">ArtPay per compratori</a>
+              <a className="link" href="https://artpay.art/artpay-per-collezionisti/">ArtPay per compratori</a>
             </Typography>
             <Typography variant="body2">
-              <a href="#">ArtPay leasing</a>
+              <a className="link" href="#">ArtPay leasing</a>
             </Typography>
             <Typography variant="body2">
-              <a href="#">ArtPay per Banche e Fintech</a>
+              <a className="link" href="#">ArtPay per Banche e Fintech</a>
             </Typography>
             <Typography variant="body2">
-              <a href="/faq">FAQ</a>
+              <a className="link" href="/faq">FAQ</a>
             </Typography>
           </Box>
         </Grid>

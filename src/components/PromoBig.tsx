@@ -28,7 +28,8 @@ const PromoBig: React.FC<PromoBigProps> = ({ sx = {}, cta, imgUrl, title, conten
       sx={{
         width: "100%",
         background: theme.palette.primary.main,
-        p: { xs: 2, md: 6 }
+        py: { xs: 2, md: 6 },
+        px: { xs: 2, md: 6, lg: 14 }
       }}>
       <Grid
         sx={{
