@@ -116,7 +116,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
             } else {
               if (completedOrderId) {
                 try {
-                  await data.setOrderStatus(+completedOrderId, "on-hold", { payment_method: "sepa" });
+                  await data.setOrderStatus(+completedOrderId, "on-hold", { payment_method: "Stripe SEPA" });
                 } catch (e) {
                   console.error(e);
                   // TODO: errore

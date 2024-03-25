@@ -27,7 +27,7 @@ const Footer: React.FC<FooterProps> = ({}) => {
 
   return (
     <FooterRoot>
-      <Grid sx={gridProps} container>
+      {/*<Grid sx={gridProps} container>
         <Grid xs={12} md={4} item>
           <Typography variant="body2" fontWeight={600}>
             Pagamenti sicuri
@@ -52,7 +52,7 @@ const Footer: React.FC<FooterProps> = ({}) => {
           </a>
         </Grid>
         <Grid xs={12} md={4} item></Grid>
-      </Grid>
+      </Grid>*/}
       <Grid sx={gridProps} container>
         <Grid xs={12} md={4} item>
           <Typography variant="body1" fontWeight={600}>

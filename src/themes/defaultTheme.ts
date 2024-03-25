@@ -22,7 +22,8 @@ const defaultTheme: Theme = createTheme({
     secondary: {
       light: "#ECEDFC",
       main: "#5366EB",
-      dark: "#3F55E9"
+      dark: "#3F55E9",
+      contrastText: "#FFF"
     },
     success: {
       main: "#42B396"
@@ -55,7 +56,7 @@ const defaultTheme: Theme = createTheme({
   typography: {
     fontFamily: "intertight",
     h1: { fontSize: "76px", lineHeight: "105%", fontWeight: 400 },
-    h2: { fontSize: "61px", lineHeight: "100%", fontWeight: 400 },
+    h2: { fontSize: "36px", lineHeight: "100%", fontWeight: 400 },
     h3: { fontSize: "48px", lineHeight: "120%", fontWeight: 400 },
     h4: { fontSize: "39px", lineHeight: "110%", fontWeight: 400 },
     h5: { fontSize: "31px", lineHeight: "120%", fontWeight: 400 },
@@ -172,6 +173,34 @@ const defaultTheme: Theme = createTheme({
         },
         notchedOutline: {
           padding: "0 24px"
+        }
+      }
+    },
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          "&::before": {
+            display: "none"
+          },
+          "&::after": {
+            display: "none"
+          },
+          "input": {
+            paddingTop: "6px"
+          },
+          background: "#ECEDFC",
+          borderRadius: "20px"
+        },
+        adornedEnd: {
+          paddingRight: 0,
+          "button": {
+            height: "40px"
+          }
+        },
+        adornedStart: {
+          "input": {
+            paddingLeft: "8px"
+          }
         }
       }
     },
