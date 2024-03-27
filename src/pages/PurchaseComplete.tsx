@@ -11,6 +11,8 @@ import DisplayProperty from "../components/DisplayProperty.tsx";
 import { BankTransferAction } from "../types/order.ts";
 import { useData } from "../hoc/DataProvider.tsx";
 
+import paymentSuccess from "../assets/images/payment-success.svg";
+
 export interface PurchaseCompleteProps {
 }
 
@@ -240,12 +242,12 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
             )}
           </Grid>
           <Grid display="flex" alignItems="center" justifyContent="center" xs={12} lg={3} xl={4} item>
-            {message.status === "success" && <img src="/images/payment-success.svg" />}
+            {message.status === "success" && <img src={paymentSuccess} />}
             {message.status === "failure" && (
               <Cancel fontSize="large" sx={{ height: "140px", width: "140px" }} color="error" />
             )}
             {message.status === "processing" && <CircularProgress size="140px" />}
-            {message.status === "requires_action" && !isMobile && <img src="/images/payment-success.svg" />}
+            {message.status === "requires_action" && !isMobile && <img src={paymentSuccess} />}
           </Grid>
         </Grid>
       )}

@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
 import InfoCard from "./InfoCard.tsx";
+import imgBoat from "../assets/images/boat.svg";
 
 export interface PurchaseLoanStepOneProps {
   onClick?: () => void;
@@ -35,21 +36,21 @@ const PurchaseLoanStepOne: React.FC<PurchaseLoanStepOneProps> = ({ onClick }) =>
           <InfoCard
             title="Versa un acconto"
             subtitle="Questa operazione blocca l'opera e garantisce l'esclusiva sull'acquisto. Alla ricezione dell'acconto Artpay bloccherà l'opera per 7 giorni."
-            imgSrc="/images/boat.svg"
+            imgSrc={imgBoat}
           />
         </Box>
         <Box>
           <InfoCard
             title="Richiedi il finanziamento"
             subtitle="Normalmente viene erogato in poche ore*."
-            imgSrc="/images/boat.svg"
+            imgSrc={imgBoat}
           />
         </Box>
         <Box>
           <InfoCard
             title="Compra l’opera d’arte"
             subtitle="Completato l'iter di richiesta e ricevuto il finanziamento, l'acquirente può procedere all'acquisto dell'opera dal sito Artpay"
-            imgSrc="/images/boat.svg"
+            imgSrc={imgBoat}
           />
         </Box>
       </Grid>

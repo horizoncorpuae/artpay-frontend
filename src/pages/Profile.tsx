@@ -13,7 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import OrdersHistory from "../components/OrdersHistory.tsx";
 
-export interface ProfileProps {}
+export interface ProfileProps {
+}
 
 const Profile: React.FC<ProfileProps> = ({}) => {
   const data = useData();
@@ -49,7 +50,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
           </Button>,
           <Button key="logout-btn" color="error" onClick={() => handleLogout()}>
             Logout
-          </Button>,
+          </Button>
         ]}
       />
       <Box
@@ -57,7 +58,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
           borderBottom: 1,
           borderColor: "secondary",
           mx: { xs: 0 },
-          mt: { xs: 3, md: 6 },
+          mt: { xs: 3, md: 6 }
         }}>
         <ResponsiveTabs
           value={selectedTabPanel}
@@ -85,7 +86,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
           <OrdersHistory />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={4}>
-          <OrdersHistory orderStates={["processing", "on-hold"]} />
+          <OrdersHistory title="Opere bloccate" orderStates={["processing", "on-hold"]} />
         </TabPanel>
       </Box>
     </DefaultLayout>

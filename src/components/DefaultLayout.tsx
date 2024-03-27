@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "../hoc/AuthProvider.tsx";
-import { Box, Container, LinearProgress, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Container, ContainerProps, LinearProgress, Typography, useMediaQuery, useTheme } from "@mui/material";
 import Navbar from "./Navbar.tsx";
 import Footer from "./Footer.tsx";
 import { Breakpoint } from "@mui/system";
@@ -14,6 +14,7 @@ export interface DefaultLayoutProps {
   maxWidth?: Breakpoint | false;
   minHeight?: string;
   pb?: number;
+  sx?: ContainerProps["sx"];
 }
 
 const DefaultLayout: React.FC<DefaultLayoutProps> = ({
@@ -24,7 +25,8 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
                                                        pageLoading = false,
                                                        maxWidth = "xl",
                                                        minHeight = "100vh",
-                                                       pb = 0
+                                                       pb = 0,
+                                                       sx = {}
                                                      }) => {
   const auth = useAuth();
   const theme = useTheme();
@@ -71,7 +73,8 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         px: "0!important",
         pb: pb,
         minHeight: (menuOpen && isMobile) ? undefined : minHeight,
-        overflow: (menuOpen && isMobile) ? "hidden" : undefined
+        overflow: (menuOpen && isMobile) ? "hidden" : undefined,
+        ...sx
       }} maxWidth={maxWidth}>
         {/*isMobile && <Box mt={8}></Box>*/}
         {children}

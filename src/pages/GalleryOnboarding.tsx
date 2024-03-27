@@ -2,7 +2,7 @@ import React from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { Box, Button, Grid, Link, Typography } from "@mui/material";
 import PromoCard from "./PromoCard.tsx";
-import reservationBackground from "../assets/images/reservation-box-background.png";
+// import reservationBackground from "../assets/images/reservation-box-background.png";
 import onboardingBackground from "../assets/images/background-onboarding.svg";
 
 import onboardingImg1 from "../assets/images/gallery-onboarding-img-1.png";
@@ -13,10 +13,10 @@ export interface GalleryOnboardingProps {
 }
 
 const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
-  const px = { xs: 0, md: 4, lg: 14 };
-  return (<DefaultLayout>
+  const px = { xs: 0, sm: 3, md: 10, lg: 14 };
+  return (<DefaultLayout sx={{ overflowX: "hidden" }}>
     <Grid sx={{ mt: 18, px: px }} container>
-      <Grid item xs={12} md={7}>
+      <Grid item xs={12} md={8} lg={7}>
         <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>Artpay per gallerie</Typography>
         <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
           Artpay per gallerie Lorem ipsum dolor sit amet, conetur adipiscing elit, sed do eiusmod.
@@ -25,7 +25,7 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
           ullamco laboris nisi ut aliquip ex ea commodo consequat.</Typography>
       </Grid>
-      <Grid item xs={12} md={5} sx={{ pl: 8, pt: 9, minHeight: "720px" }}>
+      <Grid item xs={12} md={4} lg={5} sx={{ pl: 8, pt: 9, minHeight: "720px" }}>
         <Box sx={{ position: "relative" }}>
           <img style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}
                src={onboardingImg1} />
@@ -66,17 +66,23 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
           <Typography variant="display3">Entra a far parte di artpay</Typography>
           <Typography sx={{ my: 6 }} variant="body1">Compila il form e raccontaci il tuo businesss</Typography>
           <Button sx={{ mb: 2 }} variant="contained">Scrivi a hello@artpay.art</Button>
-          <Link color="primary">Consulta le FAQ</Link>
+          <Link color="primary" href="/faq">Consulta le FAQ</Link>
         </Box>
       </Grid>
       <Grid item xs={12} md={6}>
-        <Box sx={{ background: `url(${reservationBackground})`, height: "612px" }} display="flex"
+        {/*        <Box sx={{ background: `url(${reservationBackground})`, height: "612px" }} display="flex"
              flexDirection="column"
              alignItems="center" justifyContent="center">
           <Typography>Programma una consulenza con artpay</Typography>
           <Button sx={{ mt: 4, mb: 2 }} variant="contained">Inizia ora</Button>
           <Typography>Takes 2 minutes</Typography>
-        </Box>
+        </Box>*/}
+        <iframe data-cmp-ab="2"
+                src="https://form.typeform.com/to/aDnsAoId?typeform-embed-id=8112263680325873&amp;typeform-embed=embed-widget&amp;typeform-source=gallerie.artpay.art&amp;typeform-medium=snippet&amp;typeform-medium-version=next&amp;embed-opacity=100&amp;typeform-embed-handles-redirect=1"
+                data-testid="iframe"
+                style={{ border: "0px", transform: "translateZ(0px)", width: "100%", height: "612px" }}
+                allow="microphone; camera"
+                title="My branded typeform" data-cmp-info="8"></iframe>
         <Button variant="outlined" sx={{ mt: 3 }} fullWidth>oppure prenota una chiamata subito</Button>
       </Grid>
 

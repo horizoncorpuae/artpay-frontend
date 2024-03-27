@@ -5,6 +5,8 @@ import PromoSide from "../components/PromoSide.tsx";
 import { Box, Button, Grid, GridProps, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
+import imgGalleryAbout from "../assets/images/image-gallery-about.png";
+import imgLogo from "../assets/images/logo.svg";
 
 export interface AboutProps {
 }
@@ -84,7 +86,7 @@ const About: React.FC<AboutProps> = ({}) => {
         <Grid xs={12} sm={4} sx={{ pb: { xs: 3, sm: 0 }, height: "auto" }} item>
           <img
             style={{ width: imgWidth, maxWidth: "300px", minHeight: isMobile ? "70px" : undefined }}
-            src="/images/logo.svg"
+            src={imgLogo}
           />
         </Grid>
         <Grid xs={12} sm={8} item>
@@ -160,7 +162,7 @@ const About: React.FC<AboutProps> = ({}) => {
               justifyContent: { xs: undefined, sm: "end" }
             }}
             item>
-            <img style={{ width: isMobile ? "100%" : undefined }} src="/images/image-gallery-about.png" />
+            <img style={{ width: isMobile ? "100%" : undefined }} src={imgGalleryAbout} />
           </Grid>
         </Grid>
       </Box>

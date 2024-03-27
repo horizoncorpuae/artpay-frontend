@@ -1,10 +1,10 @@
-import React from "react";
+import React, { ImgHTMLAttributes } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 
 export interface InfoCardProps {
   title?: string;
   subtitle?: string;
-  imgSrc?: string;
+  imgSrc?: ImgHTMLAttributes<any>["src"];
 }
 
 const InfoCard: React.FC<InfoCardProps> = ({ title, subtitle, imgSrc }) => {

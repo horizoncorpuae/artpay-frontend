@@ -25,7 +25,7 @@ const PromoCard: React.FC<PromoCardProps> = ({ title, children, variant, border 
          }}>
       <Typography sx={{ flexGrow: 1 }} color={variant === "contrast" ? theme.palette.primary.contrastText : undefined}
                   variant="display3">{title}</Typography>
-      <Box sx={{ maxWidth: variant === "contrast" ? undefined : "400px" }}>
+      <Box sx={{ maxWidth: variant === "contrast" ? undefined : { xs: undefined, md: "250px", lg: "400px" } }}>
         {children}
       </Box>
     </Box>);
