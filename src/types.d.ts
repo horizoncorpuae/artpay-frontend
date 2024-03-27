@@ -54,12 +54,34 @@ declare module "@mui/material/styles" {
   interface SvgIconPropsColorOverrides {
     contrast: true;
   }
+
+  interface TypographyVariants {
+    display1: React.CSSProperties;
+    display2: React.CSSProperties;
+    display3: React.CSSProperties;
+  }
+
+  // allow configuration using `createTheme`
+  interface TypographyVariantsOptions {
+    display1?: React.CSSProperties;
+    display2?: React.CSSProperties;
+    display3?: React.CSSProperties;
+  }
+}
+
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    display1: true;
+    display2: true;
+    display3: true;
+  }
 }
 
 declare module "@material-ui/core/styles/createPalette" {
   interface Palette {
     contrast: Palette["contrast"];
   }
+
   interface PaletteOptions {
     contrast: PaletteOptions["contrast"];
   }

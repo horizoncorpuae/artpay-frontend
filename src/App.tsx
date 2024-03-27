@@ -35,6 +35,7 @@ import ReactGA from "react-ga4";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect } from "react";
 import Error from "./pages/Error.tsx";
+import GalleryOnboarding from "./pages/GalleryOnboarding.tsx";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || ""; // https://artpay.art
@@ -105,10 +106,7 @@ function AppContent() {
                       path="/artpay-per-collezionisti"
                       element={<ContentPage slug="artpay-per-collezionisti" />}
                     />
-                    <Route
-                      path="/artpay-per-gallerie"
-                      element={<ContentPage slug="artpay-per-gallerie" />}
-                    />
+                    <Route path="/artpay-per-gallerie" element={<GalleryOnboarding />} />
                     <Route path="/errore/:code" element={<Error />} />
                     <Route path="/errore" element={<Error />} />
                   </Routes>

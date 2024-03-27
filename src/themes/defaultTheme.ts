@@ -55,6 +55,8 @@ const defaultTheme: Theme = createTheme({
   },
   typography: {
     fontFamily: "intertight",
+    display1: { fontSize: "88px", lineHeight: "100%", fontWeight: 400, display: "inline-block" },
+    display3: { fontSize: "56px", lineHeight: "100%", fontWeight: 400, display: "inline-block" },
     h1: { fontSize: "76px", lineHeight: "105%", fontWeight: 400 },
     h2: { fontSize: "36px", lineHeight: "100%", fontWeight: 400 },
     h3: { fontSize: "48px", lineHeight: "120%", fontWeight: 400 },
