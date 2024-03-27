@@ -1,17 +1,19 @@
-import React from "react";
+import React, { ImgHTMLAttributes } from "react";
 import { Box, Typography, Button, useTheme } from "@mui/material";
 import { BoxProps } from "@mui/system";
 
+import bestChoiceImg from "../assets/images/best_choice.svg";
+
 export interface LoanConditionsCardProps {
   sx?: BoxProps["sx"];
-  logoSrc: string; // Prop for the first image source
-  isBestChoice?: boolean; // Prop for the second image source
-  monthlyEstimateText: string; // Text prop for the monthly estimate
-  monthlyAmount: string; // Text prop for the monthly amount
-  taegText: string; // Text prop for TAEG details
-  requestQuoteUrl: string; // URL for the "Request Quote" button
-  requestQuoteText: string; // Button text
-  freeAndNonBindingText: string; // Text prop for the "Free and without obligation" part
+  logoSrc: ImgHTMLAttributes<any>["src"];
+  isBestChoice?: boolean;
+  monthlyEstimateText: string;
+  monthlyAmount: string;
+  taegText: string;
+  requestQuoteUrl: string;
+  requestQuoteText: string;
+  freeAndNonBindingText: string;
 }
 
 const LoanConditionsCard: React.FC<LoanConditionsCardProps> = ({
@@ -42,7 +44,7 @@ const LoanConditionsCard: React.FC<LoanConditionsCardProps> = ({
         alignItems="center"
         sx={{ flexDirection: { xs: "column-reverse", sm: "row" } }}>
         <img style={{ height: "48px" }} src={logoSrc} />
-        {isBestChoice ? <img style={{ height: "30px" }} src={"/images/best_choice.svg"} /> : <div />}
+        {isBestChoice ? <img style={{ height: "30px" }} src={bestChoiceImg} /> : <div />}
       </Box>
       <Box
         mt={3}

@@ -11,7 +11,7 @@ export interface FooterProps {
 const FooterRoot = styled("div", {
   name: "MuiFooter", // The component name
   slot: "root" // The slot name
-})(({ theme }) => ({
+})(() => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",

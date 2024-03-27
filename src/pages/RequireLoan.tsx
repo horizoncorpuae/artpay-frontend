@@ -10,13 +10,14 @@ import PurchaseLoanStepOne from "../components/PurchaseLoanStepOne.tsx";
 import PurchaseLoanStepTwo from "../components/PurchaseLoanStepTwo.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import LoanConditionsCard, { LoanConditionsCardProps } from "../components/LoanConditionsCard.tsx";
+import santanderLogo from "../assets/images/santander_logo_1.svg";
 
 export interface RequireLoanProps {
   step?: number;
 }
 
 const loanConditionsContent: LoanConditionsCardProps = {
-  logoSrc: "/images/santander_logo_1.svg",
+  logoSrc: santanderLogo,
   isBestChoice: true,
   monthlyEstimateText: "stima mensile a partire da..",
   monthlyAmount: "120€ al mese",
