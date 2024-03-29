@@ -1,93 +1,141 @@
 import React from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, Button, Grid, Link, Typography } from "@mui/material";
-import PromoCard from "./PromoCard.tsx";
+import { Box, Button, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import PromoCard from "../components/PromoCard.tsx";
 // import reservationBackground from "../assets/images/reservation-box-background.png";
 import onboardingBackground from "../assets/images/background-onboarding.svg";
 
 import onboardingImg1 from "../assets/images/gallery-onboarding-img-1.png";
 import onboardingImg2 from "../assets/images/gallery-onboarding-img-2.png";
 
-export interface GalleryOnboardingProps {
-
-}
+export interface GalleryOnboardingProps {}
 
 const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
-  const px = { xs: 0, sm: 3, md: 10, lg: 14 };
-  return (<DefaultLayout sx={{ overflowX: "hidden" }}>
-    <Grid sx={{ mt: 18, px: px }} container>
-      <Grid item xs={12} md={8} lg={7}>
-        <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>Artpay per gallerie</Typography>
-        <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
-          Artpay per gallerie Lorem ipsum dolor sit amet, conetur adipiscing elit, sed do eiusmod.
-        </Typography>
-        <Typography variant="body1" sx={{ mt: 6 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat.</Typography>
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const px = { xs: 4, sm: 4, md: 10, lg: 14 };
+
+  return (
+    <DefaultLayout sx={{ overflowX: "hidden" }}>
+      <Grid sx={{ mt: 18, px: px }} container>
+        <Grid item xs={12} md={8} lg={7}>
+          <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>
+            Artpay per gallerie
+          </Typography>
+          <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
+            Artpay per gallerie Lorem ipsum dolor sit amet, conetur adipiscing elit, sed do eiusmod.
+          </Typography>
+          <Typography variant="body1" sx={{ mt: 6 }}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat.
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={4} lg={5} sx={{ pl: { xs: 0, sm: 8 }, pt: 9, minHeight: "720px" }}>
+          <Box sx={{ position: "relative" }}>
+            <img style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }} src={onboardingImg1} />
+            <img style={{ position: "absolute", top: "104px", left: "168px" }} src={onboardingImg2} />
+          </Box>
+        </Grid>
       </Grid>
-      <Grid item xs={12} md={4} lg={5} sx={{ pl: 8, pt: 9, minHeight: "720px" }}>
-        <Box sx={{ position: "relative" }}>
-          <img style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}
-               src={onboardingImg1} />
-          <img style={{ position: "absolute", top: "104px", left: "168px" }}
-               src={onboardingImg2} />
+      <Box sx={{ py: 12, background: `url(${onboardingBackground})`, px: px }}>
+        <Box display="flex" flexDirection="column" gap={3}>
+          <PromoCard
+            border
+            title={
+              <>
+                Iscriviti
+                <br />
+                ad artpay
+              </>
+            }>
+            <Typography variant="body1">
+              La tua area riservata sarà attiva entro 2 giorni lavorativi a partire dalla firma del contratto. Un team a
+              tua disposizione sarà pronto a supportarti in caso di necessità.
+            </Typography>
+            <Button variant="contained" sx={{ mt: 3 }}>
+              Inizia ora
+            </Button>
+          </PromoCard>
+          <PromoCard
+            title={
+              <>
+                Onboarding
+                <br />e caricamento opere
+              </>
+            }>
+            <Typography variant="body1">
+              Accettate le condizioni contrattuali, sarai invitatə alla registrazione della tua galleria. Potrai
+              accedere allʼarea riservata e inserire le opere da mettere in vendita, scegliendo se rendere pubblici o
+              meno prezzi ed informazioni.
+            </Typography>
+          </PromoCard>
+          <PromoCard
+            title={
+              <>
+                Inizia a<br />
+                vendere
+              </>
+            }>
+            <Typography variant="body1">
+              Vendi le tue opere online e in galleria in modo semplice e sicuro. Potrai proporre ai tuoi collezionisti
+              lʼacquisto rateale in pochi click e con esito dalle 2 alle 24 ore. Direttamente dalla piattaforma, sempre
+              sotto il tuo controllo.
+            </Typography>
+          </PromoCard>
+          <PromoCard title="Ancora dubbi?" variant="contrast">
+            <Button variant="outlined" color="contrast" fullWidth={isMobile}>
+              Scrivici su Whatsapp
+            </Button>
+            <Button
+              variant="outlined"
+              color="contrast"
+              fullWidth={isMobile}
+              sx={{ ml: { xs: 0, md: 3 }, mt: { xs: 3, md: 0 } }}>
+              Scrivi a hello@artpay.art
+            </Button>
+          </PromoCard>
         </Box>
-      </Grid>
-    </Grid>
-    <Box sx={{ py: 12, background: `url(${onboardingBackground})`, px: px }}>
-      <Box display="flex" flexDirection="column" gap={3}>
-        <PromoCard border title={<>Iscriviti<br />ad artpay</>}>
-          <Typography variant="body1">La tua area riservata sarà attiva entro 2 giorni lavorativi a partire dalla firma
-            del contratto. Un team a tua disposizione sarà pronto a supportarti in caso di necessità.
-          </Typography>
-          <Button variant="contained" sx={{ mt: 3 }}>Inizia ora</Button>
-        </PromoCard>
-        <PromoCard title={<>Onboarding<br />e caricamento opere</>}>
-          <Typography variant="body1">Accettate le condizioni contrattuali, sarai invitatə alla registrazione della tua
-            galleria. Potrai accedere allʼarea riservata e inserire le opere da mettere in vendita, scegliendo se
-            rendere pubblici o meno prezzi ed informazioni.
-          </Typography>
-        </PromoCard>
-        <PromoCard title={<>Inizia a<br />vendere</>}>
-          <Typography variant="body1">Vendi le tue opere online e in galleria in modo semplice e sicuro. Potrai proporre
-            ai tuoi collezionisti lʼacquisto rateale in pochi click e con esito dalle 2 alle 24 ore. Direttamente dalla
-            piattaforma, sempre sotto il tuo controllo.
-          </Typography>
-        </PromoCard>
-        <PromoCard title="Ancora dubbi?" variant="contrast">
-          <Button variant="outlined" color="contrast">Scrivici su Whatsapp</Button>
-          <Button variant="outlined" color="contrast" sx={{ ml: 3 }}>Scrivi a hello@artpay.art</Button>
-        </PromoCard>
       </Box>
-    </Box>
-    <Grid sx={{ py: 12, px: px }} container>
-      <Grid item xs={12} md={6} display="flex" alignItems="center">
-        <Box sx={{ maxWidth: "400px" }} display="flex" flexDirection="column" alignItems="flex-start">
-          <Typography variant="display3">Entra a far parte di artpay</Typography>
-          <Typography sx={{ my: 6 }} variant="body1">Compila il form e raccontaci il tuo businesss</Typography>
-          <Button sx={{ mb: 2 }} variant="contained">Scrivi a hello@artpay.art</Button>
-          <Link color="primary" href="/faq">Consulta le FAQ</Link>
-        </Box>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        {/*        <Box sx={{ background: `url(${reservationBackground})`, height: "612px" }} display="flex"
+      <Grid sx={{ py: 12, px: px }} container>
+        <Grid item xs={12} md={6} sx={{ mb: { xs: 3, sm: 0 } }} display="flex" alignItems="center">
+          <Box sx={{ maxWidth: "400px" }} display="flex" flexDirection="column" alignItems="flex-start">
+            <Typography variant="display3">Entra a far parte di artpay</Typography>
+            <Typography sx={{ my: 6 }} variant="body1">
+              Compila il form e raccontaci il tuo businesss
+            </Typography>
+            <Button sx={{ mb: 2 }} variant="contained">
+              Scrivi a hello@artpay.art
+            </Button>
+            <Link color="primary" href="/faq">
+              Consulta le FAQ
+            </Link>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {/*        <Box sx={{ background: `url(${reservationBackground})`, height: "612px" }} display="flex"
              flexDirection="column"
              alignItems="center" justifyContent="center">
           <Typography>Programma una consulenza con artpay</Typography>
           <Button sx={{ mt: 4, mb: 2 }} variant="contained">Inizia ora</Button>
           <Typography>Takes 2 minutes</Typography>
         </Box>*/}
-        <iframe data-cmp-ab="2"
-                src="https://form.typeform.com/to/aDnsAoId?typeform-embed-id=8112263680325873&amp;typeform-embed=embed-widget&amp;typeform-source=gallerie.artpay.art&amp;typeform-medium=snippet&amp;typeform-medium-version=next&amp;embed-opacity=100&amp;typeform-embed-handles-redirect=1"
-                data-testid="iframe"
-                style={{ border: "0px", transform: "translateZ(0px)", width: "100%", height: "612px" }}
-                allow="microphone; camera"
-                title="My branded typeform" data-cmp-info="8"></iframe>
-        <Button variant="outlined" sx={{ mt: 3 }} fullWidth>oppure prenota una chiamata subito</Button>
+          <iframe
+            data-cmp-ab="2"
+            src="https://form.typeform.com/to/aDnsAoId?typeform-embed-id=8112263680325873&amp;typeform-embed=embed-widget&amp;typeform-source=gallerie.artpay.art&amp;typeform-medium=snippet&amp;typeform-medium-version=next&amp;embed-opacity=100&amp;typeform-embed-handles-redirect=1"
+            data-testid="iframe"
+            style={{ border: "0px", transform: "translateZ(0px)", width: "100%", height: isMobile ? "400px" : "612px" }}
+            allow="microphone; camera"
+            title="My branded typeform"
+            data-cmp-info="8"></iframe>
+          <Button variant="outlined" sx={{ mt: 3 }} fullWidth>
+            oppure prenota una chiamata subito
+          </Button>
+        </Grid>
       </Grid>
-
-    </Grid>
-  </DefaultLayout>);
+    </DefaultLayout>
+  );
 };
 
 export default GalleryOnboarding;

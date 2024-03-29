@@ -9,7 +9,7 @@ import {
   Theme,
   Typography,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import Logo from "./icons/Logo";
 import { Search } from "@mui/icons-material";
@@ -40,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     margin: "8px",
     height: menuOpen ? "calc(100dvh - 16px)" : undefined,
     transition: "all 0.5s",
-    overflow: "hidden"
+    overflow: "hidden",
     //borderRadius: 0
   };
 
@@ -82,60 +82,66 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     }
   };
 
-  const authButton = <Button sx={{ minWidth: "150px" }} onClick={() => handleLogin()} color="secondary"
-                             variant="outlined">
-    Login/Registrati
-  </Button>;
+  const authButton = (
+    <Button sx={{ minWidth: "150px" }} onClick={() => handleLogin()} color="primary" variant="outlined">
+      Login/Registrati
+    </Button>
+  );
 
-  const galleryLink = <Link sx={{ mr: isMobile ? 0 : 2, minWidth: "120px" }} href="https://gallerie.artpay.art"
-                            color="tertiary.main">
-    Sei una galleria?
-  </Link>;
+  const galleryLink = (
+    <Link sx={{ mr: isMobile ? 0 : 2, minWidth: "120px" }} href="https://gallerie.artpay.art" color="tertiary.main">
+      Sei una galleria?
+    </Link>
+  );
 
   const menuLinks = [
     { label: "Gallerie", href: "/artpay-per-gallerie " },
     { label: "Collezionisti", href: "/artpay-per-collezionisti " },
     { label: "Chi siamo", href: "/chi-siamo" },
-    { label: "ArtMatch", href: "https://artpay.art/art-match" }
+    { label: "ArtMatch", href: "https://artpay.art/art-match" },
   ];
 
   //onMenuToggle
 
   return (
-    <AppBar color="default" sx={isMobile ? mobileStyleOverrides : { mx: { xs: 8, lg: 12 }, right: 0 }} elevation={0}>
+    <AppBar color="default" sx={isMobile ? mobileStyleOverrides : { mx: { xs: 8, lg: 10 }, right: 0 }} elevation={0}>
       <Box display="flex" alignItems="center" sx={{}}>
         <Box sx={{ height: "24px", cursor: "pointer" }} onClick={() => handleNavigate("/")}>
           <Logo />
         </Box>
         {!isMobile && (
           <Box sx={{ ml: 3 }}>
-            {menuLinks.map((link, i) => <Button key={`btn-link-${i}`} sx={{ px: 2 }}
-                                                onClick={() => handleNavigate(link.href)}
-                                                color="inherit"
-                                                variant="text">
-              {link.label}
-            </Button>)}
+            {menuLinks.map((link, i) => (
+              <Button
+                key={`btn-link-${i}`}
+                sx={{ px: 2 }}
+                onClick={() => handleNavigate(link.href)}
+                color="inherit"
+                variant="text">
+                {link.label}
+              </Button>
+            ))}
           </Box>
         )}
         {/*<TextField sx={{flexGrow:0, ml: 1}} variant="standard" InputProps={{startAdornment: <InputAdornment position="start"><Search/></InputAdornment>}}/>*/}
-        {(!isMobile && false) && (
+        {!isMobile && false && (
           <IconButton>
             <Search />
           </IconButton>
         )}
         <Box mx={2} flexGrow={1} />
-        {(isMobile && false) && (
+        {isMobile && false && (
           <IconButton>
             <Search />
           </IconButton>
         )}
         {auth.isAuthenticated ? (
           <>
-            {!isMobile &&
+            {!isMobile && (
               <Typography variant="body1" fontWeight={500} color="textPrimary">
                 Ciao {auth.user?.username}!
               </Typography>
-            }
+            )}
             <IconButton sx={{ mr: 4, ml: 1 }} onClick={() => handleProfileClick()} color="inherit">
               <UserIcon color="primary" />
             </IconButton>
@@ -146,37 +152,54 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         ) : (
           <>
             {!isMobile && galleryLink}
-            {!isMobile ? authButton : <IconButton onClick={() => handleProfileClick()} color="primary">
-              <UserIcon color="primary" />
-            </IconButton>}
+            {!isMobile ? (
+              authButton
+            ) : (
+              <IconButton onClick={() => handleProfileClick()} color="primary">
+                <UserIcon color="primary" />
+              </IconButton>
+            )}
           </>
         )}
-        {isMobile && <IconButton onClick={() => handleShowMenu(!showMenu)}><MenuIcon /></IconButton>}
+        {isMobile && (
+          <IconButton onClick={() => handleShowMenu(!showMenu)}>
+            <MenuIcon />
+          </IconButton>
+        )}
       </Box>
-      {menuOpen && <Box flexGrow={1} pt={3} display="flex" flexDirection="column" sx={{ height: "auto" }}>
-        {menuLinks.map((link, i) => <Button key={`btn-link-mobile-${i}`} sx={{}}
-                                            onClick={() => handleNavigate(link.href)}
-                                            color="inherit"
-                                            variant="text">
-          {link.label}
-        </Button>)}
+      {menuOpen && (
+        <Box flexGrow={1} pt={3} display="flex" flexDirection="column" sx={{ height: "auto" }}>
+          {menuLinks.map((link, i) => (
+            <Button
+              key={`btn-link-mobile-${i}`}
+              sx={{}}
+              onClick={() => handleNavigate(link.href)}
+              color="inherit"
+              variant="text">
+              {link.label}
+            </Button>
+          ))}
 
-
-        <Box flexGrow={1}></Box>
-        {auth.isAuthenticated ? <>
-          <Typography sx={{ textAlign: "center" }} variant="body2" color="primary">
-            Ciao {auth.user?.username}
-          </Typography>
-          <Button sx={{ mb: 12 }} onClick={() => handleLogout()} color="tertiary" variant="text">
-            Logout
-          </Button>
-        </> : <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{ mb: 12 }}>
-          <Box my={1} sx={{ textAlign: "center" }}>
-            {galleryLink}
-          </Box>
-          {authButton}
-        </Box>}
-      </Box>}
+          <Box flexGrow={1}></Box>
+          {auth.isAuthenticated ? (
+            <>
+              <Typography sx={{ textAlign: "center" }} variant="body2" color="primary">
+                Ciao {auth.user?.username}
+              </Typography>
+              <Button sx={{ mb: 12 }} onClick={() => handleLogout()} color="tertiary" variant="text">
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{ mb: 12 }}>
+              <Box my={1} sx={{ textAlign: "center" }}>
+                {galleryLink}
+              </Box>
+              {authButton}
+            </Box>
+          )}
+        </Box>
+      )}
     </AppBar>
   );
 };

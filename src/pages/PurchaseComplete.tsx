@@ -13,8 +13,7 @@ import { useData } from "../hoc/DataProvider.tsx";
 
 import paymentSuccess from "../assets/images/payment-success.svg";
 
-export interface PurchaseCompleteProps {
-}
+export interface PurchaseCompleteProps {}
 
 interface BankTransferInstructions {
   iban: string;
@@ -69,7 +68,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
           title: "Si è verificato un errore",
           text: "Impossibile caricare le informazioni sul pagamento",
           cta: "",
-          status: "failure"
+          status: "failure",
         });
         setReady(true);
         return;
@@ -79,7 +78,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
           title: "Pagamento in elaborazione",
           text: "Stiamo verificando il tuo pagamento, attendi qualche minuto",
           cta: "",
-          status: "processing"
+          status: "processing",
         });
         setReady(true);
         return;
@@ -92,9 +91,9 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
           case "succeeded":
             if (completedOrderId) {
               try {
-                await data.setOrderStatus(+completedOrderId, "completed", {
+                await data.updateOrder(+completedOrderId, {
                   payment_method: "Credit card",
-                  payment_method_title: "Carta di credito"
+                  payment_method_title: "Carta di credito",
                 });
               } catch (e) {
                 console.error(e);
@@ -106,7 +105,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               title: `Ciao ${auth.user?.username || ""}, grazie per il tuo acquisto`,
               text: exampleSuccessMessage,
               cta: "",
-              status: "success"
+              status: "success",
             });
             break;
           case "processing":
@@ -114,7 +113,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               title: "Pagamento in elaborazione",
               text: "Stiamo verificando il tuo pagamento, attendi qualche minuto",
               cta: "",
-              status: "processing"
+              status: "processing",
             });
             break;
           case "requires_action":
@@ -125,7 +124,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
                 title: "Si è verificato un errore",
                 text: "Dati per effettuare il bonifico non trovati",
                 cta: "",
-                status: "failure"
+                status: "failure",
               });
             } else {
               const iban = nextAction.display_bank_transfer_instructions.financial_addresses[0].iban?.iban || "";
@@ -135,7 +134,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
                   await data.setOrderStatus(+completedOrderId, "on-hold", {
                     payment_method: "Stripe SEPA",
                     payment_method_title: "Bonifico bancario",
-                    customer_note: `IBAN: ${iban} - Causale: ${reference}`
+                    customer_note: `IBAN: ${iban} - Causale: ${reference}`,
                   });
                 } catch (e) {
                   console.error(e);
@@ -153,11 +152,11 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
                   accountHolderName:
                     nextAction.display_bank_transfer_instructions.financial_addresses[0].iban.account_holder_name || "",
                   formattedAmount: `€ ${(nextAction.display_bank_transfer_instructions.amount_remaining / 100).toFixed(
-                    2
+                    2,
                   )}`,
                   iban: iban,
-                  reference: reference
-                }
+                  reference: reference,
+                },
               });
             }
             break;
@@ -166,7 +165,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               title: "Si è verificato un errore",
               text: "Il tuo pagamento non è andato a buon fine, riprova",
               cta: "",
-              status: "failure"
+              status: "failure",
             });
             break;
           default:
@@ -174,7 +173,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               title: "Si è verificato un errore",
               text: "",
               cta: "",
-              status: "failure"
+              status: "failure",
             });
             break;
         }
@@ -195,7 +194,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
             mt: { xs: 8, md: 12, lg: 12, xl: message.status === "requires_action" ? 10 : 0 },
             minHeight: "calc(100vh - 240px)",
             maxWidth: "100vw",
-            overflowX: "hidden"
+            overflowX: "hidden",
           }}
           alignItems="center"
           container>

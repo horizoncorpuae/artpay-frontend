@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Card, CardContent, CardMedia, IconButton, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Add, Check } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { CardSize } from "../types";
 
 export interface ArtistCardProps {
   id: string;
@@ -16,25 +17,27 @@ export interface ArtistCardProps {
   onSetFavourite?: (currentValue: boolean) => void;
   imgUrl?: string;
   mode?: "grid" | "list";
+  size: CardSize;
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({
-                                                 slug,
-                                                 title,
-                                                 subtitle,
-                                                 isFavourite = false,
-                                                 isLoading = false,
-                                                 imgUrl,
-                                                 mode = "list",
-                                                 onClick,
-                                                 onSetFavourite
-                                                 // artworksCount = 0,
-                                               }) => {
+  slug,
+  title,
+  subtitle,
+  isFavourite = false,
+  isLoading = false,
+  imgUrl,
+  mode = "list",
+  onClick,
+  onSetFavourite,
+  size = "large",
+  // artworksCount = 0,
+}) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const imgHeight = "430px";
-  const cardWidth = "320px";
+  const imgHeight = size === "medium" ? "396px" : "430px";
+  const cardWidth = size === "medium" ? "294px" : "320px";
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSetFavourite = () => {
@@ -52,10 +55,11 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
   };
 
   return (
-    <Card elevation={0} className="SwiperCard-large" sx={{ minWidth: cardWidth }}>
+    <Card elevation={0} className={`SwiperCard-${size}`} sx={{ width: cardWidth }}>
       <CardMedia
         component="img"
         image={imgUrl}
+        width={cardWidth}
         height={isMobile && mode === "grid" ? "auto" : imgHeight}
         className="borderRadius"
         onClick={handleClick}
@@ -63,7 +67,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
           objectFit: mode === "list" ? "cover" : "cover",
           minHeight: "100px",
           backgroundColor: imgUrl ? "" : "#D9D9D9",
-          cursor: onClick ? "pointer" : "auto"
+          cursor: onClick ? "pointer" : "auto",
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: 2 }}>
         <Box display="flex">

@@ -36,6 +36,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect } from "react";
 import Error from "./pages/Error.tsx";
 import GalleryOnboarding from "./pages/GalleryOnboarding.tsx";
+import CustomerOnboarding from "./pages/CustomerOnboarding.tsx";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || ""; // https://artpay.art
@@ -45,7 +46,6 @@ function AppContent() {
   const enableGa = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
   useEffect(() => {
-
     if (enableGa) {
       console.log("location", location);
       ReactGA.send({ hitType: "pageview", page: location.pathname, title: location.pathname });
@@ -55,7 +55,6 @@ function AppContent() {
   if (enableGa) {
     ReactGA.initialize(import.meta.env.VITE_GA_MEASUREMENT_ID);
   }
-
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="it">
@@ -102,10 +101,7 @@ function AppContent() {
                       path="/condizioni-generali-di-acquisto"
                       element={<ContentPage slug="condizioni-generali-di-acquisto" />}
                     />
-                    <Route
-                      path="/artpay-per-collezionisti"
-                      element={<ContentPage slug="artpay-per-collezionisti" />}
-                    />
+                    <Route path="/artpay-per-collezionisti" element={<CustomerOnboarding />} />
                     <Route path="/artpay-per-gallerie" element={<GalleryOnboarding />} />
                     <Route path="/errore/:code" element={<Error />} />
                     <Route path="/errore" element={<Error />} />

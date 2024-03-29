@@ -4,15 +4,25 @@ import CardList from "./CardList.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hoc/AuthProvider.tsx";
+import { CardSize } from "../types";
 
 export interface ArtistsListProps {
   items: ArtistCardProps[];
+  maxItems?: number;
+  size: CardSize;
   title?: string;
   onSelect?: (index: number) => void;
   disablePadding?: boolean;
 }
 
-const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect, disablePadding }) => {
+const ArtistsList: React.FC<ArtistsListProps> = ({
+  items,
+  title,
+  onSelect,
+  disablePadding,
+  size = "large",
+  maxItems,
+}) => {
   const data = useData();
   const auth = useAuth();
   const navigate = useNavigate();
@@ -65,17 +75,20 @@ const ArtistsList: React.FC<ArtistsListProps> = ({ items, title, onSelect, disab
   };
 
   return (
-    <CardList title={title} disablePadding={disablePadding} cardSize="large">
-      {items.map((item, i) => (
-        <ArtistCard
-          key={i}
-          {...item}
-          onClick={() => handleClick(i)}
-          isLoading={isLoading}
-          onSetFavourite={(currentValue) => handleSetFavourite(item.id, currentValue)}
-          isFavourite={favourites.indexOf(+item.id) !== -1}
-        />
-      ))}
+    <CardList title={title} disablePadding={disablePadding} cardSize={size}>
+      {items
+        .filter((_, i) => !maxItems || i < maxItems)
+        .map((item, i) => (
+          <ArtistCard
+            key={i}
+            {...item}
+            size={size}
+            onClick={() => handleClick(i)}
+            isLoading={isLoading}
+            onSetFavourite={(currentValue) => handleSetFavourite(item.id, currentValue)}
+            isFavourite={favourites.indexOf(+item.id) !== -1}
+          />
+        ))}
     </CardList>
   );
 };

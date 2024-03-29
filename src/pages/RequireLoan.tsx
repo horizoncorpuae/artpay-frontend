@@ -24,7 +24,7 @@ const loanConditionsContent: LoanConditionsCardProps = {
   taegText: "TAEG: 5,91% (Indice sintetico di costo) / TAN: 5,74% (fisso nel tempo) / Spese iniziali: € 16,00",
   requestQuoteUrl: "https://santanderconsumergs.com/banking4you/",
   requestQuoteText: "Richiedi preventivo",
-  freeAndNonBindingText: "Gratis e senza impegno"
+  freeAndNonBindingText: "Gratis e senza impegno",
 };
 
 const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
@@ -61,13 +61,15 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
     }
     const completedOrderId = localStorage.getItem("completed-order");
     if (step === 1 && completedOrderId) {
-      data.setOrderStatus(+completedOrderId, "on-hold", {
-        payment_method: "Acconto blocco opera",
-        payment_method_title: "Blocco opera",
-        customer_note: `Versato acconto 5%`
-      }).then(() => {
-        localStorage.removeItem("completed-order");
-      });
+      data
+        .setOrderStatus(+completedOrderId, "on-hold", {
+          payment_method: "Acconto blocco opera",
+          payment_method_title: "Blocco opera",
+          customer_note: `Versato acconto 5%`,
+        })
+        .then(() => {
+          localStorage.removeItem("completed-order");
+        });
     }
     Promise.all([
       data.getArtworkBySlug(urlParams.slug_opera).then((resp) => {
@@ -76,7 +78,7 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
         artworkForCard.artworkTechnique = artworkTechnique;
         setArtwork(artworkForCard);
       }),
-      data.getUserProfile().then((resp) => setProfile(resp))
+      data.getUserProfile().then((resp) => setProfile(resp)),
     ]).then(() => {
       setReady(true);
     });
@@ -85,7 +87,7 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
   //TODO: modulo prestito con link https://santanderconsumergs.com/banking4you/
 
   return (
-    <DefaultLayout pageLoading={!ready} maxWidth={false}>
+    <DefaultLayout pageLoading={!ready} authRequired maxWidth={false}>
       <Grid
         mt={16}
         sx={{
@@ -94,7 +96,7 @@ const RequireLoan: React.FC<RequireLoanProps> = ({ step = 0 }) => {
           mb: { xs: 6, md: 12, lg: 18 },
           maxWidth: maxWidth,
           ml: "auto",
-          mr: "auto"
+          mr: "auto",
         }}
         justifyContent="center"
         container>
