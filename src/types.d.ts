@@ -37,6 +37,9 @@ declare module "@mui/material/styles" {
       styleOverrides?: ComponentsOverrides<Theme>["MuiFooter"];
       variants?: ComponentsVariants["MuiFooter"];
     };
+    MuiChip?: {
+      styleOverrides?: ComponentsOverrides<Theme>["MuiChip"] & { sizeLarge?: any };
+    };
   }
 
   interface Palette {
@@ -53,6 +56,10 @@ declare module "@mui/material/styles" {
 
   interface SvgIconPropsColorOverrides {
     contrast: true;
+  }
+
+  interface ChipPropsSizeOverrides {
+    large: true;
   }
 
   interface TypographyVariants {
@@ -76,6 +83,11 @@ declare module "@mui/material/Typography" {
     display3: true;
   }
 }
+declare module "@mui/material/Chip" {
+  interface ChipPropsSizeOverrides {
+    large: true;
+  }
+}
 
 declare module "@material-ui/core/styles/createPalette" {
   interface Palette {
@@ -91,4 +103,6 @@ declare module "@mui/material/styles/createMuiTheme" {
   interface ThemeOptions {
     themeName?: string; // optional
   }
+
+
 }

@@ -9,7 +9,7 @@ import {
   Theme,
   Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import Logo from "./icons/Logo";
 import { Search } from "@mui/icons-material";
@@ -40,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     margin: "8px",
     height: menuOpen ? "calc(100dvh - 16px)" : undefined,
     transition: "all 0.5s",
-    overflow: "hidden",
+    overflow: "hidden"
     //borderRadius: 0
   };
 
@@ -98,13 +98,15 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     { label: "Gallerie", href: "/artpay-per-gallerie " },
     { label: "Collezionisti", href: "/artpay-per-collezionisti " },
     { label: "Chi siamo", href: "/chi-siamo" },
-    { label: "ArtMatch", href: "https://artpay.art/art-match" },
+    { label: "ArtMatch", href: "https://artpay.art/art-match" }
   ];
 
   //onMenuToggle
 
   return (
-    <AppBar color="default" sx={isMobile ? mobileStyleOverrides : { mx: { xs: 8, lg: 10 }, right: 0 }} elevation={0}>
+    <AppBar color="default"
+            sx={isMobile ? mobileStyleOverrides : { mx: { xs: 8, lg: 10, xl: "auto" }, right: 0, maxWidth: "1280px" }}
+            elevation={0}>
       <Box display="flex" alignItems="center" sx={{}}>
         <Box sx={{ height: "24px", cursor: "pointer" }} onClick={() => handleNavigate("/")}>
           <Logo />

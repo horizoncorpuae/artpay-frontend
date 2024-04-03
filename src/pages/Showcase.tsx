@@ -10,7 +10,7 @@ import {
   Paper,
   RadioGroup,
   SvgIconProps,
-  Typography,
+  Typography
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import TextField from "../components/TextField.tsx";
@@ -38,7 +38,9 @@ import AppleIcon from "../components/icons/AppleIcon.tsx";
 import FacebookIcon from "../components/icons/FacebookIcon.tsx";
 import ArtworkCard from "../components/ArtworkCard.tsx";
 import ArtistCard from "../components/ArtistCard.tsx";
-export interface HomeProps {}
+
+export interface HomeProps {
+}
 
 type IconColor = SvgIconProps["color"];
 const ShowcaseBox = ({ children, title, md }: { children: ReactNode; title?: string; md?: number }) => {
@@ -51,7 +53,7 @@ const ShowcaseBox = ({ children, title, md }: { children: ReactNode; title?: str
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          height: "100%",
+          height: "100%"
         }}>
         {title && (
           <>
@@ -359,10 +361,12 @@ const Showcase: React.FC<HomeProps> = ({}) => {
           </Box>
           <Box display="flex" gap={2}>
             <div>
-              <ArtistCard id="" title="Nome dell'artista" subtitle="Torino, 1984" isFavourite={false} />
+              <ArtistCard id="" title="Nome dell'artista" subtitle="Torino, 1984" isFavourite={false} slug={""}
+                          size="small" />
             </div>
             <div>
-              <ArtistCard id="" title="Nome dell'artista" subtitle="Torino, 1984" isFavourite={true} />
+              <ArtistCard id="" title="Nome dell'artista" subtitle="Torino, 1984" isFavourite={true} size="small"
+                          slug={""} />
             </div>
           </Box>
         </ShowcaseBox>

@@ -7,6 +7,8 @@ import { useData } from "../hoc/DataProvider.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import imgGalleryAbout from "../assets/images/image-gallery-about.png";
 import imgLogo from "../assets/images/logo.svg";
+import imgAboutCover from "../assets/images/hero-about-cover.png";
+import imgSideExample from "../assets/images/hero-side-example.png";
 
 export interface AboutProps {
 }
@@ -18,7 +20,7 @@ const heroContent: HeroAboutProps = {
   description:
     "artpay è un servizio digitale dedicato a coloro che vogliono investire nell opere d’arte ma bla bla bla e che offre in pochi click soluzioni bla bla bla, di acquisto rateali e personalizzabili",
   buttonText: "Entra nel mondo di artpay",
-  imageSrc: "/images/hero-about-cover.png"
+  imageSrc: imgAboutCover
 };
 
 const promoContent = [
@@ -26,19 +28,19 @@ const promoContent = [
     title: "Iscriviti alla piattaforma",
     subtitle: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
     description: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    imageSrc: "/images/hero-side-example.png"
+    imageSrc: imgSideExample
   },
   {
     title: "Iscriviti alla piattaforma",
     subtitle: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
     description: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    imageSrc: "/images/hero-side-example.png"
+    imageSrc: imgSideExample
   },
   {
     title: "Iscriviti alla piattaforma",
     subtitle: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
     description: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    imageSrc: "/images/hero-side-example.png"
+    imageSrc: imgSideExample
   }
 ];
 const About: React.FC<AboutProps> = ({}) => {

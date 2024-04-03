@@ -5,11 +5,21 @@ export interface PromoCardSmallProps {
   title: string | ReactNode;
   text?: string | ReactNode;
   link?: string | ReactNode;
+  linkHref?: string;
+  footer?: ReactNode;
   variant?: "primary" | "secondary" | "white";
   imgSrc?: ImgHTMLAttributes<any>["src"];
 }
 
-const PromoCardSmall: React.FC<PromoCardSmallProps> = ({ title, text, link, imgSrc, variant = "primary" }) => {
+const PromoCardSmall: React.FC<PromoCardSmallProps> = ({
+                                                         title,
+                                                         text,
+                                                         link,
+                                                         linkHref = "",
+                                                         footer,
+                                                         imgSrc,
+                                                         variant = "primary"
+                                                       }) => {
   const theme = useTheme();
   let backgroundColor: string;
   let textColor: string;
@@ -27,7 +37,7 @@ const PromoCardSmall: React.FC<PromoCardSmallProps> = ({ title, text, link, imgS
     default:
       backgroundColor = theme.palette.common.white;
       textColor = theme.palette.common.black;
-      border = `1px solid #6576EE`;
+      border = `1px solid ${theme.palette.primary.light}`;
   }
   return (
     <Box
@@ -47,9 +57,14 @@ const PromoCardSmall: React.FC<PromoCardSmallProps> = ({ title, text, link, imgS
       </Box>
       {link && (
         <Box mt={4}>
-          <Link href="#" sx={{ color: textColor }}>
+          <Link href={linkHref} sx={{ color: textColor }}>
             {link}
           </Link>
+        </Box>
+      )}
+      {footer && (
+        <Box mt={4}>
+          {footer}
         </Box>
       )}
     </Box>

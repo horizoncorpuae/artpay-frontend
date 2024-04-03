@@ -37,6 +37,7 @@ import { useEffect } from "react";
 import Error from "./pages/Error.tsx";
 import GalleryOnboarding from "./pages/GalleryOnboarding.tsx";
 import CustomerOnboarding from "./pages/CustomerOnboarding.tsx";
+import ArtworkReserved from "./pages/ArtworkReserved.tsx";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || ""; // https://artpay.art
@@ -79,7 +80,7 @@ function AppContent() {
                     <Route path="/acquisti" element={<Purchase />} />
                     <Route path="/accconto-blocca-opera" element={<Purchase orderMode="loan" />} />
                     <Route path="/blocca-opera/:slug_opera" element={<RequireLoan />} />
-                    <Route path="/opera-bloccata/:slug_opera" element={<RequireLoan step={1} />} />
+                    <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/profile/settings" element={<ProfileSettings />} />
                     <Route path="/thank-you-page" element={<PurchaseComplete />} />

@@ -8,7 +8,8 @@ import onboardingBackground from "../assets/images/background-onboarding.svg";
 import onboardingImg1 from "../assets/images/gallery-onboarding-img-1.png";
 import onboardingImg2 from "../assets/images/gallery-onboarding-img-2.png";
 
-export interface GalleryOnboardingProps {}
+export interface GalleryOnboardingProps {
+}
 
 const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
   const theme = useTheme();
@@ -24,15 +25,26 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
             Artpay per gallerie
           </Typography>
           <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
-            Artpay per gallerie Lorem ipsum dolor sit amet, conetur adipiscing elit, sed do eiusmod.
+            Hai una galleria d’arte? Scopri come potenziare le sue vendite con Artpay!
           </Typography>
           <Typography variant="body1" sx={{ mt: 6 }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
+            Tramite Artpay la tua galleria può avere un punto unico di gestione delle vendite online, con una
+            piattaforma dedicata che dà grande spazio alla presentazione visuale e testuale delle opere in vendita e ne
+            favorisce l’acquisto attraverso un sistema di acquisto diretto online e di accesso ai finanziamenti per gli
+            utenti.
+            Artpay è utile anche alle vendite direttamente in galleria. Ti basta esporre il logo/marker/qr-code di
+            Artpay sotto a ciascuna opera in vendita e i tuoi clienti potranno accedere al suo acquisto diretto online e
+            ai servizi finanziari rateali, a loro dedicati.
           </Typography>
+          <Typography variant="body1" sx={{ mt: 1 }}>Con Artpay la tua galleria acquisisce un nuovo pubblico qualificato
+            di appassionati e collezionisti d’arte,
+            allargando la base dei potenziali clienti grazie ai prodotti finanziari offerti direttamente online, che
+            rendono l’arte accessibile a tutti tramite prestiti rateali da parte di istituti bancari
+            partner.</Typography>
+          <Typography variant="body1" sx={{ mt: 1 }}>Entra a fare parte di Artpay in 3 soli semplici
+            passaggi.</Typography>
         </Grid>
-        <Grid item xs={12} md={4} lg={5} sx={{ pl: { xs: 0, sm: 8 }, pt: 9, minHeight: "720px" }}>
+        <Grid item xs={12} md={4} lg={5} sx={{ pl: { xs: 0, sm: 8 }, pt: 9, minHeight: "760px" }}>
           <Box sx={{ position: "relative" }}>
             <img style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }} src={onboardingImg1} />
             <img style={{ position: "absolute", top: "104px", left: "168px" }} src={onboardingImg2} />
@@ -51,24 +63,26 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
               </>
             }>
             <Typography variant="body1">
-              La tua area riservata sarà attiva entro 2 giorni lavorativi a partire dalla firma del contratto. Un team a
-              tua disposizione sarà pronto a supportarti in caso di necessità.
+              Dopo un colloquio conoscitivo online e la firma del contratto, avrai un’area riservata in cui gestire la
+              presenza online della tua galleria, la vendita delle opere e tutte le operazioni accessorie. Sarà attivata
+              entro 2 giorni dall’iscrizione. Il processo di iscrizione è veloce e facile. Per qualsiasi necessità, il
+              nostro team dedicato sarà pronto a supportarti in qualsiasi momento.
             </Typography>
-            <Button variant="contained" sx={{ mt: 3 }}>
+            <Button variant="contained" href="#form" sx={{ mt: 3 }}>
               Inizia ora
             </Button>
           </PromoCard>
           <PromoCard
             title={
               <>
-                Onboarding
-                <br />e caricamento opere
+                Metti online
+                <br />le tue opere
               </>
             }>
             <Typography variant="body1">
-              Accettate le condizioni contrattuali, sarai invitatə alla registrazione della tua galleria. Potrai
-              accedere allʼarea riservata e inserire le opere da mettere in vendita, scegliendo se rendere pubblici o
-              meno prezzi ed informazioni.
+              Una volta creata l’area riservata, potrai registrare la tua galleria e inserire le opere d’arte che vuoi
+              vendere, attraverso il nostro sistema facile e veloce, che ti consentirà di caricare informazioni testuali
+              e immagini per ciascuna, specificando se rendere pubblici o meno prezzi e informazioni.
             </Typography>
           </PromoCard>
           <PromoCard
@@ -79,9 +93,10 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
               </>
             }>
             <Typography variant="body1">
-              Vendi le tue opere online e in galleria in modo semplice e sicuro. Potrai proporre ai tuoi collezionisti
-              lʼacquisto rateale in pochi click e con esito dalle 2 alle 24 ore. Direttamente dalla piattaforma, sempre
-              sotto il tuo controllo.
+              La tua presenza online su Artpay è pronta! Ora puoi vendere le tue opere online o nella tua galleria in
+              modo semplice e sicuro, attraverso la nostra piattaforma. I tuoi clienti potranno acquistare direttamente
+              le opere o accedere ai prodotti finanziari rateali a loro dedicati, offerti direttamente dai nostri
+              partner bancari, con approvazione entro 2-24 ore.
             </Typography>
           </PromoCard>
           <PromoCard title="Ancora dubbi?" variant="contrast">
@@ -91,6 +106,7 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
             <Button
               variant="outlined"
               color="contrast"
+              href="mailto:hello@artpay.art"
               fullWidth={isMobile}
               sx={{ ml: { xs: 0, md: 3 }, mt: { xs: 3, md: 0 } }}>
               Scrivi a hello@artpay.art
@@ -98,14 +114,14 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
           </PromoCard>
         </Box>
       </Box>
-      <Grid sx={{ py: 12, px: px }} container>
+      <Grid sx={{ py: 12, px: px }} id="form" container>
         <Grid item xs={12} md={6} sx={{ mb: { xs: 3, sm: 0 } }} display="flex" alignItems="center">
           <Box sx={{ maxWidth: "400px" }} display="flex" flexDirection="column" alignItems="flex-start">
             <Typography variant="display3">Entra a far parte di artpay</Typography>
             <Typography sx={{ my: 6 }} variant="body1">
-              Compila il form e raccontaci il tuo businesss
+              Compila il form e raccontaci il tuo business
             </Typography>
-            <Button sx={{ mb: 2 }} variant="contained">
+            <Button sx={{ mb: 2 }} href="mailto:hello@artpay.art" variant="contained">
               Scrivi a hello@artpay.art
             </Button>
             <Link color="primary" href="/faq">

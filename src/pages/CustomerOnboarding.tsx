@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, Button, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
 import PromoCard from "../components/PromoCard.tsx";
 // import reservationBackground from "../assets/images/reservation-box-background.png";
 import onboardingBackground from "../assets/images/background-onboarding.svg";
@@ -17,15 +17,22 @@ import LoanCard from "../components/LoanCard.tsx";
 import { ArtistCardProps } from "../components/ArtistCard.tsx";
 import { artistsToGalleryItems } from "../utils.ts";
 import { useData } from "../hoc/DataProvider.tsx";
-export interface CustomerOnboardingProps {}
+import { useAuth } from "../hoc/AuthProvider.tsx";
+
+export interface CustomerOnboardingProps {
+}
 
 const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
   const data = useData();
+  const auth = useAuth();
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [featuredArtists, setFeaturedArtists] = useState<ArtistCardProps[]>();
+
+  const handleRegistration = () => {
+    auth.login(false);
+  };
 
   useEffect(() => {
     data.listFeaturedArtists().then((resp) => setFeaturedArtists(artistsToGalleryItems(resp)));
@@ -68,8 +75,9 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
             }>
             <Typography variant="body1">
               Lʼutente dopo essersi iscritto ad artpay esplora le tipologie di artwork a sua disposizione potendo
-              approfondire informazioni su artisti e gallerie. Una volta dimostrato il proprio interesse per unʼopera la
-              blocca attraverso una % trattenuta sulla propria carta di credito a garanzia dellʼacquisto.
+              approfondire informazioni su artisti e gallerie. <br />
+              Una volta dimostrato il proprio interesse per unʼopera la blocca attraverso una % trattenuta sulla propria
+              carta di credito a garanzia dellʼacquisto
             </Typography>
           </PromoCard>
           <PromoCard
@@ -80,10 +88,16 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
               </>
             }>
             <Typography variant="body1">
-              Lʼutente può comprare immediatamente tramite carta di credito, oppure ha 24 ore per procedere allʼacquisto
-              del bene bloccato scegliendo tra diverse tipologie di pagamento: bonifico bancario, buy now pay later,
-              rateale. In caso di mancato avvio della procedura, lʼopera tornerà disponibile allʼinterno della
-              piattaforma.
+              Lʼutente può comprare immediatamente tramite carta di credito, oppure ha 24ore per procedere allʼacquisto
+              del bene bloccato scegliendo tra diverse tipologie di pagamento:
+            </Typography>
+            <ul>
+              <li>bonifico bancario</li>
+              <li>buy now pay later</li>
+              <li>rateale</li>
+            </ul>
+            <Typography variant="body1">
+              In caso di mancato avvio della procedura, lʼopera tornerà disponibile allʼinterno della piattaforma.
             </Typography>
           </PromoCard>
           <PromoCard
@@ -96,22 +110,9 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
             <Typography variant="body1">
               Scegliendo lʼacquisto rateale (focus di artpay), lʼutente potrà usufruire del tool interno alla
               piattaforma per selezionare la proposta di finanziamento di maggior interesse tra quelle messe a
-              disposizione. In questo processo la galleria tiene traccia dello stato delle operazioni: dalla scelta
-              dellʼopera allʼacquisto finale.
-            </Typography>
-          </PromoCard>
-          <PromoCard
-            title={
-              <>
-                Onboarding
-                <br />e caricamento opere
-              </>
-            }>
-            <Typography variant="body1">
-              Scegliendo lʼacquisto rateale (focus di artpay), lʼutente potrà usufruire del tool interno alla
-              piattaforma per selezionare la proposta di finanziamento di maggior interesse tra quelle messe a
-              disposizione. In questo processo la galleria tiene traccia dello stato delle operazioni: dalla scelta
-              dellʼopera allʼacquisto finale
+              disposizione. <br />
+              In questo processo la galleria tiene traccia dello stato delle operazioni: dalla scelta dellʼopera
+              allʼacquisto finale.
             </Typography>
           </PromoCard>
           <PromoCard
@@ -123,9 +124,10 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
             }>
             <Typography variant="body1">
               Una volta selezionato lʼistituto finanziario con il quale avviare la procedura rateale di pagamento, il
-              visitatore potrà procedere autonomamente con la richiesta di finanziamento. Al termine della valutazione
-              da parte dellʼistituto finanziario, se ottenuta la liquidità, sarà possibile saldare lʼintero importo
-              dellʼopera alla galleria entro circa 7 giorni dallʼapprovazione del credito ottenuto
+              visitatore potrà procedere autonomamente con la richiesta di finanziamento.
+              Al termine della valutazione da parte dellʼistituto finanziario, se ottenuta la liquidità, sarà possibile
+              saldare lʼintero importo dellʼopera alla galleria entro circa 7 giorni dallʼapprovazione del credito
+              ottenuto.
             </Typography>
           </PromoCard>
           <PromoCard
@@ -136,15 +138,15 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
               </>
             }>
             <Typography variant="body1">
-              Al ricevimento del saldo, lʼopera viene spedita o consegnata al cliente direttamente dalla galleria,resta
-              a suo carico spedizione e costi accessori inclusa lʼeventuale assicurazione. Lʼutente a questo punto
-              prosegue con il pagamento delle rate secondo il piano concordato. La galleria salda ad artpay i compensi
-              da questʼultima maturati.
+              Al ricevimento del saldo, lʼopera viene spedita o consegnata al cliente direttamente dalla galleria, resta
+              a suo carico spedizione e costi accessori inclusa lʼeventuale assicurazione.
+              Lʼutente a questo punto prosegue con il pagamento delle rate secondo il piano concordato. La galleria
+              salda ad artpay i compensi da questʼultima.
             </Typography>
           </PromoCard>
 
           <PromoCard titleVariant="h2" title="Cosa aspetti? Entra subito a far parte di artpay!" variant="contrast">
-            <Button variant="outlined" color="contrast" sx={{ ml: 3 }}>
+            <Button variant="outlined" color="contrast" onClick={handleRegistration} sx={{ ml: 3 }}>
               Registrati
             </Button>
           </PromoCard>
@@ -184,6 +186,7 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
               </>
             }
             link="Scopri i nostri partner"
+            linkHref="#partners"
             text="Con artpay puoi finalmente accedere a prestiti personalizzati. Per i tuoi acquisti d'arte scegli la migliore proposta di prestito tra quelle degli istituti bancari nostri partner. Di norma l’approvazione avviene in poche ore. "
           />
         </Grid>
@@ -201,6 +204,7 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
           />
         </Grid>
       </Grid>
+      <div id="partners" style={{ top: "-80px", position: "relative", visibility: "hidden" }} />
       <Box sx={{ px: { ...px, xs: 0 }, mt: 3, mb: 12 }}>
         <LoanCard />
       </Box>

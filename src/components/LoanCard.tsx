@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, BoxProps, Button, Typography, useTheme } from "@mui/material";
 import santanderLogo from "../assets/images/santander_logo_1.svg";
+
 export interface LoanCardProps {
   sx?: BoxProps["sx"];
 }
@@ -18,7 +19,7 @@ const LoanCard: React.FC<LoanCardProps> = ({ sx = {} }) => {
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: { xs: "column", md: "row" },
-        ...sx,
+        ...sx
       }}
       display="flex">
       <Box sx={{ maxWidth: "500px", display: "flex", flexDirection: "column", gap: 3 }}>
@@ -40,7 +41,7 @@ const LoanCard: React.FC<LoanCardProps> = ({ sx = {} }) => {
           borderRadius: "24px",
           width: { xs: "auto", md: "400px" },
           p: 3,
-          mt: { xs: 10, md: undefined },
+          mt: { xs: 10, md: 0 }
         }}>
         <img style={{ height: "24px" }} src={santanderLogo} />
         <Box sx={{ background: theme.palette.common.white, py: 2, textAlign: "center" }} mt={3} mb={2}>
@@ -51,7 +52,8 @@ const LoanCard: React.FC<LoanCardProps> = ({ sx = {} }) => {
             30.000€
           </Typography>
         </Box>
-        <Button fullWidth sx={{ textAlign: "center" }} variant="contained">
+        <Button fullWidth sx={{ textAlign: "center" }} href="https://www.santanderconsumer.it/prestito/partner/artpay"
+                target="_blank" variant="contained">
           Calcola la rata
         </Button>
         <Typography sx={{ textAlign: "center", width: "100%", mt: 1 }} fontWeight={500} variant="caption">
