@@ -94,6 +94,8 @@ export interface DataContext {
 
   getPendingOrder(): Promise<Order | null>;
 
+  getOrder(id: number): Promise<Order | null>;
+
   createOrder(body: OrderCreateRequest): Promise<Order>;
 
   updateOrder(orderId: number, body: OrderUpdateRequest): Promise<Order>;
@@ -176,6 +178,7 @@ const defaultContext: DataContext = {
   getAvailableShippingMethods: () => Promise.reject("Data provider loaded"),
   listOrders: () => Promise.reject("Data provider loaded"),
   getPendingOrder: () => Promise.reject("Data provider loaded"),
+  getOrder: () => Promise.reject("Data provider loaded"),
   createOrder: () => Promise.reject("Data provider loaded"),
   updateOrder: () => Promise.reject("Data provider loaded"),
   setOrderStatus: () => Promise.reject("Data provider loaded"),
@@ -638,6 +641,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         headers: { Authorization: auth.getAuthToken() }
       });
       return resp.data.length === 1 ? resp.data[0] : null;
+    },
+    async getOrder(id: number): Promise<Order | null> {
+      const resp = await axios.get<unknown, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders/${id}`, {
+        headers: { Authorization: auth.getAuthToken() }
+      });
+      return resp.data;
     },
     async createOrder(body: OrderCreateRequest): Promise<Order> {
       const resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body);

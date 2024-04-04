@@ -12,8 +12,11 @@ import { BankTransferAction } from "../types/order.ts";
 import { useData } from "../hoc/DataProvider.tsx";
 
 import paymentSuccess from "../assets/images/payment-success.svg";
+import { getDefaultPaddingX, getPropertyFromMetadata } from "../utils.ts";
+import { useParams } from "react-router-dom";
 
-export interface PurchaseCompleteProps {}
+export interface PurchaseCompleteProps {
+}
 
 interface BankTransferInstructions {
   iban: string;
@@ -23,7 +26,7 @@ interface BankTransferInstructions {
 }
 
 interface Message {
-  title: string;
+  title: string | ReactElement;
   text: string | ReactElement;
   cta?: string;
   bankTransferInstructions?: BankTransferInstructions;
@@ -48,8 +51,10 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
   const data = useData();
   const stripe = useStripe();
   const payments = usePayments();
+  const { order_id: orderId } = useParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+
 
   const [ready, setReady] = useState(false);
   const [message, setMessage] = useState<Message>();
@@ -63,12 +68,14 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
       const paymentIntent = urlParams.get("payment_intent");
       const redirectStatus = urlParams.get("redirect_status");
 
+      let galleryName = "";
+
       if (!clientSecret || !paymentIntent || !redirectStatus) {
         setMessage({
           title: "Si è verificato un errore",
           text: "Impossibile caricare le informazioni sul pagamento",
           cta: "",
-          status: "failure",
+          status: "failure"
         });
         setReady(true);
         return;
@@ -78,7 +85,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
           title: "Pagamento in elaborazione",
           text: "Stiamo verificando il tuo pagamento, attendi qualche minuto",
           cta: "",
-          status: "processing",
+          status: "processing"
         });
         setReady(true);
         return;
@@ -87,25 +94,37 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
       const completedOrderId = localStorage.getItem("completed-order");
 
       stripe.retrievePaymentIntent(clientSecret).then(async ({ paymentIntent }) => {
+        if (orderId) {
+          const order = await data.getOrder(+orderId);
+          if (order?.line_items.length) {
+            galleryName = order?.line_items[0].meta_data.find(({ key }) => key === "Venduto da")?.display_value || "";
+          }
+          console.log("order state", order?.status);
+        }
+
         switch (paymentIntent?.status) {
           case "succeeded":
             if (completedOrderId) {
               try {
                 await data.updateOrder(+completedOrderId, {
                   payment_method: "Credit card",
-                  payment_method_title: "Carta di credito",
+                  payment_method_title: "Carta di credito"
                 });
               } catch (e) {
                 console.error(e);
                 // TODO: errore
               }
               localStorage.removeItem("completed-order");
+
             }
+
+
             setMessage({
-              title: `Ciao ${auth.user?.username || ""}, grazie per il tuo acquisto`,
-              text: exampleSuccessMessage,
+              title: <>Ciao {auth.user?.username || ""},<br /> grazie per aver scelto Artpay!</>,
+              text: <>L’acquisto è andato a buon fine. A breve sarai contattato dalla galleria {galleryName} per
+                definire le modalità di acquisizione/spedizione dell’opera</>,
               cta: "",
-              status: "success",
+              status: "success"
             });
             break;
           case "processing":
@@ -113,7 +132,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               title: "Pagamento in elaborazione",
               text: "Stiamo verificando il tuo pagamento, attendi qualche minuto",
               cta: "",
-              status: "processing",
+              status: "processing"
             });
             break;
           case "requires_action":
@@ -124,7 +143,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
                 title: "Si è verificato un errore",
                 text: "Dati per effettuare il bonifico non trovati",
                 cta: "",
-                status: "failure",
+                status: "failure"
               });
             } else {
               const iban = nextAction.display_bank_transfer_instructions.financial_addresses[0].iban?.iban || "";
@@ -134,7 +153,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
                   await data.setOrderStatus(+completedOrderId, "on-hold", {
                     payment_method: "Stripe SEPA",
                     payment_method_title: "Bonifico bancario",
-                    customer_note: `IBAN: ${iban} - Causale: ${reference}`,
+                    customer_note: `IBAN: ${iban} - Causale: ${reference}`
                   });
                 } catch (e) {
                   console.error(e);
@@ -144,7 +163,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               }
               //
               setMessage({
-                title: "Grazie per il tuo acquisto!",
+                title: "Grazie per aver scelto Artpay!",
                 text: bankTransferMessage,
                 cta: "",
                 status: "requires_action",
@@ -152,11 +171,11 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
                   accountHolderName:
                     nextAction.display_bank_transfer_instructions.financial_addresses[0].iban.account_holder_name || "",
                   formattedAmount: `€ ${(nextAction.display_bank_transfer_instructions.amount_remaining / 100).toFixed(
-                    2,
+                    2
                   )}`,
                   iban: iban,
-                  reference: reference,
-                },
+                  reference: reference
+                }
               });
             }
             break;
@@ -165,7 +184,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               title: "Si è verificato un errore",
               text: "Il tuo pagamento non è andato a buon fine, riprova",
               cta: "",
-              status: "failure",
+              status: "failure"
             });
             break;
           default:
@@ -173,7 +192,7 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
               title: "Si è verificato un errore",
               text: "",
               cta: "",
-              status: "failure",
+              status: "failure"
             });
             break;
         }
@@ -181,6 +200,8 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
       });
     }
   }, [auth.user?.username, payments.isReady, stripe]);
+
+  const px = getDefaultPaddingX();
 
   //TODO: pulsanti copia
 
@@ -190,11 +211,11 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
         <Grid
           mt={2}
           sx={{
-            px: { xs: 2, md: 6 },
-            mt: { xs: 8, md: 12, lg: 12, xl: message.status === "requires_action" ? 10 : 0 },
+            px: px,
+            mt: { xs: 8, md: 12, lg: 12, xl: message.status === "requires_action" ? 14 : 0 },
             minHeight: "calc(100vh - 240px)",
             maxWidth: "100vw",
-            overflowX: "hidden",
+            overflowX: "hidden"
           }}
           alignItems="center"
           container>

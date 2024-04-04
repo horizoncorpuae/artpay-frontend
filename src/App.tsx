@@ -48,7 +48,6 @@ function AppContent() {
 
   useEffect(() => {
     if (enableGa) {
-      console.log("location", location);
       ReactGA.send({ hitType: "pageview", page: location.pathname, title: location.pathname });
     }
   }, [enableGa, location.pathname]);
@@ -84,6 +83,7 @@ function AppContent() {
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/profile/settings" element={<ProfileSettings />} />
                     <Route path="/thank-you-page" element={<PurchaseComplete />} />
+                    <Route path="/thank-you-page/:order_id" element={<PurchaseComplete />} />
                     <Route path="/chi-siamo" element={<About />} />
                     <Route path="/faq" element={<Faq />} />
                     <Route path="/recupero-password" element={<PasswordRecovery />} />

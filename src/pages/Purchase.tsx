@@ -254,7 +254,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const estimatedShippingCost = [0, ...artworks.map((a) => +(a.estimatedShippingCost || "0"))].reduce((a, b) => a + b);
   // const formattedSubtotal = (+(pendingOrder?.total || 0) - +(pendingOrder?.total_tax || 0)).toFixed(2);
   const thankYouPage =
-    orderMode === "loan" ? `/opera-bloccata/${artworks.length ? artworks[0].slug : ""}` : "/thank-you-page";
+    orderMode === "loan" ? `/opera-bloccata/${artworks.length ? artworks[0].slug : ""}` : `/thank-you-page/${pendingOrder?.id}`;
   const checkoutEnabled =
     checkoutReady &&
     privacyChecked &&

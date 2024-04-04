@@ -16,9 +16,9 @@ export interface AboutProps {
 const heroContent: HeroAboutProps = {
   subtitle:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  mainTitle: "Siamo artpay, l’arte è per tutti",
+  mainTitle: "Con Artpay l’arte è per tutti",
   description:
-    "artpay è un servizio digitale dedicato a coloro che vogliono investire nell opere d’arte ma bla bla bla e che offre in pochi click soluzioni bla bla bla, di acquisto rateali e personalizzabili",
+    "Artpay è un servizio digitale che consente alle gallerie d’arte di vendere online le proprie opere in modo facile e veloce, permettendo agli appassionati d’arte l’acquisto diretto o finanziato tramite i servizi di istituti bancari convenzionati.",
   buttonText: "Entra nel mondo di artpay",
   imageSrc: imgAboutCover
 };
@@ -149,7 +149,7 @@ const About: React.FC<AboutProps> = ({}) => {
               Scopri come fare
             </Typography>
             <Box>
-              <Button sx={{ mt: 3 }} variant="contained">
+              <Button sx={{ mt: 3 }} href="/artpay-per-gallerie" variant="contained">
                 Artpay per le gallerie
               </Button>
             </Box>

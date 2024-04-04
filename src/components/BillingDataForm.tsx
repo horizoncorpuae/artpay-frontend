@@ -54,7 +54,6 @@ const BillingDataForm: React.FC<UserDataFormProps> = ({
         setValue(userDataKey, shippingData[userDataKey]);
       });
       setIsSaving(false);
-      console.log("copy shipping data", checked, shippingData);
     }
   };
 

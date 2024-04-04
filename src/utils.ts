@@ -394,3 +394,4 @@ export const isTimestampAfter = (timestampInSeconds: number, durationInSeconds: 
   return timestampInSeconds > oneHourAgoInSeconds;
 };
 
+export const getDefaultPaddingX = () => ({ xs: 3, sm: 4, md: 10, lg: 12 });
