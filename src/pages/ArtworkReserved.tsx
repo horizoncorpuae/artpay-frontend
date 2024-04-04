@@ -44,7 +44,7 @@ const ArtworkReserved: React.FC<ArtworkReservedProps> = ({}) => {
         .setOrderStatus(+completedOrderId, "on-hold", {
           payment_method: "Acconto blocco opera",
           payment_method_title: "Blocco opera",
-          customer_note: `Versato acconto 5%`
+          customer_note: `Versato acconto ${data.downpaymentPercentage()}%`
         })
         .then(() => {
           localStorage.removeItem("completed-order");

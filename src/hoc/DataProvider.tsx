@@ -145,6 +145,8 @@ export interface DataContext {
   addFavouriteGallery(id: string): Promise<number[]>;
 
   removeFavouriteGallery(id: string): Promise<number[]>;
+
+  downpaymentPercentage(): number;
 }
 
 export interface DataProviderProps extends React.PropsWithChildren {
@@ -201,7 +203,8 @@ const defaultContext: DataContext = {
   removeFavouriteGallery: () => Promise.reject("Data provider loaded"),
 
   getCategoryMapValues: () => [],
-  getArtistCategories: () => []
+  getArtistCategories: () => [],
+  downpaymentPercentage: () => 0
 };
 
 const PostCategoryMapStorageKey = "PostCategoryMap";
@@ -837,7 +840,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       
             return artist.categoria_artisti.filter((c) => childrenIds.indexOf(c) !== -1).map((c) => c.name);*/
     },
-
+    downpaymentPercentage: () => 5,
     ...favourites
   };
 

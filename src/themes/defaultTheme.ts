@@ -65,8 +65,8 @@ const defaultTheme: Theme = createTheme({
     h6: { fontSize: "25px", lineHeight: "115%", fontWeight: 400 },
     subtitle1: { fontSize: "20px", lineHeight: "125%", fontWeight: 400 },
     body1: { fontSize: "16px", lineHeight: "125%", fontWeight: 400 },
-    body2: { fontSize: "14px", lineHeight: "125%", fontWeight: 400 },
-    caption: { fontSize: "12px", fontWeight: 400, display: "inline-block", lineHeight: 1 }
+    body2: { fontSize: "12px", lineHeight: "120%", fontWeight: 500 },
+    caption: { fontSize: "12px", fontWeight: 500, display: "inline-block", lineHeight: 1 }
   },
   components: {
     MuiButton: {
@@ -331,6 +331,7 @@ const defaultTheme: Theme = createTheme({
           height: "20px",
           padding: "4px 10px"
         },
+        //@ts-expect-error sizeLarge declared in types
         sizeLarge: {
           height: "36px",
           padding: "4px 10px"

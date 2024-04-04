@@ -28,19 +28,13 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
             Hai una galleria d’arte? Scopri come potenziare le sue vendite con Artpay!
           </Typography>
           <Typography variant="body1" sx={{ mt: 6 }}>
-            Tramite Artpay la tua galleria può avere un punto unico di gestione delle vendite online, con una
-            piattaforma dedicata che dà grande spazio alla presentazione visuale e testuale delle opere in vendita e ne
-            favorisce l’acquisto attraverso un sistema di acquisto diretto online e di accesso ai finanziamenti per gli
-            utenti.
-            Artpay è utile anche alle vendite direttamente in galleria. Ti basta esporre il logo/marker/qr-code di
-            Artpay sotto a ciascuna opera in vendita e i tuoi clienti potranno accedere al suo acquisto diretto online e
-            ai servizi finanziari rateali, a loro dedicati.
+            Artpay nasce per supportare e far crescere la tua galleria. Con Artpay la tua galleria acquisisce un nuovo
+            pubblico qualificato di appassionati e collezionisti d’arte, potrai allargare la base dei potenziali clienti
+            grazie ai prodotti finanziari offerti direttamente online per rendere l’arte accessibile a tutti tramite
+            prestiti rateali da parte di istituti bancari partner. Artpay è utile anche alle vendite direttamente in
+            galleria. Ti basta esporre il logo/marker/qr-code (presto in dotazione) per le opera in vendita e i tuoi
+            clienti potranno accedere al suo acquisto diretto online e ai servizi finanziari rateali, a loro dedicati.
           </Typography>
-          <Typography variant="body1" sx={{ mt: 1 }}>Con Artpay la tua galleria acquisisce un nuovo pubblico qualificato
-            di appassionati e collezionisti d’arte,
-            allargando la base dei potenziali clienti grazie ai prodotti finanziari offerti direttamente online, che
-            rendono l’arte accessibile a tutti tramite prestiti rateali da parte di istituti bancari
-            partner.</Typography>
           <Typography variant="body1" sx={{ mt: 1 }}>Entra a fare parte di Artpay in 3 soli semplici
             passaggi.</Typography>
         </Grid>
@@ -100,15 +94,16 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
             </Typography>
           </PromoCard>
           <PromoCard title="Ancora dubbi?" variant="contrast">
-            <Button variant="outlined" color="contrast" fullWidth={isMobile}>
-              Scrivici su Whatsapp
-            </Button>
+            <Typography color="white" sx={{ mb: 2 }} variant="body1">
+              Consulta le nostre <Link color="inherit" href="/faq">FAQ</Link> e, se non trovi risposta ai tuoi quesiti,
+              scrivici
+            </Typography>
             <Button
               variant="outlined"
               color="contrast"
               href="mailto:hello@artpay.art"
               fullWidth={isMobile}
-              sx={{ ml: { xs: 0, md: 3 }, mt: { xs: 3, md: 0 } }}>
+              sx={{ mt: { xs: 3, md: 0 } }}>
               Scrivi a hello@artpay.art
             </Button>
           </PromoCard>
@@ -130,13 +125,6 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          {/*        <Box sx={{ background: `url(${reservationBackground})`, height: "612px" }} display="flex"
-             flexDirection="column"
-             alignItems="center" justifyContent="center">
-          <Typography>Programma una consulenza con artpay</Typography>
-          <Button sx={{ mt: 4, mb: 2 }} variant="contained">Inizia ora</Button>
-          <Typography>Takes 2 minutes</Typography>
-        </Box>*/}
           <iframe
             data-cmp-ab="2"
             src="https://form.typeform.com/to/aDnsAoId?typeform-embed-id=8112263680325873&amp;typeform-embed=embed-widget&amp;typeform-source=gallerie.artpay.art&amp;typeform-medium=snippet&amp;typeform-medium-version=next&amp;embed-opacity=100&amp;typeform-embed-handles-redirect=1"
@@ -145,9 +133,9 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
             allow="microphone; camera"
             title="My branded typeform"
             data-cmp-info="8"></iframe>
-          <Button variant="outlined" sx={{ mt: 3 }} fullWidth>
+          {/*          <Button variant="outlined" sx={{ mt: 3 }} fullWidth>
             oppure prenota una chiamata subito
-          </Button>
+          </Button>*/}
         </Grid>
       </Grid>
     </DefaultLayout>

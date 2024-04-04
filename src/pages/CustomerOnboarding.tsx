@@ -45,15 +45,15 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
       <Grid sx={{ mt: 18, px: px }} container>
         <Grid item xs={12} md={8} lg={7}>
           <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>
-            Artpay per collezionisti
+            Artpay per gli appassionati d'arte
           </Typography>
           <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
-            Artpay per collezionisti Lorem ipsum dolor sit amet, conetur adipiscing elit, sed do eiusmod.
+            Scopri come acquistare online opere d’arte in modo più accessibile e veloce, con artpay.
           </Typography>
           <Typography variant="body1" sx={{ mt: 6, maxWidth: "400px" }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
+            Vivi la tua passione per l’arte in modo ancora più soddisfacente. Con Artpay puoi acquistare online opere
+            d’arte dalle più rinomate gallerie d’arte italiane e pagarle con tutta la flessibilità dei servizi
+            finanziari delle nostre banche partner.
           </Typography>
         </Grid>
         <Grid item xs={12} md={4} lg={5} sx={{ pl: { xs: 0, sm: 8 }, pt: 9, minHeight: "760px" }}>
@@ -69,86 +69,75 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
             border
             title={
               <>
-                Navigazione e<br />
-                blocco dellʼopera
+                Esplora le opere d’arte del nostro network di gallerie
               </>
             }>
             <Typography variant="body1">
-              Lʼutente dopo essersi iscritto ad artpay esplora le tipologie di artwork a sua disposizione potendo
-              approfondire informazioni su artisti e gallerie. <br />
-              Una volta dimostrato il proprio interesse per unʼopera la blocca attraverso una % trattenuta sulla propria
-              carta di credito a garanzia dellʼacquisto
+              Dopo l’iscrizione ad Artpay, esplora l’offerta di opere d’arte online delle gallerie del nostro network.
+              Troverai tutte le informazioni su ciascuna opera e sulla galleria che le mette in vendita.<br />
+              In alternativa, visita di persona una galleria del nostro network e, se un’opera ti interessa, richiedi di
+              acquistarla tramite Artpay.
             </Typography>
           </PromoCard>
           <PromoCard
             title={
               <>
-                Avvio procedura <br />
-                di pagamento
+                Ti interessa un’opera d’arte? prenotala!
               </>
             }>
             <Typography variant="body1">
-              Lʼutente può comprare immediatamente tramite carta di credito, oppure ha 24ore per procedere allʼacquisto
-              del bene bloccato scegliendo tra diverse tipologie di pagamento:
-            </Typography>
-            <ul>
-              <li>bonifico bancario</li>
-              <li>buy now pay later</li>
-              <li>rateale</li>
-            </ul>
-            <Typography variant="body1">
-              In caso di mancato avvio della procedura, lʼopera tornerà disponibile allʼinterno della piattaforma.
+              Hai trovato un’opera d’arte che ti interessa e vorresti acquistare? Non serve pagare tutto subito: puoi
+              prenotarla con la tua carta di credito. Scegli l’opzione “Prenota l’opera” e potrai prenotarla con una
+              piccola trattenuta sulla tua carta di credito, proporzionale al valore dell’opera, a garanzia delle tue
+              intenzioni d’acquisto. Hai 7 giorni per scegliere la modalità di pagamento che preferisci. Durante tutto
+              questo tempo, l’opera è prenotata a tuo nome e non disponibile per l’acquisto da parte di altre persone.
             </Typography>
           </PromoCard>
           <PromoCard
             title={
               <>
-                Percorso di <br />
-                acquisto
+                Opzioni di <br />acquisto
               </>
             }>
             <Typography variant="body1">
-              Scegliendo lʼacquisto rateale (focus di artpay), lʼutente potrà usufruire del tool interno alla
-              piattaforma per selezionare la proposta di finanziamento di maggior interesse tra quelle messe a
-              disposizione. <br />
-              In questo processo la galleria tiene traccia dello stato delle operazioni: dalla scelta dellʼopera
-              allʼacquisto finale.
+              Se vuoi acquistare subito l’opera d’arte di tuo interesse, scegli l’opzione “Compra subito”. Potrai
+              procedere al pagamento online con la tua carta di credito o via bonifico o scegliendo le migliori proposte
+              di finanziamento per il tuo acquisto offerto dai nostri partner selezionati: una volta completata la
+              procedura, spetterà all’istituto finanziario valutare la tua pratica e concedere il credito per
+              l’acquisto, che arriverà alla galleria d’arte entro 7 giorni circa, dando il via alla sua spedizione al
+              tuo indirizzo.<br />
+              Una volta approvato il finanziamento, proseguirai con il pagamento delle singole rate per tutto il periodo
+              di finanziamento evidenziato dal piano finanziario, avendo come interlocutore direttamente l’istituto
+              bancario erogante.
             </Typography>
           </PromoCard>
           <PromoCard
             title={
               <>
-                Come funziona <br />
-                il pagamento rateale
+                Consegna <br />dell’opera
               </>
             }>
             <Typography variant="body1">
-              Una volta selezionato lʼistituto finanziario con il quale avviare la procedura rateale di pagamento, il
-              visitatore potrà procedere autonomamente con la richiesta di finanziamento.
-              Al termine della valutazione da parte dellʼistituto finanziario, se ottenuta la liquidità, sarà possibile
-              saldare lʼintero importo dellʼopera alla galleria entro circa 7 giorni dallʼapprovazione del credito
-              ottenuto.
-            </Typography>
-          </PromoCard>
-          <PromoCard
-            title={
-              <>
-                Consegna <br />
-                dellʼopera
-              </>
-            }>
-            <Typography variant="body1">
-              Al ricevimento del saldo, lʼopera viene spedita o consegnata al cliente direttamente dalla galleria, resta
-              a suo carico spedizione e costi accessori inclusa lʼeventuale assicurazione.
-              Lʼutente a questo punto prosegue con il pagamento delle rate secondo il piano concordato. La galleria
-              salda ad artpay i compensi da questʼultima.
+              Una volta completato l’acquisto con una delle tante opzioni messe a disposizione da Artpay, è il momento
+              della consegna dell’opera d’arte.<br />
+              Anche in questo caso, avrai massima libertà di personalizzare la tua esperienza di consegna già a partire
+              dal carrello di acquisto o prenotare il ritiro presso la galleria che vende l’opera confrontandoti
+              direttamente, attraverso il sistema di messaggistica integrato all’interno della piattaforma, con il
+              personale dedicato della galleria stessa.
             </Typography>
           </PromoCard>
 
           <PromoCard titleVariant="h2" title="Cosa aspetti? Entra subito a far parte di artpay!" variant="contrast">
-            <Button variant="outlined" color="contrast" onClick={handleRegistration} sx={{ ml: 3 }}>
+            <Typography variant="body1" color="white" sx={{ maxWidth: "600px", mb: 2 }}>
+              Ad acquisto avvenuto, l’opera è tua e avrai massima libertà di personalizzare la tua esperienza di
+              consegna già a partire dal carrello di acquisto o prenotare il ritiro presso la galleria che vende l’opera
+              confrontandoti direttamente, attraverso il sistema di messaggistica integrato all’interno della
+              piattaforma, con il personale dedicato della galleria stessa.
+            </Typography>
+            {!auth.isAuthenticated && <Button variant="outlined" color="contrast" onClick={handleRegistration}>
               Registrati
-            </Button>
+            </Button>}
+
           </PromoCard>
         </Box>
       </Box>

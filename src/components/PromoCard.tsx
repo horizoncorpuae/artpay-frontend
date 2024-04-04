@@ -35,7 +35,7 @@ const PromoCard: React.FC<PromoCardProps> = ({
         px: { xs: 4, md: 13 }
       }}>
       <Typography
-        sx={{ flexGrow: 1 }}
+        sx={{ flexGrow: 1, px: { xs: 0, sm: 3 } }}
         color={variant === "contrast" ? theme.palette.primary.contrastText : undefined}
         variant={titleVariant}>
         {title}

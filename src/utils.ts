@@ -23,6 +23,7 @@ import { Order } from "./types/order.ts";
 import { OrderHistoryCardProps } from "./components/OrderHistoryCard.tsx";
 import { OrderLoanCardProps } from "./components/OrderLoanCard.tsx";
 
+
 interface categoryValueMatcher {
   getCategoryMapValues(artwork: Artwork, key: string): string[];
 }
@@ -78,13 +79,14 @@ export const artworkToOrderItem = (artwork: Artwork, valueMatcher?: categoryValu
     artworkTechnique: valueMatcher?.getCategoryMapValues(artwork, "tecnica").join(" ") || ""
   };
 };
-export const artistToGalleryItem = (artist: Artist): ArtistCardProps => {
+export const artistToGalleryItem = (artist: Artist, size: CardSize = "medium"): ArtistCardProps => {
   const imgUrl = artist?.medium_img?.length
     ? artist?.medium_img[0]
     : artist.artworks?.length && artist.artworks[0].images?.length
       ? artist.artworks[0].images[0]
       : "";
   return {
+    size: size,
     id: artist.id.toString(),
     slug: artist.slug,
     isFavourite: false,

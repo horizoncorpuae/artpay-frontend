@@ -26,6 +26,8 @@ import PaymentCard from "../components/PaymentCard.tsx";
 import BillingDataForm from "../components/BillingDataForm.tsx";
 import BillingDataPreview from "../components/BillingDataPreview.tsx";
 import ErrorIcon from "../components/icons/ErrorIcon.tsx";
+import { Gallery } from "../types/gallery.ts";
+import LoanCard from "../components/LoanCard.tsx";
 
 export interface PurchaseProps {
   orderMode?: "standard" | "loan";
@@ -55,6 +57,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const [pendingOrder, setPendingOrder] = useState<Order>();
   const [paymentIntent, setPaymentIntent] = useState<PaymentIntent>();
   const [artworks, setArtworks] = useState<ArtworkCardProps[]>([]);
+  const [galleries, setGalleries] = useState<Gallery[]>([]);
 
   orderMode = (orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera") ? "loan" : "standard";
 
@@ -103,6 +106,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
             }
             setPaymentIntent(paymentIntent);
+            data.getGalleries(artworks.map(a => +a.vendor)).then(galleries => setGalleries(galleries));
           } else {
             console.log("No orders");
             setNoPendingOrder(true);
@@ -257,9 +261,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     !isSaving &&
     (currentShippingMethod || (orderMode === "loan" && areBillingFieldsFilled(userProfile?.billing)));
 
-  const shoppingBagIcon = <ShoppingBagIcon color="#FFFFFF" />;
-
   const shippingPrice = currentShippingMethod === "local_pickup" ? 0 : estimatedShippingCost || 0;
+
+  const px = { xs: 3, sm: 4, md: 10, lg: 12 };
 
   if (noPendingOrder) {
     return <DefaultLayout pageLoading={!isReady || !paymentsReady} pb={6}>
@@ -277,8 +281,19 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
   return (
     <DefaultLayout pageLoading={!isReady || !paymentsReady} pb={6}>
-      <Grid mt={16} spacing={3} px={3} container>
+      <Grid mt={16} spacing={3} sx={{ px: px }} container>
         <Grid item gap={3} display="flex" flexDirection="column" xs={12} md={8}>
+          {orderMode === "loan" &&
+            <Box sx={{ borderTop: `1px solid #d8ddfa`, borderBottom: `1px solid #d8ddfa` }} py={3} mb={8}>
+              <Typography
+                variant="h1">Prenota {artworks?.length ? artworks[0].title : "l'opera"}{artworks?.length && artworks[0].year ? `, ${artworks[0].year}` : ""}</Typography>
+              <Typography variant="body1" sx={{ mt: 3, fontWeight: 500 }}>
+                Per 7 giorni avrai diritto esclusivo di acquisto di quest’opera.
+                Nessun altro potrà prenotarla o acquistarla. Durante questo periodo, potrai completare l’acquisto con le
+                modalità a te preferite.
+              </Typography>
+            </Box>
+          }
           <ContentCard title="Informazioni di contatto" icon={<UserIcon />} headerButtons={contactHeaderButtons}>
             {!auth.isAuthenticated && (
               <Button onClick={() => auth.login()} sx={{ maxWidth: "320px", mb: 2 }} variant="contained" fullWidth>
@@ -366,16 +381,18 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               {orderMode === "loan" ? (
                 <>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body1">Costo opera</Typography>
-                    <Typography variant="body1">€ {pendingOrder?.total}</Typography>
+                    <Typography variant="body1" fontWeight={500}>Costo opera</Typography>
+                    <Typography variant="body1" fontWeight={500}>€ {pendingOrder?.total}</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="subtitle1">Caparra</Typography>
-                    <Typography variant="subtitle1">€ {(+(pendingOrder?.total || 0) * 0.1).toFixed(2)}</Typography>
+                    <Typography variant="body1" fontWeight={500}>Caparra</Typography>
+                    <Typography variant="body1"
+                                fontWeight={500}>{data.downpaymentPercentage()}%</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="subtitle1">Totale</Typography>
-                    <Typography variant="subtitle1">€ {pendingOrder?.total}</Typography>
+                    <Typography variant="body1" fontWeight={500}>Totale</Typography>
+                    <Typography variant="body1"
+                                fontWeight={500}>€ {(+(pendingOrder?.total || 0) * data.downpaymentPercentage() / 100).toFixed(2)}</Typography>
                   </Box>
                 </>
               ) : (
@@ -397,21 +414,21 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 </>
               )}
               <Checkbox
-                sx={{ my: 1 }}
+                sx={{ mt: 1 }}
                 disabled={isSaving || !checkoutReady}
                 checked={privacyChecked}
                 onChange={(e) => setPrivacyChecked(e.target.checked)}
                 label="Accetto le condizioni generali d'acquisto e l'informativa sulla privacy di Artpay."
               />
               <Button
+                sx={{ my: 6 }}
                 disabled={!checkoutEnabled}
-                startIcon={(checkoutReady || !auth.isAuthenticated) ? shoppingBagIcon :
+                startIcon={(checkoutReady || !auth.isAuthenticated) ? undefined :
                   <CircularProgress size="20px" />}
                 onClick={handlePurchase}
                 variant="contained"
-                fullWidth
-                size="large">
-                {orderMode === "loan" ? "Procedi al pagamento della caparra" : "Acquista ora"}
+                fullWidth>
+                {orderMode === "loan" ? "Prenota l'opera" : "Acquista ora"}
               </Button>
             </Box>
             <Divider sx={{ my: 3, borderColor: "#d8ddfa" }} />
@@ -419,27 +436,46 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               {pendingOrder?.line_items.map((item, i) => (
                 <Box key={item.id}>
                   <DisplayImage src={item.image.src} width="100%" height="230px" />
-                  <Typography variant="h6" sx={{ mt: 1 }}>
+                  <Typography variant="body1" fontWeight={500} sx={{ mt: 1 }}>
                     {item.name}
                   </Typography>
-                  <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 1, mt: 0 }}>
+                  <Typography variant="body1" fontWeight={500} color="textSecondary" sx={{ mb: 1, mt: 0 }}>
                     {artworks[i]?.artistName}
                   </Typography>
-                  <Typography variant="body1" color="textSecondary">
-                    {artworks[i]?.dimensions}
-                  </Typography>
-                  <Typography variant="body1" color="textSecondary">
+                  <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
                     {artworks[i]?.technique}
                   </Typography>
-                  <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                  <Typography variant="body2" sx={{ mb: 2 }} color="textSecondary">
+                    {artworks[i]?.dimensions}
+                  </Typography>
+                  <Typography variant="body1" fontWeight={500}>
                     {artworks[i]?.galleryName}
                   </Typography>
+                  {(galleries?.length === artworks?.length && !!galleries[i]?.address?.city) &&
+                    <Typography variant="body1" fontWeight={500} color="textSecondary">
+                      {galleries[i]?.address?.city}
+                    </Typography>}
                 </Box>
               ))}
             </Box>
           </ContentCard>
+          {orderMode === "loan" &&
+            <ContentCard sx={{ mt: 3, pb: 1, pt: 3 }} contentPadding={3} hideHeader>
+              <Typography variant="body2">
+                Ad acquisto avvenuto, l’opera è tua e avrai massima libertà di personalizzare le modalità di
+                consegna, confrontandoti direttamente col personale della galleria d’arte responsabile della
+                vendita.
+              </Typography>
+              <Button sx={{ mt: 3 }} variant="outlined" fullWidth>
+                Compra ora
+              </Button>
+            </ContentCard>
+          }
         </Grid>
       </Grid>
+      {orderMode === "loan" && <Box sx={{ px: { ...px, xs: 0 }, mt: 3, mb: 12 }}>
+        <LoanCard />
+      </Box>}
     </DefaultLayout>
   );
 };
