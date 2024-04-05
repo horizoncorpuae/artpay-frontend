@@ -9,7 +9,7 @@ import sanitizeHtml from "sanitize-html";
 import ReadMoreTypography from "../components/ReadMoreTypography.tsx";
 import ArtworksGrid from "../components/ArtworksGrid.tsx";
 import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
-import { artworksToGalleryItems } from "../utils.ts";
+import { artworksToGalleryItems, getDefaultPaddingX } from "../utils.ts";
 import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
 import FavouriteIcon from "../components/icons/FavouriteIcon.tsx";
 import { Share } from "@mui/icons-material";
@@ -86,13 +86,14 @@ const Artist: React.FC<ArtistProps> = ({}) => {
       });
   }, [data, snackbar, urlParams?.slug]);
 
+  const px = getDefaultPaddingX();
 
   return (
     <DefaultLayout pageLoading={!isReady}>
       <Box
         mt={12}
         sx={{
-          px: { xs: 3, sm: 6, md: 8 },
+          px: px,
           pb: 1,
           mt: { xs: 10, sm: 12, md: 14 },
           flexDirection: { xs: "column", md: "row" },
@@ -124,7 +125,7 @@ const Artist: React.FC<ArtistProps> = ({}) => {
           </Typography>
           <Box mt={2} display="flex" gap={1}>
             {artistCategories.map((c) => (
-              <Chip color="secondary" key={c} label={c} />
+              <Chip color="primary" key={c} label={c} />
             ))}
           </Box>
           <Typography sx={{ mt: 2 }} variant="body2" color="textSecondary">
@@ -136,8 +137,8 @@ const Artist: React.FC<ArtistProps> = ({}) => {
         </Box>
       </Box>
 
-      <Box sx={{ px: { xs: 3, sm: 6, md: 0 }, mt: { xs: 3, md: 6 } }} mt={8} pb={6}>
-        <ArtworksGrid title="Opere dello stesso artista" items={artworks} />
+      <Box sx={{ px: px, mt: { xs: 3, md: 6 } }} mt={8} pb={6}>
+        <ArtworksGrid disablePadding title="Opere dello stesso artista" items={artworks} />
       </Box>
     </DefaultLayout>
   );

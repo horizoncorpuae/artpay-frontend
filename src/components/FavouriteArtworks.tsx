@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { ArtworkCardProps } from "./ArtworkCard.tsx";
-import { artworksToGalleryItems } from "../utils.ts";
+import { artworksToGalleryItems, getDefaultPaddingX } from "../utils.ts";
 import ArtworksGrid from "./ArtworksGrid.tsx";
 import Loader from "./Loader.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
@@ -30,8 +30,10 @@ const FavouriteArtworks: React.FC<FavouriteArtworksProps> = ({}) => {
     }).catch((e) => snackbar.error(e));
   }, [data]);
 
+  const px = getDefaultPaddingX();
+
   return (
-    <Box sx={{ px: { xs: 0, sm: 3, md: 6 }, width: "100%" }}>
+    <Box sx={{ px: px, width: "100%" }}>
       <Box sx={{ maxWidth: theme.breakpoints.values["xl"] }}>
         <Typography variant="h3" sx={{ mb: 2 }}>
           Le tue opere preferite

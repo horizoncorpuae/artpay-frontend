@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useData } from "../hoc/DataProvider.tsx";
 import { Box } from "@mui/material";
-import { artistsToGalleryItems } from "../utils.ts";
+import { artistsToGalleryItems, getDefaultPaddingX } from "../utils.ts";
 import { ArtistCardProps } from "./ArtistCard.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import ListHeader from "./ListHeader.tsx";
@@ -39,16 +39,17 @@ const FavouriteArtists: React.FC<FavouriteArtistsProps> = ({}) => {
   }, [data]);
 
   // <Skeleton variant="rectangular" height={520} width={320} animation="pulse" />
+  const px = getDefaultPaddingX();
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", px: px }}>
       <ListHeader
-        boxSx={{ width: "100%", marginLeft: "auto", marginRight: "auto" }}
+        boxSx={{ width: "100%", marginLeft: "auto", marginRight: "auto", px: 0 }}
         title="Artisti che segui"
         subtitle="In questa sezione troverai tutti gli artisti che stai tenendo d’occhio"
       />
       {ready ? (
-        <ArtistsGrid items={favouriteArtists} emptyText={emptyText} />
+        <ArtistsGrid disablePadding items={favouriteArtists} emptyText={emptyText} />
       ) : (
         <Loader sx={{ mx: { xs: 0, md: 6 } }} />
       )}

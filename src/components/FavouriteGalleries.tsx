@@ -3,7 +3,7 @@ import { useData } from "../hoc/DataProvider.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import { Box } from "@mui/material";
 import { GalleryCardProps } from "./GalleryCard.tsx";
-import { galleriesToGalleryItems } from "../utils.ts";
+import { galleriesToGalleryItems, getDefaultPaddingX } from "../utils.ts";
 import ListHeader from "./ListHeader.tsx";
 import GalleriesGrid from "./GalleriesGrid.tsx";
 import Loader from "./Loader.tsx";
@@ -39,15 +39,17 @@ const FavouriteGalleries: React.FC<FavouriteGalleriesProps> = ({}) => {
   }, [data]);
 
   // <Skeleton variant="rectangular" height={520} width={320} animation="pulse" />
+  const px = getDefaultPaddingX();
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", px: px }}>
       <ListHeader
+        boxSx={{ px: 0 }}
         title="Gallerie che segui"
         subtitle="In questa sezione troverai tutte le gallerie che stai seguendo"
       />
       {ready ? (
-        <GalleriesGrid items={favouriteGalleries} emptyText={emptyText} />
+        <GalleriesGrid disablePadding items={favouriteGalleries} emptyText={emptyText} />
       ) : (
         <Loader sx={{ px: { xs: 0, md: 6 } }} />
       )}

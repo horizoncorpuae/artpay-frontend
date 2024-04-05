@@ -33,10 +33,6 @@ interface Message {
   status: "success" | "failure" | "processing" | "requires_action";
 }
 
-const exampleSuccessMessage = `Bla bla bla grazie per il tuo acquisto, bla bla, lorem ipsum dolor sit amet consectetur. Euismod metus
-              pellentesque porta aliquam ipsum aliquam aliquam consectetur dui. Massa diam egestas ultrices diam et eget
-              et quis. Enim ipsum praesent venenatis auctor ultrices morbi posuere sit scelerisque. Sit nisl eu sit at
-              consectetur odio est interdum.`;
 const bankTransferMessage = (
   <span>
     Riportiamo qui sotto gli estremi per effettuare il bonifico, copiali per essere sicuro di non perdere questa

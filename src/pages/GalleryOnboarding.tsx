@@ -7,6 +7,7 @@ import onboardingBackground from "../assets/images/background-onboarding.svg";
 
 import onboardingImg1 from "../assets/images/gallery-onboarding-img-1.png";
 import onboardingImg2 from "../assets/images/gallery-onboarding-img-2.png";
+import { getDefaultPaddingX } from "../utils.ts";
 
 export interface GalleryOnboardingProps {
 }
@@ -15,7 +16,7 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const px = { xs: 4, sm: 4, md: 10, lg: 14 };
+  const px = getDefaultPaddingX();
 
   return (
     <DefaultLayout sx={{ overflowX: "hidden" }}>

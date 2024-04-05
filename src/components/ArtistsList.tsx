@@ -9,20 +9,20 @@ import { CardSize } from "../types";
 export interface ArtistsListProps {
   items: ArtistCardProps[];
   maxItems?: number;
-  size: CardSize;
+  size?: CardSize;
   title?: string;
   onSelect?: (index: number) => void;
   disablePadding?: boolean;
 }
 
 const ArtistsList: React.FC<ArtistsListProps> = ({
-  items,
-  title,
-  onSelect,
-  disablePadding,
-  size = "large",
-  maxItems,
-}) => {
+                                                   items,
+                                                   title,
+                                                   onSelect,
+                                                   disablePadding,
+                                                   size = "large",
+                                                   maxItems
+                                                 }) => {
   const data = useData();
   const auth = useAuth();
   const navigate = useNavigate();

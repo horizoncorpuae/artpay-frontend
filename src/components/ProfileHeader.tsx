@@ -3,6 +3,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { UserProfile } from "../types/user.ts";
 import countries from "../countries.ts";
 import Avatar from "./Avatar.tsx";
+import { getDefaultPaddingX } from "../utils.ts";
 
 export interface ProfileHeaderProps {
   profile?: UserProfile;
@@ -27,13 +28,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile, controls }) => {
 
   const country = countries.find((c) => c.code === profile?.shipping?.country)?.name;
 
+  const px = getDefaultPaddingX();
+
   return (
     <Box
       mt={14}
       display="flex"
       gap={3}
       sx={{
-        px: { xs: 3, lg: 6 },
+        px: px,
         mt: { xs: 10, md: 14 },
         maxWidth: theme.breakpoints.values.xl,
         marginLeft: "auto",

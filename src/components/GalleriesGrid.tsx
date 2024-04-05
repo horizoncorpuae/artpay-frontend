@@ -10,13 +10,21 @@ export interface GaleriesGridProps {
   items: GalleryCardProps[];
   title?: string;
   subtitle?: string;
+  disablePadding?: boolean;
   cardSize?: CardSize;
   onSelect?: (index: number) => void;
   emptyText?: string;
   onLoadMore?: () => Promise<void>;
 }
 
-const GaleriesGrid: React.FC<GaleriesGridProps> = ({ title, subtitle, emptyText, items, onSelect }) => {
+const GaleriesGrid: React.FC<GaleriesGridProps> = ({
+                                                     title,
+                                                     subtitle,
+                                                     disablePadding = false,
+                                                     emptyText,
+                                                     items,
+                                                     onSelect
+                                                   }) => {
   const navigate = useNavigate();
   const data = useData();
   const auth = useAuth();
@@ -65,7 +73,7 @@ const GaleriesGrid: React.FC<GaleriesGridProps> = ({ title, subtitle, emptyText,
   };
 
   return (
-    <Box sx={{ px: { xs: 0, md: 6 }, maxWidth: "100%" }}>
+    <Box sx={{ px: disablePadding ? 0 : { xs: 0, md: 6 }, maxWidth: "100%" }}>
       {title && (
         <Typography sx={{ mb: subtitle ? 2 : { xs: 3, md: 6 } }} variant="h3">
           {title}

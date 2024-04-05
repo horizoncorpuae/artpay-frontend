@@ -4,6 +4,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import TextField from "../components/TextField.tsx";
 import SearchIcon from "../components/icons/SearchIcon.tsx";
+import { getDefaultPaddingX } from "../utils.ts";
 
 export interface ErrorProps {
   errorCode?: number;
@@ -29,13 +30,16 @@ const Error: React.FC<ErrorProps> = () => {
       errorText.text = <>Forse la pagina non esiste più a questo indirizzo o</>;
   }
 
+  const px = getDefaultPaddingX();
+
   return (<DefaultLayout minHeight="36vh" pb={3}>
     <Box sx={{
       maxWidth: "392px",
       display: "flex",
       flexDirection: "column",
       mt: { xs: 12, md: 24 },
-      mx: { xs: 2, md: 10 }
+      mb: { xs: 6, md: 12 },
+      mx: px
     }}>
       <Typography color="primary" variant="h2">
         {errorText.title}

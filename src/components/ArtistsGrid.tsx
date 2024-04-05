@@ -11,12 +11,21 @@ export interface ArtistsGridProps {
   title?: string;
   subtitle?: string;
   emptyText?: string;
+  disablePadding?: boolean;
   cardSize?: CardSize;
   onSelect?: (index: number) => void;
   onLoadMore?: () => Promise<void>;
 }
 
-const ArtistsGrid: React.FC<ArtistsGridProps> = ({ title, subtitle, emptyText, items, onSelect, onLoadMore }) => {
+const ArtistsGrid: React.FC<ArtistsGridProps> = ({
+                                                   title,
+                                                   subtitle,
+                                                   emptyText,
+                                                   disablePadding,
+                                                   items,
+                                                   onSelect,
+                                                   onLoadMore
+                                                 }) => {
   const navigate = useNavigate();
   const auth = useAuth();
   const data = useData();
@@ -69,7 +78,7 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({ title, subtitle, emptyText, i
     }
   };
   return (
-    <Box sx={{ px: { xs: 0, md: 6 }, maxWidth: "100%" }}>
+    <Box sx={{ px: disablePadding ? 0 : { xs: 0, md: 6 }, maxWidth: "100%" }}>
       {title && (
         <Typography sx={{ mb: subtitle ? 2 : { xs: 3, md: 6 }, px: { xs: 3, md: 0 } }} variant="h3">
           {title}

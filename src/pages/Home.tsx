@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { Grid } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
-import HeroSlider from "../components/HeroSlider.tsx";
 import NewsletterBig from "../components/NewsletterBig.tsx";
 import ArtworksList from "../components/ArtworksList.tsx";
 import { HomeContent } from "../types/home.ts";
@@ -13,6 +12,7 @@ import { ArtistCardProps } from "../components/ArtistCard.tsx";
 import ArtistsList from "../components/ArtistsList.tsx";
 import { useNavigate } from "react-router-dom";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
+import HeroHome from "../components/HeroHome.tsx";
 
 export interface HomeProps {
 }
@@ -62,7 +62,7 @@ const Home: React.FC<HomeProps> = ({}) => {
 
   return (
     <DefaultLayout pageLoading={!isReady} maxWidth={false}>
-      <HeroSlider slides={homeContent?.heroSlides} />
+      <HeroHome />
       <Grid sx={{ px: { xs: 0, md: 4, lg: 8 }, mt: 4, justifyContent: "center" }} container>
         {featuredArtworks && (
           <ArtworksList

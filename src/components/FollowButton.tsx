@@ -1,7 +1,6 @@
 import React from "react";
-import { Add, Check, Remove } from "@mui/icons-material";
-import { Box, Button, IconButton, Typography } from "@mui/material";
-import { ButtonProps } from "@mui/material/Button/Button";
+import { Add, Check } from "@mui/icons-material";
+import { Box, IconButton, Typography } from "@mui/material";
 
 export interface FollowButtonProps {
   isFavourite?: boolean;
@@ -23,7 +22,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
         </Button>*/
     <Box gap={1} display="flex">
       <Typography variant="body1" color="primary">{isFavourite ? "Following" : "Follow"}</Typography>
-      <IconButton color="primary" size="xs" variant={isFavourite ? "contained" : "outlined"}
+      <IconButton color="primary" size="xs" disabled={isLoading} variant={isFavourite ? "contained" : "outlined"}
                   onClick={() => onClick(isFavourite)}>{isFavourite ?
         <Check fontSize="small" /> : <Add fontSize="small" />}</IconButton>
     </Box>

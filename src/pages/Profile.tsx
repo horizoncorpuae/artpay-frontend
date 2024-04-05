@@ -41,7 +41,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
     });
   }, [data]);
   return (
-    <DefaultLayout pageLoading={!isReady} authRequired maxWidth={false}>
+    <DefaultLayout pageLoading={!isReady} authRequired>
       <ProfileHeader
         profile={profile}
         controls={[

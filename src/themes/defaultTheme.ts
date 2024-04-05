@@ -56,13 +56,14 @@ const defaultTheme: Theme = createTheme({
   typography: {
     fontFamily: "intertight",
     display1: { fontSize: "88px", lineHeight: "100%", fontWeight: 400, display: "inline-block" },
+    display2: { fontSize: "72px", lineHeight: "100%", fontWeight: 400, display: "inline-block" },
     display3: { fontSize: "56px", lineHeight: "100%", fontWeight: 400, display: "inline-block" },
     h1: { fontSize: "40px", lineHeight: "105%", fontWeight: 400 },
-    h2: { fontSize: "36px", lineHeight: "100%", fontWeight: 400 },
-    h3: { fontSize: "32px", lineHeight: "120%", fontWeight: 400 },
-    h4: { fontSize: "39px", lineHeight: "110%", fontWeight: 400 },
-    h5: { fontSize: "31px", lineHeight: "120%", fontWeight: 400 },
-    h6: { fontSize: "25px", lineHeight: "115%", fontWeight: 400 },
+    h2: { fontSize: "36px", lineHeight: "100%", fontWeight: 500 },
+    h3: { fontSize: "32px", lineHeight: "120%", fontWeight: 500 },
+    h4: { fontSize: "24px", lineHeight: "110%", fontWeight: 500 },
+    h5: { fontSize: "24px", lineHeight: "120%", fontWeight: 400 },
+    h6: { fontSize: "24px", lineHeight: "115%", fontWeight: 400 },
     subtitle1: { fontSize: "16px", lineHeight: "125%", fontWeight: 500 },
     body1: { fontSize: "16px", lineHeight: "125%", fontWeight: 500 },
     body2: { fontSize: "12px", lineHeight: "120%", fontWeight: 500 },
@@ -86,6 +87,18 @@ const defaultTheme: Theme = createTheme({
         },
         // @ts-expect-error variante custom "contrast
         textContrast: ({ theme }) => {
+          return {
+            color: theme.palette.primary.main,
+            background: theme.palette.contrast.main,
+            "&:hover": {
+              color: theme.palette.primary.main,
+              background: theme.palette.contrast.main,
+              opacity: "0.8"
+            }
+          };
+        },
+        // @ts-expect-error variante custom "contrast
+        containedContrast: ({ theme }) => {
           return {
             color: theme.palette.primary.main,
             background: theme.palette.contrast.main,

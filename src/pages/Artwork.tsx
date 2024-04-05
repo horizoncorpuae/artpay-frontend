@@ -4,7 +4,6 @@ import DefaultLayout from "../components/DefaultLayout";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { Artwork } from "../types/artwork.ts";
-import PromoBig from "../components/PromoBig.tsx";
 import TabPanel from "../components/TabPanel.tsx";
 import ArtworksList from "../components/ArtworksList.tsx";
 import ArtworkDetails from "../components/ArtworkDetails.tsx";
@@ -59,7 +58,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const artworkCertificate = artwork ? data.getCategoryMapValues(artwork, "certificato").join(" ") : "";
   const artworkUnique = artwork ? data.getCategoryMapValues(artwork, "rarita").join(" ") : "";
 
-  const heroImgUrl = artwork?.images.length ? artwork.images[0].src : "";
+  // const heroImgUrl = artwork?.images.length ? artwork.images[0].src : "";
   const isArtworkFavourite = artwork?.id ? favouriteArtworks.indexOf(artwork.id) !== -1 : false;
 
   const isOutOfStock = artwork?.stock_status === "outofstock";
@@ -137,7 +136,10 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       setArtwork(resp);
       const [galleryArtworks, favouriteArtworks] = await Promise.all([
         data.listArtworksForGallery(resp.vendor),
-        data.getFavouriteArtworks().catch(e => [])
+        data.getFavouriteArtworks().catch((e) => {
+          snackbar.error(e);
+          return [];
+        })
         //data.getGallery(resp.vendor),
       ]);
       setFavouriteArtworks(favouriteArtworks);
@@ -162,6 +164,11 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       setGalleryArtworks(artworksToGalleryItems(galleryArtworks));
 
       setIsReady(true);
+    }).catch(err => {
+      if (err === "Not found") {
+        navigate("/errore/404");
+      }
+      throw err;
     });
   }, [data, navigate, urlParams.id, urlParams.slug_opera, urlParams.slug_galleria]);
 
