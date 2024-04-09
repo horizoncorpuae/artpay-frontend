@@ -56,7 +56,8 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
             finanziari delle nostre banche partner.
           </Typography>
         </Grid>
-        <Grid item xs={12} md={4} lg={5} sx={{ pl: { xs: 0, sm: 8 }, pt: 9, minHeight: "760px" }}>
+        <Grid item xs={12} md={4} lg={5}
+              sx={{ pl: { xs: 0, sm: 8 }, pt: 9, minHeight: { xs: "760px", md: "840px", lg: "760px" } }}>
           <Box sx={{ position: "relative" }}>
             <img style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }} src={onboardingImg1} />
             <img style={{ position: "absolute", top: "104px", left: "168px" }} src={onboardingImg2} />

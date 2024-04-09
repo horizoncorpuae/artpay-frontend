@@ -9,13 +9,18 @@ import NewsletterFormMessage from "./NewsletterFormMessage.tsx";
 import PromoCard from "./PromoCard.tsx";
 
 export interface NewsletterBigProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   checkboxText?: string;
   ctaText?: string;
 }
 
-const NewsletterBig: React.FC<NewsletterBigProps> = ({ title, subtitle, checkboxText, ctaText = "Iscriviti" }) => {
+const NewsletterBig: React.FC<NewsletterBigProps> = ({
+                                                       title = "Iscriviti alla nostra newsletter",
+                                                       subtitle,
+                                                       checkboxText,
+                                                       ctaText = "Iscriviti"
+                                                     }) => {
   const data = useData();
   const theme = useTheme();
   const {

@@ -84,7 +84,7 @@ const Artist: React.FC<ArtistProps> = ({}) => {
         snackbar.error("Si è verificato un errore");
         setIsReady(true);
       });
-  }, [data, snackbar, urlParams?.slug]);
+  }, [data, urlParams?.slug]);
 
   const px = getDefaultPaddingX();
 

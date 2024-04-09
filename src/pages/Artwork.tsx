@@ -157,7 +157,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       return;
     }
     data.getArtworkBySlug(urlParams.slug_opera).then(async (resp) => {
-      setIsReady(false);
+      // setIsReady(false);
       setArtwork(resp);
       const [galleryArtworks, favouriteArtworks] = await Promise.all([
         data.listArtworksForGallery(resp.vendor),
@@ -194,7 +194,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       }
       throw err;
     });
-  }, [data, navigate, urlParams.id, urlParams.slug_opera, urlParams.slug_galleria]);
+  }, [data, urlParams.id, urlParams.slug_opera, urlParams.slug_galleria]);
 
   useEffect(() => {
     const handleFavouritesUpdated = (e: CustomEvent<FavouritesMap>) => {

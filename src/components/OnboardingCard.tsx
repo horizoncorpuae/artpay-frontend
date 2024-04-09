@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, GridProps, Typography } from "@mui/material";
 
 export interface OnboardingCardProps {
   title: string;
@@ -8,6 +8,7 @@ export interface OnboardingCardProps {
   onClick?: () => void;
   ctaVariant?: "outlined" | "contained";
   background?: string;
+  sx?: GridProps["sx"];
 }
 
 const OnboardingCard: React.FC<OnboardingCardProps> = ({
@@ -16,10 +17,11 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
                                                          ctaText,
                                                          onClick,
                                                          ctaVariant = "outlined",
+                                                         sx = {},
                                                          background
                                                        }) => {
 
-  return (<Grid xs={12} md={6} sx={{ justifyContent: "center" }} display="flex" item>
+  return (<Grid xs={12} md={6} sx={{ justifyContent: "center", ...sx }} display="flex" item>
     <Box p={4} sx={{
       background: background ? `url(${background})` : "",
       backgroundRepeat: "no-repeat",

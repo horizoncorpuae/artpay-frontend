@@ -1,43 +1,59 @@
 import React from "react";
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
+import { getDefaultPaddingX } from "../utils.ts";
 
 export interface HeroAboutProps {
-  subtitle?: string;
   mainTitle?: string;
   description?: string;
   buttonText?: string;
   imageSrc?: string;
 }
 
-const HeroAbout: React.FC<HeroAboutProps> = ({ subtitle, mainTitle, description, buttonText, imageSrc }) => {
+const HeroAbout: React.FC<HeroAboutProps> = ({ mainTitle, description, buttonText, imageSrc }) => {
   const theme = useTheme();
-  return (
+
+  const px = getDefaultPaddingX();
+
+  return <>
     <Box
-      sx={{ background: theme.palette.primary.main, pt: { xs: 12, md: 16, lg: 24 }, pb: 6 }}
+      sx={{ background: theme.palette.primary.main, pt: { xs: 18, sm: 20, md: 24, lg: 32 } }}
       display="flex"
       flexDirection="column"
       justifyContent="center"
       alignItems="center">
-      <Box sx={{ maxWidth: theme.breakpoints.values["xl"], px: { xl: 6, sm: 4, xs: 3 } }} mb={6}>
-        <Typography sx={{ maxWidth: "530px", mb: 3 }} color={theme.palette.primary.contrastText} variant="h6">
-          {subtitle}
-        </Typography>
-        <Typography
-          sx={{ fontSize: { xs: "3rem", sm: "6rem", md: "8rem", lg: "10rem", xl: "12rem" } }}
-          color={theme.palette.primary.contrastText}
-          variant="h1">
-          {mainTitle}
-        </Typography>
-      </Box>
-      <img style={{ maxWidth: "100%" }} src={imageSrc} alt="Hero About" />
-      <Box sx={{ width: "100%", maxWidth: theme.breakpoints.values["xl"], px: { xl: 6, sm: 4, xs: 3 } }}>
-        <Typography variant="h4" sx={{ maxWidth: "1046px", mb: 3, mt: 12 }} color={theme.palette.primary.contrastText}>
-          {description}
-        </Typography>
-        <Button color="contrast">{buttonText}</Button>
-      </Box>
+      <Grid maxWidth="xl" sx={{ pb: 12, px: px }} container>
+        <Grid item xs={12} md={7} lg={6}>
+          <Typography
+            color={theme.palette.primary.contrastText}
+            variant="display1">
+            {mainTitle}
+          </Typography>
+        </Grid>
+        <Grid display="flex" alignItems="center"
+              mt={{ xs: 6, md: 0 }}
+              justifyContent={{ xs: "flex-start", md: "center" }} item xs={12}
+              md={5} lg={6}>
+          <Box sx={{ maxWidth: "400px" }}>
+            <Typography variant="subtitle1" color={theme.palette.primary.contrastText}>
+              {description}
+            </Typography>
+            <Button sx={{ mt: 3 }} color="contrast">{buttonText}</Button>
+          </Box>
+        </Grid>
+      </Grid>
+
     </Box>
-  );
+    <Box
+      sx={{
+        background: `url(${imageSrc}) lightgray 50% / cover no-repeat`,
+        height: { xs: "400px", sm: "540px", md: "600px", lg: "720px", xl: "800px" }
+      }}
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center">
+    </Box>
+  </>;
 };
 
 export default HeroAbout;

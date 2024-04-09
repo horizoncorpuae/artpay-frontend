@@ -32,17 +32,17 @@ const PromoCard: React.FC<PromoCardProps> = ({
         boxShadow: variant === "contrast" ? "none" : "0px 4px 64px 0px rgba(1, 15, 34, 0.08)",
         alignItems: { xs: "flex-start", md: "center" },
         py: { xs: 6, md: 6 },
-        px: { xs: 4, md: 13 }
+        px: { xs: 4, md: 8, lg: 13 }
       }}>
       <Typography
-        sx={{ flexGrow: 1, px: { xs: 0, sm: 3 } }}
+        sx={{ flexGrow: 1, px: { xs: 0, lg: 3 } }}
         color={variant === "contrast" ? theme.palette.primary.contrastText : undefined}
         variant={titleVariant}>
         {title}
       </Typography>
       <Box
         sx={{
-          maxWidth: variant === "contrast" ? undefined : { xs: undefined, md: "250px", lg: "400px" },
+          maxWidth: variant === "contrast" ? undefined : { xs: undefined, md: "320px", lg: "400px" },
           mt: { xs: 3, md: 0 }
         }}>
         {children}

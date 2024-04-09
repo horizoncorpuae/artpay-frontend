@@ -36,8 +36,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const mobileStyleOverrides: SxProps<Theme> = {
     top: 0,
     left: 0,
-    width: "calc(100% - 16px)",
-    margin: "8px",
+    width: { xs: "calc(100% - 16px)", sm: "calc(100% - 32px)" },
+    m: { xs: 1, sm: 2 },
     height: menuOpen ? "calc(100dvh - 16px)" : undefined,
     transition: "all 0.5s",
     overflow: "hidden"
@@ -97,15 +97,19 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const menuLinks = [
     { label: "Gallerie", href: "/artpay-per-gallerie " },
     { label: "Collezionisti", href: "/artpay-per-collezionisti " },
-    { label: "Chi siamo", href: "/chi-siamo" },
-    { label: "ArtMatch", href: "https://artpay.art/art-match" }
+    { label: "Chi siamo", href: "/chi-siamo" }
+    //{ label: "ArtMatch", href: "https://artpay.art/art-match" }
   ];
 
   //onMenuToggle
 
   return (
     <AppBar color="default"
-            sx={isMobile ? mobileStyleOverrides : { mx: { xs: 8, lg: 10, xl: "auto" }, right: 0, maxWidth: "1280px" }}
+            sx={isMobile ? mobileStyleOverrides : {
+              mx: { xs: 8, lg: 10, xl: "auto" },
+              right: 0,
+              maxWidth: "1280px"
+            }}
             elevation={0}>
       <Box display="flex" alignItems="center" sx={{}}>
         <Box sx={{ height: "24px", cursor: "pointer" }} onClick={() => handleNavigate("/")}>

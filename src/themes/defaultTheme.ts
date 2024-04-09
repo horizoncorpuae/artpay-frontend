@@ -184,8 +184,17 @@ const defaultTheme: Theme = createTheme({
           lineHeight: "20px",
           height: "auto!important"
         },
-        root: {
-          height: "40px"
+        root: ({ ownerState }) => {
+          if (ownerState.multiline) {
+            return {
+              "& textarea": {
+                padding: "0 8px"
+              }
+            };
+          }
+          return {
+            height: "40px"
+          };
         }
       }
     },

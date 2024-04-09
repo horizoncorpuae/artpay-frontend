@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import HeroAbout, { HeroAboutProps } from "../components/HeroAbout.tsx";
-import PromoSide from "../components/PromoSide.tsx";
-import { Box, Button, Grid, GridProps, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, GridProps, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
-import imgGalleryAbout from "../assets/images/image-gallery-about.png";
 import imgLogo from "../assets/images/logo.svg";
-import imgAboutCover from "../assets/images/hero-about-cover.png";
-import imgSideExample from "../assets/images/hero-side-example.png";
+import imgAboutCover from "../assets/images/hero-about-cover.webp";
+import { getDefaultPaddingX } from "../utils.ts";
+import PromoCard from "../components/PromoCard.tsx";
+import OnboardingCards from "../components/OnboardingCards.tsx";
+import NewsletterBig from "../components/NewsletterBig.tsx";
+import ContactForm from "../components/ContactForm.tsx";
 
 export interface AboutProps {
 }
 
 const heroContent: HeroAboutProps = {
-  subtitle:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
   mainTitle: "Con Artpay l’arte è per tutti",
   description:
     "Artpay è un servizio digitale che consente alle gallerie d’arte di vendere online le proprie opere in modo facile e veloce, permettendo agli appassionati d’arte l’acquisto diretto o finanziato tramite i servizi di istituti bancari convenzionati.",
@@ -23,26 +23,7 @@ const heroContent: HeroAboutProps = {
   imageSrc: imgAboutCover
 };
 
-const promoContent = [
-  {
-    title: "Iscriviti alla piattaforma",
-    subtitle: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    description: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    imageSrc: imgSideExample
-  },
-  {
-    title: "Iscriviti alla piattaforma",
-    subtitle: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    description: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    imageSrc: imgSideExample
-  },
-  {
-    title: "Iscriviti alla piattaforma",
-    subtitle: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    description: "Lorem ipsum dolor sit amet consectetur. Vitae vel sit sit dictum velit at erat.",
-    imageSrc: imgSideExample
-  }
-];
+
 const About: React.FC<AboutProps> = ({}) => {
   const theme = useTheme();
   const data = useData();
@@ -54,120 +35,81 @@ const About: React.FC<AboutProps> = ({}) => {
 
   useEffect(() => {
     setReady(true);
-    /*Promise.all([
-      data.listFeaturedArtworks().then((resp) => {
-        setFeaturedArtworks(artworksToGalleryItems(resp));
-      }),
-    ])
-      .then(() => {
-        setReady(true);
-      })
-      .catch((err) => {
-        return snackbar.error(err);
-      });*/
+
   }, [data, snackbar]);
 
   const imgWidth = isMobile ? "100%" : `calc(100% - ${theme.spacing(6)})`;
 
+  const px = getDefaultPaddingX();
+
   const centeredGridSx: GridProps["sx"] = {
     marginLeft: "auto",
     marginRight: "auto",
-    px: { xs: 3, md: 6 },
+    px: px,
     py: { xs: 6, md: 12 },
     position: "relative"
     //flexDirection: isMobile ? "column-reverse" : undefined,
   };
 
   return (
-    <DefaultLayout pb={3} pageLoading={!ready} maxWidth={false}>
-      <HeroAbout {...heroContent} />
-      {promoContent.map((content, i) => (
-        <PromoSide {...content} reverse={i % 2 === 1} key={`promo-side-${i}`} />
-      ))}
-      <Grid sx={{ ...centeredGridSx, flexDirection: isMobile ? "column" : undefined }} maxWidth="xl" container>
-        <Grid xs={12} sm={4} sx={{ pb: { xs: 3, sm: 0 }, height: "auto" }} item>
+    <DefaultLayout pb={3} pageLoading={!ready} topBar={<HeroAbout {...heroContent} />} maxWidth="xl">
+
+
+      <Grid sx={{ ...centeredGridSx, flexDirection: isMobile ? "column" : undefined }} container>
+        <Grid xs={12} sm={4} lg={5} sx={{ pb: { xs: 3, sm: 0 }, height: "auto" }} item>
           <img
             style={{ width: imgWidth, maxWidth: "300px", minHeight: isMobile ? "70px" : undefined }}
             src={imgLogo}
           />
         </Grid>
-        <Grid xs={12} sm={8} item>
-          <Typography sx={{ typography: { xs: "h4" }, maxWidth: "860px" }} variant="h3">
-            Una fintech innovativa dedicata alle gallerie d’arte che ha l’obiettivo di semplificare e accelerare la
-            vendita di opere. Artpay vuole rispondere alle nuove sfide ed esigenze di digitalizzazione del mercato
-            offrendo una soluzione concreta alle nuove modalità di acquisto di collezionisti affermati ed emergenti.
+        <Grid xs={12} sm={8} lg={7} item>
+          <Typography variant="h2">
+            La nostra missione è rendere l'arte accessibile a tutti, trasformando radicalmente il modo in cui le opere
+            d'arte vengono scoperte, acquisite e apprezzate. Con Artpay, vogliamo connettere gallerie di fama mondiale,
+            artisti emergenti e collezionisti ed appassionati, creando un ecosistema innovativo che celebra la diversità
+            e l'unicità dell'arte contemporanea. Siamo impegnati a fornire un'esperienza senza pari, dove la tecnologia
+            incontra la creatività per ispirare e contribuire a trasformare il mercato dell'arte.
+          </Typography>
+          <Typography sx={{ mt: 6 }} variant="h4">
+            Con il nostro approccio innovativo che offre anche sistemi di pagamento rateale integrati nella piattaforma,
+            vogliamo abbattere le barriere finanziarie e consentire a chiunque, sia che desideri godersi un'opera per il
+            puro piacere estetico che per investimento, di poter realizzare i propri sogni senza compromessi.
           </Typography>
         </Grid>
       </Grid>
-      {/*<Grid sx={{ ...centeredGridSx, flexDirection: isMobile ? "column-reverse" : undefined }} maxWidth="xl" container>
-        <Grid xs={12} sm={8} item>
-          <Typography variant="h1" sx={{ fontSize: { xs: "3.5rem", sm: "5rem", md: "7rem", lg: "8rem", xl: "9rem" } }}>
-            Tante opere d'arte, facilità di acquisto
+      <Box display="flex" flexDirection="column" gap={3} sx={{ px: px }}>
+        <PromoCard border title="Per le gallerie">
+          <Typography variant="body1">
+            Attraverso Artpay possono estendere la propria presenza commerciale online, offrendo le proprie opere d’arte
+            a un pubblico di potenziali appassionati e collezionisti d’arte su una piattaforma che favorisce la vendita
+            diretta e finanziata delle singole opere con processi di approvazione veloci e garantiti e pagamenti
+            immediati per i venditori. L’incontro tra offerta e domanda d’arte online non è mai stato così facile e
+            veloce.
           </Typography>
-        </Grid>
-        <Grid xs={12} sm={4} item>
-          <img
-            src="/about-drawing-rocket.svg"
-            style={{
-              position: isMobile ? "static" : "absolute",
-              right: 0,
-              height: isMobile ? undefined : "100%",
-              width: isMobile ? "100%" : undefined,
-            }}
-          />
-        </Grid>
-      </Grid>*/}
-      {/*<Grid sx={{ px: { xs: 0 }, mt: 4, justifyContent: "center" }} container>
-        {featuredArtworks && <ArtworksList items={featuredArtworks || []} showEmpty />}
-      </Grid>*/}
-      <Box sx={{ width: "100%", background: theme.palette.primary.light }} mt={6}>
-        <Grid
-          sx={{
-            ...centeredGridSx,
-            maxWidth: "1440px",
-            pr: "0!important",
-            pt: "0!important",
-            pl: { xs: "0!important", sm: "undefined" },
-            pb: { xs: "0!important", sm: "undefined" }
-          }}
-          container>
-          <Grid
-            xs={12}
-            sm={8}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              px: { xs: 3, sm: 6 },
-              pb: { xs: 3, sm: 0 }
-            }}
-            item>
-            <Typography sx={{ maxWidth: "672px", typography: { xs: "h2", sm: "h1" } }} variant="h1">
-              Sei una gelleria e vuoi entrare nel circuito artpay?
-            </Typography>
-            <Typography sx={{ mt: 3 }} variant="h3">
-              Scopri come fare
-            </Typography>
-            <Box>
-              <Button sx={{ mt: 3 }} href="/artpay-per-gallerie" variant="contained">
-                Artpay per le gallerie
-              </Button>
-            </Box>
-          </Grid>
-          <Grid
-            xs={12}
-            sm={4}
-            sx={{
-              textAlign: "right",
-              overflow: "hidden",
-              display: { xs: "flex" },
-              justifyContent: { xs: undefined, sm: "end" }
-            }}
-            item>
-            <img style={{ width: isMobile ? "100%" : undefined }} src={imgGalleryAbout} />
-          </Grid>
-        </Grid>
+        </PromoCard>
+        <PromoCard border title="Per gli appassionati">
+          <Typography variant="body1">
+            E i collezionisti d’arte, che su Artpay possono trovare in vendita una selezione curata di opere certificate
+            provenienti da gallerie selezionate e acquistarle con facilità e con l’agilità degli strumenti finanziari,
+            come prestiti rateali ad approvazione rapida, offerti dagli istituti bancari partner.
+          </Typography>
+        </PromoCard>
       </Box>
+      <OnboardingCards sx={{ my: 8 }} />
+      <Box sx={{ px: px }}>
+        <NewsletterBig />
+      </Box>
+      <Box px={px} my={12}>
+        <Typography variant="h2">Vuoi entrare in contatto con Artpay e il suo team? </Typography>
+        <Typography sx={{ mt: 2, maxWidth: "400px" }} variant="subtitle1">
+          Compila il form, lasciando i tuoi contatti e indicando il tema per cui vuoi
+          parlarci, sarà nostra cura risponderti entro il più breve tempo possibile.
+        </Typography>
+        <Box sx={{ maxWidth: "506px", mt: 8 }}>
+          <ContactForm />
+        </Box>
+      </Box>
+
     </DefaultLayout>
   );
 };

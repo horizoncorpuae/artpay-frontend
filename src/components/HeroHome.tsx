@@ -18,7 +18,8 @@ const HeroHome: React.FC<HeroHomeProps> = ({}) => {
     sx={{
       background: theme.palette.primary.main,
       color: theme.palette.primary.contrastText,
-      pt: { xs: 12, md: 16, lg: 18 }
+      pt: { xs: 12, md: 16, lg: 18 },
+      overflow: "hidden"
     }}>
     <Grid sx={{ px: px, maxWidth: maxWidth, mx: "auto" }} container>
       <Grid item xs={12} sm={9} md={8} lg={7} sx={{ pt: { xs: 0, md: 3, lg: 6 } }}>

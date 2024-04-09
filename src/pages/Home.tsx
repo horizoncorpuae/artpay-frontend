@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import NewsletterBig from "../components/NewsletterBig.tsx";
 import ArtworksList from "../components/ArtworksList.tsx";
@@ -22,6 +22,7 @@ const Home: React.FC<HomeProps> = ({}) => {
   const data = useData();
   const navigate = useNavigate();
   const snackbar = useSnackbars();
+  const theme = useTheme();
 
   const [featuredArtworks, setFeaturedArtworks] = useState<ArtworkCardProps[]>();
   const [featuredArtists, setFeaturedArtists] = useState<ArtistCardProps[]>();
@@ -64,23 +65,22 @@ const Home: React.FC<HomeProps> = ({}) => {
   const px = getDefaultPaddingX();
 
   return (
-    <DefaultLayout pageLoading={!isReady} maxWidth={false}>
-      <HeroHome />
-      <Box sx={{ px: px, my: { xs: 6, md: 12 } }}>
+    <DefaultLayout pageLoading={!isReady} topBar={<HeroHome />} maxWidth="xl">
+
+      <Box sx={{ px: px, my: { xs: 6, md: 12 }, maxWidth: theme.breakpoints.values["xl"], ml: "auto", mr: "auto" }}>
         <Typography variant="display3" sx={{ maxWidth: "718px" }}>
           Value proposition lorem ipsum dolor sit amet
         </Typography>
       </Box>
-      <Grid
-        xs={12}
+      <Box
         sx={{
           px: px,
+          maxWidth: theme.breakpoints.values["xl"], ml: "auto", mr: "auto",
           gridTemplateColumns: { xs: undefined, sm: "1fr 1fr 1fr" },
           display: { xs: "flex", sm: "grid" },
           flexDirection: { xs: "column", sm: undefined },
           gap: 3
-        }}
-        item>
+        }}>
         <Box>
           <InfoCard
             title="Tre Principi"
@@ -102,17 +102,17 @@ const Home: React.FC<HomeProps> = ({}) => {
             imgSrc={imgRocket}
           />
         </Box>
-      </Grid>
+      </Box>
       <OnboardingCards />
-      <Grid sx={{ px: px }} container>
+      <Grid sx={{ px: px, ml: "auto", mr: "auto" }} maxWidth="xl" container>
         <Grid mt={4} xs={12} item>
           <NewsletterBig title="Iscriviti alla nostra newsletter" />
         </Grid>
       </Grid>
-      <Grid sx={{ px: px, my: 12 }} container>
+      <Grid sx={{ px: px, my: 12, ml: "auto", mr: "auto" }} maxWidth="xl" container>
         <ArtistsList disablePadding size="medium" items={featuredArtists || []} title="Artisti in evidenza" />
       </Grid>
-      <Grid sx={{ px: px, my: 12, justifyContent: "center" }} container>
+      <Grid sx={{ px: px, my: 12, justifyContent: "center", ml: "auto", mr: "auto" }} maxWidth="xl" container>
         {featuredArtworks && (
           <ArtworksList
             disablePadding

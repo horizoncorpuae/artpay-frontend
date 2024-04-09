@@ -28,9 +28,6 @@ import {
 import { PaymentIntent } from "@stripe/stripe-js";
 import { BillingData, UnprocessedUserProfile, UpdateUserProfile, User, UserProfile } from "../types/user.ts";
 
-export interface ArtworksFilter {
-  featured?: boolean;
-}
 
 const availableShippingMethods: ShippingMethodOption[] = [
   {
@@ -830,7 +827,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
 
     getArtistCategories(artist: Artist): string[] {
       const flatArtistCategories: string[] = [];
-      const categoryIds = artist.categoria_artisti;
+      const categoryIds = artist?.categoria_artisti || [];
       for (const artistCategoryMapKey in artistCategoryMap) {
         const categoryNames = (artistCategoryMap[artistCategoryMapKey].children || [])
           .filter((c) => categoryIds.indexOf(c.id) !== -1)

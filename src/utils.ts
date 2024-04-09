@@ -410,7 +410,7 @@ export const parseDate = (dt?: string) => {
   try {
     return dayjs(dt).format("DD MMMM YYYY");
   } catch (e) {
-    console.warn(e);
+    console.warn("Date parse error: ", e);
     return "";
   }
 };

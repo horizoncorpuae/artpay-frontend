@@ -4,20 +4,21 @@ import {
   Checkbox as BaseCheckbox,
   CheckboxProps,
   SxProps,
-  Theme,
+  Theme, TypographyProps
 } from "@mui/material";
 import CheckboxIcon from "./icons/CheckboxIcon.tsx";
 
 export interface ExtendedCheckboxProps {
-  label: string|ReactNode;
+  label: string | ReactNode;
   checkboxSx?: SxProps<Theme>;
   alignTop?: boolean;
   error?: boolean;
+  textColor?: TypographyProps["color"];
 }
 
 const Checkbox: React.FC<ExtendedCheckboxProps & CheckboxProps> =
   React.forwardRef(
-    ({ label, checkboxSx = {}, alignTop = false, error, ...props }, ref) => {
+    ({ label, checkboxSx = {}, alignTop = false, error, textColor = "inherit", ...props }, ref) => {
       const sx: { [key: string]: unknown } = {};
       if (alignTop) {
         sx["transform"] = "translateY(-5px)";
@@ -29,8 +30,8 @@ const Checkbox: React.FC<ExtendedCheckboxProps & CheckboxProps> =
           label={label}
           componentsProps={{
             typography: {
-              color: error ? "error" : "inherit",
-            },
+              color: error ? "error" : textColor
+            }
           }}
           control={
             <BaseCheckbox
@@ -51,7 +52,7 @@ const Checkbox: React.FC<ExtendedCheckboxProps & CheckboxProps> =
           }
         />
       );
-    },
+    }
   );
 
 export default Checkbox;
