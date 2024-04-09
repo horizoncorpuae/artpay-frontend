@@ -116,7 +116,7 @@ const Artist: React.FC<ArtistProps> = ({}) => {
             </IconButton>
           </Box>
         </Box>
-        <Box display="flex" flexDirection="column" justifyContent="start">
+        <Box display="flex" flexDirection="column" justifyContent="start" sx={{ maxWidth: "100%" }}>
           <Typography variant="h1" style={{ cursor: "pointer" }}>
             {artist?.title?.rendered}
           </Typography>
