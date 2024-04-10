@@ -1,14 +1,15 @@
 import React from "react";
 import { Box, BoxProps, useMediaQuery, useTheme } from "@mui/material";
-import { Navigation, Pagination } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import VerticalSlide, { VerticalSlideProps } from "./VerticalSlide.tsx";
 
 export interface VerticalSliderProps {
   sx?: BoxProps["sx"];
+  slides?: VerticalSlideProps[];
 }
 
-const VerticalSlider: React.FC<VerticalSliderProps> = ({ sx }) => {
+const VerticalSlider: React.FC<VerticalSliderProps> = ({ sx, slides }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -27,7 +28,7 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({ sx }) => {
     sliderHeight = "650px";
   }
 
-  const slides: VerticalSlideProps[] = [
+  slides = slides || [
     {
       cta: { link: "/", text: "Scopri l'artista" },
       imgSrc: "/images/artists_example.png",
@@ -48,9 +49,14 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({ sx }) => {
       pagination={{
         clickable: true
       }}
-      modules={[Pagination, Navigation]}
+      modules={[Pagination, Navigation, Autoplay]}
       className={`verticalResponsiveSwiper ${isMobile ? "mobile" : ""}`}
       loop={true}
+      speed={1000}
+      autoplay={{
+        delay: 5000,
+        disableOnInteraction: true
+      }}
       style={{ paddingBottom: 0, height: sliderHeight }}>
       {slides.map((slide, i) => <SwiperSlide key={`slide-${i}`}>
         <VerticalSlide {...slide} />

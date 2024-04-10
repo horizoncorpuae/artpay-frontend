@@ -95,7 +95,7 @@ const Artist: React.FC<ArtistProps> = ({}) => {
         sx={{
           px: px,
           pb: 1,
-          mt: { xs: 10, sm: 12, md: 14 },
+          mt: { xs: 10, sm: 12, md: 16, lg: 18 },
           flexDirection: { xs: "column", md: "row" },
           alignItems: { xs: "center", md: "start" }
         }}
@@ -132,7 +132,7 @@ const Artist: React.FC<ArtistProps> = ({}) => {
             {artist?.artworks?.length || 0} opere presenti su artpay
           </Typography>
           <ReadMoreTypography heightLimit={100} sx={{ mt: 3 }} variant="subtitle1">
-            {sanitizeHtml(artist?.content.rendered || "", { allowedTags: [] }) || 0}
+            {sanitizeHtml(artist?.content.rendered || "", { allowedTags: [] }) || ""}
           </ReadMoreTypography>
         </Box>
       </Box>

@@ -86,6 +86,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         height: "40px",
         width: "100%",
         bottom: 0,
+        zIndex: 10,
         background: theme.palette.primary.main,
         alignItems: "center",
         justifyContent: "center",

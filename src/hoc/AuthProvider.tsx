@@ -106,7 +106,7 @@ const Context = createContext<AuthContext>({
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = "" }) => {
   const userInfoUrl = `${baseUrl}/api/users/me`;
-  const loginUrl = `${baseUrl}/wp-json/wp/v2/rest-login`;
+  const loginUrl = `${baseUrl}/wp-json/wp/v2/users/me`;
   const signUpUrl = `${baseUrl}/wp-json/wp/v2/users`;
   const sendPasswordResetLinkUrl = `${baseUrl}/wp-json/wp/v2/user/reset-password`;
   const passwordResetUrl = `${baseUrl}/wp-json/wp/v2/user/set-password`;
@@ -196,10 +196,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     setError(undefined);
     setIsLoading(true);
     try {
-      const resp = await axios.post<SignInFormData, AxiosResponse<User>>(loginUrl, {
-        username: email,
-        password: password
-      }, {});
+      const resp = await axios.get<SignInFormData, AxiosResponse<User>>(loginUrl, {
+        auth: { username: email, password }
+      });
       /*const userInfoResp = await axios.get<object, AxiosResponse<UserInfo>>(
         userInfoUrl,
         { headers: { Authorization: `Bearer ${resp.data.jwt}` } },
