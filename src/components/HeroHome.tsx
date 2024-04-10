@@ -22,14 +22,14 @@ const HeroHome: React.FC<HeroHomeProps> = ({}) => {
       overflow: "hidden"
     }}>
     <Grid sx={{ px: px, maxWidth: maxWidth, mx: "auto" }} container>
-      <Grid item xs={12} sm={9} md={8} lg={7} sx={{ pt: { xs: 0, md: 3, lg: 6 } }}>
+      <Grid item xs={12} sm={9} md={8} lg={7} sx={{ pt: { xs: 0, md: 3, lg: 6 }, pb: 3 }}>
         <Typography variant="display1" color="inherit" sx={{ mt: 1 }}>
-          Artpay è il numero Lorem ipsum dolor sit amet
+          La piattaforma n.1 in Italia per promuovere e acquistare opere d’arte selezionate e garantite dai migliori
+          galleristi italiani.
         </Typography>
         <Typography variant="subtitle1" sx={{ my: 6, maxWidth: "400px" }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat.
+          Artpay è un servizio digitale che facilita l’acquisto delle migliori opere d’arte attraverso una piattaforma
+          digitale innovativa che offre soluzioni di acquisto rateali e personalizzabili.
         </Typography>
         <Button variant="contained" color="contrast">Scopri di più</Button>
       </Grid>

@@ -28,7 +28,6 @@ import {
 import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
 import { Gallery } from "../types/gallery.ts";
 import GalleryDetails from "../components/GalleryDetails.tsx";
-import { Share } from "@mui/icons-material";
 import ArtistDetails from "../components/ArtistDetails.tsx";
 import { Artist } from "../types/artist.ts";
 import ResponsiveTabs from "../components/ResponsiveTabs.tsx";
@@ -46,6 +45,7 @@ import completaAcquisto from "../assets/images/completa_acquisto.svg";
 import LoanCard from "../components/LoanCard.tsx";
 import LockIcon from "../components/icons/LockIcon.tsx";
 import HourglassIcon from "../components/icons/HourglassIcon.tsx";
+import ShareIcon from "../components/icons/ShareIcon.tsx";
 
 export interface ArtworkProps {
 }
@@ -194,7 +194,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       }
       throw err;
     });
-  }, [data, navigate, urlParams.id, urlParams.slug_opera, urlParams.slug_galleria]);
+  }, [navigate, urlParams.id, urlParams.slug_opera, urlParams.slug_galleria]);
 
   useEffect(() => {
     const handleFavouritesUpdated = (e: CustomEvent<FavouritesMap>) => {
@@ -262,7 +262,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
                 )}
               </IconButton>
               <IconButton onClick={handleShare}>
-                <Share color="primary" />
+                <ShareIcon />
               </IconButton>
             </Box>
             <Typography sx={{}} variant="h1">

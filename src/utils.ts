@@ -401,7 +401,7 @@ export const formatCurrency = (value: number) => value.toLocaleString(undefined,
   maximumFractionDigits: 2
 });
 
-export const getDefaultPaddingX = () => ({ xs: 3, sm: 4, md: 10, lg: 12 });
+export const getDefaultPaddingX = () => ({ xs: 3, sm: 4, md: 8, lg: 12 });
 
 export const parseDate = (dt?: string) => {
   if (!dt) {

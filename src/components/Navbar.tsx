@@ -107,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   return (
     <AppBar color="default"
             sx={isMobile ? mobileStyleOverrides : {
-              mx: { xs: 8, lg: 10, xl: "auto" },
+              mx: { xs: 8, md: 6, lg: 10, xl: "auto" },
               right: 0,
               maxWidth: "1280px"
             }}

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useData } from "../hoc/DataProvider.tsx";
 import { OrderLoanCardProps } from "../components/OrderLoanCard.tsx";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { artworkToOrderItem } from "../utils.ts";
+import { artworkToOrderItem, getDefaultPaddingX } from "../utils.ts";
 import { Box, Button, Chip, Grid, Typography } from "@mui/material";
 import LockIcon from "../components/icons/LockIcon.tsx";
 import HourglassIcon from "../components/icons/HourglassIcon.tsx";
@@ -26,7 +26,7 @@ const ArtworkReserved: React.FC<ArtworkReservedProps> = ({}) => {
   const [artwork, setArtwork] = useState<OrderLoanCardProps>();
   const [profile, setProfile] = useState<UserProfile>();
 
-  const px = { xs: 3, sm: 4, md: 10, lg: 12 };
+  const px = getDefaultPaddingX();
   const border = "1px solid #CDCFD3";
 
   const handleFinalizeOrder = () => {

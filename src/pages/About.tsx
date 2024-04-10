@@ -18,7 +18,7 @@ export interface AboutProps {
 const heroContent: HeroAboutProps = {
   mainTitle: "Con Artpay l’arte è per tutti",
   description:
-    "Artpay è un servizio digitale che consente alle gallerie d’arte di vendere online le proprie opere in modo facile e veloce, permettendo agli appassionati d’arte l’acquisto diretto o finanziato tramite i servizi di istituti bancari convenzionati.",
+    "Artpay è una start-up innovativa fondata da un team di esperti appassionati di arte e tecnologia. Ci impegniamo per l'eccellenza, collegando i migliori galleristi italiani, artisti emergenti e collezionisti attraverso una piattaforma digitale all'avanguardia. Unisciti a noi per far parte di questa rivoluzione nel mondo dell'arte.",
   buttonText: "Entra nel mondo di artpay",
   imageSrc: imgAboutCover
 };
@@ -80,18 +80,20 @@ const About: React.FC<AboutProps> = ({}) => {
       <Box display="flex" flexDirection="column" gap={3} sx={{ px: px }}>
         <PromoCard border title="Per le gallerie">
           <Typography variant="body1">
-            Attraverso Artpay possono estendere la propria presenza commerciale online, offrendo le proprie opere d’arte
-            a un pubblico di potenziali appassionati e collezionisti d’arte su una piattaforma che favorisce la vendita
-            diretta e finanziata delle singole opere con processi di approvazione veloci e garantiti e pagamenti
-            immediati per i venditori. L’incontro tra offerta e domanda d’arte online non è mai stato così facile e
-            veloce.
+            Artpay è la soluzione che velocizza e semplifica il processo di vendita per i galleristi. Offriamo loro
+            l'opportunità di ampliare la loro presenza online, raggiungendo un vasto pubblico di appassionati d'arte e
+            collezionisti. La nostra piattaforma facilita le transazioni dirette e offre un supporto nella gestione
+            delle approvazioni di finanziamento tramite i nostri partner. Collega la tua galleria al mondo dell'arte in
+            modo rapido e agevole con Artpay.
           </Typography>
         </PromoCard>
-        <PromoCard border title="Per gli appassionati">
+        <PromoCard border title="Per gli appassionati d'arte">
           <Typography variant="body1">
-            E i collezionisti d’arte, che su Artpay possono trovare in vendita una selezione curata di opere certificate
-            provenienti da gallerie selezionate e acquistarle con facilità e con l’agilità degli strumenti finanziari,
-            come prestiti rateali ad approvazione rapida, offerti dagli istituti bancari partner.
+            Artpay offre agli investitori e agli appassionati d'arte un accesso privilegiato al mondo dell'arte. Esplora
+            una vasta selezione di opere curate dai migliori galleristi italiani e trova capolavori che soddisfino le
+            tue ambizioni di investimento o semplicemente la tua passione per l'arte. Grazie alla nostra piattaforma, il
+            processo di acquisto diventa rapido, semplice e sicuro, permettendo di connettersi direttamente con il
+            mercato dell'arte. Acquista con fiducia e godi dell'opera immediatamente, senza barriere, con Artpay.
           </Typography>
         </PromoCard>
       </Box>

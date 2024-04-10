@@ -10,7 +10,7 @@ export interface InfoCardProps {
 const InfoCard: React.FC<InfoCardProps> = ({ title, subtitle, imgSrc }) => {
 
   return (
-    <Box sx={{ maxWidth: { xs: "auto", md: "342px" }, height: "100%", py: 3, px: { xs: 0, md: 3 } }}>
+    <Box sx={{ maxWidth: { xs: "auto", md: "342px" }, height: "100%", py: 3, px: { xs: 0 } }}>
       <Box sx={{ height: "150px", mb: 6 }}>
         <img style={{ height: "100%" }} src={imgSrc} />
       </Box>

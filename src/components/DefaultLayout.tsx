@@ -81,6 +81,18 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         {children}
       </Container>
       {(menuOpen && isMobile) ? <></> : <Footer />}
+      <Box sx={{
+        position: "fixed",
+        height: "40px",
+        width: "100%",
+        bottom: 0,
+        background: theme.palette.primary.main,
+        alignItems: "center",
+        justifyContent: "center",
+        display: "flex"
+      }}>
+        <Typography variant="subtitle1" color="white">Artpay Beta version</Typography>
+      </Box>
     </>
   );
 };

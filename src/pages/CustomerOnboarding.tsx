@@ -15,7 +15,7 @@ import completaAcquisto from "../assets/images/completa_acquisto.svg";
 import ArtistsList from "../components/ArtistsList.tsx";
 import LoanCard from "../components/LoanCard.tsx";
 import { ArtistCardProps } from "../components/ArtistCard.tsx";
-import { artistsToGalleryItems } from "../utils.ts";
+import { artistsToGalleryItems, getDefaultPaddingX } from "../utils.ts";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 
@@ -38,7 +38,7 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
     data.listFeaturedArtists().then((resp) => setFeaturedArtists(artistsToGalleryItems(resp)));
   }, []);
 
-  const px = { xs: 4, sm: 4, md: 10, lg: 12 };
+  const px = getDefaultPaddingX();
 
   return (
     <DefaultLayout sx={{ overflowX: "hidden" }}>

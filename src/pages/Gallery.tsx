@@ -102,7 +102,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
       });
     //data.getGallery()
     // TODO: loadData
-  }, [data, navigate, urlParams.slug]);
+  }, [navigate, urlParams.slug]);
 
   const handleSetFavourite = async (isFavourite: boolean) => {
     if (!auth.isAuthenticated) {

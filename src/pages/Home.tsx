@@ -68,8 +68,9 @@ const Home: React.FC<HomeProps> = ({}) => {
     <DefaultLayout pageLoading={!isReady} topBar={<HeroHome />} maxWidth="xl">
 
       <Box sx={{ px: px, my: { xs: 6, md: 12 }, maxWidth: theme.breakpoints.values["xl"], ml: "auto", mr: "auto" }}>
-        <Typography variant="display3" sx={{ maxWidth: "718px" }}>
-          Value proposition lorem ipsum dolor sit amet
+        <Typography variant="display3" sx={{}}>
+          Scopri l’eccellenza dei migliori galleristi Italiani e le loro collezioni selezionate, da oggi a portata di
+          mano.
         </Typography>
       </Box>
       <Box
@@ -83,22 +84,22 @@ const Home: React.FC<HomeProps> = ({}) => {
         }}>
         <Box>
           <InfoCard
-            title="Tre Principi"
-            subtitle="Ad acquisto avvenuto, l’opera è tua e avrai massima libertà di personalizzare le modalità di consegna, confrontandoti direttamente col personale della galleria d’arte responsabile della vendita."
+            title="Esplora l'arte dei top galleristi italiani su Artpay!"
+            subtitle="Artpay collabora con i più autorevoli galleristi italiani per offrire una selezione eccezionale di opere d'arte, garantendo la qualità e l'autenticità di ogni pezzo presente sulla nostra piattaforma."
             imgSrc={imgRocket}
           />
         </Box>
         <Box>
           <InfoCard
-            title="Richiedi il finanziamento"
-            subtitle="Normalmente viene erogato in poche ore*."
+            title="Tecnologia innovativa per l’arte a portata di click!"
+            subtitle="Artpay utilizza tecnologie all'avanguardia per semplificare il processo di acquisto e vendita d'arte, offrendo transazioni rapide, sicure e convenienti attraverso la nostra intuitiva piattaforma online."
             imgSrc={imgRocket}
           />
         </Box>
         <Box>
           <InfoCard
-            title="Compra l’opera d’arte"
-            subtitle="Completato l'iter di richiesta e ricevuto il finanziamento, l'acquirente può procedere all'acquisto dell'opera dal sito Artpay"
+            title="Collezioni selezionate"
+            subtitle="Artpay collabora con i più autorevoli galleristi italiani per offrire una selezione eccezionale di opere d'arte, che ne garantiscono la qualità e l'autenticità di ogni pezzo presente sulla nostra piattaforma."
             imgSrc={imgRocket}
           />
         </Box>
