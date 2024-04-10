@@ -407,14 +407,18 @@ const defaultTheme: Theme = createTheme({
     },
     MuiTab: {
       styleOverrides: {
-        root: {
-          textTransform: "none",
-          fontSize: "16px",
-          fontStyle: "normal",
-          fontWeight: 600,
-          lineHeight: "125%",
-          marginLeft: "8px",
-          marginRight: "8px"
+        root: ({ theme }) => {
+          return {
+            color: theme.palette.text.secondary,
+            textTransform: "none",
+            fontSize: "16px",
+            fontStyle: "normal",
+            fontWeight: 500,
+            lineHeight: "125%",
+            marginLeft: "8px",
+            marginRight: "8px"
+            // minWidth: "200px"
+          };
         }
       }
     },

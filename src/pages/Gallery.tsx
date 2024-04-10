@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, Chip, Grid, IconButton, Tab, Typography } from "@mui/material";
-import { Share } from "@mui/icons-material";
+import { Box, Grid, IconButton, Tab, Typography, useMediaQuery, useTheme } from "@mui/material";
 import TabPanel from "../components/TabPanel.tsx";
 import GalleryInfo, { GalleryInfoProps } from "../components/GalleryInfo.tsx";
 import { GalleryContactsProps } from "../components/GalleryContacts.tsx";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
-import { artistsToGalleryItems, artworksToGalleryItems, galleryToGalleryContent } from "../utils.ts";
+import {
+  artistsToGalleryItems,
+  artworksToGalleryItems,
+  galleryToGalleryContent,
+  getDefaultPaddingX
+} from "../utils.ts";
 import GalleryArtworksList from "../components/GalleryArtworksList.tsx";
 import GalleryArtistsList from "../components/GalleryArtistsList.tsx";
 import { ArtistCardProps } from "../components/ArtistCard.tsx";
@@ -18,6 +22,8 @@ import { CardItem } from "../types";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import FollowButton from "../components/FollowButton.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
+import ShareIcon from "../components/icons/ShareIcon.tsx";
+import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
 export interface GalleryProps {
   selectedTab?: number;
@@ -25,6 +31,16 @@ export interface GalleryProps {
 
 const subPageSlugs = ["", "tutti-gli-artisti", "galleria"];
 const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
+  const data = useData();
+  const auth = useAuth();
+  const urlParams = useParams();
+  const navigate = useNavigate();
+  const dialogs = useDialogs();
+  const snackbars = useSnackbars();
+  const theme = useTheme();
+
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   const [isReady, setIsReady] = useState(false);
   const [selectedTabPanel, setSelectedTabPanel] = useState(selectedTab);
   const [galleryContent, setGalleryContent] = useState<GalleryContent>();
@@ -35,11 +51,6 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
 
   const [galleryInfo, setGalleryInfo] = useState<GalleryInfoProps>();
 
-  const data = useData();
-  const auth = useAuth();
-  const urlParams = useParams();
-  const navigate = useNavigate();
-  const dialogs = useDialogs();
 
   useEffect(() => {
     if (!urlParams.slug) {
@@ -51,7 +62,9 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
       .then(async (gallery) => {
         //const description = gallery.shop.description.split("\n")[0];
         setGalleryContent(galleryToGalleryContent(gallery));
+
         const galleryAddress = [gallery.address.address_1, gallery.address.address_2].join(" ");
+
         setGalleryContacts({
           address: galleryAddress,
           country: gallery.address.country,
@@ -62,10 +75,19 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
           website: gallery.shop.url,
           social: { linkedin: gallery.social.linkdin, ...gallery.social }
         });
+
         const [artworks, artists, favouriteGalleries] = await Promise.all([
           data.listArtworksForGallery(gallery.id.toString()),
-          data.listArtistsForGallery(gallery.id.toString()),
-          data.getFavouriteGalleries()
+          data.listArtistsForGallery(gallery.id.toString()).catch((err) => {
+            console.error(err);
+            return [];
+          }),
+          data.getFavouriteGalleries().catch((err) => {
+            if (auth.isAuthenticated) {
+              snackbars.error(err);
+            }
+            return [] as number[];
+          })
         ]);
         setGalleryArtworks(artworksToGalleryItems(artworks, "large"));
         setGalleryArtists(artistsToGalleryItems(artists));
@@ -125,85 +147,75 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
         website: "galleria.it",
       };*/
 
+  const px = getDefaultPaddingX();
+
   return (
     <DefaultLayout pageLoading={!isReady || !galleryContent}>
-      <Grid sx={{ p: 0, maxWidth: "1440px" }} container>
+      <Grid sx={{ px: { ...px, xs: 0, sm: 0 }, mt: { xs: 0, md: 16 } }} container>
         <Grid
           item
           xs={12}
-          md={6}
-          sx={{
-            maxHeight: { xs: "315px", sm: "660px", md: "100%" },
-            overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            position: "relative"
+          md="auto"
+          sx={{ position: "relative" }}>
+          <Box sx={{
+            width: { xs: "100%", md: "420px", lg: "612px", xl: "612px" },
+            height: { xs: "100%", md: "420px", lg: "612px", xl: "612px" },
+            maxWidth: "100%",
+            objectFit: "contain"
           }}>
-          <img src={galleryContent?.coverImage} style={{ width: "100%" }} />
+            <img src={galleryContent?.coverImage}
+                 style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: isMobile ? "0" : "4px" }} />
+          </Box>
           <Box
             position="absolute"
             sx={{
-              height: { xs: "64px", sm: "100px" },
-              width: { xs: "64px", sm: "100px" },
-              bottom: { xs: "24px", sm: "48px" },
-              left: { xs: "24px", sm: "48px" },
+              maxHeight: { xs: "64px", sm: "100px" },
+              maxWidth: { xs: "64px", sm: "100px" },
+              bottom: { xs: "24px" },
+              left: { xs: "24px" },
               display: { xs: "block" }
             }}>
-            <img className="borderRadius" src={galleryContent?.logoImage} style={{ width: "100%" }} />
+            <img className="borderRadius" src={galleryContent?.logoImage}
+                 style={{ width: "100%", maxHeight: "100px" }} />
           </Box>
         </Grid>
         <Grid
           item
           xs={12}
-          p={3}
-          sx={{ pt: { xs: 3, sm: 6, md: 12 } }}
+          sx={{ pt: { xs: 3, md: 0 }, pl: { xs: px.xs, sm: px.sm, md: 3 }, pr: { xs: px.xs, sm: px.sm, md: 0 } }}
           md
           display="flex"
-          justifyContent="center"
+          justifyContent="flex-start"
           flexDirection="column">
-          <Typography sx={{ typography: { sm: "h1", xs: "h3" }, pr: { xs: 0, md: 5 } }}>
+          <Box display="flex" alignItems="center" mb={{ xs: 1, md: 5 }}>
+            <FollowButton isFavourite={isFavourite} onClick={handleSetFavourite} />
+            <Box flexGrow={1} />
+            <IconButton onClick={handleShare} color="primary" size="small">
+              <ShareIcon />
+            </IconButton>
+          </Box>
+          <Typography variant="h1">
             {galleryContent?.title}
           </Typography>
-          <Typography variant="h6" color="textSecondary" sx={{ mt: 2 }}>
+          <Typography variant="h4" color="textSecondary" sx={{ mt: 3 }}>
             {galleryContent?.subtitle}
             {galleryContent?.foundationYear ? `, ${galleryContent.foundationYear}` : ""}
           </Typography>
-          <Typography variant="subtitle1" sx={{ mt: 2, maxWidth: { md: "560px" } }}>
+          <Typography variant="subtitle1" sx={{ mt: 6, maxWidth: { md: "400px" } }}>
             {galleryContent?.description}
           </Typography>
           {galleryContent?.productsCount && (
-            <Typography variant="h6" color="textSecondary" sx={{ mt: 2, maxWidth: { md: "560px" } }}>
+            <Typography variant="subtitle1" color="textSecondary" sx={{ mt: 3 }}>
               {galleryContent?.productsCount} opere presenti su Artpay
             </Typography>
           )}
-          <Box
-            display="flex"
-            flexDirection={{ xs: "column", sm: "row" }}
-            gap={{ xs: 3, sm: 0 }}
-            mt={{ xs: 3, md: 7 }}
-            sx={{ maxWidth: { md: "560px" } }}
-            alignItems={{ xs: "flex-start", md: "center" }}
-            justifyContent="space-between">
-            <Box display="flex" gap={{ xs: 1, md: 2 }}>
-              {(galleryContent?.categories || []).map((category, index) => (
-                <Chip key={index} label={category} color="secondary" size="small" />
-              ))}
-            </Box>
-            <Box display="flex" gap={2}>
-              <FollowButton isFavourite={isFavourite} onClick={handleSetFavourite} />
-              <IconButton onClick={handleShare} variant="outlined" color="primary" size="small">
-                <Share />
-              </IconButton>
-            </Box>
-          </Box>
         </Grid>
       </Grid>
-      <Box sx={{ mt: { xs: 6, md: 12 } }}>
+      <Box sx={{ mt: { xs: 6, md: 12 }, mb: 12, px: px }}>
         <Box
           sx={{
             borderBottom: 1,
-            borderColor: "secondary",
-            mx: { xs: 0, sm: 3, md: 6 }
+            borderColor: "#CDCFD3"
           }}>
           <ResponsiveTabs
             value={selectedTabPanel}

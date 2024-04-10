@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Card, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
 import FavouriteIcon from "./icons/FavouriteIcon.tsx";
-import QrCodeIcon from "./icons/QrCodeIcon.tsx";
 import { CardSize } from "../types";
 import FavouriteFilledIcon from "./icons/FavouriteFilledIcon.tsx";
 
@@ -53,9 +52,8 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
       minimumFractionDigits: 2
     })}`
     : "";
-  const titleVariant = size === "large" ? "h6" : "subtitle1";
-  const priceVariant = size === "large" ? "subtitle1" : "subtitle2";
-  const textMaxWidth = size === "large" ? "190px" : "152px";
+
+  const textMaxWidth = size === "large" ? "190px" : "254px";
   const imgMargin = size === "small" ? 1 : 2;
 
   const handleSetFavourite = () => {
@@ -80,12 +78,12 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
       <CardContent sx={{ p: 0, mt: imgMargin, height: "100%" }}>
         <Box display="flex">
           <Box display="flex" onClick={onClick} sx={{ cursor: "pointer" }} flexDirection="column" flexGrow={1}>
-            <Typography variant="body2" color="textSecondary">
+            <Typography variant="body1" color="textSecondary">
               {artistName || "-"}
             </Typography>
             <Typography
               onClick={onClick}
-              variant={titleVariant}
+              variant="h4"
               sx={{
                 mt: 0.5,
                 mb: 1,
@@ -95,11 +93,11 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
               }}>
               {title}
             </Typography>
-            <Typography variant="body2" color="textSecondary">
+            <Typography variant="body1" color="textSecondary">
               {galleryName || "-"}
             </Typography>
             {price && (
-              <Typography variant={priceVariant} sx={{ mt: 2 }}>
+              <Typography variant="h4" sx={{ mt: 2 }}>
                 {formattedPrice}
               </Typography>
             )}
@@ -117,9 +115,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
                 <FavouriteIcon fontSize="small" />
               )}
             </IconButton>
-            <IconButton sx={{ mb: -1 }} size="medium">
+            {/*            <IconButton sx={{ mb: -1 }} size="medium">
               <QrCodeIcon color="primary" />
-            </IconButton>
+            </IconButton>*/}
           </Box>
         </Box>
       </CardContent>

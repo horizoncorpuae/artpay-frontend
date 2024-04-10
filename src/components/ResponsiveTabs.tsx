@@ -2,15 +2,16 @@ import React from "react";
 import { Tabs, useMediaQuery, useTheme } from "@mui/material";
 import { TabsOwnProps } from "@mui/material/Tabs/Tabs";
 
-export interface ResponsiveTabsProps {}
+export interface ResponsiveTabsProps {
+}
 
 const ResponsiveTabs: React.FC<Pick<TabsOwnProps, "value" | "onChange" | "children">> = ({
-  value,
-  onChange,
-  children,
-}) => {
+                                                                                           value,
+                                                                                           onChange,
+                                                                                           children
+                                                                                         }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Tabs

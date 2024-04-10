@@ -91,7 +91,7 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
         <Box
           display="grid"
           sx={{
-            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(320px, 1fr))` },
+            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(294px, 1fr))` },
             justifyItems: "center",
             width: "auto"
           }}
@@ -115,7 +115,7 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
         )}
         {onLoadMore && (
           <Box display="flex" mt={4} justifyContent="center">
-            <Button onClick={handleLoadMore} variant="outlined" color="primary" size="large">
+            <Button onClick={handleLoadMore} variant="outlined" color="primary">
               Mostra più opere
             </Button>
           </Box>

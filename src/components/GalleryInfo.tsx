@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import GalleryContacts, { GalleryContactsProps } from "./GalleryContacts.tsx";
 
 export interface GalleryInfoProps {
@@ -9,29 +9,34 @@ export interface GalleryInfoProps {
   contacts?: GalleryContactsProps;
 }
 
-const GalleryInfo: React.FC<GalleryInfoProps> = ({ title, description, imageUrl, contacts }) => {
-  return (
-    <Box sx={{ maxWidth: "900px" }}>
-      {title && (
-        <Typography variant="h3" sx={{ mb: 3 }}>
-          {title}
-        </Typography>
-      )}
+const GalleryInfo: React.FC<GalleryInfoProps> = ({ description, contacts }) => {
+
+  return <Grid container>
+    <Grid xs={12} md={6} display="flex" flexDirection="column" alignItems="center" item>
+      <Typography variant="body1" color="textSecondary"
+                  sx={{ mb: 1, maxWidth: { xs: undefined, md: "400px" }, width: "100%" }}>
+        About
+      </Typography>
       {Array.isArray(description) ? (
         description.map((text, i) => (
-          <Typography key={i} sx={{ mb: 3 }} variant="body1" color="textSecondary">
+          <Typography key={i} sx={{ mb: 1, maxWidth: { xs: undefined, md: "400px" } }} variant="body1">
             {text}
           </Typography>
         ))
       ) : (
-        <Typography sx={{ mb: 3 }} variant="body1" color="textSecondary">
+        <Typography sx={{ mb: 1 }} variant="body1">
           {description}
         </Typography>
       )}
-      {imageUrl && <img style={{ width: "100%" }} src={imageUrl} />}
-      {contacts && <GalleryContacts {...contacts} sx={{ pt: 2 }} />}
-    </Box>
-  );
+    </Grid>
+    <Grid xs={12} md={6} mt={{ xs: 3, md: 0 }} display="flex" flexDirection="column" alignItems="center" item>
+      <Typography variant="body1" color="textSecondary"
+                  sx={{ mb: 1, maxWidth: { xs: undefined, md: "400px" }, width: "100%" }}>
+        Indirizzo
+      </Typography>
+      {contacts && <GalleryContacts {...contacts} sx={{ pt: 0 }} />}
+    </Grid>
+  </Grid>;
 };
 
 export default GalleryInfo;

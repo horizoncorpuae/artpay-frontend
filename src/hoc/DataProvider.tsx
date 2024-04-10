@@ -578,7 +578,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(
         `${baseUrl}/wp-json/wp/v2/artistsOfVendor/${galleryId}`
       );
-      return resp.data;
+      return resp.data || [];
     },
     async getArtist(artistId: string): Promise<Artist> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artist>>(

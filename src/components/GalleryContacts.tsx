@@ -1,6 +1,6 @@
 import React from "react";
-import { Grid, SxProps, Theme, Typography } from "@mui/material";
-import SocialLinks, { SocialLinksProps } from "./SocialLinks.tsx";
+import { Box, SxProps, Theme, Typography } from "@mui/material";
+import { SocialLinksProps } from "./SocialLinks.tsx";
 import Map from "./Map.tsx";
 
 export interface GalleryContactsProps {
@@ -16,44 +16,28 @@ export interface GalleryContactsProps {
 }
 
 const GalleryContacts: React.FC<GalleryContactsProps> = ({
-  address,
-  email,
-  phoneNumbers,
-  website,
-  city,
-  postcode,
-  country,
-  social = {},
-  sx = {},
-}) => {
+                                                           address,
+                                                           city,
+                                                           postcode,
+                                                           country,
+                                                           sx = {}
+                                                         }) => {
   return (
-    <Grid sx={{ maxWidth: "900px", ...sx }} pb={8} container>
-      <Grid xs={12} md={6} item>
-        <Typography sx={{ mt: 2 }} variant="h3">
+    <Box sx={{ maxWidth: { xs: undefined, md: "400px" }, width: "100%", ...sx }} display="flex" flexDirection="column"
+         alignItems="flex-start"
+         justifyContent="flex-start">
+      <Box sx={{ width: "100%" }}>
+        <Typography sx={{ mt: 0 }} variant="subtitle1">
           {address}
         </Typography>
-        <Typography sx={{ mt: 0 }} variant="h3">
+        <Typography sx={{ mt: 0 }} variant="subtitle1">
           {postcode}, {city} - {country}
         </Typography>
-        <Typography sx={{ mt: 3 }} color="textSecondary" variant="subtitle1">
-          {email}
-        </Typography>
-        {phoneNumbers.map((number, i) => (
-          <Typography key={i} color="textSecondary" variant="subtitle1">
-            {number}
-          </Typography>
-        ))}
-        <Typography variant="subtitle1" color="textSecondary">
-          <a href={website} color="textSecondary" target="_blank">
-            {website}
-          </a>
-        </Typography>
-        <SocialLinks sx={{ mt: { xs: 3, md: 6 }, mb: { xs: 3, md: 0 } }} {...social} />
-      </Grid>
-      <Grid xs={12} md={6} style={{ position: "relative" }} item>
+      </Box>
+      <Box sx={{ width: "100%", overflow: "hidden" }} mt={2}>
         <Map address={address} />
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 

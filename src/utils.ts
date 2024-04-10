@@ -92,7 +92,7 @@ export const artistToGalleryItem = (artist: Artist, size: CardSize = "medium"): 
     id: artist.id.toString(),
     slug: artist.slug,
     isFavourite: false,
-    subtitle: `${artist.acf.location}, ${artist.acf.birth_year}`,
+    subtitle: `${artist.acf?.location}, ${artist.acf?.birth_year}`,
     title: artist.title?.rendered || "",
     description: artist.excerpt?.rendered || "",
     artworksCount: artist.artworks?.length || 0,

@@ -194,7 +194,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       }
       throw err;
     });
-  }, [data, urlParams.id, urlParams.slug_opera, urlParams.slug_galleria]);
+  }, [data, navigate, urlParams.id, urlParams.slug_opera, urlParams.slug_galleria]);
 
   useEffect(() => {
     const handleFavouritesUpdated = (e: CustomEvent<FavouritesMap>) => {
@@ -223,7 +223,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
     <DefaultLayout
       pageLoading={!isReady}>
       <Box sx={{ px: { ...px, xs: 0 }, mt: { xs: 0, sm: 12, md: 18 } }} display="flex" justifyContent="center">
-        <Grid sx={{ p: 0, mt: 0, justifyContent: "center", alignItems: "center" }} spacing={{ xs: 0, sm: 3 }}
+        <Grid sx={{ p: 0, mt: 0, justifyContent: "center", alignItems: "flex-start" }} spacing={{ xs: 0, sm: 3 }}
               maxWidth="xl"
               container>
           <Grid
@@ -246,9 +246,12 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           <Grid item xs={12} md={6} sx={{ px: { xs: px.xs, sm: 0 }, pt: { xs: 3, sm: 0 } }} display="flex"
                 justifyContent="flex-start"
                 flexDirection="column">
-            <Box display="flex">
-              <Typography sx={{ textTransform: "uppercase", mb: 3 }} color="primary" variant="body1">
-                {galleryDetails?.display_name}
+            <Box alignItems="center" mb={1} display="flex">
+              <Typography
+                sx={{ textTransform: "uppercase", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+                color="primary" variant="body1">
+                <Link sx={{ textDecoration: "none" }}
+                      onClick={() => navigate(`/gallerie/${galleryDetails?.shop?.slug}`)}>{galleryDetails?.display_name}</Link>
               </Typography>
               <Box flexGrow={1} />
               <IconButton onClick={() => handleSetArtworkFavourite()}>

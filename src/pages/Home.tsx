@@ -112,7 +112,7 @@ const Home: React.FC<HomeProps> = ({}) => {
       <Grid sx={{ px: px, my: 12, ml: "auto", mr: "auto" }} maxWidth="xl" container>
         <ArtistsList disablePadding size="medium" items={featuredArtists || []} title="Artisti in evidenza" />
       </Grid>
-      <Grid sx={{ px: px, my: 12, justifyContent: "center", ml: "auto", mr: "auto" }} maxWidth="xl" container>
+      <Grid sx={{ px: px, my: 12, justifyContent: "flexStart", ml: "auto", mr: "auto" }} maxWidth="xl" container>
         {featuredArtworks && (
           <ArtworksList
             disablePadding

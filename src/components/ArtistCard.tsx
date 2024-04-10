@@ -21,18 +21,18 @@ export interface ArtistCardProps {
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({
-  slug,
-  title,
-  subtitle,
-  isFavourite = false,
-  isLoading = false,
-  imgUrl,
-  mode = "list",
-  onClick,
-  onSetFavourite,
-  size = "large",
-  // artworksCount = 0,
-}) => {
+                                                 slug,
+                                                 title,
+                                                 subtitle,
+                                                 isFavourite = false,
+                                                 isLoading = false,
+                                                 imgUrl,
+                                                 mode = "list",
+                                                 onClick,
+                                                 onSetFavourite,
+                                                 size = "large"
+                                                 // artworksCount = 0,
+                                               }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -67,7 +67,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
           objectFit: mode === "list" ? "cover" : "cover",
           minHeight: "100px",
           backgroundColor: imgUrl ? "" : "#D9D9D9",
-          cursor: onClick ? "pointer" : "auto",
+          cursor: onClick ? "pointer" : "auto"
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: 2 }}>
         <Box display="flex">
@@ -86,7 +86,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
               onClick={() => handleSetFavourite()}
               variant={isFavourite ? "contained" : "outlined"}
               size="small">
-              {isFavourite ? <Check /> : <Add />}
+              {isFavourite ? <Check fontSize="inherit" /> : <Add fontSize="inherit" />}
             </IconButton>
           </Box>
         </Box>

@@ -12,14 +12,16 @@ export interface GalleryArtworksListProps {
 
 const GalleryArtworksList: React.FC<GalleryArtworksListProps> = ({ artworks = [], onSelect, onLoadMore }) => {
   return (
-    <Grid container>
+    <Grid px={0} container>
       <Grid xs={12} sx={{ maxWidth: "100%", overflow: "auto", py: { xs: 3, md: 6 } }} item>
         <ArtworksGrid
+          disablePadding
           title="Le nostre opere"
+          emptyText="Nessun'opera per questa galleria"
           items={artworks}
           onSelect={onSelect}
           onLoadMore={onLoadMore}
-          cardSize="large"
+          cardSize="medium"
         />
       </Grid>
     </Grid>

@@ -22,7 +22,6 @@ const OnboardingCards: React.FC<OnboardingCardsProps> = ({ sx = {} }) => {
       <OnboardingCard title="Sei un gallerista?"
                       subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                       ctaText="Scopri di più"
-                      ctaVariant="contained"
                       sx={{ pr: { xs: 0, md: 1.5 } }}
                       onClick={() => navigate("/artpay-per-gallerie")}
                       background={bgOnboardingGallery} />

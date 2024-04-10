@@ -18,6 +18,7 @@ import UserIcon from "./icons/UserIcon.tsx";
 import { useNavigate } from "react-router-dom";
 import ShoppingBagIcon from "./icons/ShoppingBagIcon.tsx";
 import MenuIcon from "./icons/MenuIcon.tsx";
+import BetaLabel from "./icons/BetaLabel.tsx";
 
 export interface NavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;
@@ -112,8 +113,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             }}
             elevation={0}>
       <Box display="flex" alignItems="center" sx={{}}>
-        <Box sx={{ height: "24px", cursor: "pointer" }} onClick={() => handleNavigate("/")}>
+        <Box sx={{ height: "24px", cursor: "pointer" }} display="flex" alignItems="center"
+             onClick={() => handleNavigate("/")}>
           <Logo />
+          <BetaLabel ml={1} mt={0.5} />
         </Box>
         {!isMobile && (
           <Box sx={{ ml: 3 }}>

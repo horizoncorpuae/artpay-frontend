@@ -20,7 +20,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          sx={{ py: { xs: 3, md: 6 }, px: { xs: 2, sm: 3, md: 0 } }}>
+          sx={{ py: { xs: 3, md: 6 }, px: { xs: 0 } }}>
           {children}
         </Box>
       )}

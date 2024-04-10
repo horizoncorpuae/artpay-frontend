@@ -105,7 +105,7 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({
         <Box
           display="grid"
           sx={{
-            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(320px, 1fr))` },
+            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(300px, 1fr))` },
             justifyItems: "center",
             width: "auto"
           }}
@@ -115,6 +115,7 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({
               key={i}
               {...item}
               mode="grid"
+              size="medium"
               onClick={() => (onSelect ? onSelect(i) : handleSelectArtwork(i))}
               isLoading={isLoading}
               onSetFavourite={(currentValue) => handleSetFavourite(item.id, currentValue)}
@@ -124,7 +125,7 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({
         </Box>
         {emptyText && !items.length && (
           <Box>
-            <Typography variant="subtitle1">{emptyText}</Typography>
+            <Typography color="textSecondary" variant="subtitle1">{emptyText}</Typography>
           </Box>
         )}
         {onLoadMore && (
