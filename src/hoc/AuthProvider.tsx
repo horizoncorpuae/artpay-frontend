@@ -84,8 +84,7 @@ const getGuestAuth = () => {
 };
 const getWcCredentials = ({ consumer_key, consumer_secret }: { consumer_key: string; consumer_secret: string }) => {
   const wcCredentials = btoa(`${consumer_key}:${consumer_secret}`);
-  const authToken = "Basic " + wcCredentials;
-  return authToken;
+  return "Basic " + wcCredentials;
 };
 
 const Context = createContext<AuthContext>({
@@ -199,11 +198,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       const resp = await axios.get<SignInFormData, AxiosResponse<User>>(loginUrl, {
         auth: { username: email, password }
       });
-      /*const userInfoResp = await axios.get<object, AxiosResponse<UserInfo>>(
-        userInfoUrl,
-        { headers: { Authorization: `Bearer ${resp.data.jwt}` } },
-      );*/
-      // TODO: save user to local storage
       // await storage.set('auth', JSON.stringify({jwt: resp.data.jwt, user: userInfoResp.data})) //TODO: local storage
       localStorage.setItem(userStorageKey, JSON.stringify(resp.data));
       setAuthValues({
@@ -246,6 +240,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       );
       if (resp.status > 299) {
         const message = (resp.data as RequestError)?.message || "Si è verificato un errore";
+        // noinspection ExceptionCaughtLocallyJS
         throw new AxiosError(message, resp.status?.toString() || "", undefined, resp);
       }
       setLoginOpen(false);

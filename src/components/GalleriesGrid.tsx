@@ -95,8 +95,8 @@ const GaleriesGrid: React.FC<GaleriesGridProps> = ({
         <Box
           display="grid"
           sx={{
-            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(294px, 1fr))` },
-            justifyItems: "center",
+            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(300px, 1fr))` },
+            justifyItems: "flex-start",
             width: "auto"
           }}
           gap={1}>

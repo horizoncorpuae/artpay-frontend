@@ -22,7 +22,7 @@ import { GalleryCardProps } from "./components/GalleryCard.tsx";
 import { Order } from "./types/order.ts";
 import { OrderHistoryCardProps } from "./components/OrderHistoryCard.tsx";
 import { OrderLoanCardProps } from "./components/OrderLoanCard.tsx";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 
 interface categoryValueMatcher {

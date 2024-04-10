@@ -28,7 +28,7 @@ const GalleryCard: React.FC<GalleryCardProps> = ({
                                                  }) => {
   const theme = useTheme();
   const imgHeight = "230px";
-  const cardWidth = "300px";
+  const cardWidth = "294px";
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSetFavourite = () => {
@@ -38,7 +38,7 @@ const GalleryCard: React.FC<GalleryCardProps> = ({
   };
 
   return (
-    <Card elevation={0} className="SwiperCard-large" sx={{ minWidth: cardWidth }}>
+    <Card elevation={0} className="SwiperCard-medium" sx={{ minWidth: cardWidth }}>
       <CardMedia
         component="img"
         image={imgUrl}
@@ -46,8 +46,9 @@ const GalleryCard: React.FC<GalleryCardProps> = ({
         className="borderRadius"
         onClick={onClick}
         sx={{
-          objectFit: mode === "list" ? "conver" : "contain",
+          objectFit: "cover",
           minHeight: "100px",
+          borderRadius: "4px",
           backgroundColor: imgUrl ? "" : "#D9D9D9",
           cursor: onClick ? "pointer" : "auto"
         }}></CardMedia>

@@ -1,9 +1,10 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "../hoc/AuthProvider.tsx";
-import { Box, Container, ContainerProps, LinearProgress, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Container, ContainerProps, Typography, useMediaQuery, useTheme } from "@mui/material";
 import Navbar from "./Navbar.tsx";
 import Footer from "./Footer.tsx";
 import { Breakpoint } from "@mui/system";
+import Loader from "./Loader.tsx";
 
 export interface DefaultLayoutProps {
   authRequired?: boolean;
@@ -33,6 +34,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [ready, setReady] = useState(false);
+  const [animationReady, setAnimationReady] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -52,14 +54,11 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
     setMenuOpen(isOpen);
   };
 
-  if (!ready || pageLoading) {
+  if (!ready || pageLoading || !animationReady) {
     return (
       <Container maxWidth="md">
         <Box height="100vh" display="flex" flexDirection="column" justifyContent="center">
-          <Box>
-            <Typography variant="h6">Loading...</Typography>
-            <LinearProgress />
-          </Box>
+          <Loader onIntroComplete={() => setAnimationReady(true)} />
         </Box>
       </Container>
     );

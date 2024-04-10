@@ -61,9 +61,18 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
       onSetFavourite(isFavourite);
     }
   };
-
+  const cardStyles = mode === "list" ? {
+    height: "100%"
+  } : {
+    height: "auto",
+    display: "flex",
+    flexDirection: "column"
+  };
   return (
-    <Card elevation={0} className={cardSizeClass} sx={{ height: mode === "list" ? "100%" : "auto" }}>
+    <Card elevation={0} className={cardSizeClass}
+          sx={{
+            ...cardStyles
+          }}>
       <CardMedia
         component="img"
         image={imgUrl}
@@ -72,11 +81,14 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
         className="borderRadius"
         sx={{
           objectFit: "cover",
+          height: cardSize,
+          minWidth: mode === "list" ? undefined : "100%",
+          width: mode === "list" ? undefined : "auto",
           //backgroundColor: "#D9D9D9",
           cursor: onClick ? "pointer" : "auto"
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: imgMargin, height: "100%" }}>
-        <Box display="flex">
+        <Box display="flex" sx={{ height: mode === "grid" ? "100%" : undefined }}>
           <Box display="flex" onClick={onClick} sx={{ cursor: "pointer" }} flexDirection="column" flexGrow={1}>
             <Typography variant="body1" color="textSecondary">
               {artistName || "-"}
@@ -87,8 +99,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
               sx={{
                 mt: 0.5,
                 mb: 1,
+                flexGrow: 1,
                 maxWidth: textMaxWidth,
-                minHeight: "50px",
+                minHeight: mode === "grid" ? "0" : "50px",
                 cursor: "pointer"
               }}>
               {title}
