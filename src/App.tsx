@@ -99,7 +99,7 @@ function AppContent() {
                     />
                     <Route
                       path="/informativa-sulla-privacy"
-                      element={<ContentPage slug="informativa-e-gestione-dei-cookies" />}
+                      element={<ContentPage slug="informativa-sulla-privacy" />}
                     />
                     <Route path="/termini-e-condizioni" element={<ContentPage slug="termini-e-condizioni" />} />
                     <Route

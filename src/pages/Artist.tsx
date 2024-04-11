@@ -12,9 +12,9 @@ import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
 import { artworksToGalleryItems, getDefaultPaddingX } from "../utils.ts";
 import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
 import FavouriteIcon from "../components/icons/FavouriteIcon.tsx";
-import { Share } from "@mui/icons-material";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
+import ShareIcon from "../components/icons/ShareIcon.tsx";
 
 export interface ArtistProps {
 }
@@ -95,7 +95,7 @@ const Artist: React.FC<ArtistProps> = ({}) => {
         sx={{
           px: px,
           pb: 1,
-          mt: { xs: 10, sm: 12, md: 16, lg: 18 },
+          mt: { xs: 12, sm: 12, md: 16, lg: 18 },
           flexDirection: { xs: "column", md: "row" },
           alignItems: { xs: "center", md: "start" }
         }}
@@ -103,27 +103,29 @@ const Artist: React.FC<ArtistProps> = ({}) => {
         display="flex">
         <Box>
           <img className="borderRadius" src={artistImage} style={{ width: "320px" }} />
-          <Box display="flex" pt={1} gap={1}>
-            <IconButton disabled={isLoading} onClick={() => handleSetArtistFavourite()}>
-              {isArtistFavourite ? (
-                <FavouriteFilledIcon color={isLoading ? "disabled" : "primary"} fontSize="small" />
-              ) : (
-                <FavouriteIcon color={isLoading ? "disabled" : "primary"} fontSize="small" />
-              )}
-            </IconButton>
-            <IconButton disabled={isLoading} onClick={handleShare}>
-              <Share color={isLoading ? "disabled" : "primary"} />
-            </IconButton>
-          </Box>
         </Box>
         <Box display="flex" flexDirection="column" justifyContent="start" sx={{ maxWidth: "100%" }}>
-          <Typography variant="h1" style={{ cursor: "pointer" }}>
-            {artist?.title?.rendered}
-          </Typography>
+          <Box display="flex">
+            <Typography variant="h1" style={{ cursor: "pointer", flexGrow: 1 }}>
+              {artist?.title?.rendered}
+            </Typography>
+            <Box display="flex" gap={0}>
+              <IconButton disabled={isLoading} onClick={() => handleSetArtistFavourite()}>
+                {isArtistFavourite ? (
+                  <FavouriteFilledIcon color={isLoading ? "disabled" : "primary"} fontSize="small" />
+                ) : (
+                  <FavouriteIcon color={isLoading ? "disabled" : "primary"} fontSize="small" />
+                )}
+              </IconButton>
+              <IconButton disabled={isLoading} onClick={handleShare}>
+                <ShareIcon color={isLoading ? "disabled" : "primary"} />
+              </IconButton>
+            </Box>
+          </Box>
           <Typography sx={{ mt: 2 }} variant="h4" color="textSecondary">
             {artist?.acf?.birth_nation}, {artist?.acf?.birth_year}
           </Typography>
-          <Box mt={2} display="flex" gap={1}>
+          <Box mt={2} display="flex" flexWrap="wrap" gap={1}>
             {artistCategories.map((c) => (
               <Chip color="primary" key={c} label={c} />
             ))}

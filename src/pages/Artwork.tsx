@@ -368,7 +368,6 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           </Grid>
         </Grid>
       </Box>
-      <Box id="scopri-di-piu" sx={{ top: "-100px", position: "relative" }}></Box>
       <Box px={px} mt={5}>
         <Box
           sx={{
@@ -412,7 +411,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
                       onSelect={handleGalleryArtworkSelect} />
         <ArtworksList disablePadding title="Simili per prezzo" items={[]} />
       </Box>
-      <Box id="prenota-opera" sx={{ top: "-100px", position: "relative" }}></Box>
+      <Box id="prenota-opera" sx={{ top: "-20px", position: "relative" }}></Box>
       <Grid sx={{ pt: 12, px: px }} spacing={3} display="flex" container>
         <Grid xs={12} item>
           <Typography variant="h2">

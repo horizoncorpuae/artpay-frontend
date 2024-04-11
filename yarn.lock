@@ -2469,6 +2469,11 @@ react-is@^18.2.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-iubenda-policy@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-iubenda-policy/-/react-iubenda-policy-0.1.1.tgz#5df8ae5ed70c3cf0d0107c035ff9e998518fb71b"
+  integrity sha512-KUvsYAbzY3HxxN5Mo8v/39E9iCQ80jv2ZYN1xaKZIvNVNRNp9Uymzy9+qIxXCiDQp8blQcFZJ1a0J/ZY4Z3vNA==
+
 react-lottie@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/react-lottie/-/react-lottie-1.2.4.tgz#999ccabff8afc82074588bc50bd75be6f8945161"

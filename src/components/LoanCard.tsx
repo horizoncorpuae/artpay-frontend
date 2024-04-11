@@ -14,7 +14,7 @@ const LoanCard: React.FC<LoanCardProps> = ({ sx = {} }) => {
       sx={{
         background: theme.palette.secondary.main,
         borderRadius: "24px",
-        px: { xs: 4, md: 13 },
+        px: { xs: 4, md: 8, lg: 13 },
         py: 5,
         alignItems: "center",
         justifyContent: "space-between",
@@ -22,7 +22,13 @@ const LoanCard: React.FC<LoanCardProps> = ({ sx = {} }) => {
         ...sx
       }}
       display="flex">
-      <Box sx={{ maxWidth: "500px", display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box sx={{
+        maxWidth: { xs: undefined, md: "450px", lg: "500px" },
+        display: "flex",
+        flexDirection: "column",
+        pr: { xs: 0, md: 3 },
+        gap: 3
+      }}>
         <Typography fontWeight={500} color="white" variant="h3">
           Scegli tra i nostri partner
         </Typography>

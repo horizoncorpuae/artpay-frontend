@@ -107,7 +107,8 @@ const Home: React.FC<HomeProps> = ({}) => {
       <OnboardingCards />
       <Grid sx={{ px: px, ml: "auto", mr: "auto" }} maxWidth="xl" container>
         <Grid mt={4} xs={12} item>
-          <NewsletterBig title="Iscriviti alla nostra newsletter" />
+          <NewsletterBig
+            title="Iscriviti ora per ricevere aggiornamenti esclusivi su Artpay direttamente nella tua casella di posta" />
         </Grid>
       </Grid>
       <Grid sx={{ px: px, my: 12, ml: "auto", mr: "auto" }} maxWidth="xl" container>

@@ -6,10 +6,11 @@ export interface HeroAboutProps {
   mainTitle?: string;
   description?: string;
   buttonText?: string;
+  buttonAction?: () => void;
   imageSrc?: string;
 }
 
-const HeroAbout: React.FC<HeroAboutProps> = ({ mainTitle, description, buttonText, imageSrc }) => {
+const HeroAbout: React.FC<HeroAboutProps> = ({ mainTitle, description, buttonText, buttonAction, imageSrc }) => {
   const theme = useTheme();
 
   const px = getDefaultPaddingX();
@@ -37,7 +38,8 @@ const HeroAbout: React.FC<HeroAboutProps> = ({ mainTitle, description, buttonTex
             <Typography variant="subtitle1" color={theme.palette.primary.contrastText}>
               {description}
             </Typography>
-            <Button sx={{ mt: 3 }} color="contrast">{buttonText}</Button>
+            {(buttonText && buttonAction) &&
+              <Button sx={{ mt: 3 }} onClick={buttonAction} color="contrast">{buttonText}</Button>}
           </Box>
         </Grid>
       </Grid>

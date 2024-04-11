@@ -3,6 +3,7 @@ import { getDefaultPaddingX } from "../utils.ts";
 import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
 import onboardingImg1 from "../assets/images/gallery-onboarding-img-1.png";
 import onboardingImg2 from "../assets/images/gallery-onboarding-img-2.png";
+import { useNavigate } from "react-router-dom";
 
 export interface HeroHomeProps {
 
@@ -10,6 +11,7 @@ export interface HeroHomeProps {
 
 const HeroHome: React.FC<HeroHomeProps> = ({}) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const px = getDefaultPaddingX();
   const maxWidth = theme.breakpoints.values["xl"];
@@ -31,7 +33,7 @@ const HeroHome: React.FC<HeroHomeProps> = ({}) => {
           Artpay è un servizio digitale che facilita l’acquisto delle migliori opere d’arte attraverso una piattaforma
           digitale innovativa che offre soluzioni di acquisto rateali e personalizzabili.
         </Typography>
-        <Button variant="contained" color="contrast">Scopri di più</Button>
+        <Button variant="contained" color="contrast" onClick={() => navigate("/chi-siamo")}>Scopri di più</Button>
       </Grid>
       <Grid item xs={12} sm={3} md={4} lg={5} sx={{ pl: { xs: 0, sm: 5, lg: 8 }, pt: { xs: 6, md: 0 } }}>
         <Box sx={{ position: "relative", minHeight: { xs: "640px", sm: "600px", md: "680px" } }}>

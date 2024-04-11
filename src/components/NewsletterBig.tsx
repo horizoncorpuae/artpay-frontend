@@ -50,7 +50,8 @@ const NewsletterBig: React.FC<NewsletterBigProps> = ({
   return <PromoCard title={title} titleVariant="h2" variant="contrast">
     <form onSubmit={handleSubmit(handleFormSubmit)} datatype="subscription">
       {formState === "new" ? <>
-          <Box sx={{ width: "100%", maxWidth: "400px" }}>
+          <Box sx={{ width: "100%", maxWidth: "500px", minWidth: { xs: undefined, md: "360px", lg: "400px" } }}
+               pl={{ xs: 0, md: 3 }}>
             <Controller
               name="email"
               control={control}

@@ -132,14 +132,17 @@ const Footer: React.FC<FooterProps> = ({}) => {
         </Grid>
         <Grid xs={12} md={4} display="flex" gap={2} alignItems="center" item>
           <Typography variant="body2">
-            <a href="/informativa-sulla-privacy">Privacy Policy</a>
-          </Typography>
-          <Typography variant="body2">
             <a href="/termini-e-condizioni">Terms of Use</a>
           </Typography>
           <Typography variant="body2">
-            <a href="/informativa-e-gestione-dei-cookies">Cookie Policy</a>
+
           </Typography>
+          <a href="https://www.iubenda.com/privacy-policy/71113702"
+             className="iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe " title="Privacy Policy ">Privacy
+            Policy</a>
+          <a href="https://www.iubenda.com/privacy-policy/71113702/cookie-policy"
+             className="iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe " title="Cookie Policy ">Cookie
+            Policy</a>
         </Grid>
         <Grid xs={12} md={4} display="flex" sx={{ justifyContent: { xs: "flex-start", md: "flex-end" } }} item>
           <SocialLinks color="#010F22" instagram="..." facebook="..." twitter="..." youtube="..." />

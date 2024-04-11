@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { getDefaultPaddingX } from "../utils.ts";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { Box, Button, Grid, Typography } from "@mui/material";
@@ -42,7 +42,7 @@ const Contacts: React.FC<ContactsProps> = ({}) => {
         </Button>
       </Grid>
       <Grid item display="flex" justifyContent="flex-end" pt={{ xs: 12, md: 0 }}
-            sx={{ display: { xs: "none", sm: "block" } }} xs={12}>
+            sx={{ display: { xs: "none", sm: "flex" } }} xs={12}>
         <Box sx={{ transform: { xs: undefined, md: "translate(240px,-36px)", lg: "translate(120px,-84px)" } }}>
           <img src={imgContacts} />
         </Box>

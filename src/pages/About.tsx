@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import HeroAbout, { HeroAboutProps } from "../components/HeroAbout.tsx";
-import { Box, Grid, GridProps, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, GridProps, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import imgLogo from "../assets/images/logo.svg";
@@ -10,7 +10,7 @@ import { getDefaultPaddingX } from "../utils.ts";
 import PromoCard from "../components/PromoCard.tsx";
 import OnboardingCards from "../components/OnboardingCards.tsx";
 import NewsletterBig from "../components/NewsletterBig.tsx";
-import ContactForm from "../components/ContactForm.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface AboutProps {
 }
@@ -27,6 +27,7 @@ const heroContent: HeroAboutProps = {
 const About: React.FC<AboutProps> = ({}) => {
   const theme = useTheme();
   const data = useData();
+  const auth = useAuth();
   const snackbar = useSnackbars();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -52,8 +53,9 @@ const About: React.FC<AboutProps> = ({}) => {
   };
 
   return (
-    <DefaultLayout pb={3} pageLoading={!ready} topBar={<HeroAbout {...heroContent} />} maxWidth="xl">
-
+    <DefaultLayout pb={3} pageLoading={!ready} topBar={
+      <HeroAbout {...heroContent} buttonAction={auth.isAuthenticated ? undefined : () => auth.login()} />
+    } maxWidth="xl">
 
       <Grid sx={{ ...centeredGridSx, flexDirection: isMobile ? "column" : undefined }} container>
         <Grid xs={12} sm={4} lg={5} sx={{ pb: { xs: 3, sm: 0 }, height: "auto" }} item>
@@ -103,13 +105,13 @@ const About: React.FC<AboutProps> = ({}) => {
       </Box>
       <Box px={px} my={12}>
         <Typography variant="h2">Vuoi entrare in contatto con Artpay e il suo team? </Typography>
-        <Typography sx={{ mt: 2, maxWidth: "400px" }} variant="subtitle1">
-          Compila il form, lasciando i tuoi contatti e indicando il tema per cui vuoi
-          parlarci, sarà nostra cura risponderti entro il più breve tempo possibile.
+        <Typography sx={{ mt: 2 /*, maxWidth: "400px"*/ }} variant="subtitle1">
+          Contattaci per qualsiasi domanda o richiesta! <br />Puoi scriverci direttamente via email a: <Link
+          href="mailto:hello@artpay.art">hello@artpay.art</Link>
         </Typography>
-        <Box sx={{ maxWidth: "506px", mt: 8 }}>
+        {/*<Box sx={{ maxWidth: "506px", mt: 8 }}>
           <ContactForm />
-        </Box>
+        </Box>*/}
       </Box>
 
     </DefaultLayout>
