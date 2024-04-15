@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 
 export interface OrderCardProps {
   children?: ReactNode | ReactNode[];
@@ -8,7 +8,6 @@ export interface OrderCardProps {
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({ children, imgSrc, leftCta }) => {
-  const theme = useTheme();
 
   return (
     <Box
@@ -16,15 +15,21 @@ const OrderCard: React.FC<OrderCardProps> = ({ children, imgSrc, leftCta }) => {
         border: `1px solid #D9D9D9`,
         borderRadius: "5px",
         p: 3,
-        flex: "200px 0",
+        flex: "2 1",
+        gridTemplateColumns: { xs: undefined, sm: "250px 1fr", md: "150px 1fr", lg: "200px 1fr" },
         height: "100%",
-        flexDirection: { xs: "column", sm: "row" },
+        flexDirection: { xs: "column", sm: "row" }
       }}
       gap={3}
-      display="flex">
-      <Box>
+      display="grid">
+      <Box sx={{ width: { xs: "auto" } }} display="flex" flexDirection="column">
         <img
-          style={{ width: useMediaQuery(theme.breakpoints.down("sm")) ? "100%" : "200px", borderRadius: "5px" }}
+          style={{
+            width: "100%",//useMediaQuery(theme.breakpoints.down("sm")) ? "100%" : "100%",
+            borderRadius: "5px",
+            aspectRatio: 1,
+            objectFit: "cover"
+          }}
           src={imgSrc}
         />
         {leftCta}

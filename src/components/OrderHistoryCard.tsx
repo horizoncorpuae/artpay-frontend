@@ -1,7 +1,8 @@
 import React from "react";
 import OrderCard from "./OrderCard.tsx";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import DisplayProperty from "./DisplayProperty.tsx";
+import { OrderStatus } from "../types/order.ts";
 
 export interface OrderHistoryCardProps {
   title: string;
@@ -11,6 +12,8 @@ export interface OrderHistoryCardProps {
   purchaseDate: string;
   purchaseMode: string;
   imgSrc: string;
+  status: OrderStatus;
+  onClick?: () => Promise<void>;
 }
 
 const OrderHistoryCard: React.FC<OrderHistoryCardProps> = ({
@@ -20,10 +23,12 @@ const OrderHistoryCard: React.FC<OrderHistoryCardProps> = ({
                                                              purchaseMode,
                                                              subtitle,
                                                              title,
-                                                             imgSrc
+                                                             imgSrc,
+                                                             onClick
                                                            }) => {
   return (
-    <OrderCard imgSrc={imgSrc}>
+    <OrderCard imgSrc={imgSrc}
+               leftCta={onClick && <Button sx={{ mt: 2, width: "100%" }} variant="contained">Compra ora</Button>}>
       <Typography
         variant="h4"
         sx={{
@@ -37,10 +42,8 @@ const OrderHistoryCard: React.FC<OrderHistoryCardProps> = ({
       </Typography>
       <Typography sx={{ my: 1 }} variant="subtitle1">{formattePrice}</Typography>
       <DisplayProperty label="Nome galleria" value={galleryName} gap={0} variant="subtitle1" sx={{ my: 1 }} />
-      <DisplayProperty label="Data di acquisto" value={purchaseDate} gap={0} variant="subtitle1"
-                       sx={{ my: 1 }} />
-      <DisplayProperty label="Modalità di acquisto" value={purchaseMode} gap={0} variant="subtitle1"
-                       sx={{ my: 1 }} />
+      <DisplayProperty label="Data di acquisto" value={purchaseDate} gap={0} variant="subtitle1" sx={{ my: 1 }} />
+      <DisplayProperty label="Modalità di acquisto" value={purchaseMode} gap={0} variant="subtitle1" sx={{ my: 1 }} />
     </OrderCard>
   );
 };

@@ -15,11 +15,22 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({
                                                        orderStates = ["completed"],
                                                        title = "Opere acquistate",
                                                        subtitle = "In questa sezione trovi tutte le tue opere in via di acquisizione, potrai controllarne lo stato di avanzamento\n" +
-                                                       "          e verificare se le tue richieste di finanziamento sono state approvate"
+                                                       "e verificare se le tue richieste di finanziamento sono state approvate"
                                                      }) => {
   const data = useData();
 
   const [orders, setOrders] = useState<OrderHistoryCardProps[]>();
+
+  const handleClick = async () => {
+
+  };
+
+  const showCta = (purchaseMode: string, status: OrderStatus): boolean => {
+    if (status === "on-hold" && purchaseMode !== "Stripe SEPA") {
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     data.listOrders({ status: orderStates, per_page: 10 }).then((orders) => {
@@ -30,7 +41,7 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({
   const px = getDefaultPaddingX();
 
   return (
-    <Grid sx={{ px: px, width: "100%" }} justifyContent="stretch" spacing={3} container>
+    <Grid sx={{ px: px, width: "100%" }} justifyContent="stretch" container>
       <Grid xs={12} mb={3} item>
         <Typography sx={{ mb: 2 }} variant="h3">
           {title}
@@ -38,8 +49,9 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({
         <Typography variant="body1">{subtitle}</Typography>
       </Grid>
       {orders?.map((order, i) => (
-        <Grid key={`order-${i}`} xs={12} md={6} item>
-          <OrderHistoryCard {...order} />
+        <Grid key={`order-${i}`} xs={12} md={6} pr={{ xs: 0, md: i % 2 === 0 ? 1.5 : 0 }}
+              pl={{ xs: 0, md: i % 2 === 1 ? 1.5 : 0 }} pb={3} item>
+          <OrderHistoryCard {...order} onClick={showCta(order.purchaseMode, order.status) ? handleClick : undefined} />
         </Grid>
       ))}
     </Grid>

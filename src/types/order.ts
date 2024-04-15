@@ -43,7 +43,7 @@ export type ShippingLineUpdateRequest = {
 export type Order = {
   id: number;
   parent_id: number;
-  status: string;
+  status: OrderStatus;
   currency: string;
   version: string;
   prices_include_tax: boolean;

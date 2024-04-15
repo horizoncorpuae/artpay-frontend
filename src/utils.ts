@@ -137,6 +137,7 @@ export const orderToOrderHistoryCardProps = (order: Order): OrderHistoryCardProp
     purchaseMode: order.payment_method || "",
     subtitle: "",
     title: lineItem?.name || "Opera senza titolo",
+    status: order.status,
     imgSrc: lineItem?.image?.src || ""
   };
 };
