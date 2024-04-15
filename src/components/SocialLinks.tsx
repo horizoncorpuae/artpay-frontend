@@ -13,36 +13,36 @@ export interface SocialLinksProps {
 }
 
 const SocialLinks: React.FC<SocialLinksProps & BoxProps> = ({
-  facebook,
-  twitter,
-  linkedin,
-  whatsapp,
-  instagram,
-  youtube,
-  sx = {},
-  color = "#9FA9F3",
-  ...other
-}) => {
+                                                              facebook,
+                                                              twitter,
+                                                              linkedin,
+                                                              whatsapp,
+                                                              instagram,
+                                                              youtube,
+                                                              sx = {},
+                                                              color = "#9FA9F3",
+                                                              ...other
+                                                            }) => {
   return (
-    <Box display="flex" flexDirection="row" sx={{ gap: { xs: 2, md: 2 }, ...sx }} {...other}>
+    <Box display="flex" flexDirection="row" sx={{ gap: { xs: 1, md: 1 }, ...sx }} {...other}>
       {facebook && (
         <IconButton href={facebook} target="_blank">
-          <FaFacebook size="22px" color={color} />
+          <FaFacebook size="20px" color={color} />
         </IconButton>
       )}
       {twitter && (
         <IconButton href={twitter} target="_blank">
-          <FaTwitter size="22px" color={color} />
+          <FaTwitter size="20px" color={color} />
         </IconButton>
       )}
       {linkedin && (
         <IconButton href={linkedin} target="_blank">
-          <FaLinkedin size="22px" color={color} />
+          <FaLinkedin size="20px" color={color} />
         </IconButton>
       )}
       {whatsapp && (
         <IconButton href={whatsapp} target="_blank">
-          <FaWhatsapp size="22px" color={color} />
+          <FaWhatsapp size="20px" color={color} />
         </IconButton>
       )}
       {instagram && (

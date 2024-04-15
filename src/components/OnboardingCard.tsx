@@ -25,7 +25,8 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
     <Box p={4} sx={{
       background: background ? `url(${background})` : "",
       backgroundRepeat: "no-repeat",
-      backgroundSize: { xs: "cover", lg: "contain" },
+      backgroundPositionY: { sm: "80%", md: "50%", lg: "85%" },
+      backgroundSize: { xs: "cover", lg: "cover" },
       flexGrow: 1,
       height: { xs: "580px", sm: "740px", md: "580px", lg: "740px" },
       maxWidth: "612px",

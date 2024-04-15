@@ -36,11 +36,11 @@ const NewsletterSmall: React.FC<NewsletterSmallProps> = ({}) => {
   };
 
   return (
-    <Grid xs={12} md={4} py={3} px={3} sx={{ backgroundColor: "rgba(255,255,255,.90)", borderRadius: "5px" }} item>
-      <Typography variant="body1" color="textPrimary" sx={{ mb: 1 }} fontWeight={400}>
-        Iscriviti alla newsletter di artpay
+    <Grid xs={12} md={4} sx={{ borderRadius: "5px" }} item>
+      <Typography variant="h4" color="textPrimary" sx={{ mb: 1 }}>
+        Iscriviti alla newsletter
       </Typography>
-      <Box sx={{ textAlign: "center", pt: 1, pb: 0 }}>
+      <Box sx={{ textAlign: "center", pt: 4, pb: 0, maxWidth: "295px" }}>
         {formState === "new" ?
           <form onSubmit={handleSubmit(handleFormSubmit)} datatype="subscription">
             <Controller
@@ -65,8 +65,9 @@ const NewsletterSmall: React.FC<NewsletterSmallProps> = ({}) => {
             <Checkbox
               alignTop
               checkboxSx={{ p: 0 }}
-              sx={{ mt: 2, mb: 3, textAlign: "left" }}
-              label={<Typography variant="body2" color={errors.optIn ? "error" : "textSecondary"}>
+              sx={{ mt: 1, mb: 1, textAlign: "left" }}
+              size="small"
+              label={<Typography variant="body2" textAlign="left" color={errors.optIn ? "error" : "textSecondary"}>
                 * Dichiaro di aver preso visione dell'{" "}
                 <Link color="inherit"
                       href="https://artpay.art/informativa-sulla-privacy" target="_blank" rel="noopener noreferrer">

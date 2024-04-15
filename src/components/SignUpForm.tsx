@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import TextField from "./TextField.tsx";
 import PasswordField from "./PasswordField.tsx";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Link, Typography, useTheme } from "@mui/material";
 import Checkbox from "./Checkbox.tsx";
 import { FormField } from "../types";
 import { useForm } from "react-hook-form";
@@ -32,6 +32,7 @@ export interface SignUpFormProps {
 }
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, disabled }) => {
+  const theme = useTheme();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const registrationFormContent: SignUpFormContent = {
@@ -76,6 +77,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, disabled }) => {
       }
     }
   };
+
+  console.log("errors", errors);
 
   return (
     <form onSubmit={handleSubmit(handleSubmitClick)}>
@@ -129,14 +132,18 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, disabled }) => {
         </Typography>
         <Checkbox
           alignTop
-          label={registrationFormContent.privacyLabel}
+          size="small"
+          label={<>Accetto <Link
+            sx={{ color: errors.privacy ? theme.palette.error.main : theme.palette.text.primary }} target="_blank"
+            href="/termini-e-condizioni">termini e condizioni d'uso</Link> e
+            dichiaro di
+            aver letto <Link sx={{ color: errors.privacy ? theme.palette.error.main : theme.palette.text.primary }}
+                             target="_blank" href="https://www.iubenda.com/privacy-policy/71113702">l'Informativa sul
+              trattamento dei miei dati personali</Link></>}
           error={!!errors?.privacy}
           disabled={disabled}
           {...register("privacy", { required: true })}
         />
-        <Typography variant="body2" color="textSecondary">
-          {registrationFormContent.privacyDescription}
-        </Typography>
         {submitError && (
           <Typography variant="body2" color="error">
             {submitError}

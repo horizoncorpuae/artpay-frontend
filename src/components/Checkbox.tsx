@@ -30,7 +30,8 @@ const Checkbox: React.FC<ExtendedCheckboxProps & CheckboxProps> =
           label={label}
           componentsProps={{
             typography: {
-              color: error ? "error" : textColor
+              color: error ? "error" : textColor,
+              variant: props.size === "small" ? "body2" : "body1"
             }
           }}
           control={

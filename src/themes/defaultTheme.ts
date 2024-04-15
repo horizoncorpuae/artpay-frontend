@@ -79,7 +79,7 @@ const defaultTheme: Theme = createTheme({
           height: "36px",
           textTransform: "none",
           boxShadow: "none",
-          fontWeight: 400
+          fontWeight: 500
         },
         sizeSmall: {
           fontSize: "14px",
@@ -443,8 +443,9 @@ const defaultTheme: Theme = createTheme({
             fontWeight: 500
           },
           "& a.link-secondary": {
+            fontWeight: 400
             //color: "white"
-            color: "#010F22"
+            // color: "#010F22"
           },
           "& a.link:visited": {
             //color: "#96b1d7"

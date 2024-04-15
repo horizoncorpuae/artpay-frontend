@@ -23,7 +23,7 @@
     <meta name="stripe-key" content="pk_test_51OEuLgBVvRJjw4FGCIWYwitCW6xe6KYOfIjoZwENwGLj22ZkaZEg60csVTAg4ZTDwXW1ZksSqY4mXliEPDWVYZ0z00EaPOowQS" />
     <title>Artpay</title>
     <?php wp_head(); ?>
-      <script type="module" crossorigin src="/wp-content/themes/artpay-react/static/assets/js/index-fd7013ae.js"></script>
+      <script type="module" crossorigin src="/wp-content/themes/artpay-react/static/assets/js/index-23965439.js"></script>
       <link rel="stylesheet" href="/wp-content/themes/artpay-react/static/assets/css/index-244fb1a6.css">
     </head>
     <body>
@@ -35,7 +35,7 @@
     <a href="https://www.iubenda.com/privacy-policy/71113702" style="display: none" class="iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe " title="Privacy Policy ">Privacy Policy</a>
     <script type="text/javascript">
     var _iub = _iub || [];
-    _iub.csConfiguration = {"askConsentAtCookiePolicyUpdate":true,"floatingPreferencesButtonDisplay":"bottom-right","perPurposeConsent":true,"siteId":3587859,"whitelabel":false,"cookiePolicyId":71113702,"lang":"it", "banner":{ "acceptButtonDisplay":true,"closeButtonRejects":true,"customizeButtonDisplay":true,"explicitWithdrawal":true,"listPurposes":true,"position":"float-top-center","showTitle":false }};
+    _iub.csConfiguration = {"askConsentAtCookiePolicyUpdate":true,"floatingPreferencesButtonDisplay":"bottom-right","perPurposeConsent":true,"siteId":3587859,"whitelabel":false,"cookiePolicyId":71113702,"lang":"it","i18n":{"it":{"banner":{"title":"Informazioni sulla privacy"}}}, "banner":{ "acceptButtonCaptionColor":"#FFFFFF","acceptButtonColor":"#0073CE","acceptButtonDisplay":true,"backgroundColor":"#FFFFFF","closeButtonRejects":true,"customizeButtonCaptionColor":"#4D4D4D","customizeButtonColor":"#DADADA","customizeButtonDisplay":true,"explicitWithdrawal":true,"listPurposes":true,"logo":null,"position":"float-bottom-center","textColor":"#000000" }};
     </script>
     <script type="text/javascript" src="https://cs.iubenda.com/autoblocking/3587859.js"></script>
     <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>

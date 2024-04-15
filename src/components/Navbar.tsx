@@ -152,10 +152,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               </Typography>
             )}
             <IconButton sx={{ mr: 4, ml: 1 }} onClick={() => handleProfileClick()} color="inherit">
-              <UserIcon color="primary" />
+              <UserIcon color="secondary" />
             </IconButton>
-            <IconButton onClick={() => handleCheckout()} color="inherit">
-              <ShoppingBagIcon color="primary" />
+            <IconButton sx={{ mr: 0 }} onClick={() => handleCheckout()} color="inherit">
+              <ShoppingBagIcon color="secondary" />
             </IconButton>
           </>
         ) : (

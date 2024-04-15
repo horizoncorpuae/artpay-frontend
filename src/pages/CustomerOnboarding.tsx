@@ -5,8 +5,6 @@ import PromoCard from "../components/PromoCard.tsx";
 // import reservationBackground from "../assets/images/reservation-box-background.png";
 import onboardingBackground from "../assets/images/background-onboarding.svg";
 
-import onboardingImg1 from "../assets/images/gallery-onboarding-img-1.png";
-import onboardingImg2 from "../assets/images/gallery-onboarding-img-2.png";
 import PromoCardSmall from "../components/PromoCardSmall.tsx";
 
 import prenotaOpera from "../assets/images/prenota_opera.svg";
@@ -16,6 +14,7 @@ import LoanCard from "../components/LoanCard.tsx";
 import { getDefaultPaddingX } from "../utils.ts";
 // import { useData } from "../hoc/DataProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
+import Hero from "../components/Hero.tsx";
 
 export interface CustomerOnboardingProps {
 }
@@ -40,28 +39,19 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
 
   return (
     <DefaultLayout sx={{ overflowX: "hidden" }}>
-      <Grid sx={{ mt: 18, px: px }} container>
-        <Grid item xs={12} md={8} lg={7}>
-          <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>
-            Artpay per gli appassionati d'arte
-          </Typography>
-          <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
-            Scopri come acquistare online opere d’arte in modo più accessibile e veloce, con artpay.
-          </Typography>
-          <Typography variant="body1" sx={{ mt: 6, maxWidth: "400px" }}>
-            Vivi la tua passione per l’arte in modo ancora più soddisfacente. Con Artpay puoi acquistare online opere
-            d’arte dalle più rinomate gallerie d’arte italiane e pagarle con tutta la flessibilità dei servizi
-            finanziari delle nostre banche partner.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={4} lg={5}
-              sx={{ pl: { xs: 0, sm: 8 }, pt: 9, minHeight: { xs: "760px", md: "840px", lg: "760px" } }}>
-          <Box sx={{ position: "relative" }}>
-            <img style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }} src={onboardingImg1} />
-            <img style={{ position: "absolute", top: "104px", left: "168px" }} src={onboardingImg2} />
-          </Box>
-        </Grid>
-      </Grid>
+      <Hero imgOffset={{ xs: 6, sm: 8 }}>
+        <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>
+          Artpay per gli appassionati d'arte
+        </Typography>
+        <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
+          Scopri come acquistare online opere d’arte in modo più accessibile e veloce, con artpay.
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 6, maxWidth: "400px" }}>
+          Vivi la tua passione per l’arte in modo ancora più soddisfacente. Con Artpay puoi acquistare online opere
+          d’arte dalle più rinomate gallerie d’arte italiane e pagarle con tutta la flessibilità dei servizi
+          finanziari delle nostre banche partner.
+        </Typography>
+      </Hero>
       <Box sx={{ py: 12, background: `url(${onboardingBackground})`, px: px }}>
         <Box display="flex" flexDirection="column" gap={3}>
           <PromoCard
@@ -104,7 +94,7 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
               di finanziamento per il tuo acquisto offerto dai nostri partner selezionati: una volta completata la
               procedura, spetterà all’istituto finanziario valutare la tua pratica e concedere il credito per
               l’acquisto, che arriverà alla galleria d’arte entro 7 giorni circa, dando il via alla sua spedizione al
-              tuo indirizzo.<br />
+              tuo indirizzo.
               Una volta approvato il finanziamento, proseguirai con il pagamento delle singole rate per tutto il periodo
               di finanziamento evidenziato dal piano finanziario, avendo come interlocutore direttamente l’istituto
               bancario erogante.

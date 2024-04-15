@@ -5,9 +5,8 @@ import PromoCard from "../components/PromoCard.tsx";
 // import reservationBackground from "../assets/images/reservation-box-background.png";
 import onboardingBackground from "../assets/images/background-onboarding.svg";
 
-import onboardingImg1 from "../assets/images/gallery-onboarding-img-1.png";
-import onboardingImg2 from "../assets/images/gallery-onboarding-img-2.png";
 import { getDefaultPaddingX } from "../utils.ts";
+import Hero from "../components/Hero.tsx";
 
 export interface GalleryOnboardingProps {
 }
@@ -20,33 +19,24 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
 
   return (
     <DefaultLayout sx={{ overflowX: "hidden" }}>
-      <Grid sx={{ mt: 18, px: px }} container>
-        <Grid item xs={12} md={8} lg={7}>
-          <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>
-            Artpay per gallerie
-          </Typography>
-          <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
-            Hai una galleria d’arte? Scopri come potenziare le sue vendite con Artpay!
-          </Typography>
-          <Typography variant="body1" sx={{ mt: 6 }}>
-            Artpay nasce per supportare e far crescere la tua galleria. Con Artpay la tua galleria acquisisce un nuovo
-            pubblico qualificato di appassionati e collezionisti d’arte, potrai allargare la base dei potenziali clienti
-            grazie ai prodotti finanziari offerti direttamente online per rendere l’arte accessibile a tutti tramite
-            prestiti rateali da parte di istituti bancari partner. Artpay è utile anche alle vendite direttamente in
-            galleria. Ti basta esporre il logo/marker/qr-code (presto in dotazione) per le opera in vendita e i tuoi
-            clienti potranno accedere al suo acquisto diretto online e ai servizi finanziari rateali, a loro dedicati.
-          </Typography>
-          <Typography variant="body1" sx={{ mt: 1 }}>Entra a fare parte di Artpay in 3 soli semplici
-            passaggi.</Typography>
-        </Grid>
-        <Grid item xs={12} md={4} lg={5}
-              sx={{ pl: { xs: 0, sm: 8 }, pt: 9, minHeight: { xs: "760px", md: "840px", lg: "760px" } }}>
-          <Box sx={{ position: "relative" }}>
-            <img style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }} src={onboardingImg1} />
-            <img style={{ position: "absolute", top: "104px", left: "168px" }} src={onboardingImg2} />
-          </Box>
-        </Grid>
-      </Grid>
+      <Hero imgOffset={{ xs: 6, sm: 8 }}>
+        <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>
+          Artpay per gallerie
+        </Typography>
+        <Typography variant="display1" color="primary" sx={{ mt: 1, pr: { xs: 0, lg: 6 } }}>
+          Hai una galleria d’arte? Scopri come potenziare le sue vendite con Artpay!
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 6, pr: { xs: 0, lg: 6 } }}>
+          Artpay nasce per supportare e far crescere la tua galleria. Con Artpay la tua galleria acquisisce un nuovo
+          pubblico qualificato di appassionati e collezionisti d’arte, potrai allargare la base dei potenziali clienti
+          grazie ai prodotti finanziari offerti direttamente online per rendere l’arte accessibile a tutti tramite
+          prestiti rateali da parte di istituti bancari partner. Artpay è utile anche alle vendite direttamente in
+          galleria. Ti basta esporre il logo/marker/qr-code (presto in dotazione) per le opera in vendita e i tuoi
+          clienti potranno accedere al suo acquisto diretto online e ai servizi finanziari rateali, a loro dedicati.
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 1 }}>Entra a fare parte di Artpay in 3 soli semplici
+          passaggi.</Typography>
+      </Hero>
       <Box sx={{ py: 12, background: `url(${onboardingBackground})`, px: px }}>
         <Box display="flex" flexDirection="column" gap={3}>
           <PromoCard
@@ -112,7 +102,7 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
         </Box>
       </Box>
       <Grid sx={{ py: 12, px: px }} id="form" container>
-        <Grid item xs={12} md={6} sx={{ mb: { xs: 3, sm: 0 } }} display="flex" alignItems="center">
+        <Grid item xs={12} md={6} sx={{ mb: { xs: 3, sm: 6, md: 0 } }} display="flex" alignItems="center">
           <Box sx={{ maxWidth: "400px" }} display="flex" flexDirection="column" alignItems="flex-start">
             <Typography variant="display3">Entra a far parte di artpay</Typography>
             <Typography sx={{ my: 6 }} variant="body1">
