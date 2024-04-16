@@ -1,4 +1,4 @@
-import { CardSize, MetadataItem } from "./types";
+import { CardSize, MetadataItem, OrderMetadataItem } from "./types";
 import { Artwork } from "./types/artwork.ts";
 import { ArtworkCardProps } from "./components/ArtworkCard.tsx";
 import { ArtistCardProps } from "./components/ArtistCard.tsx";
@@ -35,6 +35,14 @@ export const getPropertyFromMetadata = (metadata: MetadataItem[], key: string): 
     return {};
   }
   return typeof item.value === "object" ? item.value : { value: item.value };
+};
+
+export const getPropertyFromOrderMetadata = (metadata: OrderMetadataItem[], key: string): string | undefined => {
+  const item = metadata.find((p) => p.key === key);
+  if (!item) {
+    return undefined;
+  }
+  return item.value;
 };
 
 export const userToUserInfo = (user: User): UserInfo => {
@@ -130,11 +138,14 @@ export const orderToOrderHistoryCardProps = (order: Order): OrderHistoryCardProp
       console.warn(e);
     }
   }
+  // o.purchaseMode === "Stripe SEPA"
   return {
+    id: order.id,
     formattePrice: `€ ${order.total}`,
     galleryName: galleryName || "",
     purchaseDate: datePaid,
     purchaseMode: order.payment_method || "",
+    waitingPayment: order.status === "on-hold" && order.payment_method === "Stripe SEPA",
     subtitle: "",
     title: lineItem?.name || "Opera senza titolo",
     status: order.status,
@@ -414,4 +425,12 @@ export const parseDate = (dt?: string) => {
     console.warn("Date parse error: ", e);
     return "";
   }
+};
+
+// Ricarica pagina intenzionale e richiesta dal cliente, questa funzione sostituisce
+// import { useNavigate } from "react-router-dom";
+export const useNavigate = () => {
+  return (to: string) => {
+    window.location.href = to;
+  };
 };

@@ -3,7 +3,7 @@ import { Gallery } from "../types/gallery";
 import { Box, Typography } from "@mui/material";
 import DisplayImage from "./DisplayImage.tsx";
 import { galleryToGalleryContent } from "../utils.ts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import FollowButton from "./FollowButton.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";

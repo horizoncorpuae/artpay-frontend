@@ -14,7 +14,7 @@ import AvatarSelector from "../components/AvatarSelector.tsx";
 import BillingDataForm from "../components/BillingDataForm.tsx";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 
 export interface ProfileSettingsProps {
 }

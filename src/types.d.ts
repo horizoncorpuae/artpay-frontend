@@ -13,6 +13,12 @@ export interface MetadataItem {
   value: { [key: string]: string };
 }
 
+export interface OrderMetadataItem {
+  id: number;
+  key: string;
+  value: string;
+}
+
 export interface CardItem {
   id: number | string;
   slug: string;

@@ -23,7 +23,7 @@ const Error: React.FC<ErrorProps> = () => {
     case "404":
       errorText.title = <>Ooooops! Error 404!<br />Page not found!</>;
       errorText.text = <>Non hai trovato quello che cercavi!<br />Tenta una nuova ricerca!</>;
-      errorText.showSearch = true;
+      errorText.showSearch = false;
       break;
     default:
       errorText.title = <>Ooooops! Error {urlParams.code || ""}!<br />Qualocosa non ha funzionato!</>;

@@ -15,10 +15,11 @@ import Logo from "./icons/Logo";
 import { Search } from "@mui/icons-material";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import UserIcon from "./icons/UserIcon.tsx";
-import { useNavigate } from "react-router-dom";
+
 import ShoppingBagIcon from "./icons/ShoppingBagIcon.tsx";
 import MenuIcon from "./icons/MenuIcon.tsx";
 import BetaLabel from "./icons/BetaLabel.tsx";
+import { useNavigate } from "../utils.ts";
 
 export interface NavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;

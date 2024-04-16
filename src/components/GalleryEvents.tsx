@@ -4,7 +4,7 @@ import ArtworksList from "./ArtworksList.tsx";
 import ArtistsList from "./ArtistsList.tsx";
 import { ArtworkCardProps } from "./ArtworkCard.tsx";
 import { ArtistCardProps } from "./ArtistCard.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 
 export interface GalleryEventsProps {
   imgUrl: string;

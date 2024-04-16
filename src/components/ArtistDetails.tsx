@@ -6,7 +6,7 @@ import { Artist } from "../types/artist.ts";
 import sanitizeHtml from "sanitize-html";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import FollowButton from "./FollowButton.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface ArtistDetailsProps {

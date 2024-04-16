@@ -1,21 +1,25 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { useData } from "../hoc/DataProvider.tsx";
-import { Box, Button, CircularProgress, Divider, Grid, RadioGroup, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Divider, Grid, Link, RadioGroup, Typography } from "@mui/material";
 import ContentCard from "../components/ContentCard.tsx";
 import UserIcon from "../components/icons/UserIcon.tsx";
 import { Cancel, Edit } from "@mui/icons-material";
 import ShippingDataForm from "../components/ShippingDataForm.tsx";
 import { BillingData, ShippingData, UserProfile } from "../types/user.ts";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
-import { areBillingFieldsFilled, artworksToGalleryItems } from "../utils.ts";
+import {
+  areBillingFieldsFilled,
+  artworksToGalleryItems,
+  getPropertyFromOrderMetadata
+} from "../utils.ts";
 import ShippingDataPreview from "../components/ShippingDataPreview.tsx";
 import Checkbox from "../components/Checkbox.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import { Order, OrderUpdateRequest, ShippingLineUpdateRequest, ShippingMethodOption } from "../types/order.ts";
 import ShoppingBagIcon from "../components/icons/ShoppingBagIcon.tsx";
 import RadioButton from "../components/RadioButton.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import DisplayImage from "../components/DisplayImage.tsx";
 import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
 import { PiTruckThin } from "react-icons/pi";
@@ -28,9 +32,10 @@ import BillingDataPreview from "../components/BillingDataPreview.tsx";
 import ErrorIcon from "../components/icons/ErrorIcon.tsx";
 import { Gallery } from "../types/gallery.ts";
 import LoanCard from "../components/LoanCard.tsx";
+import { useParams } from "react-router-dom";
 
 export interface PurchaseProps {
-  orderMode?: "standard" | "loan";
+  orderMode?: "standard" | "loan" | "redeem";
 }
 
 const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
@@ -39,6 +44,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const snackbar = useSnackbars();
   const navigate = useNavigate();
   const payments = usePayments();
+  const urlParams = useParams();
 
   const checkoutButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -59,7 +65,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const [artworks, setArtworks] = useState<ArtworkCardProps[]>([]);
   const [galleries, setGalleries] = useState<Gallery[]>([]);
 
-  orderMode = (orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera") ? "loan" : "standard";
+  orderMode = (orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera") ? "loan" : orderMode;
 
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
     if (isAxiosError(err) && err.response?.data?.message) {
@@ -71,6 +77,8 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   useEffect(() => {
 
     if (auth.isAuthenticated) {
+
+      const getOrderFunction = orderMode === "redeem" && urlParams.order_id ? data.getOrder(+urlParams.order_id) : data.getPendingOrder();
 
       Promise.all([
         data.getUserProfile().then((resp) => {
@@ -89,16 +97,21 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
         data.getAvailableShippingMethods().then((resp) => {
           setAvailableShippingMethods(resp);
         }),
-        data.getPendingOrder().then(async (resp) => {
+        getOrderFunction.then(async (resp) => {
           if (resp) {
             setPendingOrder(resp);
             const artworks = await Promise.all(
               resp.line_items.map((item) => data.getArtwork(item.product_id.toString()))
             );
             setArtworks(artworksToGalleryItems(artworks, undefined, data));
+            const existingIntentId = getPropertyFromOrderMetadata(resp.meta_data, "_stripe_intent_id");
+            console.log("existingIntentId", existingIntentId);
+            // pi_3P6BQWBVvRJjw4FG2haAHL3D
             let paymentIntent: PaymentIntent;
             if (orderMode === "loan") {
               paymentIntent = await data.createBlockIntent({ wc_order_key: resp.order_key });
+            } else if (orderMode === "redeem") {
+              paymentIntent = await data.createRedeemIntent({ wc_order_key: resp.order_key });
             } else {
               paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
             }
@@ -106,7 +119,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             data.getGalleries(artworks.map(a => +a.vendor)).then(galleries => setGalleries(galleries));
           } else {
             setNoPendingOrder(true);
-            //TODO: no orders page
+            navigate("/errore/404");
           }
         })
       ])
@@ -116,7 +129,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
         .catch(async (e) => {
           await showError(e);
           console.error(e);
-          navigate("/");
+          navigate("/errore");
         });
     } else {
       data.getPendingOrder().then(async (resp) => {
@@ -183,11 +196,12 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     setIsSaving(true);
     const updatedOrder: OrderUpdateRequest = {};
     const existingShippingLine = pendingOrder.shipping_lines?.length ? pendingOrder.shipping_lines[0] : null;
+
     const updatedShippingLine: ShippingLineUpdateRequest = {
       instance_id: selectedShippingMethod.instance_id.toString(),
       method_id: selectedShippingMethod.method_id,
       method_title: selectedShippingMethod.method_title,
-      total: estimatedShippingCost.toFixed(2)
+      total: selectedShippingMethod.method_id === "local_pickup" ? "0" : estimatedShippingCost.toFixed(2)
     };
     if (existingShippingLine) {
       updatedShippingLine.id = existingShippingLine.id;
@@ -257,7 +271,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     !isSaving &&
     (currentShippingMethod || (orderMode === "loan" && areBillingFieldsFilled(userProfile?.billing)));
 
-  const shippingPrice = currentShippingMethod === "local_pickup" ? 0 : estimatedShippingCost || 0;
+  console.log("currentShippingMethod");
+
+  const shippingPrice = (currentShippingMethod === "local_pickup" || !currentShippingMethod) ? 0 : estimatedShippingCost || 0;
 
   const px = { xs: 3, sm: 4, md: 10, lg: 12 };
 
@@ -395,16 +411,17 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 <>
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="body1">Subtotale</Typography>
-                    <Typography variant="body1">€ {pendingOrder?.total}</Typography>
+                    <Typography
+                      variant="body1">€ {(+(pendingOrder?.total || 0) - (shippingPrice || 0)).toFixed(2)}</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="body1">Spedizione</Typography>
-                    <Typography variant="body1">€ {shippingPrice || (0).toFixed(2)}</Typography>
+                    <Typography variant="body1">€ {(shippingPrice || 0).toFixed(2)}</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="subtitle1">Totale</Typography>
                     <Typography variant="subtitle1">
-                      € {(+(pendingOrder?.total || 0) + (shippingPrice || 0)).toFixed(2)}
+                      € {(+(pendingOrder?.total || 0)).toFixed(2)}
                     </Typography>
                   </Box>
                 </>
@@ -414,7 +431,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 disabled={isSaving || !checkoutReady}
                 checked={privacyChecked}
                 onChange={(e) => setPrivacyChecked(e.target.checked)}
-                label="Accetto le condizioni generali d'acquisto e l'informativa sulla privacy di Artpay."
+                label={<Typography variant="body1">Accetto le <Link href="/condizioni-generali-di-acquisto"
+                                                                    target="_blank">condizioni
+                  generali d'acquisto</Link></Typography>}
               />
               <Button
                 sx={{ my: 6 }}

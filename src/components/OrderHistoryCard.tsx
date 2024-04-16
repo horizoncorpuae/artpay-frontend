@@ -5,18 +5,21 @@ import DisplayProperty from "./DisplayProperty.tsx";
 import { OrderStatus } from "../types/order.ts";
 
 export interface OrderHistoryCardProps {
+  id: number;
   title: string;
   subtitle: string;
   galleryName: string;
   formattePrice: string;
   purchaseDate: string;
   purchaseMode: string;
+  waitingPayment: boolean;
   imgSrc: string;
   status: OrderStatus;
-  onClick?: () => Promise<void>;
+  onClick?: (orderId: number) => Promise<void>;
 }
 
 const OrderHistoryCard: React.FC<OrderHistoryCardProps> = ({
+                                                             id,
                                                              formattePrice,
                                                              galleryName,
                                                              purchaseDate,
@@ -28,7 +31,10 @@ const OrderHistoryCard: React.FC<OrderHistoryCardProps> = ({
                                                            }) => {
   return (
     <OrderCard imgSrc={imgSrc}
-               leftCta={onClick && <Button sx={{ mt: 2, width: "100%" }} variant="contained">Compra ora</Button>}>
+               leftCta={onClick &&
+                 <Button sx={{ mt: 2, width: "100%" }} onClick={() => onClick(id)} variant="contained">
+                   Compra ora</Button>
+               }>
       <Typography
         variant="h4"
         sx={{

@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, GridProps, useTheme } from "@mui/material";
 import { getDefaultPaddingX } from "../utils.ts";
 import OnboardingCard from "./OnboardingCard.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import bgOnboardingGallery from "../assets/images/bg_onboarding_gallery.png";
 import bgOnboardingCustomer from "../assets/images/bg_onboarding_customer.png";
 

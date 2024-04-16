@@ -37,7 +37,7 @@ const bankTransferMessage = (
   <span>
     Riportiamo qui sotto gli estremi per effettuare il bonifico, copiali per essere sicuro di non perdere questa
     informazione. Ti consigliamo di procedere con il pagamento il prima possibile! Comprando infatti con bonifico
-    l'opera è riservata a te per 7 giorni, scaduti i quali l'opera ritorna sul mercato e potrebbe essere acquistata da
+    l'opera è riservata a te per 4 giorni, scaduti i quali l'opera ritorna sul mercato e potrebbe essere acquistata da
     altri utenti. <br /> Non appena Artpay riceverà la notifica di avvenuto pagamento, la galleria ti contatterà per
     organizzare la spedizione o il pickup dell'opera in galleria.
   </span>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 
 export interface GalleryHeaderProps {
   logo: string;

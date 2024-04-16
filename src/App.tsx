@@ -82,6 +82,7 @@ function AppContent() {
                     <Route path="/artisti" element={<Artists />} />
                     <Route path="/artworks" element={<Artworks />} />
                     <Route path="/acquisti" element={<Purchase />} />
+                    <Route path="/completa-acquisto/:order_id" element={<Purchase orderMode="redeem" />} />
                     <Route path="/accconto-blocca-opera" element={<Purchase orderMode="loan" />} />
                     <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
                     <Route path="/profile" element={<Profile />} />

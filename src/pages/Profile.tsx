@@ -9,7 +9,7 @@ import FavouriteArtworks from "../components/FavouriteArtworks.tsx";
 import FavouriteArtists from "../components/FavouriteArtists.tsx";
 import FavouriteGalleries from "../components/FavouriteGalleries.tsx";
 import ProfileHeader from "../components/ProfileHeader.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import OrdersHistory from "../components/OrdersHistory.tsx";
 
@@ -66,28 +66,28 @@ const Profile: React.FC<ProfileProps> = ({}) => {
             setSelectedTabPanel(newValue);
           }}>
           {/*gallerie-artisti-oepre-bloccate-acquistate*/}
-          <Tab label="Opere preferite" />
           <Tab label="Gallerie seguite" />
           <Tab label="Artisti seguiti" />
-          <Tab label="Opere acquistate" />
+          <Tab label="Opere preferite" />
           <Tab label="Opere bloccate" />
+          <Tab label="Opere acquistate" />
         </ResponsiveTabs>
       </Box>
       <Box>
         <TabPanel value={selectedTabPanel} index={0}>
-          <FavouriteArtworks />
-        </TabPanel>
-        <TabPanel value={selectedTabPanel} index={1}>
           <FavouriteGalleries />
         </TabPanel>
-        <TabPanel value={selectedTabPanel} index={2}>
+        <TabPanel value={selectedTabPanel} index={1}>
           <FavouriteArtists />
         </TabPanel>
+        <TabPanel value={selectedTabPanel} index={2}>
+          <FavouriteArtworks />
+        </TabPanel>
         <TabPanel value={selectedTabPanel} index={3}>
-          <OrdersHistory />
+          <OrdersHistory mode="on-hold" title="Opere bloccate" />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={4}>
-          <OrdersHistory title="Opere bloccate" orderStates={["processing", "on-hold"]} />
+          <OrdersHistory mode="completed" />
         </TabPanel>
       </Box>
     </DefaultLayout>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Card, CardContent, CardMedia, IconButton, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Add, Check } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import { CardSize } from "../types";
 
 export interface ArtistCardProps {

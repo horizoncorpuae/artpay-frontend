@@ -3,7 +3,7 @@ import DefaultLayout from "../components/DefaultLayout.tsx";
 import { Box, Button, Typography } from "@mui/material";
 import PasswordChangeForm, { PasswordChangeFormData } from "../components/PasswordChangeForm.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface PasswordRecoveryProps {

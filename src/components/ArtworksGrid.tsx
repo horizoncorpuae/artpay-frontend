@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ArtworkCard, { ArtworkCardProps } from "./ArtworkCard.tsx";
 import { CardItem, CardSize } from "../types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import { Box, Button, Typography } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";

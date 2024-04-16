@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CardSize } from "../types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import { Box, Typography } from "@mui/material";
 import GalleryCard, { GalleryCardProps } from "./GalleryCard.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";

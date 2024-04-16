@@ -2,7 +2,7 @@ import React from "react";
 import { getDefaultPaddingX } from "../utils.ts";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 
 import imgContacts from "../assets/images/image-contacts.svg";
 

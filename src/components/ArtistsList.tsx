@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ArtistCard, { ArtistCardProps } from "./ArtistCard.tsx";
 import CardList from "./CardList.tsx";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import { CardSize } from "../types";
 

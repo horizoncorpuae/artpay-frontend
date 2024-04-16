@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid } from "@mui/material";
 import { ArtistCardProps } from "./ArtistCard.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../utils.ts";
 import ArtistsGrid from "./ArtistsGrid.tsx";
 
 export interface GalleryArtistsListProps {

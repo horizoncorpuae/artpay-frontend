@@ -103,6 +103,8 @@ export interface DataContext {
 
   createPaymentIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
 
+  createRedeemIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
+
   createBlockIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
 
   clearCachedPaymentIntent(body: PaymentIntentRequest): Promise<void>;
@@ -181,6 +183,7 @@ const defaultContext: DataContext = {
   setOrderStatus: () => Promise.reject("Data provider loaded"),
   purchaseArtwork: () => Promise.reject("Data provider loaded"),
   createPaymentIntent: () => Promise.reject("Data provider loaded"),
+  createRedeemIntent: () => Promise.reject("Data provider loaded"),
   createBlockIntent: () => Promise.reject("Data provider loaded"),
   clearCachedPaymentIntent: () => Promise.reject("Data provider loaded"),
   getUserInfo: () => Promise.reject("Data provider loaded"),
@@ -649,7 +652,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data;
     },
     async createOrder(body: OrderCreateRequest): Promise<Order> {
-      const resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body);
+      const resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body, {
+        headers: { Authorization: auth.getAuthToken() }
+      });
       return resp.data;
     },
     async updateOrder(orderId: number, body: OrderUpdateRequest): Promise<Order> {
@@ -720,6 +725,26 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       }
       const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
         `${baseUrl}/wp-json/wc/v3/stripe/payment_intent`,
+        body
+      );
+      localStorage.setItem(cacheKey, JSON.stringify(resp.data));
+      return resp.data;
+    },
+    async createRedeemIntent(body: PaymentIntentRequest): Promise<PaymentIntent> {
+      const cacheKey = `payment-intents-redeem-${body.wc_order_key}`;
+      const cachedItem = localStorage.getItem(cacheKey);
+      if (cachedItem) {
+        try {
+          const paymentIntent: PaymentIntent = JSON.parse(cachedItem);
+          if (isTimestampAfter(paymentIntent.created, 60 * 60)) {
+            return paymentIntent;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
+        `${baseUrl}/wp-json/wc/v3/stripe/redeem_payment_intent`,
         body
       );
       localStorage.setItem(cacheKey, JSON.stringify(resp.data));
