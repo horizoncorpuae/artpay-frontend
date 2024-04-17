@@ -21,7 +21,7 @@ const DisplayProperty: React.FC<DisplayPropertyProps> = ({
                                                          }) => {
   return (
     <Box sx={sx}>
-      <Typography variant={variant} fontWeight={600}>
+      <Typography variant={variant} fontWeight={500}>
         {label}
       </Typography>
       {copy ?

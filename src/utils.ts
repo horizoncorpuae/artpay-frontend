@@ -129,7 +129,7 @@ export const galleryToGalleryItem = (gallery: Gallery): GalleryCardProps => ({
 
 export const orderToOrderHistoryCardProps = (order: Order): OrderHistoryCardProps => {
   const lineItem = order.line_items.length ? order.line_items[0] : undefined;
-  const galleryName = lineItem?.meta_data.find((m) => m.key?.toLowerCase() === "sold by")?.display_value;
+  const galleryName = lineItem?.meta_data.find((m) => m.key?.toLowerCase() === "sold by" || m.key?.toLowerCase() === "venduto da")?.display_value;
   let datePaid = "";
   if (order.date_paid) {
     try {

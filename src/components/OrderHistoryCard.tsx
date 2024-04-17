@@ -24,11 +24,13 @@ const OrderHistoryCard: React.FC<OrderHistoryCardProps> = ({
                                                              galleryName,
                                                              purchaseDate,
                                                              purchaseMode,
+                                                             waitingPayment,
                                                              subtitle,
                                                              title,
                                                              imgSrc,
                                                              onClick
                                                            }) => {
+
   return (
     <OrderCard imgSrc={imgSrc}
                leftCta={onClick &&
@@ -50,6 +52,7 @@ const OrderHistoryCard: React.FC<OrderHistoryCardProps> = ({
       <DisplayProperty label="Nome galleria" value={galleryName} gap={0} variant="subtitle1" sx={{ my: 1 }} />
       <DisplayProperty label="Data di acquisto" value={purchaseDate} gap={0} variant="subtitle1" sx={{ my: 1 }} />
       <DisplayProperty label="Modalità di acquisto" value={purchaseMode} gap={0} variant="subtitle1" sx={{ my: 1 }} />
+      {waitingPayment && <Typography variant="body1">Pagamento non ancora effettuato</Typography>}
     </OrderCard>
   );
 };
