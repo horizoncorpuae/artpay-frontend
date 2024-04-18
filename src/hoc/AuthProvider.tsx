@@ -340,6 +340,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       if (userStr) {
         const userObj: User = JSON.parse(userStr);
 
+        console.log("userObj", userToUserInfo(userObj));
+
         setAuthValues({
           user: userToUserInfo(userObj),
           isAuthenticated: true,
@@ -362,7 +364,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
 
   useEffect(() => {
     if (authValues.user && authValues.wcToken) {
-      dispatchUserEvent(USER_LOGIN_EVENT, authValues.user.id);
+      setTimeout(() => {
+        dispatchUserEvent(USER_LOGIN_EVENT, authValues?.user?.id || 0);
+      }, 200);
     } else {
       dispatchUserEvent(USER_LOGOUT_EVENT, 0);
     }

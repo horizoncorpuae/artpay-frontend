@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import TextField from "../components/TextField.tsx";
 import SearchIcon from "../components/icons/SearchIcon.tsx";
 import { getDefaultPaddingX } from "../utils.ts";
+import imgError from "../assets/images/image-error.svg";
 
 export interface ErrorProps {
   errorCode?: number;
@@ -33,31 +34,36 @@ const Error: React.FC<ErrorProps> = () => {
   const px = getDefaultPaddingX();
 
   return (<DefaultLayout minHeight="36vh" pb={3}>
-    <Box sx={{
-      maxWidth: "392px",
-      display: "flex",
-      flexDirection: "column",
-      mt: { xs: 12, md: 24 },
-      mb: { xs: 6, md: 12 },
-      mx: px
-    }}>
-      <Typography color="primary" variant="h2">
-        {errorText.title}
-      </Typography>
-      <Typography sx={{ mt: 3 }} variant="body1">
-        {errorText.text}
-      </Typography>
-      {errorText.showSearch && <Box sx={{ mt: 5 }}>
-        <TextField variant="filled" fullWidth InputProps={{
-          endAdornment: <Button variant="contained">Cerca</Button>,
-          startAdornment: <SearchIcon fontSize="small" />
-        }} />
-      </Box>}
-      <Box sx={{ mt: 3 }} display="flex" justifyContent="space-between" alignItems="center">
-        <Button variant="contained" href="/">Torna alla home</Button>
-        <Button variant="outlined" href="mailto:info@artpay.art">Segnala un errore</Button>
+    <Box sx={{ mt: { xs: 12, md: 18, lg: 24 }, mb: { xs: 6, lg: 12 }, px: px }} alignItems="center" display="flex">
+      <Box sx={{
+        width: "392px",
+        display: "flex",
+        flexDirection: "column"
+      }}>
+        <Typography color="primary" variant="h2">
+          {errorText.title}
+        </Typography>
+        <Typography sx={{ mt: 3 }} variant="body1">
+          {errorText.text}
+        </Typography>
+        {errorText.showSearch && <Box sx={{ mt: 5 }}>
+          <TextField variant="filled" fullWidth InputProps={{
+            endAdornment: <Button variant="contained">Cerca</Button>,
+            startAdornment: <SearchIcon fontSize="small" />
+          }} />
+        </Box>}
+        <Box sx={{ mt: 3, flexDirection: { xs: "column", sm: "row" }, gap: 2 }} display="flex"
+             justifyContent="space-between"
+             alignItems="center">
+          <Button variant="contained" href="/">Torna alla home</Button>
+          <Button variant="outlined" href="mailto:info@artpay.art">Segnala un errore</Button>
+        </Box>
+      </Box>
+      <Box sx={{ flexGrow: 1, textAlign: "center" }}>
+        <img style={{ maxHeight: "400px" }} src={imgError} />
       </Box>
     </Box>
+
 
   </DefaultLayout>);
 };

@@ -20,6 +20,7 @@ import { Breakpoint } from "@mui/system";
 export interface DialogOptions {
   showActions?: boolean;
   fullWidth?: boolean;
+  fullScreen?: boolean;
   maxWidth?: false | Breakpoint;
 }
 
@@ -63,6 +64,7 @@ interface DialogState<T> {
   maxWidth?: false | Breakpoint;
   padding?: number;
   fullWidth?: boolean;
+  fullScreen?: boolean;
 }
 
 export interface DialogProviderProps extends React.PropsWithChildren {
@@ -234,7 +236,8 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
           actions: [],
           padding: 0,
           maxWidth: options?.maxWidth,
-          fullWidth: options?.fullWidth
+          fullWidth: options?.fullWidth,
+          fullScreen: options?.fullScreen
         });
         setOpen(true);
       });
@@ -244,7 +247,8 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
   return (
     <>
       <Context.Provider value={dialogs}>{children}</Context.Provider>
-      <Dialog open={open} PaperProps={{ sx: { borderRadius: "16px" } }} maxWidth={dialog?.maxWidth}
+      <Dialog open={open} fullScreen={dialog?.fullScreen} PaperProps={{ sx: { borderRadius: "16px" } }}
+              maxWidth={dialog?.maxWidth}
               fullWidth={dialog?.fullWidth}>
         <DialogTitle sx={{ m: 0, border: "none", minWidth: { xs: "200px", sm: "400px" } }}>
           <Box display="flex" flexDirection="row" alignItems="flex-start">

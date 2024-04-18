@@ -46,6 +46,7 @@ export const getPropertyFromOrderMetadata = (metadata: OrderMetadataItem[], key:
 };
 
 export const userToUserInfo = (user: User): UserInfo => {
+  console.log("userToUserInfo", user.name);
   return {
     email: user.email,
     id: user.id,

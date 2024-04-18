@@ -19,7 +19,7 @@ import TabPanel from "../components/TabPanel.tsx";
 import ArtworksList from "../components/ArtworksList.tsx";
 import ArtworkDetails from "../components/ArtworkDetails.tsx";
 import {
-  artworksToGalleryItems,
+  artworksToGalleryItems, artworkToGalleryItem,
   formatCurrency,
   getArtworkDimensions,
   getDefaultPaddingX,
@@ -47,11 +47,20 @@ import LockIcon from "../components/icons/LockIcon.tsx";
 import HourglassIcon from "../components/icons/HourglassIcon.tsx";
 import ShareIcon from "../components/icons/ShareIcon.tsx";
 import MessageDialog from "../components/MessageDialog.tsx";
+import { UserProfile } from "../types/user.ts";
 
 export interface ArtworkProps {
 }
 
 const Artwork: React.FC<ArtworkProps> = ({}) => {
+  const data = useData();
+  const auth = useAuth();
+  const urlParams = useParams();
+  const navigate = useNavigate();
+  const dialogs = useDialogs();
+  const theme = useTheme();
+  const snackbar = useSnackbars();
+
   const [isReady, setIsReady] = useState(false);
   const [selectedTabPanel, setSelectedTabPanel] = useState(0);
   const [artwork, setArtwork] = useState<Artwork>();
@@ -60,14 +69,8 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const [galleryDetails, setGalleryDetails] = useState<Gallery | undefined>();
   const [artistDetails, setArtistDetails] = useState<Artist | undefined>();
   const [favouriteArtworks, setFavouriteArtworks] = useState<number[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile>();
 
-  const data = useData();
-  const auth = useAuth();
-  const urlParams = useParams();
-  const navigate = useNavigate();
-  const dialogs = useDialogs();
-  const theme = useTheme();
-  const snackbar = useSnackbars();
 
   const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
   const isMd = useMediaQuery(theme.breakpoints.between("sm", "md"));
@@ -96,9 +99,18 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   };
 
   const handleSendMessage = async () => {
+    if (!artwork) {
+      return;
+    }
+    if (!auth.isAuthenticated) {
+      auth.login();
+      return;
+    }
     await dialogs.custom("Invia un messaggio alla galleria", (closeDialog) => {
-      return <MessageDialog galleryName={galleryDetails?.display_name} closeDialog={closeDialog} />;
-    });
+      return <MessageDialog galleryName={galleryDetails?.display_name} userProfile={userProfile}
+                            artwork={artworkToGalleryItem(artwork)}
+                            closeDialog={closeDialog} />;
+    }, { maxWidth: "md", fullScreen: belowSm });
   };
 
   const handleSetArtworkFavourite = async () => {
@@ -188,6 +200,10 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         setArtistArtworks(
           artworksToGalleryItems(galleryArtworks.filter((a) => artworksIds.indexOf(a.id.toString()) !== -1))
         );
+      }
+
+      if (auth.isAuthenticated) {
+        data.getUserProfile().then(resp => setUserProfile(resp));
       }
 
       // setGalleryDetails(galleryDetails);
@@ -368,7 +384,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
               </Box>
               <Box display="flex" flexDirection={{ xs: "row", sm: "column" }}
                    sx={{ mt: { xs: 0, sm: 0 } }}>
-                <Button disabled variant="text" onClick={() => handleSendMessage()}>Contatta la galleria</Button>
+                <Button variant="text" onClick={() => handleSendMessage()}>Contatta la galleria</Button>
               </Box>
             </Box>
             <Divider sx={{ mt: 3 }} />
