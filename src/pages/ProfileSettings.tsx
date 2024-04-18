@@ -14,7 +14,7 @@ import AvatarSelector from "../components/AvatarSelector.tsx";
 import BillingDataForm from "../components/BillingDataForm.tsx";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
-import { useNavigate } from "../utils.ts";
+import { getDefaultPaddingX, useNavigate } from "../utils.ts";
 
 export interface ProfileSettingsProps {
 }
@@ -147,14 +147,16 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
     });
   }, [data]);
 
+  const px = getDefaultPaddingX();
+
   return (
     <DefaultLayout pageLoading={!isReady} authRequired maxWidth="xl">
       <ProfileHeader profile={profile} />
-      <Box p={6}>
+      <Box py={6} px={px}>
         <Typography variant="h3">Impostazioni profilo</Typography>
         <Typography variant="body1">Qui puoi vedere / modificare i tuoi dati personali</Typography>
       </Box>
-      <Box px={6} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
+      <Box px={px} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
         <Typography variant="h5" sx={{ mb: 2 }}>
           Impostazioni personali
         </Typography>
@@ -163,7 +165,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
           <PersonalDataForm defaultValues={personalDataDefaultValues} onSubmit={handlePersonalDataSubmit} />
         </Box>
       </Box>
-      <Box px={6} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
+      <Box px={px} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
         <Typography variant="h5" sx={{ mb: 2 }}>
           Dati di spedizione
         </Typography>
@@ -182,7 +184,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
         </Box>
       </Box>
       {requireInvoice && (
-        <Box px={6} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
+        <Box px={px} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
           <Typography variant="h5" sx={{ mb: 2 }}>
             Dati di fatturazione
           </Typography>
@@ -194,7 +196,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
           />
         </Box>
       )}
-      <Box px={6} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
+      <Box px={px} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
         <Typography variant="h5" sx={{ mb: 2 }}>
           Cambio password
         </Typography>
@@ -212,7 +214,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
           label="Sei iscrittə alla newsletter di artpay"
         />
       </Box>*/}
-      <Box px={6} mt={12} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
+      <Box px={px} mt={12} mb={6} sx={{ maxWidth: theme.breakpoints.values.md }}>
         <Typography variant="h5">Cancellazione account</Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
           Eliminazione permanente account
