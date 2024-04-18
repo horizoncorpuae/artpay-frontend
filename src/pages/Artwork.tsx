@@ -360,7 +360,8 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
               <Box display="flex"
                    sx={{ flexDirection: { xs: "column", sm: "row" }, alignItems: { xs: "flex-start", sm: "center" } }}
                    flexGrow={1}>
-                <Typography variant="body2" color="white" sx={{ maxWidth: "248px" }}>
+                <Typography variant="body2" color="white"
+                            sx={{ maxWidth: { xs: undefined, sm: "calc(100% - 150px)", md: "180px", lg: "248px" } }}>
                   Per i tuoi acquisti d'arte su artpay, puoi scegliere la migliore proposta di prestito tra quelle degli
                   istituti bancari nostri partner.
                 </Typography>
@@ -384,7 +385,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
               </Box>
               <Box display="flex" flexDirection={{ xs: "row", sm: "column" }}
                    sx={{ mt: { xs: 0, sm: 0 } }}>
-                <Button variant="text" onClick={() => handleSendMessage()}>Contatta la galleria</Button>
+                <Button variant="text" disabled onClick={() => handleSendMessage()}>Contatta la galleria</Button>
               </Box>
             </Box>
             <Divider sx={{ mt: 3 }} />

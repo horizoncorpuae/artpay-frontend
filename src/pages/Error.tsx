@@ -28,7 +28,7 @@ const Error: React.FC<ErrorProps> = () => {
       break;
     default:
       errorText.title = <>Ooooops! Error {urlParams.code || ""}!<br />Qualocosa non ha funzionato!</>;
-      errorText.text = <>Forse la pagina non esiste più a questo indirizzo o</>;
+      errorText.text = <>Forse la pagina non esiste più a questo indirizzo</>;
   }
 
   const px = getDefaultPaddingX();
