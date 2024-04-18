@@ -48,7 +48,11 @@ const HeroAbout: React.FC<HeroAboutProps> = ({ mainTitle, description, buttonTex
     <Box
       sx={{
         background: `url(${imageSrc}) lightgray 50% / cover no-repeat`,
-        height: { xs: "400px", sm: "540px", md: "600px", lg: "720px", xl: "800px" }
+        backgroundPositionY: { xs: "top", md: "-60px", lg: "-80px" },
+        height: { xs: "400px", sm: "540px", md: "600px", lg: "720px", xl: "800px" },
+        marginLeft: "auto",
+        marginRight: "auto"
+        //maxWidth: "1440px"
       }}
       display="flex"
       flexDirection="column"
