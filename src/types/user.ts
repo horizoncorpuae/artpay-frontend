@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs";
+import { Artwork } from "./artwork.ts";
 
 export interface UserInfo {
   id: number;
@@ -184,4 +185,11 @@ export type Message = {
   userMessage: boolean;
   text: string;
   date: Dayjs;
+}
+
+export interface GroupedMessage {
+  product: Artwork,
+  lastMessageDate: Dayjs,
+  lastMessageText: string
+  messages: Message[]
 }

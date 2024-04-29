@@ -28,7 +28,7 @@ import {
 import { PaymentIntent } from "@stripe/stripe-js";
 import {
   BillingData,
-  CustomerQuestion, CustomerQuestionResponse, Message, QuestionWithAnswer,
+  CustomerQuestion, CustomerQuestionResponse, GroupedMessage, Message, QuestionWithAnswer,
   UnprocessedUserProfile,
   UpdateUserProfile,
   User,
@@ -133,7 +133,9 @@ export interface DataContext {
 
   sendQuestionToVendor(data: CustomerQuestion): Promise<CustomerQuestionResponse>;
 
-  getChatHistory(productId: number): Promise<Message[]>;
+  getChatHistory(): Promise<GroupedMessage[]>;
+
+  getProductChatHistory(productId: number): Promise<Message[]>;
 
   subscribeNewsletter(email: string, optIn: string, formUrl: string): Promise<void>;
 
@@ -203,6 +205,7 @@ const defaultContext: DataContext = {
   deleteUser: () => Promise.reject("Data provider loaded"),
   updateUserProfile: () => Promise.reject("Data provider loaded"),
   sendQuestionToVendor: () => Promise.reject("Data provider loaded"),
+  getProductChatHistory: () => Promise.reject("Data provider loaded"),
   getChatHistory: () => Promise.reject("Data provider loaded"),
 
   subscribeNewsletter: () => Promise.reject("Data provider loaded"),
@@ -853,7 +856,66 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       );
       return resp.data;
     },
-    async getChatHistory(productId: number): Promise<Message[]> {
+    async getChatHistory(): Promise<GroupedMessage[]> {
+      const resp = await axios.get<QuestionWithAnswer[]>(
+        `${baseUrl}/wp-json/wc/v3/customer-question`,
+        {
+          headers: { Authorization: auth.getAuthToken() }
+        }
+      );
+
+
+      const messageGroups: { [key: string]: Message[] } = {};
+      const messages: GroupedMessage[] = [];
+
+      resp.data.forEach((msg) => {
+        if (!messageGroups[msg.product_ID]) {
+          messageGroups[msg.product_ID] = [];
+        }
+        try {
+          messageGroups[msg.product_ID].push({
+            text: msg.ques_details,
+            userMessage: true,
+            date: dayjs((msg.ques_created))
+          });
+        } catch (e) {
+          console.error("chat message error", e);
+        }
+        if (msg.answer) {
+          try {
+            messageGroups[msg.product_ID].push({
+              text: msg.answer.ans_details,
+              userMessage: false,
+              date: dayjs((msg.answer.ans_created))
+            });
+          } catch (e) {
+            console.error("chat message error", e);
+          }
+        }
+      });
+      for (const productId in messageGroups) {
+        messageGroups[productId] = messageGroups[productId].sort((a, b) => a.date.diff(b.date));
+      }
+      const productKeys = Object.keys(messageGroups).map(k => +k);
+      const products = await this.getArtworks(productKeys);
+
+      products.forEach(product => {
+        const productMessages = messageGroups[product.id.toString()];
+        if (productMessages?.length < 1) {
+          return;
+        }
+        const lastMessage = productMessages[productMessages.length - 1];
+        messages.push({
+          product: { ...product },
+          lastMessageDate: lastMessage.date,
+          lastMessageText: lastMessage.text,
+          messages: messageGroups[product.id.toString()]
+        });
+      });
+
+      return messages.sort((a, b) => b.lastMessageDate.diff(a.lastMessageDate));
+    },
+    async getProductChatHistory(productId: number): Promise<Message[]> {
       const resp = await axios.get<QuestionWithAnswer[]>(
         `${baseUrl}/wp-json/wc/v3/customer-question`,
         {
@@ -866,6 +928,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
 
       const messages: Message[] = [];
       resp.data.forEach((msg) => {
+        if (msg.product_ID !== productId.toString()) {
+          return;
+        }
         try {
           messages.push({ text: msg.ques_details, userMessage: true, date: dayjs((msg.ques_created)) });
         } catch (e) {

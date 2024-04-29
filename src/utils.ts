@@ -449,7 +449,7 @@ export const formatMessageDate = (dt?: string | Date) => {
   try {
     const parsedDate = dayjs(dt);
     if (parsedDate.isToday()) {
-      return parsedDate.format("hh:mm");
+      return parsedDate.format("HH:mm");
     } else if (parsedDate.isYesterday()) {
       return "Ieri";
     } else if (dayjs(new Date()).diff(parsedDate, "days") < 7) {

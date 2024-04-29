@@ -5,7 +5,6 @@ import { Box, Button, Divider, Grid, IconButton, Typography, useMediaQuery, useT
 import { galleryToGalleryItem, getDefaultPaddingX, useNavigate } from "../utils.ts";
 import CloseIcon from "../components/icons/CloseIcon.tsx";
 import ChatList, { ChatMessage } from "../components/ChatList.tsx";
-import dayjs from "dayjs";
 import { Message, UserProfile } from "../types/user.ts";
 import { GalleryCardProps } from "../components/GalleryCard.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
@@ -29,51 +28,35 @@ const Messages: React.FC<MessagesProps> = ({}) => {
   const [chatReady, setChatReady] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [showDetailsAnimationEnded, setShowDetailsAnimationEnded] = useState(false);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [loadedMessages, setLoadedMessages] = useState<Message[]>([]);
   const [selectedGallery, setSelectedGallery] = useState<GalleryCardProps>();
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork>();
   const [userProfile, setUserProfile] = useState<UserProfile>();
 
-  const dummyMessages: ChatMessage[] = [
-    {
-      date: new Date(),
-      title: "Galleria Lorem Ipsum",
-      excerpt: "Messaggio lorem ipsum dolor sit amet conswehf lore umpur sul lorem ipsum dolor",
-      id: 173,
-      imgUrl: "/images/gallery-logo-example.png"
-    },
-    {
-      date: dayjs(new Date()).subtract(1, "day").toDate(),
-      title: "Galleria Lorem Ipsum",
-      excerpt: "Messaggio lorem ipsum dolor sit amet conswehf lore umpur sul lorem ipsum dolor",
-      id: 643,
-      imgUrl: "/images/gallery-logo-example.png",
-      newMessages: 1
-    },
-    {
-      date: dayjs(new Date()).subtract(3, "day").toDate(),
-      title: "Galleria Lorem Ipsum",
-      excerpt: "Messaggio lorem ipsum dolor sit amet conswehf lore umpur sul lorem ipsum dolor",
-      id: 643,
-      imgUrl: "/images/gallery-logo-example.png",
-      newMessages: 2
-    },
-    {
-      date: dayjs(new Date()).subtract(7, "day").toDate(),
-      title: "Galleria Lorem Ipsum",
-      excerpt: "Messaggio lorem ipsum dolor sit amet conswehf lore umpur sul lorem ipsum dolor",
-      id: 643,
-      imgUrl: "/images/gallery-logo-example.png",
-      newMessages: 0
-    }
-  ];
-
   useEffect(() => {
-    data.getUserProfile().then(resp => {
-      setUserProfile(resp);
+    Promise.all([
+      data.getUserProfile().then(resp => {
+        setUserProfile(resp);
+      }),
+      data.getChatHistory().then(async (groupedMessages) => {
+        const chatHistory: ChatMessage[] = await Promise.all(groupedMessages.map(async (msg) => {
+          const gallery = galleryToGalleryItem(await data.getGallery(msg.product.vendor));
+          const mappedMsg: ChatMessage = {
+            date: msg.lastMessageDate.toDate(),
+            excerpt: msg.product.name,
+            id: msg.product.id,
+            imgUrl: gallery.logoUrl || "",
+            newMessages: 0,
+            title: gallery.title
+          };
+          return mappedMsg;
+        }));
+        setChatHistory(chatHistory);
+      })
+    ]).then(() => {
       setReady(true);
     });
-
   }, []);
 
   const handleSelectChat = async (msg: ChatMessage) => {
@@ -88,9 +71,9 @@ const Messages: React.FC<MessagesProps> = ({}) => {
       console.log("selectedGallery", selectedGallery);
       setSelectedGallery(galleryToGalleryItem(selectedGallery));
 
-      const messages = await data.getChatHistory(msg.id);
+      const messages = await data.getProductChatHistory(msg.id);
       setLoadedMessages(messages);
-      if (!wasReady) {
+      if (!wasReady && !isMobile) {
         setShowDetails(true);
       }
 
@@ -106,7 +89,7 @@ const Messages: React.FC<MessagesProps> = ({}) => {
     }
     try {
       await data.sendQuestionToVendor({ product_id: selectedArtwork?.id, question: text });
-      const messages = await data.getChatHistory(selectedArtwork?.id);
+      const messages = await data.getProductChatHistory(selectedArtwork?.id);
       setLoadedMessages(messages);
     } catch (e) {
       await snackbar.error(e);
@@ -125,19 +108,35 @@ const Messages: React.FC<MessagesProps> = ({}) => {
       <Grid sx={{ px: px, mt: { xs: 11, sm: 12, md: 12 }, mb: 12 }} container>
         <Grid sx={{ borderBottom: "1px solid #CDCFD3", py: { xs: 1, md: 5 } }} item xs={12}>
           {chatReady ?
-            <Button variant="text" color="secondary" sx={{ px: 2, mx: -2 }} onClick={() => setChatReady(false)}
-                    startIcon={<ArrowLeftIcon fontSize="inherit" color="secondary" />}>
-              Torna ai messaggi</Button> :
+            (showDetails ?
+              <Button variant="text" color="secondary" sx={{ px: 2, mx: -2 }} onClick={() => setShowDetails(false)}
+                      startIcon={<ArrowLeftIcon fontSize="inherit" color="secondary" />}>
+                Torna alla conversazione</Button> : <Box display="flex">
+                <Button variant="text" color="secondary" sx={{ px: 2, mx: -2 }} onClick={() => {
+                  setShowDetails(false);
+                  setChatReady(false);
+                }}
+                        startIcon={<ArrowLeftIcon fontSize="inherit" color="secondary" />}>
+                  Torna ai messaggi</Button>
+                <Box flexGrow={1} />
+                <Button variant="text" color="secondary" sx={{ px: 2, mx: -2 }}
+                        onClick={() => setShowDetails(true)}>Dettagli</Button>
+              </Box>) :
             backButton}
         </Grid>
         {chatReady ?
+          (
+            showDetails ? <Grid item xs={12}>
+                <ArtworkMessageDetails artwork={selectedArtwork} />
+              </Grid> :
+              <Grid item sx={{ minHeight: { xs: 0 } }} xs={12}>
+                <ChatContent ready={chatReady} messages={loadedMessages} userProfile={userProfile}
+                             galleryImage={selectedGallery?.logoUrl}
+                             onSendMessage={handleSendMessage} />
+              </Grid>
+          ) :
           <Grid item sx={{ minHeight: { xs: 0 } }} xs={12}>
-            <ChatContent ready={chatReady} messages={loadedMessages} userProfile={userProfile}
-                         galleryImage={selectedGallery?.logoUrl}
-                         onSendMessage={handleSendMessage} />
-          </Grid> :
-          <Grid item sx={{ minHeight: { xs: 0 } }} xs={12}>
-            <ChatList onClick={handleSelectChat} messages={dummyMessages} />
+            <ChatList onClick={handleSelectChat} messages={chatHistory} />
           </Grid>
         }
       </Grid>
@@ -157,7 +156,7 @@ const Messages: React.FC<MessagesProps> = ({}) => {
           <Typography variant="subtitle1">Messaggi</Typography>
         </Box>
         <Box>
-          <ChatList onClick={handleSelectChat} messages={dummyMessages} />
+          <ChatList onClick={handleSelectChat} messages={chatHistory} />
         </Box>
       </Grid>
 
