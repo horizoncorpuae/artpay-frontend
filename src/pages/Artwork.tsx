@@ -48,6 +48,8 @@ import HourglassIcon from "../components/icons/HourglassIcon.tsx";
 import ShareIcon from "../components/icons/ShareIcon.tsx";
 import MessageDialog from "../components/MessageDialog.tsx";
 import { UserProfile } from "../types/user.ts";
+import ArtworkIcon from "../components/icons/ArtworkIcon.tsx";
+import CertificateIcon from "../components/icons/CertificateIcon.tsx";
 
 export interface ArtworkProps {
 }
@@ -304,10 +306,10 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
             </Typography>
             <Box mt={2}>
               <Typography variant="subtitle1" color="textSecondary">
-                {artworkUnique}
+                <ArtworkIcon sx={{ mr: 0.5 }} fontSize="inherit" /> {artworkUnique}
               </Typography>
               <Typography sx={{ mt: 0 }} variant="subtitle1" color="textSecondary">
-                {artworkCertificate}
+                <CertificateIcon sx={{ mr: 0.5 }} fontSize="inherit" /> {artworkCertificate}
               </Typography>
               {(isOutOfStock && !isReserved) &&
                 <Typography sx={{ mt: 3 }} variant="subtitle1" color="textSecondary"><LockIcon color="error"
@@ -402,9 +404,9 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
             mx: { xs: 0 }
           }}>
           <ResponsiveTabs value={selectedTabPanel} onChange={(_, newValue) => setSelectedTabPanel(newValue)}>
-            <Tab label="Informazioni sull' opera" />
-            <Tab label="Informazioni sull' artista" />
-            <Tab label="Informazioni sulla galleria" />
+            <Tab label="Opera" />
+            <Tab label="Artista" />
+            <Tab label="Galleria" />
           </ResponsiveTabs>
         </Box>
         <Box display="flex" justifyContent="center">

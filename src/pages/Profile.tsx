@@ -90,7 +90,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
           <OrdersHistory mode="on-hold" title="Opere bloccate" />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={4}>
-          <OrdersHistory mode="completed" />
+          <OrdersHistory mode="completed" subtitle="In questa sezione trovi tutte le tue opere già acquistate" />
         </TabPanel>
       </Box>
     </DefaultLayout>

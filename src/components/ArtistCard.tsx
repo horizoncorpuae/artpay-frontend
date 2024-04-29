@@ -17,6 +17,7 @@ export interface ArtistCardProps {
   onSetFavourite?: (currentValue: boolean) => void;
   imgUrl?: string;
   mode?: "grid" | "list";
+  fitWidth?: boolean;
   size: CardSize;
 }
 
@@ -30,14 +31,16 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
                                                  mode = "list",
                                                  onClick,
                                                  onSetFavourite,
-                                                 size = "large"
+                                                 size = "large",
+                                                 fitWidth = false
                                                  // artworksCount = 0,
                                                }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
   const imgHeight = size === "medium" ? "396px" : "430px";
-  const cardWidth = size === "medium" ? "294px" : "320px";
+  const cardWidth = fitWidth ? "100%" : (size === "medium" ? "294px" : "320px");
+  const className = fitWidth ? `SwiperCard-fit` : `SwiperCard-${size}`;
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSetFavourite = () => {
@@ -55,19 +58,20 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
   };
 
   return (
-    <Card elevation={0} className={`SwiperCard-${size}`} sx={{ width: cardWidth }}>
+    <Card elevation={0} className={className} sx={{ width: cardWidth }}>
       <CardMedia
         component="img"
         image={imgUrl}
         width={cardWidth}
-        height={isMobile && mode === "grid" ? "auto" : imgHeight}
+        height={fitWidth ? undefined : imgHeight}
         className="borderRadius"
         onClick={handleClick}
         sx={{
           objectFit: mode === "list" ? "cover" : "cover",
           minHeight: "100px",
           backgroundColor: imgUrl ? "" : "#D9D9D9",
-          cursor: onClick ? "pointer" : "auto"
+          cursor: onClick ? "pointer" : "auto",
+          aspectRatio: fitWidth ? "0.74" : undefined
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: 2 }}>
         <Box display="flex">

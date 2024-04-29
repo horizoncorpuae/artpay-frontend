@@ -57,7 +57,7 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({ sx, slides }) => {
         delay: 5000,
         disableOnInteraction: true
       }}
-      style={{ paddingBottom: 0, height: sliderHeight }}>
+      style={{ paddingBottom: 0, height: sliderHeight, background: "#E5E7E9" }}>
       {slides.map((slide, i) => <SwiperSlide key={`slide-${i}`}>
         <VerticalSlide {...slide} />
       </SwiperSlide>)}

@@ -22,7 +22,7 @@ const defaultTheme: Theme = createTheme({
     secondary: {
       light: "#ECEDFC",
       main: "#181F5D",
-      dark: "#3F55E9",
+      dark: "#010F22",
       contrastText: "#FFF"
     },
     success: {
@@ -344,7 +344,7 @@ const defaultTheme: Theme = createTheme({
           height: "68px",
           margin: "0 100px",
           padding: "16px",
-          borderRadius: "48px",
+          borderRadius: "36px",
           width: "auto"
         }
       }

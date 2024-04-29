@@ -28,7 +28,7 @@ const ArtworkDetails: React.FC<ArtworkDetailsProps> = ({ artwork, artist }) => {
     epoch: data.getCategoryMapValues(artwork, "periodo").join(" ")
   };
   return (
-    <Box display="flex" flexDirection="column" sx={{ maxWidth: "612px" }}>
+    <Box display="flex" flexDirection="column" sx={{ maxWidth: { xs: undefined, md: "612px" } }}>
       <Box mb={2}>
         <Typography variant="subtitle1">{artwork.name}</Typography>
         <Typography variant="subtitle1" color="textSecondary">
@@ -50,7 +50,7 @@ const ArtworkDetails: React.FC<ArtworkDetailsProps> = ({ artwork, artist }) => {
           justifyContent: { xs: "flex-start", sm: "center" },
           gap: { xs: 0, md: 12 }
         }}>
-        <Box display="flex" flexDirection="column" gap={2} sx={{ width: "306px" }}>
+        <Box display="flex" flexDirection="column" gap={2} sx={{ width: { xs: "auto", sm: "50%", md: "306px" } }}>
           <DisplayProperty label="Materiale" value={artworkDetails.material} />
           <DisplayProperty label="Tecnica" value={artworkDetails.technique} />
           <DisplayProperty label="Misure" value={artworkDetails.measures} />
@@ -58,7 +58,8 @@ const ArtworkDetails: React.FC<ArtworkDetailsProps> = ({ artwork, artist }) => {
           <DisplayProperty label="Condizioni" value={artworkDetails.conditions} />
           <DisplayProperty label="Firma" value={artworkDetails.signature} />
         </Box>
-        <Box display="flex" flexDirection="column" gap={2} sx={{ width: "306px", mt: { xs: 3, md: 0 } }}>
+        <Box display="flex" flexDirection="column" gap={2}
+             sx={{ width: { xs: "auto", sm: "50%", md: "306px" }, mt: { xs: 3, md: 0 } }}>
           <DisplayProperty label="Certificato di autenticità" value={artworkDetails.certificate} />
           <DisplayProperty label="Anno di creazione" value={artworkDetails.creationYear} />
           <DisplayProperty label="Stile" value={artworkDetails.style} />

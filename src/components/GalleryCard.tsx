@@ -14,6 +14,7 @@ export interface GalleryCardProps {
   imgUrl?: string;
   logoUrl?: string;
   mode?: "grid" | "list";
+  fitWidth?: boolean;
 }
 
 const GalleryCard: React.FC<GalleryCardProps> = ({
@@ -24,12 +25,13 @@ const GalleryCard: React.FC<GalleryCardProps> = ({
                                                    imgUrl,
                                                    mode = "list",
                                                    onClick,
-                                                   onSetFavourite
+                                                   onSetFavourite,
+                                                   fitWidth = false
                                                    // artworksCount = 0,
                                                  }) => {
   const theme = useTheme();
-  const imgHeight = "230px";
-  const cardWidth = "294px";
+  const imgHeight = fitWidth ? "auto" : "230px";
+  const cardWidth = fitWidth ? "100%" : "294px";
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSetFavourite = () => {
@@ -39,7 +41,7 @@ const GalleryCard: React.FC<GalleryCardProps> = ({
   };
 
   return (
-    <Card elevation={0} className="SwiperCard-medium" sx={{ minWidth: cardWidth }}>
+    <Card elevation={0} className={fitWidth ? "SwiperCard-fit" : "SwiperCard-medium"} sx={{ minWidth: cardWidth }}>
       <CardMedia
         component="img"
         image={imgUrl}
@@ -51,7 +53,8 @@ const GalleryCard: React.FC<GalleryCardProps> = ({
           minHeight: "100px",
           borderRadius: "4px",
           backgroundColor: imgUrl ? "" : "#D9D9D9",
-          cursor: onClick ? "pointer" : "auto"
+          cursor: onClick ? "pointer" : "auto",
+          aspectRatio: fitWidth ? 1.28 : undefined
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: 2 }}>
         <Box display="flex">

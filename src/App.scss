@@ -4,6 +4,10 @@
 #root {
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background, none);
 }
@@ -27,6 +31,9 @@ body {
   &-large{
     width: 320px;
     min-width: 320px;
+  }
+  &-fit{
+    width: 100%;
   }
 }
 

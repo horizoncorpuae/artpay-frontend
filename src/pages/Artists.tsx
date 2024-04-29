@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import VerticalSlider from "../components/VerticalSlider.tsx";
 import { useData } from "../hoc/DataProvider.tsx";
-import { artistsToGalleryItems } from "../utils.ts";
+import { artistsToGalleryItems, getDefaultPaddingX } from "../utils.ts";
 import { ArtistCardProps } from "../components/ArtistCard.tsx";
 import { Box } from "@mui/material";
 import ArtistsGrid from "../components/ArtistsGrid.tsx";
@@ -40,12 +40,14 @@ const Artists: React.FC<ArtistsProps> = ({}) => {
 
   }, []);
 
+  const px = getDefaultPaddingX();
+
   return (
     <DefaultLayout pageLoading={!isReady}
                    topBar={<VerticalSlider slides={artistSlides} sx={{ pt: { xs: 10, sm: 0 } }} />}>
 
-      <Box sx={{ px: { xs: 0, md: 6 }, my: { xs: 6, md: 12 } }}>
-        <ArtistsGrid items={featuredArtists || []} title="Tutti gli artisti" />
+      <Box sx={{ px: px, my: { xs: 6, md: 12 } }}>
+        <ArtistsGrid items={featuredArtists || []} title="Tutti gli artisti" disablePadding />
       </Box>
     </DefaultLayout>);
 };

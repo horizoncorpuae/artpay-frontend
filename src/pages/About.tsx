@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import HeroAbout, { HeroAboutProps } from "../components/HeroAbout.tsx";
-import { Box, Grid, GridProps, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, GridProps, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import imgLogo from "../assets/images/logo.svg";
@@ -11,6 +11,7 @@ import PromoCard from "../components/PromoCard.tsx";
 import OnboardingCards from "../components/OnboardingCards.tsx";
 import NewsletterBig from "../components/NewsletterBig.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
+import EmailContactBox from "../components/EmailContactBox.tsx";
 
 export interface AboutProps {
 }
@@ -105,17 +106,7 @@ const About: React.FC<AboutProps> = ({}) => {
       <Box sx={{ px: px }}>
         <NewsletterBig />
       </Box>
-      <Box px={px} my={12}>
-        <Typography variant="h2">Vuoi entrare in contatto con Artpay e il suo team? </Typography>
-        <Typography sx={{ mt: 2 /*, maxWidth: "400px"*/ }} variant="subtitle1">
-          Contattaci per qualsiasi domanda o richiesta! <br />Puoi scriverci direttamente via email a: <Link
-          href="mailto:hello@artpay.art">hello@artpay.art</Link>
-        </Typography>
-        {/*<Box sx={{ maxWidth: "506px", mt: 8 }}>
-          <ContactForm />
-        </Box>*/}
-      </Box>
-
+      <EmailContactBox />
     </DefaultLayout>
   );
 };

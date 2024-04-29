@@ -17,11 +17,12 @@ export interface ArtistDetailsProps {
 
 const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
   const artistContent = artistToGalleryItem(artist);
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const data = useData();
   const auth = useAuth();
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
 
   const [favourites, setFavourites] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,17 +65,18 @@ const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
   return (
     <Box
       sx={{
-        maxWidth: "612px",
+        maxWidth: { xs: undefined, md: "612px" },
         width: "100%",
         flexDirection: { xs: "column", sm: "row" },
         gap: { xs: 2, md: 0 },
-        alignItems: { xs: "center" }
+        alignItems: { xs: "center", sm: "flex-start" }
+        //justifyContent: { xs: "flex-start" }
       }}
       display="flex">
       <DisplayImage borderRadius="4px" src={artistContent.imgUrl}
-                    onClick={() => navigate(`/artisti/${artistContent.slug}`)} width={320}
-                    height={isMobile ? 320 : 254} />
-      <Box flexGrow={1} px={3}>
+                    onClick={() => navigate(`/artisti/${artistContent.slug}`)} width={isMobile ? "100%" : 320}
+                    height={isMobile ? "auto" : 254} />
+      <Box flexGrow={1} pl={{ xs: 0, sm: 3 }} pr={{ xs: 0, md: 3 }}>
         <Box display="flex" flexDirection="row" alignItems="center">
           <Box flexGrow={1}>
             <Typography variant="subtitle1">{artistContent.title}</Typography>

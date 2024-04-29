@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Divider, Grid, IconButton, Link, Typography, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ArrowUpward } from "@mui/icons-material";
-import SocialLinks from "./SocialLinks.tsx";
 import NewsletterSmall from "./NewsletterSmall.tsx";
 import { getDefaultPaddingX } from "../utils.ts";
 

@@ -23,8 +23,8 @@ const Contacts: React.FC<ContactsProps> = ({}) => {
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <Typography sx={{ maxWidth: "294px" }} variant="body1">
-          Qui troverai una serie di risposte alle domande più comuni su artpay, bla bla bla lorem ipsum dolor sit amet
-          consectetur. Euismod metus pellentesque porta aliquam ipsum aliquam aliquam consectetur.
+          Contattaci per qualsiasi domanda o richiesta! Puoi scriverci direttamente via email o compilare il nostro
+          modulo di contatto qui. Siamo qui per aiutarti!
         </Typography>
         <Button sx={{ mt: 6 }} href="mailto:hello@artpay.art" variant="outlined">
           Scrivi a hello@artpay.art
@@ -34,8 +34,8 @@ const Contacts: React.FC<ContactsProps> = ({}) => {
       </Grid>
       <Grid item xs={12} sm={6} lg={3} pt={{ xs: 8, sm: 0 }}>
         <Typography sx={{ maxWidth: "294px" }} variant="body1">
-          Qui troverai una serie di risposte alle domande più comuni su artpay, bla bla bla lorem ipsum dolor sit amet
-          consectetur. Euismod metus pellentesque porta aliquam ipsum aliquam aliquam consectetur.
+          Scopri le risposte alle domande più comuni sulla nostra piattaforma. Dai un'occhiata alle nostre FAQ per
+          trovare risposte immediate alle tue domande!
         </Typography>
         <Button sx={{ mt: 6 }} onClick={() => navigate("/faq")} variant="outlined">
           Vai alle FAQ

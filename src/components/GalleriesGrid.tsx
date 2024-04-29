@@ -90,18 +90,23 @@ const GaleriesGrid: React.FC<GaleriesGridProps> = ({
         sx={{
           maxWidth: "100%",
           overflow: "auto",
-          px: { xs: 1, sm: 4, md: 0 }
+          px: 0
         }}>
         <Box
           display="grid"
           sx={{
-            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(300px, 1fr))` },
+            gridTemplateColumns: {
+              xs: `repeat(auto-fill, minmax(100%, 1fr))`,
+              sm: `repeat(auto-fill, minmax(calc(50% - 24px), 1fr))`,
+              md: `repeat(auto-fill, minmax(280px, 1fr))`
+            },
             justifyItems: "flex-start",
             width: "auto"
           }}
-          gap={1}>
+          gap={3}>
           {items.map((item, i) => (
             <GalleryCard
+              fitWidth
               key={i}
               {...item}
               mode="grid"

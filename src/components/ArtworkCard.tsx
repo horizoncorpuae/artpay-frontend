@@ -22,6 +22,7 @@ export interface ArtworkCardProps {
   onClick?: () => void;
   onSetFavourite?: (currentValue: boolean) => void;
   mode?: "grid" | "list";
+  fitWidth?: boolean;
 }
 
 const cardSizes: { [key in CardSize]: string } = {
@@ -40,13 +41,15 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
                                                    isFavourite = false,
                                                    onClick,
                                                    onSetFavourite,
-                                                   mode = "list"
+                                                   mode = "list",
+                                                   fitWidth = false
                                                  }) => {
   // const theme = useTheme();
   // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const cardSize = cardSizes[size];
-  const cardSizeClass = `SwiperCard-${size}`;
+  const cardSize = fitWidth ? "100%" : cardSizes[size];
+  const cardSizeClass = fitWidth ? `SwiperCard-fit` : `SwiperCard-${size}`;
+
   const formattedPrice = price
     ? `€ ${price.toLocaleString(undefined, {
       minimumFractionDigits: 2
@@ -76,16 +79,17 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
       <CardMedia
         component="img"
         image={imgUrl}
-        height={cardSize}
+        height={fitWidth ? "auto" : cardSize}
         onClick={onClick}
         className="borderRadius"
         sx={{
           objectFit: "cover",
-          height: cardSize,
+          // height: cardSize,
           minWidth: mode === "list" ? undefined : "100%",
           width: mode === "list" ? undefined : "auto",
           //backgroundColor: "#D9D9D9",
-          cursor: onClick ? "pointer" : "auto"
+          cursor: onClick ? "pointer" : "auto",
+          aspectRatio: fitWidth ? 1 : undefined
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: imgMargin, height: "100%" }}>
         <Box display="flex" sx={{ height: mode === "grid" ? "100%" : undefined }}>

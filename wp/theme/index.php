@@ -19,7 +19,7 @@
     <meta name="stripe-key" content="pk_test_51OEuLgBVvRJjw4FGCIWYwitCW6xe6KYOfIjoZwENwGLj22ZkaZEg60csVTAg4ZTDwXW1ZksSqY4mXliEPDWVYZ0z00EaPOowQS" />
     <title>Artpay</title>
     <?php wp_head(); ?>
-      <script type="module" crossorigin src="/wp-content/themes/artpay-react/static/assets/js/index-6ba9269e.js"></script>
+      <script type="module" crossorigin src="/wp-content/themes/artpay-react/static/assets/js/index-447a2b91.js"></script>
       <link rel="stylesheet" href="/wp-content/themes/artpay-react/static/assets/css/index-244fb1a6.css">
     </head>
     <body>
@@ -27,6 +27,7 @@
         You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
+    <script src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js" defer></script>
     <script type="text/javascript">(function (w,d) {var loader = function () {var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; s.src="https://cdn.iubenda.com/iubenda.js"; tag.parentNode.insertBefore(s,tag);}; if(w.addEventListener){w.addEventListener("load", loader, false);}else if(w.attachEvent){w.attachEvent("onload", loader);}else{w.onload = loader;}})(window, document);</script>
     <a href="https://www.iubenda.com/privacy-policy/71113702" style="display: none" class="iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe " title="Privacy Policy ">Privacy Policy</a>
     <script type="text/javascript">

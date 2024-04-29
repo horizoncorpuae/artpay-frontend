@@ -57,7 +57,10 @@ const PromoCardSmall: React.FC<PromoCardSmallProps> = ({
       </Box>
       {link && (
         <Box mt={4}>
-          <Link href={linkHref} sx={{ color: textColor }}>
+          <Link href={linkHref} sx={{
+            color: textColor,
+            textDecorationColor: variant === "secondary" ? "rgba(255,255,255,0.75)" : textColor
+          }}>
             {link}
           </Link>
         </Box>

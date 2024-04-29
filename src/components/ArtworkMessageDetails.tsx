@@ -47,8 +47,8 @@ const ArtworkMessageDetails: React.FC<ArtworkMessageDetailsProps> = ({ artwork }
     <Typography variant="subtitle1" color="textSecondary">{artworkDimensions}</Typography>
     <Typography variant="subtitle1" color="textSecondary" sx={{ mt: 2, mb: 0.5 }}>
       <ArtworkIcon sx={{ mr: 0.5 }} fontSize="inherit" />{artworkUnique}</Typography>
-    <Typography variant="subtitle1" color="textSecondary"><CertificateIcon sx={{ mr: 0.5 }}
-                                                                           fontSize="inherit" />{artworkCertificate}
+    <Typography variant="subtitle1" color="textSecondary"><CertificateIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+      {artworkCertificate}
     </Typography>
     <Typography variant="subtitle1" color="textSecondary" sx={{ mt: 2, mb: 0.5, pl: "20px", textIndent: "-20px" }}>
       <ShippingIcon fontSize="inherit" sx={{ mr: 0.5 }} />Il costo di spedizione è {shippingCost}€

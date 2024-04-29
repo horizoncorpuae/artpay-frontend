@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Gallery } from "../types/gallery";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import DisplayImage from "./DisplayImage.tsx";
 import { galleryToGalleryContent } from "../utils.ts";
 import { useNavigate } from "../utils.ts";
@@ -17,6 +17,8 @@ const GalleryDetails: React.FC<GalleryDetailsProps> = ({ gallery }) => {
   const navigate = useNavigate();
   const data = useData();
   const auth = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [favourites, setFavourites] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,14 +67,15 @@ const GalleryDetails: React.FC<GalleryDetailsProps> = ({ gallery }) => {
   return (
     <Box
       sx={{
-        maxWidth: "612px",
+        maxWidth: { xs: undefined, md: "612px" },
         width: "100%",
         flexDirection: { xs: "column", sm: "row" },
         alignItems: { xs: "center", sm: "flex-start" }
       }}
       display="flex">
-      <DisplayImage borderRadius="4px" src={galleryContent.coverImage} onClick={handleClick} width={188} height={188} />
-      <Box flexGrow={1} px={3} sx={{ mt: { xs: 2, md: 0 }, width: "100%" }}>
+      <DisplayImage borderRadius="4px" src={galleryContent.coverImage} onClick={handleClick}
+                    width={isMobile ? "100%" : 188} height={isMobile ? "auto" : 188} />
+      <Box flexGrow={1} pl={{ xs: 0, sm: 3 }} pr={{ xs: 0, md: 3 }} sx={{ mt: { xs: 2, sm: 0 }, width: "100%" }}>
         <Box display="flex" flexDirection="row" alignItems="center">
           <Box flexGrow={1}>
             <Typography variant="subtitle1">{galleryContent.title}</Typography>

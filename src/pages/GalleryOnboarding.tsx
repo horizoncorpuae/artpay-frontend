@@ -121,7 +121,13 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
             data-cmp-ab="2"
             src="https://form.typeform.com/to/aDnsAoId?typeform-embed-id=8112263680325873&amp;typeform-embed=embed-widget&amp;typeform-source=gallerie.artpay.art&amp;typeform-medium=snippet&amp;typeform-medium-version=next&amp;embed-opacity=100&amp;typeform-embed-handles-redirect=1"
             data-testid="iframe"
-            style={{ border: "0px", transform: "translateZ(0px)", width: "100%", height: isMobile ? "400px" : "612px" }}
+            style={{
+              border: "0px",
+              borderRadius: "4px",
+              transform: "translateZ(0px)",
+              width: "100%",
+              height: isMobile ? "400px" : "612px"
+            }}
             allow="microphone; camera"
             title="My branded typeform"
             data-cmp-info="8"></iframe>

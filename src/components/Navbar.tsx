@@ -108,9 +108,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   return (
     <AppBar color="default"
             sx={isMobile ? mobileStyleOverrides : {
-              mx: { xs: 8, md: 6, lg: 10, xl: "auto" },
+              mx: { xs: 8, md: 6, lg: 6, xl: "auto" },
               right: 0,
-              maxWidth: "1280px"
+              px: { xs: undefined, lg: 6 },
+              maxWidth: "1344px"
             }}
             elevation={0}>
       <Box display="flex" alignItems="center" sx={{}}>
@@ -153,9 +154,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               </Typography>
             )}
             <IconButton sx={{ mr: 4, ml: 1 }} onClick={() => handleProfileClick()} color="inherit">
-              <UserIcon color="secondary" />
+              <UserIcon fontSize="inherit" color="secondary" />
             </IconButton>
-            <IconButton sx={{ mr: 0 }} onClick={() => handleCheckout()} color="inherit">
+            <IconButton sx={{ mr: 0, transform: { xs: undefined, md: "translateX(8px)" } }}
+                        onClick={() => handleCheckout()} color="inherit">
               <ShoppingBagIcon color="secondary" />
             </IconButton>
           </>
@@ -172,7 +174,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           </>
         )}
         {isMobile && (
-          <IconButton onClick={() => handleShowMenu(!showMenu)}>
+          <IconButton sx={{ transform: "translateX(8px)" }} onClick={() => handleShowMenu(!showMenu)}>
             <MenuIcon />
           </IconButton>
         )}

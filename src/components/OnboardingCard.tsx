@@ -29,7 +29,7 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
       backgroundSize: { xs: "cover", lg: "cover" },
       flexGrow: 1,
       height: { xs: "580px", sm: "740px", md: "580px", lg: "740px" },
-      maxWidth: "612px",
+      maxWidth: { xs: undefined, md: "612px" },
       borderRadius: "24px"
     }}>
       <Box display="flex" flexDirection="column" alignItems="flex-start" gap={3}>

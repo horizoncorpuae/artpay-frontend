@@ -81,7 +81,7 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
         sx={{
           maxWidth: "100%",
           overflow: "auto",
-          px: { xs: 1, sm: 4, md: 0 }
+          px: 0
           /*          minHeight: "318px",
                                     flexDirection: { xs: "column", sm: "row" },
                                     { xs: "repeat(1, 1fr);", sm: "repeat(2, 1fr);", md: "repeat(3, 1fr);" }
@@ -91,16 +91,21 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
         <Box
           display="grid"
           sx={{
-            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(294px, 1fr))` },
+            gridTemplateColumns: {
+              xs: `repeat(auto-fill, minmax(100%, 1fr))`,
+              sm: `repeat(auto-fill, minmax(calc(50% - 24px), 1fr))`,
+              md: `repeat(auto-fill, minmax(280px, 1fr))`
+            },
             justifyItems: "center",
             width: "auto"
           }}
-          gap={1}>
+          gap={3}>
           {items.map((item, i) => (
             <ArtworkCard
               key={i}
               {...item}
               size={cardSize}
+              fitWidth
               mode="grid"
               onClick={() => (onSelect ? onSelect({ ...item }) : handleSelect({ ...item }))}
               onSetFavourite={(currentValue) => handleSetFavourite(item.id, currentValue)}

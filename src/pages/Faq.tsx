@@ -2,10 +2,9 @@ import React from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { Box, Link, Typography } from "@mui/material";
 import Accordion from "../components/Accordion.tsx";
-
 import illustrationWorld from "../assets/images/illustration-world.svg";
-import illustrationForm from "../assets/images/illustration-form.svg";
 import { getDefaultPaddingX } from "../utils.ts";
+import EmailContactBox from "../components/EmailContactBox.tsx";
 
 export interface FaqProps {
 }
@@ -71,25 +70,7 @@ const Faq: React.FC<FaqProps> = ({}) => {
           <img style={{ maxHeight: "100%" }} src={illustrationWorld} />
         </Box>
       </Box>
-      <Box sx={{ px: px }}>
-        <Typography variant="h2">Non hai trovato le risposte che cercavi?</Typography>
-      </Box>
-      <Box display="flex" sx={{ overflow: "hidden", px: px }} justifyContent="space-between">
-        <Box sx={{ maxWidth: "800px", flexGrow: 1 }}>
-          <Typography sx={{ mt: 2, mb: 6 }} variant="subtitle1">
-            <Link href="mailto:hello@artpay.art">Scrivici</Link> per avere tutte le informazioni che cerchi
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            overflow: "visible",
-            display: { xs: "none", md: "block" },
-            pt: 6,
-            maxWidth: { md: "calc(100vw - 700px)", xl: undefined }
-          }}>
-          <img style={{ maxHeight: "100%" }} src={illustrationForm} />
-        </Box>
-      </Box>
+      <EmailContactBox title="Non hai trovato le risposte che cercavi?" />
     </DefaultLayout>
   );
 };

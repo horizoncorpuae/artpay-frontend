@@ -80,7 +80,7 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({
   return (
     <Box sx={{ px: disablePadding ? 0 : { xs: 0, md: 6 }, maxWidth: "100%" }}>
       {title && (
-        <Typography sx={{ mb: subtitle ? 2 : { xs: 3, md: 6 }, px: { xs: 3, md: 0 } }} variant="h3">
+        <Typography sx={{ mb: subtitle ? 2 : { xs: 3, md: 6 }, px: 0 }} variant="h3">
           {title}
         </Typography>
       )}
@@ -95,7 +95,7 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({
         sx={{
           maxWidth: "100%",
           overflow: "auto",
-          px: { xs: 1, sm: 4, md: 0 }
+          px: 0
           /*          minHeight: "318px",
                                               flexDirection: { xs: "column", sm: "row" },
                                               { xs: "repeat(1, 1fr);", sm: "repeat(2, 1fr);", md: "repeat(3, 1fr);" }
@@ -105,17 +105,22 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({
         <Box
           display="grid"
           sx={{
-            gridTemplateColumns: { xs: `repeat(auto-fill, minmax(300px, 1fr))` },
+            gridTemplateColumns: {
+              xs: `repeat(auto-fill, minmax(100%, 1fr))`,
+              sm: `repeat(auto-fill, minmax(calc(50% - 24px), 1fr))`,
+              md: `repeat(auto-fill, minmax(280px, 1fr))`
+            },
             justifyItems: "center",
             width: "auto"
           }}
-          gap={1}>
+          gap={{ xs: 1, sm: 3 }}>
           {items.map((item, i) => (
             <ArtistCard
               key={i}
               {...item}
               mode="grid"
               size="medium"
+              fitWidth
               onClick={() => (onSelect ? onSelect(i) : handleSelectArtwork(i))}
               isLoading={isLoading}
               onSetFavourite={(currentValue) => handleSetFavourite(item.id, currentValue)}
