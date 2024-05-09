@@ -8,8 +8,7 @@ import onboardingBackground from "../assets/images/background-onboarding.svg";
 import { getDefaultPaddingX } from "../utils.ts";
 import Hero from "../components/Hero.tsx";
 
-export interface GalleryOnboardingProps {
-}
+export interface GalleryOnboardingProps {}
 
 const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
   const theme = useTheme();
@@ -29,17 +28,19 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
         <Typography variant="body1" sx={{ mt: 6, pr: { xs: 0, lg: 6 } }}>
           Artpay nasce per supportare e far crescere la tua galleria.
         </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>Con Artpay la tua galleria acquisisce un nuovo pubblico qualificato
-          di appassionati e collezionisti d’arte: potrai allargare la base dei potenziali clienti grazie ai PRODOTTI
-          FINANZIARI offerti direttamente online per rendere l’arte accessibile a tutti tramite PRESTITI RATEALI da
-          parte di istituti bancari partner.
+        <Typography variant="body1" sx={{ mt: 1 }}>
+          Con Artpay la tua galleria acquisisce un nuovo pubblico qualificato di appassionati e collezionisti d’arte:
+          potrai allargare la base dei potenziali clienti grazie ai <strong>prodotti finanziari</strong> offerti
+          direttamente online per rendere l’arte accessibile a tutti tramite <strong>prestiti rateali</strong> da parte
+          di istituti bancari partner.
         </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>Artpay è utile anche alle vendite nella tua galleria. Ti basta
-          esporre il logo/marker/qr-code (presto in dotazione) per le opere in vendita e i tuoi clienti potranno
-          accedere al suo acquisto diretto online e ai servizi finanziari rateali, a loro dedicati.
+        <Typography variant="body1" sx={{ mt: 1 }}>
+          Artpay è utile anche alle vendite nella tua galleria. Ti basta esporre il logo/marker/qr-code (presto in
+          dotazione) per le opere in vendita e i tuoi clienti potranno accedere al suo acquisto diretto online e ai
+          servizi finanziari rateali, a loro dedicati.
         </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>Entra a fare parte di Artpay in 3 soli semplici
-          passaggi.
+        <Typography variant="display3" color="primary" sx={{ mt: 6 }}>
+          Entra a fare parte di Artpay in 3 semplici passaggi:
         </Typography>
       </Hero>
       <Box sx={{ py: 12, background: `url(${onboardingBackground})`, px: px }}>
@@ -67,7 +68,8 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
             title={
               <>
                 Metti online
-                <br />le tue opere
+                <br />
+                le tue opere
               </>
             }>
             <Typography variant="body1">
@@ -92,8 +94,11 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
           </PromoCard>
           <PromoCard title="Ancora dubbi?" variant="contrast">
             <Typography color="white" sx={{ mb: 2 }} variant="body1">
-              Consulta le nostre <Link color="inherit" href="/faq">FAQ</Link> e, se non trovi risposta ai tuoi quesiti,
-              scrivici
+              Consulta le nostre{" "}
+              <Link color="inherit" href="/faq">
+                FAQ
+              </Link>{" "}
+              e, se non trovi risposta ai tuoi quesiti, scrivici
             </Typography>
             <Button
               variant="outlined"
@@ -131,7 +136,7 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
               borderRadius: "4px",
               transform: "translateZ(0px)",
               width: "100%",
-              height: isMobile ? "400px" : "612px"
+              height: isMobile ? "400px" : "612px",
             }}
             allow="microphone; camera"
             title="My branded typeform"

@@ -16,8 +16,7 @@ import { getDefaultPaddingX } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import Hero from "../components/Hero.tsx";
 
-export interface CustomerOnboardingProps {
-}
+export interface CustomerOnboardingProps {}
 
 const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
   // const data = useData();
@@ -41,39 +40,30 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
     <DefaultLayout sx={{ overflowX: "hidden" }}>
       <Hero imgOffset={{ xs: 6, sm: 8 }}>
         <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>
-          Artpay per gli appassionati d'arte
+          Artpay per collezionisti
         </Typography>
         <Typography variant="display1" color="primary" sx={{ mt: 1 }}>
-          Scopri come ACQUISTARE ONLINE OPERE D’ARTE CERTIFICATE in modo più accessibile e veloce, con artpay.
+          Scopri come acquistare online opere d’arte certificate in modo più accessibile e veloce, con artpay.
         </Typography>
         <Typography variant="body1" sx={{ mt: 6, maxWidth: "400px" }}>
-          Vivi la tua passione per l’arte in modo ancora più soddisfacente.<br />
+          Vivi la tua passione per l’arte in modo ancora più soddisfacente.
+          <br />
           Con Artpay puoi acquistare online opere d’arte dalle più rinomate gallerie d’arte italiane e pagarle
-          direttamente o tramite alla flessibilità dei SERVIZI FINANZIARI RATEALI delle nostre banche partner.
+          direttamente o tramite alla flessibilità dei servizi finanziari rateali delle nostre banche partner.
         </Typography>
       </Hero>
       <Box sx={{ py: 12, background: `url(${onboardingBackground})`, px: px }}>
         <Box display="flex" flexDirection="column" gap={3}>
-          <PromoCard
-            border
-            title={
-              <>
-                Esplora le opere d’arte del nostro network di gallerie
-              </>
-            }>
+          <PromoCard border title={<>Esplora le opere d’arte del nostro network di gallerie</>}>
             <Typography variant="body1">
               Dopo l’iscrizione ad Artpay, esplora l’offerta di opere d’arte online delle gallerie del nostro network.
-              Troverai tutte le informazioni su ciascuna opera e sulla galleria che le mette in vendita.<br />
+              Troverai tutte le informazioni su ciascuna opera e sulla galleria che le mette in vendita.
+              <br />
               In alternativa, visita di persona una galleria del nostro network e, se un’opera ti interessa, richiedi di
               acquistarla tramite Artpay.
             </Typography>
           </PromoCard>
-          <PromoCard
-            title={
-              <>
-                Ti interessa un’opera d’arte? prenotala!
-              </>
-            }>
+          <PromoCard title={<>Ti interessa un’opera d’arte? Prenotala!</>}>
             <Typography variant="body1">
               Hai trovato un’opera d’arte che ti interessa e vorresti acquistare? Non serve pagare tutto subito: puoi
               prenotarla con la tua carta di credito. Scegli l’opzione “Prenota l’opera” e potrai prenotarla con una
@@ -85,7 +75,8 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
           <PromoCard
             title={
               <>
-                Opzioni di <br />acquisto
+                Opzioni di <br />
+                acquisto
               </>
             }>
             <Typography variant="body1">
@@ -94,21 +85,22 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
               di finanziamento per il tuo acquisto offerto dai nostri partner selezionati: una volta completata la
               procedura, spetterà all’istituto finanziario valutare la tua pratica e concedere il credito per
               l’acquisto, che arriverà alla galleria d’arte entro 7 giorni circa, dando il via alla sua spedizione al
-              tuo indirizzo.
-              Una volta approvato il finanziamento, proseguirai con il pagamento delle singole rate per tutto il periodo
-              di finanziamento evidenziato dal piano finanziario, avendo come interlocutore direttamente l’istituto
-              bancario erogante.
+              tuo indirizzo. Una volta approvato il finanziamento, proseguirai con il pagamento delle singole rate per
+              tutto il periodo di finanziamento evidenziato dal piano finanziario, avendo come interlocutore
+              direttamente l’istituto bancario erogante.
             </Typography>
           </PromoCard>
           <PromoCard
             title={
               <>
-                Consegna <br />dell’opera
+                Consegna <br />
+                dell’opera
               </>
             }>
             <Typography variant="body1">
               Una volta completato l’acquisto con una delle tante opzioni messe a disposizione da Artpay, è il momento
-              della consegna dell’opera d’arte.<br />
+              della consegna dell’opera d’arte.
+              <br />
               Anche in questo caso, avrai massima libertà di personalizzare la tua esperienza di consegna già a partire
               dal carrello di acquisto o prenotare il ritiro presso la galleria che vende l’opera confrontandoti
               direttamente, attraverso il sistema di messaggistica integrato all’interno della piattaforma, con il
@@ -123,10 +115,11 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
               confrontandoti direttamente, attraverso il sistema di messaggistica integrato all’interno della
               piattaforma, con il personale dedicato della galleria stessa.
             </Typography>
-            {!auth.isAuthenticated && <Button variant="outlined" color="contrast" onClick={handleRegistration}>
-              Registrati
-            </Button>}
-
+            {!auth.isAuthenticated && (
+              <Button variant="outlined" color="contrast" onClick={handleRegistration}>
+                Registrati
+              </Button>
+            )}
           </PromoCard>
         </Box>
       </Box>
