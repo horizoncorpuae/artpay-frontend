@@ -8,7 +8,8 @@ import {
   DialogTitle,
   IconButton,
   Popover,
-  Typography
+  Typography,
+  useTheme,
 } from "@mui/material";
 import React, { createContext, ReactNode, useContext, useRef, useState } from "react";
 import { FaFacebook, FaWhatsapp } from "react-icons/fa6";
@@ -22,6 +23,7 @@ export interface DialogOptions {
   fullWidth?: boolean;
   fullScreen?: boolean;
   maxWidth?: false | Breakpoint;
+  background?: "primary" | "secondary";
 }
 
 export interface OkOnlyDialogOptions {
@@ -50,7 +52,7 @@ export interface DialogProvider {
   custom<T>(
     title: string | ReactNode,
     renderContent: (closeDialog: (value: T) => void) => string | ReactNode,
-    options?: DialogOptions
+    options?: DialogOptions,
   ): Promise<unknown>;
 }
 
@@ -61,25 +63,26 @@ interface DialogState<T> {
   actions: ReactNode[];
   resolve: (value?: T | PromiseLike<T>) => void;
   reject: (reason?: unknown) => void;
+  background?: "primary" | "secondary";
   maxWidth?: false | Breakpoint;
   padding?: number;
   fullWidth?: boolean;
   fullScreen?: boolean;
 }
 
-export interface DialogProviderProps extends React.PropsWithChildren {
-}
+export interface DialogProviderProps extends React.PropsWithChildren {}
 
 const defaultContext: DialogProvider = {
   okOnly: () => Promise.reject("Dialogs not loaded"),
   yesNo: () => Promise.reject("Dialogs not loaded"),
   share: () => Promise.reject("Dialogs not loaded"),
-  custom: () => Promise.reject("Dialogs not loaded")
+  custom: () => Promise.reject("Dialogs not loaded"),
 };
 
 const Context = createContext<DialogProvider>({ ...defaultContext });
 
 export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState<DialogState<any>>();
 
@@ -119,8 +122,8 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
             autoFocus
             onClick={() => resolveDialog(resolve, false)}>
             {txtNo}
-          </Button>
-        ]
+          </Button>,
+        ],
       });
       setOpen(true);
     });
@@ -145,11 +148,10 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
           showActions: true,
           padding: 3,
           actions: [
-            <Button sx={{ mb: 2 }} autoFocus variant={okButtonVariant} color={okButtonColor}
-                    onClick={() => handleOk()}>
+            <Button sx={{ mb: 2 }} autoFocus variant={okButtonVariant} color={okButtonColor} onClick={() => handleOk()}>
               {txtOk}
-            </Button>
-          ]
+            </Button>,
+          ],
         });
         setOpen(true);
       });
@@ -198,7 +200,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
                 onClose={handleClose}
                 anchorOrigin={{
                   vertical: "bottom",
-                  horizontal: "left"
+                  horizontal: "left",
                 }}>
                 <Typography sx={{ p: 2 }}>Link copiato</Typography>
               </Popover>
@@ -214,7 +216,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
           reject,
           showActions: false,
           padding: 3,
-          actions: []
+          actions: [],
         });
         setOpen(true);
       });
@@ -235,39 +237,49 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
           showActions: options?.showActions || false,
           actions: [],
           padding: 0,
+          background: options?.background,
           maxWidth: options?.maxWidth,
           fullWidth: options?.fullWidth,
-          fullScreen: options?.fullScreen
+          fullScreen: options?.fullScreen,
         });
         setOpen(true);
       });
-    }
+    },
   };
+
+  let backgroundColor = undefined;
+  switch (dialog?.background) {
+    case "primary":
+      backgroundColor = theme.palette.primary.main;
+      break;
+  }
 
   return (
     <>
       <Context.Provider value={dialogs}>{children}</Context.Provider>
-      <Dialog open={open} fullScreen={dialog?.fullScreen} PaperProps={{ sx: { borderRadius: "16px" } }}
-              maxWidth={dialog?.maxWidth}
-              fullWidth={dialog?.fullWidth}>
+      <Dialog
+        open={open}
+        fullScreen={dialog?.fullScreen}
+        PaperProps={{ sx: { borderRadius: "16px", backgroundColor: backgroundColor } }}
+        maxWidth={dialog?.maxWidth}
+        fullWidth={dialog?.fullWidth}>
         <DialogTitle sx={{ m: 0, border: "none", minWidth: { xs: "200px", sm: "400px" } }}>
           <Box display="flex" flexDirection="row" alignItems="flex-start">
             <Box flexGrow={1} mr={2}>
-              {typeof dialog?.title === "string" ?
-                <Typography variant="h4">{dialog?.title}</Typography> : dialog?.title}
+              {typeof dialog?.title === "string" ? (
+                <Typography variant="h4">{dialog?.title}</Typography>
+              ) : (
+                dialog?.title
+              )}
             </Box>
-            <IconButton
-              aria-label="close"
-              color="secondary"
-              size="small"
-              onClick={() => handleClose()}>
-              <CloseIcon fontSize="inherit" color="secondary" />
+            <IconButton aria-label="close" color="secondary" size="small" onClick={() => handleClose()}>
+              <CloseIcon fontSize="inherit" color={backgroundColor ? "#FFFFFF" : "secondary"} />
             </IconButton>
           </Box>
         </DialogTitle>
 
         <DialogContent sx={{ p: dialog?.padding, border: "none" }} dividers>
-          <div>
+          <div style={{ height: dialog?.fullScreen ? "100%" : undefined }}>
             {typeof dialog?.content === "string"
               ? (dialog?.content as string)?.split("\n").map((line, index) => <p key={index}>{line}</p>)
               : dialog?.content}

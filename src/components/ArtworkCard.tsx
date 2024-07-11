@@ -1,8 +1,13 @@
 import React from "react";
-import { Box, Card, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, IconButton, Typography, useMediaQuery, useTheme } from "@mui/material";
 import FavouriteIcon from "./icons/FavouriteIcon.tsx";
 import { CardSize } from "../types";
 import FavouriteFilledIcon from "./icons/FavouriteFilledIcon.tsx";
+import QrCodeIcon from "./icons/QrCodeIcon.tsx";
+import { useDialogs } from "../hoc/DialogProvider.tsx";
+import QRCode from "react-qr-code";
+
+import LogoWhite from "./icons/LogoWhite.tsx";
 
 export interface ArtworkCardProps {
   id: string;
@@ -28,32 +33,34 @@ export interface ArtworkCardProps {
 const cardSizes: { [key in CardSize]: string } = {
   small: "180px",
   medium: "294px",
-  large: "320px"
+  large: "320px",
 };
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({
-                                                   artistName,
-                                                   title,
-                                                   galleryName,
-                                                   price,
-                                                   size = "medium",
-                                                   imgUrl,
-                                                   isFavourite = false,
-                                                   onClick,
-                                                   onSetFavourite,
-                                                   mode = "list",
-                                                   fitWidth = false
-                                                 }) => {
-  // const theme = useTheme();
-  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  artistName,
+  title,
+  galleryName,
+  price,
+  size = "medium",
+  imgUrl,
+  isFavourite = false,
+  onClick,
+  onSetFavourite,
+  mode = "list",
+  slug,
+  fitWidth = false,
+}) => {
+  const dialogs = useDialogs();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const cardSize = fitWidth ? "100%" : cardSizes[size];
   const cardSizeClass = fitWidth ? `SwiperCard-fit` : `SwiperCard-${size}`;
 
   const formattedPrice = price
     ? `€ ${price.toLocaleString(undefined, {
-      minimumFractionDigits: 2
-    })}`
+        minimumFractionDigits: 2,
+      })}`
     : "";
 
   const textMaxWidth = size === "large" ? "190px" : "254px";
@@ -64,18 +71,56 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
       onSetFavourite(isFavourite);
     }
   };
-  const cardStyles = mode === "list" ? {
-    height: "100%"
-  } : {
-    height: "auto",
-    display: "flex",
-    flexDirection: "column"
+
+  const handleShowQrCode = () => {
+    const qrUrl = `${window.location.protocol}//${window.location.host}/opere/${slug}`;
+    dialogs.custom(
+      "",
+      () => {
+        return (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            flexDirection="column"
+            sx={{ height: "100%" }}
+            pb={12}>
+            <Box mb={6}>
+              <LogoWhite />
+            </Box>
+            <QRCode
+              value={qrUrl}
+              bgColor={theme.palette.primary.main}
+              fgColor={theme.palette.primary.contrastText}
+              size={256}
+            />
+            <Typography color="white" variant="h4" sx={{ mt: 6, px: 6, textAlign: "center" }}>
+              Inquadra il QR code per acquistare l'opera
+            </Typography>
+          </Box>
+        );
+      },
+      { background: "primary", fullScreen: isMobile },
+    );
   };
+
+  const cardStyles =
+    mode === "list"
+      ? {
+          height: "100%",
+        }
+      : {
+          height: "auto",
+          display: "flex",
+          flexDirection: "column",
+        };
   return (
-    <Card elevation={0} className={cardSizeClass}
-          sx={{
-            ...cardStyles
-          }}>
+    <Card
+      elevation={0}
+      className={cardSizeClass}
+      sx={{
+        ...cardStyles,
+      }}>
       <CardMedia
         component="img"
         image={imgUrl}
@@ -89,7 +134,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
           width: mode === "list" ? undefined : "auto",
           //backgroundColor: "#D9D9D9",
           cursor: onClick ? "pointer" : "auto",
-          aspectRatio: fitWidth ? 1 : undefined
+          aspectRatio: fitWidth ? 1 : undefined,
         }}></CardMedia>
       <CardContent sx={{ p: 0, mt: imgMargin, height: "100%" }}>
         <Box display="flex" sx={{ height: mode === "grid" ? "100%" : undefined }}>
@@ -106,7 +151,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
                 flexGrow: 1,
                 maxWidth: textMaxWidth,
                 minHeight: mode === "grid" ? "0" : "50px",
-                cursor: "pointer"
+                cursor: "pointer",
               }}>
               {title}
             </Typography>
@@ -124,7 +169,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
             flexDirection="column"
             alignItems="end"
             justifyContent="space-between"
-            sx={{ maxWidth: "20px" }}>
+            sx={{ maxWidth: "50px" }}>
             <IconButton onClick={() => handleSetFavourite()} size="small" sx={{ mt: -0.5 }}>
               {isFavourite ? (
                 <FavouriteFilledIcon color="primary" fontSize="small" />
@@ -132,9 +177,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
                 <FavouriteIcon fontSize="small" />
               )}
             </IconButton>
-            {/*            <IconButton sx={{ mb: -1 }} size="medium">
+            <IconButton onClick={handleShowQrCode} sx={{ mb: -1 }} size="medium">
               <QrCodeIcon color="primary" />
-            </IconButton>*/}
+            </IconButton>
           </Box>
         </Box>
       </CardContent>
