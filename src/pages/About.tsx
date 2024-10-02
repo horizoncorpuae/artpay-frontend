@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import HeroAbout, { HeroAboutProps } from "../components/HeroAbout.tsx";
-import { Box, Grid, GridProps, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, GridProps, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import imgLogo from "../assets/images/logo.svg";
 import imgAboutCover from "../assets/images/hero-about-cover.webp";
 import { getDefaultPaddingX } from "../utils.ts";
-import PromoCard from "../components/PromoCard.tsx";
-import OnboardingCards from "../components/OnboardingCards.tsx";
 import NewsletterBig from "../components/NewsletterBig.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import EmailContactBox from "../components/EmailContactBox.tsx";
