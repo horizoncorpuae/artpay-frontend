@@ -41,12 +41,10 @@ import Contacts from "./pages/Contacts.tsx";
 import Messages from "./pages/Messages.tsx";
 import Galleries from "./pages/Galleries.tsx";
 
-
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || ""; // https://artpay.art
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
   const location = useLocation();
-
 
   const enableGa = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
@@ -80,7 +78,7 @@ function AppContent() {
                     <Route path="/opere/:slug_opera" element={<Artwork />} />
                     <Route path="/artisti/:slug" element={<Artist />} />
                     <Route path="/artisti" element={<Artists />} />
-                    <Route path="/artworks" element={<Artworks />} />
+                    <Route path="/tutte-le-opere" element={<Artworks />} />
                     <Route path="/acquisti" element={<Purchase />} />
                     <Route path="/completa-acquisto/:order_id" element={<Purchase orderMode="redeem" />} />
                     <Route path="/accconto-blocca-opera" element={<Purchase orderMode="loan" />} />

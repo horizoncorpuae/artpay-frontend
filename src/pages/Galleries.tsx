@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { useData } from "../hoc/DataProvider.tsx";
 import { galleriesToGalleryItems, getDefaultPaddingX } from "../utils.ts";
-import { Box, Button, Chip, Grid, Typography } from "@mui/material";
-import SearchIcon from "../components/icons/SearchIcon.tsx";
-import TextField from "../components/TextField.tsx";
+import { Box, Grid, Typography } from "@mui/material";
 import { GalleryCardProps } from "../components/GalleryCard.tsx";
 import GalleriesGrid from "../components/GalleriesGrid.tsx";
 import SortIcon from "../components/icons/SortIcon.tsx";
@@ -37,6 +35,7 @@ const Galleries: React.FC<GalleriesProps> = ({}) => {
             Gallerie... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.
           </Typography>
         </Grid>
+        {/* Cerca gallerie disattivate
         <Grid
           xs={12}
           sm={5}
@@ -52,7 +51,7 @@ const Galleries: React.FC<GalleriesProps> = ({}) => {
               startAdornment: <SearchIcon fontSize="small" />,
             }}
           />
-        </Grid>
+        </Grid>*/}
         <Grid
           xs={12}
           sx={{
@@ -67,9 +66,10 @@ const Galleries: React.FC<GalleriesProps> = ({}) => {
           alignItems="center"
           item>
           <Box display="flex" gap={2}>
+            {/* Filtri disattivati
             <Chip variant="outlined" label="Filtro" />
             <Chip variant="outlined" label="Filtro" />
-            <Chip variant="outlined" label="Filtro" />
+            <Chip variant="outlined" label="Filtro" />*/}
           </Box>
           <Box flexGrow={1} display={{ xs: "none", sm: "inherit" }}></Box>
           <Box display="flex" gap={0.5}>
