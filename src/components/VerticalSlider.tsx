@@ -23,7 +23,7 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({ sx, slides }) => {
   if (belowMd) {
     sliderHeight = "auto";
   } else if (isMd) {
-    sliderHeight = "500px";
+    sliderHeight = "600px";
   } else if (isLg) {
     sliderHeight = "650px";
   }

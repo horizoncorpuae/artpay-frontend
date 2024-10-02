@@ -97,9 +97,9 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   );
 
   const menuLinks = [
-    { label: "Gallerie", href: "/artpay-per-gallerie " },
-    { label: "Collezionisti", href: "/artpay-per-collezionisti " },
-    { label: "Chi siamo", href: "/chi-siamo" }
+    { label: "Gallerie", href: "/gallerie ", requireAuth: true },
+    { label: "Collezionisti", href: "/artpay-per-collezionisti", requireAuth: false },
+    { label: "Chi siamo", href: "/chi-siamo", requireAuth: false }
     //{ label: "ArtMatch", href: "https://artpay.art/art-match" }
   ];
 
@@ -122,7 +122,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         </Box>
         {!isMobile && (
           <Box sx={{ ml: 3 }}>
-            {menuLinks.map((link, i) => (
+            {menuLinks.filter(l => auth.isAuthenticated || !l.requireAuth).map((link, i) => (
               <Button
                 key={`btn-link-${i}`}
                 sx={{ px: 2 }}

@@ -387,6 +387,33 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             contentPadding={0}
             contentPaddingMobile={0}
             sx={{ position: "sticky", top: "96px" }}>
+            <Box display="flex" sx={{ px: { xs: 3, md: 5 } }} flexDirection="column" gap={3} mt={3}>
+              {pendingOrder?.line_items.map((item, i) => (
+                <Box key={item.id}>
+                  <DisplayImage src={item.image.src} width="100%" height="230px" />
+                  <Typography variant="body1" fontWeight={500} sx={{ mt: 1 }}>
+                    {item.name}
+                  </Typography>
+                  <Typography variant="body1" fontWeight={500} color="textSecondary" sx={{ mb: 1, mt: 0 }}>
+                    {artworks[i]?.artistName}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
+                    {artworks[i]?.technique}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mb: 2 }} color="textSecondary">
+                    {artworks[i]?.dimensions}
+                  </Typography>
+                  <Typography variant="body1" fontWeight={500}>
+                    {artworks[i]?.galleryName}
+                  </Typography>
+                  {(galleries?.length === artworks?.length && !!galleries[i]?.address?.city) &&
+                    <Typography variant="body1" fontWeight={500} color="textSecondary">
+                      {galleries[i]?.address?.city}
+                    </Typography>}
+                </Box>
+              ))}
+            </Box>
+            <Divider sx={{ my: 3, borderColor: "#d8ddfa" }} />
             <Box display="flex" flexDirection="column" gap={2} sx={{ px: { xs: 3, md: 5 } }}>
               {orderMode === "loan" ? (
                 <>
@@ -444,35 +471,8 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 {orderMode === "loan" ? "Prenota l'opera" : "Acquista ora"}
               </Button>
             </Box>
-            <Divider sx={{ my: 3, borderColor: "#d8ddfa" }} />
-            <Box display="flex" sx={{ px: { xs: 3, md: 5 } }} flexDirection="column" gap={3} mt={3}>
-              {pendingOrder?.line_items.map((item, i) => (
-                <Box key={item.id}>
-                  <DisplayImage src={item.image.src} width="100%" height="230px" />
-                  <Typography variant="body1" fontWeight={500} sx={{ mt: 1 }}>
-                    {item.name}
-                  </Typography>
-                  <Typography variant="body1" fontWeight={500} color="textSecondary" sx={{ mb: 1, mt: 0 }}>
-                    {artworks[i]?.artistName}
-                  </Typography>
-                  <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
-                    {artworks[i]?.technique}
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }} color="textSecondary">
-                    {artworks[i]?.dimensions}
-                  </Typography>
-                  <Typography variant="body1" fontWeight={500}>
-                    {artworks[i]?.galleryName}
-                  </Typography>
-                  {(galleries?.length === artworks?.length && !!galleries[i]?.address?.city) &&
-                    <Typography variant="body1" fontWeight={500} color="textSecondary">
-                      {galleries[i]?.address?.city}
-                    </Typography>}
-                </Box>
-              ))}
-            </Box>
           </ContentCard>
-          {orderMode === "loan" &&
+          {/*orderMode === "loan" &&
             <ContentCard sx={{ mt: 3, pb: 1, pt: 3 }} contentPadding={3} hideHeader>
               <Typography variant="body2">
                 Ad acquisto avvenuto, l’opera è tua e avrai massima libertà di personalizzare le modalità di
@@ -482,7 +482,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               <Button sx={{ mt: 3 }} variant="outlined" fullWidth>
                 Compra ora
               </Button>
-            </ContentCard>
+            </ContentCard>*/
           }
         </Grid>
       </Grid>

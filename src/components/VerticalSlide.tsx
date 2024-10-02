@@ -20,7 +20,7 @@ const VerticalSlide: React.FC<VerticalSlideProps> = ({ title, text, imgSrc, cta 
 
   const isMobile = isSm || belowSm;
 
-  let textWidth = "240px";
+  let textWidth = "400px";
   let slideHeight = "800px";
   if (belowSm) {
     textWidth = "100%";
@@ -29,10 +29,11 @@ const VerticalSlide: React.FC<VerticalSlideProps> = ({ title, text, imgSrc, cta 
     textWidth = "100%";
     slideHeight = "500px";
   } else if (isMd) {
-    slideHeight = "500px";
-    textWidth = "320px";
+    slideHeight = "600px";
+    textWidth = "380px";
   } else if (isLg) {
     slideHeight = "720px";
+    textWidth = "400px";
   }
 
   // , maxWidth: "620px"
@@ -40,7 +41,9 @@ const VerticalSlide: React.FC<VerticalSlideProps> = ({ title, text, imgSrc, cta 
     <Grid xs={12} md={6} lg={7} sx={{ background: isMobile ? "none" : theme.palette.primary.main }} item>
       <img style={{ width: "100%", maxHeight: slideHeight, objectFit: "cover" }} src={imgSrc} />
     </Grid>
-    <Grid display="flex" alignItems={isMd ? "flex-end" : "center"} px={6} pb={6} pt={{ xs: 3, md: 0 }} item>
+    <Grid display="flex" alignItems={isMd ? "flex-end" : "center"} px={6} pb={{ xs: 0, md: 3, lg: 6 }}
+          pt={{ xs: 3, md: 0 }}
+          item>
       <Box sx={{ maxWidth: textWidth }}>
         <Typography variant="h1">{title}</Typography>
         {cta && <Button href={cta.link} sx={{ my: 3 }} variant="contained">{cta.text}</Button>}

@@ -10,7 +10,6 @@ import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import Checkbox from "../components/Checkbox.tsx";
 import PasswordChangeForm, { PasswordChangeFormData } from "../components/PasswordChangeForm.tsx";
 import PersonalDataForm, { PersonalDataFormData } from "../components/PersonalDataForm.tsx";
-import AvatarSelector from "../components/AvatarSelector.tsx";
 import BillingDataForm from "../components/BillingDataForm.tsx";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
@@ -160,7 +159,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
         <Typography variant="h5" sx={{ mb: 2 }}>
           Impostazioni personali
         </Typography>
-        <AvatarSelector src={profile?.avatar_url} />
+        {/*<AvatarSelector src={profile?.avatar_url} />*/}
         <Box mt={3}>
           <PersonalDataForm defaultValues={personalDataDefaultValues} onSubmit={handlePersonalDataSubmit} />
         </Box>
