@@ -1,11 +1,23 @@
 import React from "react";
 import { Box } from "@mui/material";
+import AvatarCircleText from "./AvatarCircleText.tsx";
 
 export interface AvatarProps {
   src?: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ src }) => {
+const Avatar: React.FC<AvatarProps> = ({ src, firstName, lastName, username }) => {
+  let initials = ((firstName || "").substring(0, 1) + (lastName || "").substring(0, 1)).toUpperCase();
+  if (!initials && username && username.length > 1) {
+    initials = username.substring(0, 2).toUpperCase();
+  }
+  if (!src) {
+
+    return <AvatarCircleText size="xl" text={initials} />;
+  }
   return (
     <Box sx={{ height: "150px", width: "150px", borderRadius: "5px", backgroundColor: "#D9D9D9", overflow: "hidden" }}>
       <img style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }} src={src} />

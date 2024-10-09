@@ -38,6 +38,7 @@ import AppleIcon from "../components/icons/AppleIcon.tsx";
 import FacebookIcon from "../components/icons/FacebookIcon.tsx";
 import ArtworkCard from "../components/ArtworkCard.tsx";
 import ArtistCard from "../components/ArtistCard.tsx";
+import AvatarCircleText from "../components/AvatarCircleText.tsx";
 
 export interface HomeProps {
 }
@@ -110,6 +111,16 @@ const Showcase: React.FC<HomeProps> = ({}) => {
             <Typography variant="caption" color="secondary" fontWeight="600">
               Overline semibold
             </Typography>
+          </Box>
+        </ShowcaseBox>
+      </Grid>
+      <Grid container spacing={2} mt={2} px={2}>
+        <ShowcaseBox md={12} title="avatars">
+          <Box display="flex" alignItems="center" gap={3}>
+            <AvatarCircleText size="sm" text="AB" />
+            <AvatarCircleText size="md" text="CD" />
+            <AvatarCircleText size="lg" text="EF" />
+            <AvatarCircleText size="xl" text="GH" />
           </Box>
         </ShowcaseBox>
       </Grid>
@@ -371,6 +382,7 @@ const Showcase: React.FC<HomeProps> = ({}) => {
           </Box>
         </ShowcaseBox>
       </Grid>
+
     </DefaultLayout>
   );
 };

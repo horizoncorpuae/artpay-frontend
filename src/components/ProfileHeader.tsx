@@ -44,7 +44,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile, controls }) => {
         flexDirection: { xs: "column", md: "row" }
       }}
       alignItems="center">
-      <Avatar src={profile?.avatar_url} />
+      <Avatar firstName={profile?.first_name} lastName={profile?.last_name} username={profile?.username} />
       <Box display="flex" flexDirection="column" gap={1} sx={{ maxWidth: "100%" }}>
         <Typography variant="h1" sx={{
           mt: { xs: 0, md: -1 },
