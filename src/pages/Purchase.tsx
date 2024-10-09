@@ -1,7 +1,17 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { useData } from "../hoc/DataProvider.tsx";
-import { Box, Button, CircularProgress, Divider, Grid, Link, RadioGroup, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Grid,
+  Link,
+  RadioGroup,
+  Typography,
+  useMediaQuery, useTheme
+} from "@mui/material";
 import ContentCard from "../components/ContentCard.tsx";
 import UserIcon from "../components/icons/UserIcon.tsx";
 import { Cancel, Edit } from "@mui/icons-material";
@@ -32,6 +42,7 @@ import ErrorIcon from "../components/icons/ErrorIcon.tsx";
 import { Gallery } from "../types/gallery.ts";
 import LoanCard from "../components/LoanCard.tsx";
 import { useParams } from "react-router-dom";
+import LoanCardVertical from "../components/LoanCardVertical.tsx";
 
 export interface PurchaseProps {
   orderMode?: "standard" | "loan" | "redeem";
@@ -44,6 +55,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const navigate = useNavigate();
   const payments = usePayments();
   const urlParams = useParams();
+  const theme = useTheme();
 
   const checkoutButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -65,6 +77,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const [galleries, setGalleries] = useState<Gallery[]>([]);
 
   orderMode = (orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera") ? "loan" : orderMode;
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
     if (isAxiosError(err) && err.response?.data?.message) {
@@ -237,7 +250,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
   const contactHeaderButtons: ReactNode[] = [];
   if (auth.isAuthenticated) {
-    if (shippingDataEditing) {
+    if (shippingDataEditing && (areBillingFieldsFilled(userProfile?.billing) || areBillingFieldsFilled(userProfile?.shipping))) {
       contactHeaderButtons.push(
         <Button
           key="cancel-btn"
@@ -248,7 +261,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           Annulla
         </Button>
       );
-    } else {
+    } else if (!shippingDataEditing) {
       contactHeaderButtons.push(
         <Button key="edit-btn" disabled={isSaving} onClick={() => setShippingDataEditing(true)} startIcon={<Edit />}>
           Modifica
@@ -472,6 +485,11 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               </Button>
             </Box>
           </ContentCard>
+          {orderMode === "loan" && !isMobile && <Box sx={{ px: { xs: 0 }, mt: 3, mb: 12 }}>
+            <ContentCard title="Richiedi finanziamento" contentPadding={0} contentPaddingMobile={0}>
+              <LoanCardVertical />
+            </ContentCard>
+          </Box>}
           {/*orderMode === "loan" &&
             <ContentCard sx={{ mt: 3, pb: 1, pt: 3 }} contentPadding={3} hideHeader>
               <Typography variant="body2">
@@ -486,7 +504,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           }
         </Grid>
       </Grid>
-      {orderMode === "loan" && <Box sx={{ px: { ...px, xs: 0 }, mt: 3, mb: 12 }}>
+      {orderMode === "loan" && isMobile && <Box sx={{ px: { ...px, xs: 0 }, mt: 3, mb: 12 }}>
         <LoanCard />
       </Box>}
     </DefaultLayout>
