@@ -66,9 +66,9 @@ const Artworks: React.FC<ArtworksProps> = ({}) => {
         <Grid xs={12} sx={{ mb: { xs: 3, md: 6 } }} item>
           <Typography variant="h1">Tutte le opere</Typography>
         </Grid>
-        <Grid sx={{ px: { xs: 2, md: 4 } }} item xs={12} md={3}>
+        {/*        <Grid sx={{ px: { xs: 2, md: 4 } }} item xs={12} md={3}>
           <ArtworksFilters />
-        </Grid>
+        </Grid>*/}
         <Grid item xs={12} md={12}>
           <ArtworksGrid items={artworks} onSelect={handleSelectArtwork} disablePadding cardSize="medium" />
         </Grid>
