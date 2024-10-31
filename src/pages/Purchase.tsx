@@ -502,7 +502,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           }
         </Grid>
       </Grid>
-      {isMobile && <Box sx={{ px: { ...px, xs: 0 }, mt: 3, mb: 12 }}>
+      {isMobile && <Box sx={{ px: { ...px, xs: 3 }, mt: 3, mb: 12 }}>
         <LoanCard />
       </Box>}
     </DefaultLayout>
