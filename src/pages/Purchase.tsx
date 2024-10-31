@@ -77,7 +77,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const [galleries, setGalleries] = useState<Gallery[]>([]);
 
   orderMode = (orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera") ? "loan" : orderMode;
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
     if (isAxiosError(err) && err.response?.data?.message) {
