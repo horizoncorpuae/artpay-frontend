@@ -85,6 +85,7 @@ function AppContent() {
                     <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/profile/settings" element={<ProfileSettings />} />
+                    <Route path="/profile/:slug" element={<Profile />} />
                     <Route path="/thank-you-page" element={<PurchaseComplete />} />
                     <Route path="/thank-you-page/:order_id" element={<PurchaseComplete />} />
                     <Route path="/chi-siamo" element={<About />} />

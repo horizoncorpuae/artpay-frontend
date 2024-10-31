@@ -12,16 +12,20 @@ import ProfileHeader from "../components/ProfileHeader.tsx";
 import { getDefaultPaddingX, useNavigate } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import OrdersHistory from "../components/OrdersHistory.tsx";
+import { useParams } from "react-router-dom";
 
 export interface ProfileProps {
 }
 
+const subPageSlugs = ["gallerie", "artisti", "opere-preferite", "opere-bloccate", "opere-acquistate", "messaggi"];
 const Profile: React.FC<ProfileProps> = ({}) => {
   const data = useData();
   const auth = useAuth();
   const navigate = useNavigate();
+  const urlParams = useParams();
 
-  const [selectedTabPanel, setSelectedTabPanel] = useState(0);
+  const selectedTab = subPageSlugs.indexOf(urlParams?.slug || "") !== -1 ? subPageSlugs.indexOf(urlParams?.slug || "") : 0;
+  const [selectedTabPanel, setSelectedTabPanel] = useState(selectedTab);
   const [isReady, setIsReady] = useState(false);
   const [profile, setProfile] = useState<UserProfile>();
 
@@ -66,6 +70,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
             breakpoint="md"
             value={selectedTabPanel}
             onChange={(_, newValue) => {
+              window.history.replaceState(null, "", `/profile/${subPageSlugs[newValue]}`);
               setSelectedTabPanel(newValue);
             }}>
             {/*gallerie-artisti-oepre-bloccate-acquistate*/}
