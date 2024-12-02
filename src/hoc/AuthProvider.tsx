@@ -27,6 +27,7 @@ import ErrorIcon from "../components/icons/ErrorIcon.tsx";
 //import FacebookIcon from "../components/icons/FacebookIcon.tsx";
 import { appleAuthHelpers } from "react-apple-signin-auth";
 import AppleIcon from "../components/icons/AppleIcon.tsx";
+import { TemporaryOrderCreateRequest } from "../types/order.ts";
 
 type RequestError = {
   message?: string;
@@ -50,10 +51,16 @@ export interface AuthState {
   wcToken?: string;
 }
 
+export interface TemporaryOrder {
+  sku: string;
+  email_CDS: string;
+}
+
 export interface AuthContext extends AuthState {
   getRole: () => string;
   logout: () => Promise<boolean>;
   login: (showSignIn?: boolean) => void;
+  addTemporaryOrder: (sku: string, email_CDS: string) => void;
   sendPasswordResetLink: (email: string) => Promise<{ error?: unknown }>;
   resetPassword: (params: PasswordResetParams) => Promise<void>;
   getGuestAuth: () => string;
@@ -99,6 +106,7 @@ const Context = createContext<AuthContext>({
   resetPassword: () => Promise.reject("Auth not loaded"),
   logout: () => Promise.reject("Auth not loaded"),
   login: () => {},
+  addTemporaryOrder:() =>{},
   getGuestAuth: () => getGuestAuth(),
   getAuthToken: () => undefined,
 });
@@ -109,6 +117,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const signUpUrl = `${baseUrl}/wp-json/wp/v2/users`;
   const sendPasswordResetLinkUrl = `${baseUrl}/wp-json/wp/v2/user/reset-password`;
   const passwordResetUrl = `${baseUrl}/wp-json/wp/v2/user/set-password`;
+  const addTemporaryOrderUrl = `${baseUrl}/wp-json/wp/v2/flashOrder`;
   const verifyGoogleTokenUrl = `${baseUrl}/wp-json/wp/v2/verifyGoogleToken`;
   const verifyAppleTokenUrl = `${baseUrl}/wp-json/wp/v2/verifyAppleToken`;
 
@@ -120,6 +129,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const [isSignIn, setIsSignIn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
+  const [temporaryOrder, setTemporaryOrder] = useState<TemporaryOrder | undefined>();
 
   const [authValues, setAuthValues] = React.useState<AuthState>({
     isAuthenticated: false,
@@ -252,6 +262,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         wcToken: getWcCredentials(resp.data.wc_api_user_keys),
       });
       setLoginOpen(false);
+      //await checkIfExternalOrder(email);
       return {};
     } catch (err: unknown) {
       setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
@@ -273,6 +284,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       }, 500);
     }
   };
+
+  async function checkIfExternalOrder(email: string) {
+    if (temporaryOrder) {
+      try {
+        const request: TemporaryOrderCreateRequest = {
+          ...temporaryOrder,
+          email_ART: email
+        };
+
+        const response = await axios.post(
+          addTemporaryOrderUrl,
+          request
+        );
+
+        console.log("Temporary order created successfully:", response.status);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            console.error("Errore API:", error.response.status, error.response.data);
+          } else if (error.request) {
+            console.error("Nessuna risposta ricevuta dal server:", error.request);
+          } else {
+            console.error("Errore nella configurazione della richiesta:", error.message);
+          }
+        } else {
+          console.error("Errore imprevisto:", error);
+        }
+      }
+    }
+  }
+
   const register = async ({ email, username, password }: SignUpFormData) => {
     setIsLoading(true);
     // const credentials = btoa(GUEST_CONSUMER_KEY + ":" + GUEST_CONSUMER_SECRET);
@@ -289,6 +331,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         throw new AxiosError(message, resp.status?.toString() || "", undefined, resp);
       }
       setLoginOpen(false);
+      //await checkIfExternalOrder(email);
+
       await dialogs.okOnly(
         "Registrazione effettuata",
         "A breve riceverai una email con un link per verificare il tuo account",
@@ -348,6 +392,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const state: AuthContext = {
     ...authValues,
     login: showLoginDialog,
+    addTemporaryOrder: (sku: string, email_CDS: string) => setTemporaryOrder({sku,email_CDS}),
     logout,
     getRole,
     sendPasswordResetLink,

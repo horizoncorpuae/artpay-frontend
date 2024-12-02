@@ -45,7 +45,7 @@ import { useParams } from "react-router-dom";
 import LoanCardVertical from "../components/LoanCardVertical.tsx";
 
 export interface PurchaseProps {
-  orderMode?: "standard" | "loan" | "redeem";
+  orderMode?: "standard" | "loan" | "redeem" | "external";
 }
 
 const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
@@ -90,7 +90,12 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
     if (auth.isAuthenticated) {
 
-      const getOrderFunction = orderMode === "redeem" && urlParams.order_id ? data.getOrder(+urlParams.order_id) : data.getPendingOrder();
+      const getOrderFunction =
+        orderMode === "external"
+          ? data.getExternalOrder()
+          : orderMode === "redeem" && urlParams.order_id
+            ? data.getOrder(+urlParams.order_id)
+            : data.getPendingOrder();
 
       Promise.all([
         data.getUserProfile().then((resp) => {

@@ -99,6 +99,8 @@ export interface DataContext {
 
   getPendingOrder(): Promise<Order | null>;
 
+  getExternalOrder(): Promise<Order | null>;
+
   getOrder(id: number): Promise<Order | null>;
 
   createOrder(body: OrderCreateRequest): Promise<Order>;
@@ -191,6 +193,7 @@ const defaultContext: DataContext = {
   getAvailableShippingMethods: () => Promise.reject("Data provider loaded"),
   listOrders: () => Promise.reject("Data provider loaded"),
   getPendingOrder: () => Promise.reject("Data provider loaded"),
+  getExternalOrder: () => Promise.reject("Data provider loaded"),
   getOrder: () => Promise.reject("Data provider loaded"),
   createOrder: () => Promise.reject("Data provider loaded"),
   updateOrder: () => Promise.reject("Data provider loaded"),
@@ -670,6 +673,164 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       });
       return resp.data.length === 1 ? resp.data[0] : null;
     },
+
+    async getExternalOrder(): Promise<Order | null> {
+      /*const resp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
+        params: {
+          status: "pending",
+          orderby: "date",
+          order: "desc",
+          per_page: 1,
+          parent: 0,
+        },
+        headers: { Authorization: auth.getAuthToken() }
+      });
+      return resp.data.length === 1 ? resp.data[0] : null;*/
+
+      const mockOrder : Order = {
+          id: 3044,
+          parent_id: 0,
+          status: "pending",
+          currency: "EUR",
+          version: "8.2.1",
+          prices_include_tax: false,
+          date_created: "2024-12-02T22:49:32",
+          date_modified: "2024-12-02T23:06:31",
+          discount_total: "0.00",
+          discount_tax: "0.00",
+          shipping_total: "0.00",
+          shipping_tax: "0.00",
+          cart_tax: "36.07",
+          total: "200.00",
+          total_tax: "36.07",
+          customer_id: 18,
+          order_key: "wc_order_WLMooFhTeatI6",
+          billing: {
+            first_name: "",
+            last_name: "",
+            company: "",
+            address_1: "",
+            address_2: "",
+            city: "",
+            state: "",
+            postcode: "",
+            country: "",
+            email: "guest@artpay.art",
+            phone: ""
+          },
+          shipping: {
+            first_name: "",
+            last_name: "",
+            company: "",
+            address_1: "",
+            address_2: "",
+            city: "",
+            state: "",
+            postcode: "",
+            country: "",
+            phone: ""
+          },
+          payment_method: "klarna",
+          payment_method_title: "",
+          transaction_id: "",
+          customer_ip_address: "",
+          customer_user_agent: "",
+          created_via: "admin",
+          customer_note: "",
+          date_completed: null,
+          date_paid: null,
+          cart_hash: "",
+          number: "3044",
+          meta_data: [
+            {
+              key: "pms_discount_recurring_payments",
+              value: "",
+              id: 374504
+            },
+            {
+              key: "pms_discount_new_users_only",
+              value: "",
+              id: 374505
+            }
+          ],
+          line_items: [
+            {
+              id: 2799,
+              name: "Opera Demo 2",
+              product_id: 3026,
+              variation_id: 0,
+              quantity: 1,
+              tax_class: "",
+              subtotal: "163.93",
+              subtotal_tax: "36.07",
+              total: "163.93",
+              total_tax: "36.07",
+              taxes: [
+                {
+                  id: 1,
+                  total: "36.065574",
+                  subtotal: "36.065574"
+                }
+              ],
+              meta_data: [],
+              sku: "CDS002",
+              price: 163.934426000000001977241481654345989227294921875,
+              image: {
+                id: "",
+                src: ""
+              },
+              parent_name: null
+            }
+          ],
+          tax_lines: [
+            {
+              id: 2800,
+              rate_code: "IT-IVA 22%-1",
+              rate_id: 1,
+              label: "IVA 22%",
+              compound: false,
+              tax_total: "36.07",
+              shipping_tax_total: "0.00",
+              rate_percent: 22,
+              meta_data: []
+            }
+          ],
+          shipping_lines: [],
+          fee_lines: [],
+          coupon_lines: [],
+          refunds: [],
+          payment_url: "https://staging2.artpay.art/artist-about/order-pay/3044/?pay_for_order=true&key=wc_order_WLMooFhTeatI6",
+          is_editable: true,
+          needs_payment: true,
+          needs_processing: true,
+          date_created_gmt: "2024-12-02T21:49:32",
+          date_modified_gmt: "2024-12-02T22:06:31",
+          date_completed_gmt: null,
+          date_paid_gmt: null,
+          currency_symbol: "€",
+          _links: {
+            self: [
+              {
+                href: "https://staging2.artpay.art/wp-json/wc/v3/orders/3044"
+              }
+            ],
+            collection: [
+              {
+                href: "https://staging2.artpay.art/wp-json/wc/v3/orders"
+              }
+            ],
+            customer: [
+              {
+                href: "https://staging2.artpay.art/wp-json/wc/v3/customers/18"
+              }
+            ]
+          }
+        }
+      ;
+
+      return mockOrder;
+    },
+
     async getOrder(id: number): Promise<Order | null> {
       const resp = await axios.get<unknown, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders/${id}`, {
         headers: { Authorization: auth.getAuthToken() }
@@ -992,7 +1153,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
             }
             const categoryGroup = categoryMap[key];
             const childrenIds = categoryGroup.children.map((c) => c.id);
-      
+
             return artist.categoria_artisti.filter((c) => childrenIds.indexOf(c) !== -1).map((c) => c.name);*/
     },
     downpaymentPercentage: () => 5,

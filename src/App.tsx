@@ -40,6 +40,7 @@ import ArtworkReserved from "./pages/ArtworkReserved.tsx";
 import Contacts from "./pages/Contacts.tsx";
 import Messages from "./pages/Messages.tsx";
 import Galleries from "./pages/Galleries.tsx";
+import LandingPage from "./pages/LandingPage.tsx";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || ""; // https://artpay.art
@@ -70,6 +71,7 @@ function AppContent() {
                     <Route path="/" element={<Home />} />
                     <Route path="/showcase" element={<Showcase />} />
                     <Route path="/gallerie" element={<Galleries />} />
+                    <Route path="/landing" element={<LandingPage />} />
                     <Route path="/gallerie/:slug" element={<Gallery selectedTab={0} />} />
                     <Route path="/gallerie/:slug/tutte-le-opere" element={<Artworks />} />
                     <Route path="/gallerie/:slug/tutti-gli-artisti" element={<Gallery selectedTab={1} />} />
@@ -80,6 +82,7 @@ function AppContent() {
                     <Route path="/artisti" element={<Artists />} />
                     <Route path="/tutte-le-opere" element={<Artworks />} />
                     <Route path="/acquisti" element={<Purchase />} />
+                    <Route path="/acquisto-esterno" element={<Purchase orderMode="external"/>} />
                     <Route path="/completa-acquisto/:order_id" element={<Purchase orderMode="redeem" />} />
                     <Route path="/accconto-blocca-opera" element={<Purchase orderMode="loan" />} />
                     <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
