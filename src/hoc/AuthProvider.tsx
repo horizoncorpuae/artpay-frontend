@@ -53,14 +53,14 @@ export interface AuthState {
 
 export interface TemporaryOrder {
   sku: string;
-  email_CDS: string;
+  email_EXT: string;
 }
 
 export interface AuthContext extends AuthState {
   getRole: () => string;
   logout: () => Promise<boolean>;
   login: (showSignIn?: boolean) => void;
-  addTemporaryOrder: (sku: string, email_CDS: string) => void;
+  addTemporaryOrder: (sku: string, email_EXT: string) => void;
   sendPasswordResetLink: (email: string) => Promise<{ error?: unknown }>;
   resetPassword: (params: PasswordResetParams) => Promise<void>;
   getGuestAuth: () => string;
@@ -170,6 +170,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
           });
           setIsLoading(false);
           setLoginOpen(false);
+          checkIfExternalOrder(resp.data.name);
         })
         .catch(handleError);
       /*axios.get<GoogleUserInfo>(`https://www.googleapis.com/oauth2/v3/userinfo`,
@@ -239,6 +240,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       });
       setIsLoading(false);
       setLoginOpen(false);
+      await checkIfExternalOrder(authResp.data.name);
     } else {
       setError("Si è verificato un errore");
       setIsLoading(false);
@@ -262,7 +264,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         wcToken: getWcCredentials(resp.data.wc_api_user_keys),
       });
       setLoginOpen(false);
-      //await checkIfExternalOrder(email);
+      await checkIfExternalOrder(email);
       return {};
     } catch (err: unknown) {
       setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
@@ -295,8 +297,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
 
         const response = await axios.post(
           addTemporaryOrderUrl,
-          request
+          request,
+          {
+            headers: {
+              Authorization: getGuestAuth(),
+            },
+          }
         );
+
 
         console.log("Temporary order created successfully:", response.status);
       } catch (error) {
@@ -331,7 +339,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         throw new AxiosError(message, resp.status?.toString() || "", undefined, resp);
       }
       setLoginOpen(false);
-      //await checkIfExternalOrder(email);
+      await checkIfExternalOrder(email);
 
       await dialogs.okOnly(
         "Registrazione effettuata",
@@ -392,7 +400,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const state: AuthContext = {
     ...authValues,
     login: showLoginDialog,
-    addTemporaryOrder: (sku: string, email_CDS: string) => setTemporaryOrder({sku,email_CDS}),
+    addTemporaryOrder: (sku: string, email_EXT: string) => setTemporaryOrder({sku,email_EXT}),
     logout,
     getRole,
     sendPasswordResetLink,

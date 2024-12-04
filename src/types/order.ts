@@ -17,7 +17,7 @@ export type OrderCreateRequest = {
 
 export type TemporaryOrderCreateRequest = {
   sku: string;
-  email_CDS: string;
+  email_EXT: string;
   email_ART: string;
 };
 

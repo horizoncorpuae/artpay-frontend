@@ -28,7 +28,7 @@ const Home: React.FC<HomeProps> = ({}) => {
       auth.login();
     }
     else{
-      navigate('/acquisto-esterno');
+      navigate('/');
     }
   }, [auth.isAuthenticated, sku, email]);
 

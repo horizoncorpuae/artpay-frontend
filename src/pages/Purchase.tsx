@@ -91,11 +91,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     if (auth.isAuthenticated) {
 
       const getOrderFunction =
-        orderMode === "external"
-          ? data.getExternalOrder()
-          : orderMode === "redeem" && urlParams.order_id
-            ? data.getOrder(+urlParams.order_id)
-            : data.getPendingOrder();
+        orderMode === "redeem" && urlParams.order_id
+          ? data.getOrder(+urlParams.order_id)
+          : data.getPendingOrder();
 
       Promise.all([
         data.getUserProfile().then((resp) => {
@@ -125,12 +123,18 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             // console.log("existingIntentId", existingIntentId);
 
             let paymentIntent: PaymentIntent;
-            if (orderMode === "loan") {
-              paymentIntent = await data.createBlockIntent({ wc_order_key: resp.order_key });
-            } else if (orderMode === "redeem") {
-              paymentIntent = await data.createRedeemIntent({ wc_order_key: resp.order_key });
-            } else {
-              paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
+
+            if(resp.payment_method === "klarna"){
+                paymentIntent = await data.createPaymentIntentCds({wc_order_key: resp.order_key});
+            }
+            else{
+              if (orderMode === "loan") {
+                paymentIntent = await data.createBlockIntent({ wc_order_key: resp.order_key });
+              } else if (orderMode === "redeem") {
+                paymentIntent = await data.createRedeemIntent({ wc_order_key: resp.order_key });
+              } else {
+                paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
+              }
             }
             setPaymentIntent(paymentIntent);
             data.getGalleries(artworks.map(a => +a.vendor)).then(galleries => setGalleries(galleries));
