@@ -35,22 +35,30 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
   const [showMenu, setShowMenu] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  useEffect(() => {
-    const checkOrders = async () => {
-      try {
+  const handlePendingOrder = async () => {
+    const pendingOrder = await data.getPendingOrder();
+    if (pendingOrder) {
+      setShowCheckout(true);
+    }
+  };
+
+  const handleOrders = async () => {
+    try {
+      if (auth.isAuthenticated) {
         await data.getExternalOrder();
         navigate('/acquisto-esterno');
-      } catch (error) {
-        console.error('No external order found:', error);
-        const pendingOrder = await data.getPendingOrder();
-        if (pendingOrder) {
-          setShowCheckout(true);
-        }
+      } else {
+        await handlePendingOrder();
       }
-    };
+    } catch (error) {
+      console.error('No external order found:', error);
+      await handlePendingOrder();
+    }
+  };
 
-    checkOrders();
-  }, []);
+  useEffect(() => {
+    handleOrders();
+  }, [auth.isAuthenticated, data, navigate]);
 
 
   const menuOpen = showMenu && isMobile;
