@@ -42,7 +42,7 @@ import { Gallery } from "../types/gallery.ts";
 import { useParams } from "react-router-dom";
 
 export interface PurchaseProps {
-  orderMode?: "standard" | "loan" | "redeem" | "external";
+  orderMode?: "standard" | "loan" | "redeem" | "onHold";
 }
 
 const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
@@ -88,7 +88,10 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       const getOrderFunction =
         orderMode === "redeem" && urlParams.order_id
           ? data.getOrder(+urlParams.order_id)
-          : data.getPendingOrder();
+          : orderMode === "onHold"
+            ? data.getOnHoldOrder()
+            : data.getPendingOrder();
+
 
       Promise.all([
         data.getUserProfile().then((resp) => {
@@ -118,8 +121,11 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             // console.log("existingIntentId", existingIntentId);
 
             let paymentIntent: PaymentIntent;
-
-            if(resp.payment_method === "klarna"){
+            if(resp.payment_method === "bnpl" && orderMode === "redeem"){
+              resp.payment_method = "";
+              paymentIntent = await data.createRedeemIntent({ wc_order_key: resp.order_key });
+            }
+            else if(resp.payment_method === "bnpl"){
                 paymentIntent = await data.createPaymentIntentCds({wc_order_key: resp.order_key});
             }
             else{
@@ -131,7 +137,8 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
               }
             }
-            debugger;
+            console.log("paymentIntent: ",paymentIntent);
+
             setPaymentIntent(paymentIntent);
             data.getGalleries(artworks.map(a => +a.vendor)).then(galleries => setGalleries(galleries));
           } else {
@@ -330,8 +337,14 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             thankYouPage={thankYouPage}
             tabTitles={[
               paymentIntent != undefined ? paymentIntent.payment_method_types
-                .map((method) => method.charAt(0).toUpperCase() + method.slice(1))
-                .join(", ") : "Metodi classici",
+                .map((method) => {
+                  if(method.toUpperCase() === "CUSTOMER_BALANCE"){
+                    return "Bonifico Bancario";
+                  }
+                  else{
+                    return method.charAt(0).toUpperCase() + method.slice(1);
+                  }
+                }).join(", ") : "Metodi classici",
               "Santander",
             ]}
           />

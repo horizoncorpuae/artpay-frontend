@@ -21,7 +21,6 @@ import MenuIcon from "./icons/MenuIcon.tsx";
 import BetaLabel from "./icons/BetaLabel.tsx";
 import { useNavigate } from "../utils.ts";
 import { useData } from "../hoc/DataProvider.tsx";
-import { useLocation } from "react-router-dom";
 
 export interface NavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;
@@ -33,27 +32,37 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const data = useData();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
-  const location = useLocation();
+
 
   const [showMenu, setShowMenu] = useState(false);
+  const [hasExternalPendingOrder, setHasExternalPendingOrder] = useState(false);
+  const [hasPendingOrder, setHasPendingOrder] = useState(false);
+  const [alreadyNotified,setAlreadyNotified] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const handlePendingOrder = async () => {
     const pendingOrder = await data.getPendingOrder();
+    debugger;
     if (pendingOrder) {
       setShowCheckout(true);
+      setHasPendingOrder(true);
     }
   };
 
   const handleOrders = async () => {
     try {
+      await handlePendingOrder();
       if (auth.isAuthenticated) {
-        await data.getExternalOrder();
-
-        if (location.pathname !== '/acquisto-esterno') {
-          navigate('/acquisto-esterno');
+        const orders = await data.getOnHoldOrder();
+        if(orders){
+          const isNotified = localStorage.getItem("isNotified");
+          if(!isNotified){
+            setAlreadyNotified(false);
+          }else{
+            setAlreadyNotified(true);
+          }
+          setHasExternalPendingOrder(true);
+          setShowCheckout(true);
         }
-      } else {
-        await handlePendingOrder();
       }
     } catch (error) {
       await handlePendingOrder();
@@ -80,7 +89,12 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   };
 
   const handleCheckout = () => {
-    navigate("/acquisti");
+    if(hasExternalPendingOrder && !hasPendingOrder){
+      navigate("/acquisto-esterno");
+      localStorage.setItem("isNotified","true");
+    }else{
+      navigate("/acquisti");
+    }
   };
 
   const handleLogout = async () => {
@@ -193,6 +207,19 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               showCheckout && <IconButton sx={{ mr: 0, transform: { xs: undefined, md: "translateX(8px)" } }}
                                           onClick={() => handleCheckout()} color="primary">
                 <ShoppingBagIcon color="inherit" />
+                {hasExternalPendingOrder && !alreadyNotified && !hasPendingOrder && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "red",
+                      borderRadius: "50%",
+                    }}
+                  />
+                )}
               </IconButton>
             }
           </>

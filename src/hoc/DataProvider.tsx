@@ -99,6 +99,8 @@ export interface DataContext {
 
   getPendingOrder(): Promise<Order | null>;
 
+  getOnHoldOrder(): Promise<Order| null>;
+
   getExternalOrder(): Promise<void>;
 
   getOrder(id: number): Promise<Order | null>;
@@ -195,6 +197,7 @@ const defaultContext: DataContext = {
   getAvailableShippingMethods: () => Promise.reject("Data provider loaded"),
   listOrders: () => Promise.reject("Data provider loaded"),
   getPendingOrder: () => Promise.reject("Data provider loaded"),
+  getOnHoldOrder: () => Promise.reject("Data provider loaded"),
   getExternalOrder: () => Promise.reject("Data provider loaded"),
   getOrder: () => Promise.reject("Data provider loaded"),
   createOrder: () => Promise.reject("Data provider loaded"),
@@ -678,6 +681,22 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data.length === 1 ? resp.data[0] : null;
     },
 
+    async getOnHoldOrder(): Promise<Order | null> {
+      const customerId = auth.user?.id;
+      const resp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
+        params: {
+          status: "on-hold",
+          orderby: "date",
+          order: "desc",
+          per_page: 1,
+          parent: 0,
+          customer: customerId
+        },
+        headers: { Authorization: auth.getAuthToken() }
+      });
+      return resp.data.length === 1 ? resp.data[0] : null;
+    },
+
     async getExternalOrder(): Promise<void> {
       const checkedExternalOrder = localStorage.getItem(CheckedExternalOrderKey);
 
@@ -1051,34 +1070,52 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     ...favourites
   };
 
-  // Auth event listeners
   useEffect(() => {
-    const handleUserLoggedIn = () => {
-      const checkedExternalOrderKey = localStorage.getItem(CheckedExternalOrderKey);
-      if(checkedExternalOrderKey){
-        localStorage.removeItem(CheckedExternalOrderKey);
-      }
-      const pendingOrderStr = localStorage.getItem(PendingOrderStorageKey);
-      if (!pendingOrderStr) {
-        return;
-      }
-      const pendingOrder: Order = JSON.parse(pendingOrderStr);
-      if (pendingOrder.line_items.length) {
-        setIsLoading(true);
+    const handleUserLoggedIn = async () => {
+      try {
+        const externalOrderKey = localStorage.getItem('externalOrderKey');
+        if (externalOrderKey) {
+          const response = await axios.get(
+            `${baseUrl}/wp-json/wp/v2/regain-flash-order`,
+            {
+              params: {
+                order_id: externalOrderKey,
+              },
+              headers: {
+                Authorization: auth.getAuthToken()
+              }
+            }
+          );
+          console.log(response);
+          localStorage.removeItem("externalOrderKey");
+        }
 
-        dataContext.purchaseArtwork(pendingOrder.line_items[0].product_id).then(() => {
+        const pendingOrderStr = localStorage.getItem(PendingOrderStorageKey);
+        if (!pendingOrderStr) {
+          return;
+        }
+
+        const pendingOrder: Order = JSON.parse(pendingOrderStr);
+        if (pendingOrder.line_items.length) {
+          setIsLoading(true);
+
+          await dataContext.purchaseArtwork(pendingOrder.line_items[0].product_id);
           localStorage.removeItem(PendingOrderStorageKey);
-        }).finally(() => {
-          setIsLoading(false);
-        });
+        }
+      } catch (error) {
+        console.error('Errore nel recupero dell\'ordine:', error);
+      } finally {
+        setIsLoading(false);
       }
-
     };
+
     document.addEventListener(USER_LOGIN_EVENT, handleUserLoggedIn);
+
     return () => {
       document.removeEventListener(USER_LOGIN_EVENT, handleUserLoggedIn);
     };
   }, [dataContext.purchaseArtwork]);
+
 
   return <Context.Provider value={dataContext}>{isLoading ? <></> : children}</Context.Provider>;
 };

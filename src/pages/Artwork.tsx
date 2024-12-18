@@ -170,7 +170,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
     data
       .purchaseArtwork(+artwork.id, true)
       .then(() => {
-        navigate("/accconto-blocca-opera");
+        navigate("/acconto-blocca-opera");
       })
       .catch((e) => snackbar.error(e))
       .finally(() => setIsReady(true));

@@ -82,9 +82,9 @@ function AppContent() {
                     <Route path="/artisti" element={<Artists />} />
                     <Route path="/tutte-le-opere" element={<Artworks />} />
                     <Route path="/acquisti" element={<Purchase />} />
-                    <Route path="/acquisto-esterno" element={<Purchase orderMode="external"/>} />
+                    <Route path="/acquisto-esterno" element={<Purchase orderMode="onHold"/>} />
                     <Route path="/completa-acquisto/:order_id" element={<Purchase orderMode="redeem" />} />
-                    <Route path="/accconto-blocca-opera" element={<Purchase orderMode="loan" />} />
+                    <Route path="/acconto-blocca-opera" element={<Purchase orderMode="loan" />} />
                     <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/profile/settings" element={<ProfileSettings />} />

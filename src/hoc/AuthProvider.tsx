@@ -27,7 +27,6 @@ import ErrorIcon from "../components/icons/ErrorIcon.tsx";
 //import FacebookIcon from "../components/icons/FacebookIcon.tsx";
 import { appleAuthHelpers } from "react-apple-signin-auth";
 import AppleIcon from "../components/icons/AppleIcon.tsx";
-import { TemporaryOrderCreateRequest } from "../types/order.ts";
 
 type RequestError = {
   message?: string;
@@ -62,7 +61,6 @@ export interface AuthContext extends AuthState {
   login: (showSignIn?: boolean) => void;
   sendPasswordResetLink: (email: string) => Promise<{ error?: unknown }>;
   resetPassword: (params: PasswordResetParams) => Promise<void>;
-  checkIfExternalOrder: (email: string) => Promise<any>;
   getGuestAuth: () => string;
   getAuthToken: () => string | undefined;
 }
@@ -106,7 +104,6 @@ const Context = createContext<AuthContext>({
   resetPassword: () => Promise.reject("Auth not loaded"),
   logout: () => Promise.reject("Auth not loaded"),
   login: () => {},
-  checkIfExternalOrder: () => Promise.reject("Auth not loaded"),
   getGuestAuth: () => getGuestAuth(),
   getAuthToken: () => undefined,
 });
@@ -117,7 +114,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const signUpUrl = `${baseUrl}/wp-json/wp/v2/users`;
   const sendPasswordResetLinkUrl = `${baseUrl}/wp-json/wp/v2/user/reset-password`;
   const passwordResetUrl = `${baseUrl}/wp-json/wp/v2/user/set-password`;
-  const addTemporaryOrderUrl = `${baseUrl}/wp-json/wp/v2/flashOrder`;
   const verifyGoogleTokenUrl = `${baseUrl}/wp-json/wp/v2/verifyGoogleToken`;
   const verifyAppleTokenUrl = `${baseUrl}/wp-json/wp/v2/verifyAppleToken`;
 
@@ -169,7 +165,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
           });
           setIsLoading(false);
           setLoginOpen(false);
-          checkIfExternalOrder(resp.data.name);
         })
         .catch(handleError);
       /*axios.get<GoogleUserInfo>(`https://www.googleapis.com/oauth2/v3/userinfo`,
@@ -239,7 +234,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       });
       setIsLoading(false);
       setLoginOpen(false);
-      await checkIfExternalOrder(authResp.data.name);
     } else {
       setError("Si è verificato un errore");
       setIsLoading(false);
@@ -263,7 +257,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         wcToken: getWcCredentials(resp.data.wc_api_user_keys),
       });
       setLoginOpen(false);
-      await checkIfExternalOrder(email);
       return {};
     } catch (err: unknown) {
       setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
@@ -286,63 +279,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     }
   };
 
-  const checkIfExternalOrder = async (email: string) : Promise<any> => {
-    const temporaryOrderLocal = localStorage.getItem('temporaryOrder');
-    console.log(temporaryOrderLocal);
-    if (temporaryOrderLocal) {
-      const temporaryOrder = JSON.parse(temporaryOrderLocal);
-      try {
-        const request: TemporaryOrderCreateRequest = {
-          ...temporaryOrder,
-          email_ART: email
-        };
-
-        const response = await axios.post(
-          addTemporaryOrderUrl,
-          request,
-          {
-            headers: {
-              Authorization: getGuestAuth(),
-            },
-          }
-        );
-
-        localStorage.removeItem('temporaryOrder');
-        return response;
-        console.log("Temporary order created successfully:", response.status);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (error.response) {
-            console.error("Errore API:", error.response.status, error.response.data);
-          } else if (error.request) {
-            console.error("Nessuna risposta ricevuta dal server:", error.request);
-          } else {
-            console.error("Errore nella configurazione della richiesta:", error.message);
-          }
-        } else {
-          console.error("Errore imprevisto:", error);
-        }
-      }
-    }
-  }
-
   const register = async ({ email, username, password }: SignUpFormData) => {
     setIsLoading(true);
-    // const credentials = btoa(GUEST_CONSUMER_KEY + ":" + GUEST_CONSUMER_SECRET);
-    // const basicAuth = "Basic " + credentials;
+     const credentials = btoa(GUEST_CONSUMER_KEY + ":" + GUEST_CONSUMER_SECRET);
+     const basicAuth = "Basic " + credentials;
     try {
       const resp = await axios.post<SignUpFormData, AxiosResponse<User, RequestError>>(
         signUpUrl,
         { email, username, password },
-        //{ headers: { Authorization: basicAuth } }
+        { headers: { Authorization: basicAuth } }
       );
       if (resp.status > 299) {
         const message = (resp.data as RequestError)?.message || "Si è verificato un errore";
         // noinspection ExceptionCaughtLocallyJS
         throw new AxiosError(message, resp.status?.toString() || "", undefined, resp);
       }
+      //TODO: CHECK RESP SIGNUP ->
+      debugger;
+      console.log(resp);
       setLoginOpen(false);
-      await checkIfExternalOrder(email);
 
       await dialogs.okOnly(
         "Registrazione effettuata",
@@ -369,6 +324,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     // TODO: remove user from local storage
     // await storage.remove('auth')
     localStorage.removeItem(userStorageKey);
+    localStorage.removeItem('isNotified');
     resetAuthValues();
     return Promise.resolve(true);
   };
@@ -403,7 +359,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
   const state: AuthContext = {
     ...authValues,
     login: showLoginDialog,
-    checkIfExternalOrder,
     logout,
     getRole,
     sendPasswordResetLink,
