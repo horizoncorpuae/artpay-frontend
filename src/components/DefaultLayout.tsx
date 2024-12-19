@@ -89,7 +89,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         background: theme.palette.primary.main,
         alignItems: "center",
         justifyContent: "center",
-        display: "flex"
+        display: "none"
       }}>
         <Typography variant="subtitle1" color="white">Artpay Beta version</Typography>
       </Box>

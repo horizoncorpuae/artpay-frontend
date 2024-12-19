@@ -10,7 +10,7 @@ import {
   IconButton,
   Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import Logo from "../components/icons/Logo";
@@ -58,7 +58,7 @@ export interface TemporaryOrder {
 export interface AuthContext extends AuthState {
   getRole: () => string;
   logout: () => Promise<boolean>;
-  login: (showSignIn?: boolean) => void;
+  login: (showSignUp?: boolean) => void;
   sendPasswordResetLink: (email: string) => Promise<{ error?: unknown }>;
   resetPassword: (params: PasswordResetParams) => Promise<void>;
   getGuestAuth: () => string;
@@ -80,8 +80,8 @@ export const USER_LOGOUT_EVENT = "user:logout";
 const dispatchUserEvent = (event: "user:login" | "user:logout", userId: number) =>
   document.dispatchEvent(
     new CustomEvent<{ userId: number }>(event, {
-      detail: { userId },
-    }),
+      detail: { userId }
+    })
   );
 
 const getGuestAuth = () => {
@@ -103,9 +103,10 @@ const Context = createContext<AuthContext>({
   sendPasswordResetLink: () => Promise.reject("Auth not loaded"),
   resetPassword: () => Promise.reject("Auth not loaded"),
   logout: () => Promise.reject("Auth not loaded"),
-  login: () => {},
+  login: () => {
+  },
   getGuestAuth: () => getGuestAuth(),
-  getAuthToken: () => undefined,
+  getAuthToken: () => undefined
 });
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = "" }) => {
@@ -130,7 +131,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     isAuthenticated: false,
     isLoading: true,
     user: undefined,
-    wcToken: undefined,
+    wcToken: undefined
   });
 
   const handleError = (err: unknown) => {
@@ -312,11 +313,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       setIsLoading(false);
     }
   };
-  const showLoginDialog = (showSignIn: boolean = false) => {
-    if (showSignIn) {
-      setIsSignIn(true);
-    } else {
+  const showLoginDialog = (showSignUp: boolean = false) => {
+    if (showSignUp) {
       setIsSignIn(false);
+    } else {
+      setIsSignIn(true);
     }
     setLoginOpen(true);
   };

@@ -16,7 +16,8 @@ import { getDefaultPaddingX } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import Hero from "../components/Hero.tsx";
 
-export interface CustomerOnboardingProps {}
+export interface CustomerOnboardingProps {
+}
 
 const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
   // const data = useData();
@@ -27,7 +28,7 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
   //const [featuredArtists, setFeaturedArtists] = useState<ArtistCardProps[]>();
 
   const handleRegistration = () => {
-    auth.login(false);
+    auth.login(true);
   };
 
   useEffect(() => {
