@@ -20,6 +20,7 @@ import ShoppingBagIcon from "./icons/ShoppingBagIcon.tsx";
 import MenuIcon from "./icons/MenuIcon.tsx";
 import { useNavigate } from "../utils.ts";
 import { useData } from "../hoc/DataProvider.tsx";
+import { useLocation } from "react-router-dom";
 
 export interface NavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;
@@ -31,16 +32,15 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const data = useData();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
+  const location = useLocation();
 
 
   const [showMenu, setShowMenu] = useState(false);
   const [hasExternalPendingOrder, setHasExternalPendingOrder] = useState(false);
   const [hasPendingOrder, setHasPendingOrder] = useState(false);
-  const [alreadyNotified,setAlreadyNotified] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const handlePendingOrder = async () => {
     const pendingOrder = await data.getPendingOrder();
-    debugger;
     if (pendingOrder) {
       setShowCheckout(true);
       setHasPendingOrder(true);
@@ -53,28 +53,30 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       if (auth.isAuthenticated) {
         const orders = await data.getOnHoldOrder();
         if(orders){
-          const isNotified = localStorage.getItem("isNotified");
-          if(!isNotified){
-            setAlreadyNotified(false);
-          }else{
-            setAlreadyNotified(true);
+          const redirectToAcquistoEsterno = localStorage.getItem("redirectToAcquistoEsterno");
+
+          if(!redirectToAcquistoEsterno && location.pathname != "/acquisto-esterno"){
+            navigate('/acquisto-esterno');
           }
+
           setHasExternalPendingOrder(true);
           setShowCheckout(true);
         }
       }
     } catch (error) {
-      await handlePendingOrder();
+      console.log(error);
     }
   };
 
 
   useEffect(() => {
     handleOrders();
-  }, [auth.isAuthenticated, data, navigate]);
+  }, [auth.isAuthenticated, data,hasPendingOrder]);
 
 
   const menuOpen = showMenu && isMobile;
+
+
 
   const mobileStyleOverrides: SxProps<Theme> = {
     top: 0,
@@ -206,19 +208,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               showCheckout && <IconButton sx={{ mr: 0, transform: { xs: undefined, md: "translateX(8px)" } }}
                                           onClick={() => handleCheckout()} color="primary">
                 <ShoppingBagIcon color="inherit" />
-                {hasExternalPendingOrder && !alreadyNotified && !hasPendingOrder && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      right: 0,
-                      width: 10,
-                      height: 10,
-                      bgcolor: "red",
-                      borderRadius: "50%",
-                    }}
-                  />
-                )}
               </IconButton>
             }
           </>

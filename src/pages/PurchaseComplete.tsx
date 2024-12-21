@@ -101,7 +101,11 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
           case "succeeded":
             if (completedOrderId) {
               try {
-                await data.updateOrder(+completedOrderId, {
+                /*await data.updateOrder(+completedOrderId, {
+                  payment_method: "Credit card",
+                  payment_method_title: "Carta di credito"
+                });*/
+                await data.setOrderStatus(+completedOrderId, "completed", {
                   payment_method: "Credit card",
                   payment_method_title: "Carta di credito"
                 });

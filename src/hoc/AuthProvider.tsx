@@ -290,14 +290,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         { email, username, password },
         { headers: { Authorization: basicAuth } }
       );
+      console.log(resp);
       if (resp.status > 299) {
         const message = (resp.data as RequestError)?.message || "Si è verificato un errore";
         // noinspection ExceptionCaughtLocallyJS
         throw new AxiosError(message, resp.status?.toString() || "", undefined, resp);
       }
       //TODO: CHECK RESP SIGNUP ->
-      debugger;
-      console.log(resp);
+
+      const externalOrderKey = localStorage.getItem('externalOrderKey');
+      if(externalOrderKey){
+
+        const loginResp = await axios.get<SignInFormData, AxiosResponse<User>>(loginUrl, {
+          auth: { username: email, password },
+        });
+
+        const consumerKey = loginResp.data.wc_api_user_keys.consumer_key;
+        const consumerSecret = loginResp.data.wc_api_user_keys.consumer_secret;
+
+        const credentials = btoa(consumerKey + ":" + consumerSecret);
+        const token =  "Basic " + credentials;
+        await axios.get(
+          `${baseUrl}/wp-json/wp/v2/regain-flash-order`,
+          {
+            params: {
+              order_id: externalOrderKey,
+            },
+            headers: {
+              Authorization: token
+            }
+          }
+        );
+      }
+
       setLoginOpen(false);
 
       await dialogs.okOnly(
@@ -326,6 +351,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     // await storage.remove('auth')
     localStorage.removeItem(userStorageKey);
     localStorage.removeItem('isNotified');
+    localStorage.removeItem('externalOrderKey');
+    localStorage.removeItem("redirectToAcquistoEsterno");
+
     resetAuthValues();
     return Promise.resolve(true);
   };

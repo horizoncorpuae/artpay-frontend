@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/images/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="stripe-key" content="pk_test_51OEuLgBVvRJjw4FGCIWYwitCW6xe6KYOfIjoZwENwGLj22ZkaZEg60csVTAg4ZTDwXW1ZksSqY4mXliEPDWVYZ0z00EaPOowQS" />
+    <meta name="stripe-key" content="pk_live_51OEuLgBVvRJjw4FGyyDk7DVjiE92TGadzaNKHENNHanTXsGSQv9GXDnoJjIFISC8tMoKhgdVg9ig3xw7xDo6JzC600MJUlEnTG" />
     <title>Artpay</title>
   </head>
   <body>
@@ -17,6 +17,21 @@
       _iub.csConfiguration = {"askConsentAtCookiePolicyUpdate":true,"floatingPreferencesButtonDisplay":"bottom-right","perPurposeConsent":true,"siteId":3587859,"whitelabel":false,"cookiePolicyId":71113702,"lang":"it","i18n":{"it":{"banner":{"title":"Informazioni sulla privacy"}}}, "banner":{ "acceptButtonCaptionColor":"#FFFFFF","acceptButtonColor":"#0073CE","acceptButtonDisplay":true,"backgroundColor":"#FFFFFF","closeButtonRejects":true,"customizeButtonCaptionColor":"#4D4D4D","customizeButtonColor":"#DADADA","customizeButtonDisplay":true,"explicitWithdrawal":true,"listPurposes":true,"logo":null,"position":"float-bottom-center","textColor":"#000000" }};
     </script>
     <script type="text/javascript" src="https://cs.iubenda.com/autoblocking/3587859.js"></script>
+
+    <script src="https://cdn.brevo.com/js/sdk-loader.js" async></script>
+    <script>
+      // Version: 2.0
+      window.Brevo = window.Brevo || [];
+      Brevo.push([
+        "init",
+        {
+          client_key: "yf83ljqjawap92p08bo3y9pl",
+          // Optional: Add other initialization options, see documentation
+        }
+      ]);
+    </script>
+
+
     <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

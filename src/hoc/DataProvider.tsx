@@ -681,8 +681,37 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data.length === 1 ? resp.data[0] : null;
     },
 
+    /*ordini esterni: fare regain in await e poi lista ordini, check su localstorage wc_order
+      -> check sul login dell'utente sul customerId
+      -> wc_order nel localstorage -> vuol dire che non è stato fatto il regain
+      -> sono loggato e non c'è wc_order nel localstorage -> vado a ricercare direttamente gli ultimi ordini in stato on-hold
+    */
     async getOnHoldOrder(): Promise<Order | null> {
       const customerId = auth.user?.id;
+      if (!customerId) {
+        return null;
+      }
+
+      const externalOrderKey = localStorage.getItem('externalOrderKey');
+      if(externalOrderKey){
+        try{
+          await axios.get(
+            `${baseUrl}/wp-json/wp/v2/regain-flash-order`,
+            {
+              params: {
+                order_id: externalOrderKey,
+              },
+              headers: {
+                Authorization: auth.getAuthToken()
+              }
+            }
+          );
+          localStorage.removeItem('externalOrderKey');
+        }catch(e){
+          console.log(e);
+        }
+      }
+
       const resp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
         params: {
           status: "on-hold",
@@ -806,7 +835,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
 
     async createPaymentIntentCds(body: PaymentIntentRequest): Promise<PaymentIntent> {
-      const cacheKey = `payment-intents-${body.wc_order_key}`;
+      const cacheKey = `payment-intents-cds-${body.wc_order_key}`;
       const cachedItem = localStorage.getItem(cacheKey);
       if (cachedItem) {
         try {
@@ -1073,23 +1102,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
   useEffect(() => {
     const handleUserLoggedIn = async () => {
       try {
-        const externalOrderKey = localStorage.getItem('externalOrderKey');
-        if (externalOrderKey) {
-          const response = await axios.get(
-            `${baseUrl}/wp-json/wp/v2/regain-flash-order`,
-            {
-              params: {
-                order_id: externalOrderKey,
-              },
-              headers: {
-                Authorization: auth.getAuthToken()
-              }
-            }
-          );
-          console.log(response);
-          localStorage.removeItem("externalOrderKey");
-        }
-
         const pendingOrderStr = localStorage.getItem(PendingOrderStorageKey);
         if (!pendingOrderStr) {
           return;

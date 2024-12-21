@@ -34,6 +34,20 @@
     </script>
     <script type="text/javascript" src="https://cs.iubenda.com/autoblocking/3587859.js"></script>
     <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
+
+    <script src="https://cdn.brevo.com/js/sdk-loader.js" async></script>
+    <script>
+        // Version: 2.0
+        window.Brevo = window.Brevo || [];
+        Brevo.push([
+            "init",
+            {
+            client_key: "yf83ljqjawap92p08bo3y9pl",
+            // Optional: Add other initialization options, see documentation
+            }
+        ]);
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
     <?php wp_footer(); ?>
     </body>
