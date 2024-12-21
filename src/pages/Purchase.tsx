@@ -45,7 +45,7 @@ import { useParams } from "react-router-dom";
 import LoanCardVertical from "../components/LoanCardVertical.tsx";
 
 export interface PurchaseProps {
-  orderMode?: "standard" | "loan" | "redeem";
+  orderMode?: "standard" | "loan" | "redeem" | "onHold";
 }
 
 const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
@@ -90,7 +90,13 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
     if (auth.isAuthenticated) {
 
-      const getOrderFunction = orderMode === "redeem" && urlParams.order_id ? data.getOrder(+urlParams.order_id) : data.getPendingOrder();
+      const getOrderFunction =
+        orderMode === "redeem" && urlParams.order_id
+          ? data.getOrder(+urlParams.order_id)
+          : orderMode === "onHold"
+            ? data.getOnHoldOrder()
+            : data.getPendingOrder();
+
 
       Promise.all([
         data.getUserProfile().then((resp) => {
@@ -120,13 +126,25 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             // console.log("existingIntentId", existingIntentId);
 
             let paymentIntent: PaymentIntent;
-            if (orderMode === "loan") {
-              paymentIntent = await data.createBlockIntent({ wc_order_key: resp.order_key });
-            } else if (orderMode === "redeem") {
+            if(resp.payment_method === "bnpl" && orderMode === "redeem"){
+              resp.payment_method = "";
               paymentIntent = await data.createRedeemIntent({ wc_order_key: resp.order_key });
-            } else {
-              paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
             }
+            else if(resp.payment_method === "bnpl"){
+                localStorage.setItem("redirectToAcquistoEsterno","true");
+                paymentIntent = await data.createPaymentIntentCds({wc_order_key: resp.order_key});
+            }
+            else{
+              if (orderMode === "loan") {
+                paymentIntent = await data.createBlockIntent({ wc_order_key: resp.order_key });
+              } else if (orderMode === "redeem") {
+                paymentIntent = await data.createRedeemIntent({ wc_order_key: resp.order_key });
+              } else {
+                paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
+              }
+            }
+            console.log("paymentIntent: ",paymentIntent);
+
             setPaymentIntent(paymentIntent);
             data.getGalleries(artworks.map(a => +a.vendor)).then(galleries => setGalleries(galleries));
           } else {
@@ -317,6 +335,26 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               </Typography>
             </Box>
           }
+          <PaymentCard
+            checkoutButtonRef={checkoutButtonRef}
+            onCheckout={() => handleSubmitCheckout()}
+            onReady={() => setCheckoutReady(true)}
+            paymentIntent={paymentIntent}
+            thankYouPage={thankYouPage}
+            tabTitles={[
+              paymentIntent != undefined ? paymentIntent.payment_method_types
+                .map((method) => {
+                  if(method.toUpperCase() === "CUSTOMER_BALANCE"){
+                    return "Bonifico Bancario";
+                  }
+                  else{
+                    return method.charAt(0).toUpperCase() + method.slice(1);
+                  }
+                }).join(", ") : "Metodi classici",
+              "Santander",
+            ]}
+          />
+
           <ContentCard title="Informazioni di contatto" icon={<UserIcon />} headerButtons={contactHeaderButtons}>
             {!auth.isAuthenticated && (
               <Button onClick={() => auth.login()} sx={{ maxWidth: "320px", mb: 2 }} variant="contained" fullWidth>
@@ -384,14 +422,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               </RadioGroup>
             </ContentCard>
           )}
-
-          <PaymentCard
-            checkoutButtonRef={checkoutButtonRef}
-            onCheckout={() => handleSubmitCheckout()}
-            onReady={() => setCheckoutReady(true)}
-            paymentIntent={paymentIntent}
-            thankYouPage={thankYouPage}
-          />
         </Grid>
         <Grid item xs={12} md={4} sx={{ mb: { xs: 4, md: 0 } }}>
           <ContentCard

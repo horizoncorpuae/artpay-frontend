@@ -50,6 +50,11 @@ export interface AuthState {
   wcToken?: string;
 }
 
+export interface TemporaryOrder {
+  sku: string;
+  email_EXT: string;
+}
+
 export interface AuthContext extends AuthState {
   getRole: () => string;
   logout: () => Promise<boolean>;
@@ -149,7 +154,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       axios
         .post<VerifyTokenData, AxiosResponse<User>>(verifyGoogleTokenUrl, {
           authCode: codeResponse.code,
-          redirectURI: window.location.origin
+          redirectURI: window.location.origin,
         })
         .then((resp) => {
           localStorage.setItem(userStorageKey, JSON.stringify(resp.data));
@@ -157,7 +162,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
             ...authValues,
             isAuthenticated: true,
             user: userToUserInfo(resp.data),
-            wcToken: getWcCredentials(resp.data.wc_api_user_keys)
+            wcToken: getWcCredentials(resp.data.wc_api_user_keys),
           });
           setIsLoading(false);
           setLoginOpen(false);
@@ -187,7 +192,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       setIsLoading(false);
     },
     flow: "auth-code",
-    scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
+    scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
   });
 
   const handleGoogleLogin = () => {
@@ -206,7 +211,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         clientId: "art.artpay.login",
         redirectURI: "https://artpay.art",
         scope: "name email",
-        usePopup: true
+        usePopup: true,
 
         // same as above
       },
@@ -214,19 +219,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         console.error(error);
         setError("Si è verificato un errore");
         setIsLoading(false);
-      }
+      },
     });
 
     if (response) {
       const authResp = await axios.post<VerifyTokenData, AxiosResponse<User>>(verifyAppleTokenUrl, {
-        token: response.authorization.id_token
+        token: response.authorization.id_token,
       });
       localStorage.setItem(userStorageKey, JSON.stringify(authResp.data));
       setAuthValues({
         ...authValues,
         isAuthenticated: true,
         user: userToUserInfo(authResp.data),
-        wcToken: getWcCredentials(authResp.data.wc_api_user_keys)
+        wcToken: getWcCredentials(authResp.data.wc_api_user_keys),
       });
       setIsLoading(false);
       setLoginOpen(false);
@@ -242,7 +247,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     setIsLoading(true);
     try {
       const resp = await axios.get<SignInFormData, AxiosResponse<User>>(loginUrl, {
-        auth: { username: email, password }
+        auth: { username: email, password },
       });
       // await storage.set('auth', JSON.stringify({jwt: resp.data.jwt, user: userInfoResp.data})) //TODO: local storage
       localStorage.setItem(userStorageKey, JSON.stringify(resp.data));
@@ -250,7 +255,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         ...authValues,
         isAuthenticated: true,
         user: userToUserInfo(resp.data),
-        wcToken: getWcCredentials(resp.data.wc_api_user_keys)
+        wcToken: getWcCredentials(resp.data.wc_api_user_keys),
       });
       setLoginOpen(false);
       return {};
@@ -261,7 +266,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
         return {
           error: err.message || JSON.stringify(data),
           status: err.response.status,
-          message: err.message
+          message: err.message,
         };
       } else {
         setAuthValues({ ...authValues, isAuthenticated: false, user: undefined });
@@ -274,25 +279,55 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       }, 500);
     }
   };
+
   const register = async ({ email, username, password }: SignUpFormData) => {
     setIsLoading(true);
-    // const credentials = btoa(GUEST_CONSUMER_KEY + ":" + GUEST_CONSUMER_SECRET);
-    // const basicAuth = "Basic " + credentials;
+     const credentials = btoa(GUEST_CONSUMER_KEY + ":" + GUEST_CONSUMER_SECRET);
+     const basicAuth = "Basic " + credentials;
     try {
       const resp = await axios.post<SignUpFormData, AxiosResponse<User, RequestError>>(
         signUpUrl,
-        { email, username, password }
-        //{ headers: { Authorization: basicAuth } }
+        { email, username, password },
+        { headers: { Authorization: basicAuth } }
       );
+      console.log(resp);
       if (resp.status > 299) {
         const message = (resp.data as RequestError)?.message || "Si è verificato un errore";
         // noinspection ExceptionCaughtLocallyJS
         throw new AxiosError(message, resp.status?.toString() || "", undefined, resp);
       }
+      //TODO: CHECK RESP SIGNUP ->
+
+      const externalOrderKey = localStorage.getItem('externalOrderKey');
+      if(externalOrderKey){
+
+        const loginResp = await axios.get<SignInFormData, AxiosResponse<User>>(loginUrl, {
+          auth: { username: email, password },
+        });
+
+        const consumerKey = loginResp.data.wc_api_user_keys.consumer_key;
+        const consumerSecret = loginResp.data.wc_api_user_keys.consumer_secret;
+
+        const credentials = btoa(consumerKey + ":" + consumerSecret);
+        const token =  "Basic " + credentials;
+        await axios.get(
+          `${baseUrl}/wp-json/wp/v2/regain-flash-order`,
+          {
+            params: {
+              order_id: externalOrderKey,
+            },
+            headers: {
+              Authorization: token
+            }
+          }
+        );
+      }
+
       setLoginOpen(false);
+
       await dialogs.okOnly(
         "Registrazione effettuata",
-        "A breve riceverai una email con un link per verificare il tuo account"
+        "A breve riceverai una email con un link per verificare il tuo account",
       );
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
@@ -315,6 +350,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     // TODO: remove user from local storage
     // await storage.remove('auth')
     localStorage.removeItem(userStorageKey);
+    localStorage.removeItem('isNotified');
+    localStorage.removeItem('externalOrderKey');
+    localStorage.removeItem("redirectToAcquistoEsterno");
+
     resetAuthValues();
     return Promise.resolve(true);
   };
@@ -343,7 +382,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     setAuthValues({
       user: undefined,
       isAuthenticated: false,
-      isLoading: false
+      isLoading: false,
     });
 
   const state: AuthContext = {
@@ -354,7 +393,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     sendPasswordResetLink,
     resetPassword,
     getGuestAuth: () => getGuestAuth(),
-    getAuthToken: () => authValues.wcToken
+    getAuthToken: () => authValues.wcToken,
   };
 
   // Guest auth interceptor
@@ -383,7 +422,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
       setAuthValues({
         user: undefined,
         isAuthenticated: false,
-        isLoading: true
+        isLoading: true,
       });
       window.location.href = "/verifica-account";
     } else {
@@ -395,13 +434,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
           user: userToUserInfo(userObj),
           isAuthenticated: true,
           isLoading: false,
-          wcToken: getWcCredentials(userObj.wc_api_user_keys)
+          wcToken: getWcCredentials(userObj.wc_api_user_keys),
         });
       } else {
         setAuthValues({
           user: undefined,
           isAuthenticated: false,
-          isLoading: false
+          isLoading: false,
         });
       }
     }

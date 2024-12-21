@@ -15,6 +15,12 @@ export type OrderCreateRequest = {
   line_items: LineItemRequest[];
 };
 
+export type TemporaryOrderCreateRequest = {
+  sku: string;
+  email_EXT: string;
+  email_ART: string;
+};
+
 export type OrderUpdateRequest = {
   customer_id?: number;
   customer_note?: string;

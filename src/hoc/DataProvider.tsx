@@ -99,6 +99,10 @@ export interface DataContext {
 
   getPendingOrder(): Promise<Order | null>;
 
+  getOnHoldOrder(): Promise<Order| null>;
+
+  getExternalOrder(): Promise<void>;
+
   getOrder(id: number): Promise<Order | null>;
 
   createOrder(body: OrderCreateRequest): Promise<Order>;
@@ -110,6 +114,8 @@ export interface DataContext {
   purchaseArtwork(artworkId: number, loan?: boolean): Promise<Order>;
 
   createPaymentIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
+
+  createPaymentIntentCds(body: PaymentIntentRequest): Promise<PaymentIntent>;
 
   createRedeemIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
 
@@ -191,12 +197,15 @@ const defaultContext: DataContext = {
   getAvailableShippingMethods: () => Promise.reject("Data provider loaded"),
   listOrders: () => Promise.reject("Data provider loaded"),
   getPendingOrder: () => Promise.reject("Data provider loaded"),
+  getOnHoldOrder: () => Promise.reject("Data provider loaded"),
+  getExternalOrder: () => Promise.reject("Data provider loaded"),
   getOrder: () => Promise.reject("Data provider loaded"),
   createOrder: () => Promise.reject("Data provider loaded"),
   updateOrder: () => Promise.reject("Data provider loaded"),
   setOrderStatus: () => Promise.reject("Data provider loaded"),
   purchaseArtwork: () => Promise.reject("Data provider loaded"),
   createPaymentIntent: () => Promise.reject("Data provider loaded"),
+  createPaymentIntentCds: () => Promise.reject("Data provider loaded"),
   createRedeemIntent: () => Promise.reject("Data provider loaded"),
   createBlockIntent: () => Promise.reject("Data provider loaded"),
   clearCachedPaymentIntent: () => Promise.reject("Data provider loaded"),
@@ -232,6 +241,7 @@ const ArtistCategoryMapStorageKey = "ArtistCategoryMap";
 const CategoryMapStorageKey = "CategoryMap";
 
 const PendingOrderStorageKey = "PendingOrder";
+export const CheckedExternalOrderKey = "externalOrderChecked";
 
 const Context = createContext<DataContext>({ ...defaultContext });
 const categoryMap: CategoryMap = {};
@@ -670,6 +680,74 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       });
       return resp.data.length === 1 ? resp.data[0] : null;
     },
+
+    /*ordini esterni: fare regain in await e poi lista ordini, check su localstorage wc_order
+      -> check sul login dell'utente sul customerId
+      -> wc_order nel localstorage -> vuol dire che non è stato fatto il regain
+      -> sono loggato e non c'è wc_order nel localstorage -> vado a ricercare direttamente gli ultimi ordini in stato on-hold
+    */
+    async getOnHoldOrder(): Promise<Order | null> {
+      const customerId = auth.user?.id;
+      if (!customerId) {
+        return null;
+      }
+
+      const externalOrderKey = localStorage.getItem('externalOrderKey');
+      if(externalOrderKey){
+        try{
+          await axios.get(
+            `${baseUrl}/wp-json/wp/v2/regain-flash-order`,
+            {
+              params: {
+                order_id: externalOrderKey,
+              },
+              headers: {
+                Authorization: auth.getAuthToken()
+              }
+            }
+          );
+          localStorage.removeItem('externalOrderKey');
+        }catch(e){
+          console.log(e);
+        }
+      }
+
+      const resp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
+        params: {
+          status: "on-hold",
+          orderby: "date",
+          order: "desc",
+          per_page: 1,
+          parent: 0,
+          customer: customerId
+        },
+        headers: { Authorization: auth.getAuthToken() }
+      });
+      return resp.data.length === 1 ? resp.data[0] : null;
+    },
+
+    async getExternalOrder(): Promise<void> {
+      const checkedExternalOrder = localStorage.getItem(CheckedExternalOrderKey);
+
+      if(!checkedExternalOrder){
+        try {
+          await axios.get<Order[]>(
+            `${baseUrl}/wp-json/wp/v2/flashOrder`,
+            { headers: { Authorization: auth.getAuthToken() } }
+          );
+
+          localStorage.setItem(CheckedExternalOrderKey, 'true');
+
+        } catch (error) {
+          throw 'order not found';
+        }
+      }
+      else{
+        throw 'order not found';
+      }
+
+    },
+
     async getOrder(id: number): Promise<Order | null> {
       const resp = await axios.get<unknown, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders/${id}`, {
         headers: { Authorization: auth.getAuthToken() }
@@ -755,6 +833,28 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       localStorage.setItem(cacheKey, JSON.stringify(resp.data));
       return resp.data;
     },
+
+    async createPaymentIntentCds(body: PaymentIntentRequest): Promise<PaymentIntent> {
+      const cacheKey = `payment-intents-cds-${body.wc_order_key}`;
+      const cachedItem = localStorage.getItem(cacheKey);
+      if (cachedItem) {
+        try {
+          const paymentIntent: PaymentIntent = JSON.parse(cachedItem);
+          if (isTimestampAfter(paymentIntent.created, 60 * 60)) {
+            return paymentIntent;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
+        `${baseUrl}/wp-json/wc/v3/stripe/cds_payment_intent`,
+        body
+      );
+      localStorage.setItem(cacheKey, JSON.stringify(resp.data));
+      return resp.data;
+    },
+
     async createRedeemIntent(body: PaymentIntentRequest): Promise<PaymentIntent> {
       const cacheKey = `payment-intents-redeem-${body.wc_order_key}`;
       const cachedItem = localStorage.getItem(cacheKey);
@@ -992,37 +1092,42 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
             }
             const categoryGroup = categoryMap[key];
             const childrenIds = categoryGroup.children.map((c) => c.id);
-      
+
             return artist.categoria_artisti.filter((c) => childrenIds.indexOf(c) !== -1).map((c) => c.name);*/
     },
     downpaymentPercentage: () => 5,
     ...favourites
   };
 
-  // Auth event listeners
   useEffect(() => {
-    const handleUserLoggedIn = () => {
-      const pendingOrderStr = localStorage.getItem(PendingOrderStorageKey);
-      if (!pendingOrderStr) {
-        return;
-      }
-      const pendingOrder: Order = JSON.parse(pendingOrderStr);
-      if (pendingOrder.line_items.length) {
-        setIsLoading(true);
+    const handleUserLoggedIn = async () => {
+      try {
+        const pendingOrderStr = localStorage.getItem(PendingOrderStorageKey);
+        if (!pendingOrderStr) {
+          return;
+        }
 
-        dataContext.purchaseArtwork(pendingOrder.line_items[0].product_id).then(() => {
+        const pendingOrder: Order = JSON.parse(pendingOrderStr);
+        if (pendingOrder.line_items.length) {
+          setIsLoading(true);
+
+          await dataContext.purchaseArtwork(pendingOrder.line_items[0].product_id);
           localStorage.removeItem(PendingOrderStorageKey);
-        }).finally(() => {
-          setIsLoading(false);
-        });
+        }
+      } catch (error) {
+        console.error('Errore nel recupero dell\'ordine:', error);
+      } finally {
+        setIsLoading(false);
       }
-
     };
+
     document.addEventListener(USER_LOGIN_EVENT, handleUserLoggedIn);
+
     return () => {
       document.removeEventListener(USER_LOGIN_EVENT, handleUserLoggedIn);
     };
   }, [dataContext.purchaseArtwork]);
+
 
   return <Context.Provider value={dataContext}>{isLoading ? <></> : children}</Context.Provider>;
 };

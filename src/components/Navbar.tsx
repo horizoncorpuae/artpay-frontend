@@ -20,6 +20,7 @@ import ShoppingBagIcon from "./icons/ShoppingBagIcon.tsx";
 import MenuIcon from "./icons/MenuIcon.tsx";
 import { useNavigate } from "../utils.ts";
 import { useData } from "../hoc/DataProvider.tsx";
+import { useLocation } from "react-router-dom";
 
 export interface NavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;
@@ -31,18 +32,51 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const data = useData();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   const [showMenu, setShowMenu] = useState(false);
+  const [hasExternalPendingOrder, setHasExternalPendingOrder] = useState(false);
+  const [hasPendingOrder, setHasPendingOrder] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  useEffect(() => {
-    data.getPendingOrder().then(pendingOrder => {
-      if (pendingOrder) {
-        setShowCheckout(true);
+  const handlePendingOrder = async () => {
+    const pendingOrder = await data.getPendingOrder();
+    if (pendingOrder) {
+      setShowCheckout(true);
+      setHasPendingOrder(true);
+    }
+  };
+
+  const handleOrders = async () => {
+    try {
+      await handlePendingOrder();
+      if (auth.isAuthenticated) {
+        const orders = await data.getOnHoldOrder();
+        if(orders){
+          const redirectToAcquistoEsterno = localStorage.getItem("redirectToAcquistoEsterno");
+
+          if(!redirectToAcquistoEsterno && location.pathname != "/acquisto-esterno"){
+            navigate('/acquisto-esterno');
+          }
+
+          setHasExternalPendingOrder(true);
+          setShowCheckout(true);
+        }
       }
-    });
-  }, []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  useEffect(() => {
+    handleOrders();
+  }, [auth.isAuthenticated, data,hasPendingOrder]);
+
 
   const menuOpen = showMenu && isMobile;
+
+
 
   const mobileStyleOverrides: SxProps<Theme> = {
     top: 0,
@@ -56,7 +90,12 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   };
 
   const handleCheckout = () => {
-    navigate("/acquisti");
+    if(hasExternalPendingOrder && !hasPendingOrder){
+      navigate("/acquisto-esterno");
+      localStorage.setItem("isNotified","true");
+    }else{
+      navigate("/acquisti");
+    }
   };
 
   const handleLogout = async () => {

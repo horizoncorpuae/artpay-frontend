@@ -1,6 +1,9 @@
 import React, { MutableRefObject, useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { StripePaymentElement } from "@stripe/stripe-js";
+import {
+  StripePaymentElement,
+  StripePaymentElementChangeEvent
+} from "@stripe/stripe-js";
 import { Alert, AlertTitle, Box, Button, Grid } from "@mui/material";
 
 type CheckoutFormProps = {
@@ -69,6 +72,9 @@ const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
         )}
         <PaymentElement
           id="payment-element"
+          onChange={(event:StripePaymentElementChangeEvent) => {
+            console.log('EVENTO STRIPE: ',event.value.type);
+          }}
           options={{
             layout: "accordion"
           }}
