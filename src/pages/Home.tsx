@@ -12,8 +12,7 @@ import imgEye from "../assets/images/eye.svg";
 import imgArtwork from "../assets/images/abstact-artwork.svg";
 import OnboardingCards from "../components/OnboardingCards.tsx";
 
-export interface HomeProps {
-}
+export interface HomeProps {}
 
 const Home: React.FC<HomeProps> = ({}) => {
   const data = useData();
@@ -64,21 +63,28 @@ const Home: React.FC<HomeProps> = ({}) => {
 
   return (
     <DefaultLayout pageLoading={!isReady} topBar={<HeroHome />} maxWidth="xl">
-
       <Box sx={{ px: px, my: { xs: 6, md: 12 }, maxWidth: theme.breakpoints.values["xl"], ml: "auto", mr: "auto" }}>
         <Typography variant="display3" sx={{}}>
-          Scopri l’eccellenza dei migliori galleristi italiani e le loro collezioni. L’arte, con Artpay, è a portata di
-          mano.
+          Scopri l’eccellenza dei migliori galleristi italiani e le loro collezioni.
+          <br />
+          <br />
+          Con ArtPay, l’arte è più vicina che mai. Naviga tra opere uniche, selezionate e certificate dai più rinomati
+          galleristi italiani, e trova la tua opera preferita per iniziare o arricchire la tua collezione.
+          <br />
+          <br />
+          Esplora l’arte con ArtPay!
         </Typography>
       </Box>
       <Box
         sx={{
           px: px,
-          maxWidth: theme.breakpoints.values["xl"], ml: "auto", mr: "auto",
+          maxWidth: theme.breakpoints.values["xl"],
+          ml: "auto",
+          mr: "auto",
           gridTemplateColumns: { xs: undefined, sm: "1fr 1fr 1fr" },
           display: { xs: "flex", sm: "grid" },
           flexDirection: { xs: "column", sm: undefined },
-          gap: 3
+          gap: 3,
         }}>
         <Box>
           <InfoCard
@@ -105,8 +111,7 @@ const Home: React.FC<HomeProps> = ({}) => {
       <OnboardingCards />
       <Grid sx={{ px: px, ml: "auto", mr: "auto", mb: 12 }} maxWidth="xl" container>
         <Grid mt={4} xs={12} item>
-          <NewsletterBig
-            title="Iscriviti ora per ricevere aggiornamenti esclusivi su Artpay direttamente nella tua casella di posta" />
+          <NewsletterBig title="Iscriviti ora per ricevere aggiornamenti esclusivi su Artpay direttamente nella tua casella di posta" />
         </Grid>
       </Grid>
       {/*<Grid sx={{ px: px, my: 12, ml: "auto", mr: "auto" }} maxWidth="xl" container>
@@ -126,8 +131,6 @@ const Home: React.FC<HomeProps> = ({}) => {
       {/*      <Grid spacing={4} sx={{ mt: 4 }} justifyContent="center" container>
         {homeContent?.promoItems.map((promoItem, i) => <PromoItem key={`promo-${i}`} {...promoItem} />)}
       </Grid>*/}
-
-
     </DefaultLayout>
   );
 };

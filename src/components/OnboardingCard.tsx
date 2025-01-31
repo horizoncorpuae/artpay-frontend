@@ -22,19 +22,32 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
                                                        }) => {
 
   return (<Grid xs={12} md={6} sx={{ justifyContent: "center", ...sx }} display="flex" item>
-    <Box p={4} sx={{
-      background: background ? `url(${background})` : "",
-      backgroundRepeat: "no-repeat",
-      backgroundPositionY: { sm: "80%", md: "50%", lg: "85%" },
-      backgroundSize: { xs: "cover", lg: "cover" },
-      flexGrow: 1,
-      height: { xs: "580px", sm: "740px", md: "580px", lg: "740px" },
-      maxWidth: { xs: undefined, md: "612px" },
-      borderRadius: "24px"
-    }}>
+    <Box
+      p={4}
+      sx={{
+        background: background ? `url(${background})` : "",
+        backgroundRepeat: "no-repeat",
+        backgroundPositionY: { sm: "80%", md: "50%", lg: "85%" },
+        backgroundSize: { xs: "cover", lg: "cover" },
+        flexGrow: 1,
+        height: { xs: "580px", sm: "740px", md: "580px", lg: "740px" },
+        maxWidth: { xs: undefined, md: "612px" },
+        borderRadius: "24px"
+      }}
+    >
       <Box display="flex" flexDirection="column" alignItems="flex-start" gap={3}>
         <Typography variant="h2">{title}</Typography>
-        <Typography variant="subtitle1" sx={{ maxWidth: "265px" }}>{subtitle}</Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            maxWidth: "400px", // Increased maxWidth for longer text
+            whiteSpace: "normal", // Allow text to wrap
+            overflow: "hidden", // Hide overflow text
+            textOverflow: "ellipsis", // Add ellipsis for overflow text
+          }}
+        >
+          {subtitle}
+        </Typography>
         <Button onClick={onClick} variant={ctaVariant}>{ctaText}</Button>
       </Box>
     </Box>

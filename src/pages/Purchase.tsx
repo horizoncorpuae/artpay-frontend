@@ -10,7 +10,8 @@ import {
   Link,
   RadioGroup,
   Typography,
-  useMediaQuery, useTheme
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import ContentCard from "../components/ContentCard.tsx";
 import UserIcon from "../components/icons/UserIcon.tsx";
@@ -18,10 +19,7 @@ import { Cancel, Edit } from "@mui/icons-material";
 import ShippingDataForm from "../components/ShippingDataForm.tsx";
 import { BillingData, ShippingData, UserProfile } from "../types/user.ts";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
-import {
-  areBillingFieldsFilled,
-  artworksToGalleryItems
-} from "../utils.ts";
+import { areBillingFieldsFilled, artworksToGalleryItems } from "../utils.ts";
 import ShippingDataPreview from "../components/ShippingDataPreview.tsx";
 import Checkbox from "../components/Checkbox.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
@@ -72,15 +70,13 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const [privacyChecked, setPrivacyChecked] = useState(false);
   const [showCommissioni, setShowCommissioni] = useState(false);
 
-
   const [availableShippingMethods, setAvailableShippingMethods] = useState<ShippingMethodOption[]>([]);
   const [pendingOrder, setPendingOrder] = useState<Order>();
   const [paymentIntent, setPaymentIntent] = useState<PaymentIntent>();
   const [artworks, setArtworks] = useState<ArtworkCardProps[]>([]);
   const [galleries, setGalleries] = useState<Gallery[]>([]);
 
-
-  orderMode = (orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera") ? "loan" : orderMode;
+  orderMode = orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera" ? "loan" : orderMode;
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
@@ -91,16 +87,13 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   };
 
   useEffect(() => {
-
     if (auth.isAuthenticated) {
-
       const getOrderFunction =
         orderMode === "redeem" && urlParams.order_id
           ? data.getOrder(+urlParams.order_id)
           : orderMode === "onHold"
             ? data.getOnHoldOrder()
             : data.getPendingOrder();
-
 
       Promise.all([
         data.getUserProfile().then((resp) => {
@@ -123,22 +116,20 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           if (resp) {
             setPendingOrder(resp);
             const artworks = await Promise.all(
-              resp.line_items.map((item) => data.getArtwork(item.product_id.toString()))
+              resp.line_items.map((item) => data.getArtwork(item.product_id.toString())),
             );
             setArtworks(artworksToGalleryItems(artworks, undefined, data));
             // const existingIntentId = getPropertyFromOrderMetadata(resp.meta_data, "_stripe_intent_id");
             // console.log("existingIntentId", existingIntentId);
 
             let paymentIntent: PaymentIntent;
-            if(resp.payment_method === "bnpl" && orderMode === "redeem"){
+            if (resp.payment_method === "bnpl" && orderMode === "redeem") {
               resp.payment_method = "";
               paymentIntent = await data.createRedeemIntent({ wc_order_key: resp.order_key });
-            }
-            else if(resp.payment_method === "bnpl"){
-                localStorage.setItem("redirectToAcquistoEsterno","true");
-                paymentIntent = await data.createPaymentIntentCds({wc_order_key: resp.order_key});
-            }
-            else{
+            } else if (resp.payment_method === "bnpl") {
+              localStorage.setItem("redirectToAcquistoEsterno", "true");
+              paymentIntent = await data.createPaymentIntentCds({ wc_order_key: resp.order_key });
+            } else {
               if (orderMode === "loan") {
                 paymentIntent = await data.createBlockIntent({ wc_order_key: resp.order_key });
               } else if (orderMode === "redeem") {
@@ -147,15 +138,15 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 paymentIntent = await data.createPaymentIntent({ wc_order_key: resp.order_key });
               }
             }
-            console.log("paymentIntent: ",paymentIntent);
+            console.log("paymentIntent: ", paymentIntent);
 
             setPaymentIntent(paymentIntent);
-            data.getGalleries(artworks.map(a => +a.vendor)).then(galleries => setGalleries(galleries));
+            data.getGalleries(artworks.map((a) => +a.vendor)).then((galleries) => setGalleries(galleries));
           } else {
             setNoPendingOrder(true);
             navigate("/errore/404");
           }
-        })
+        }),
       ])
         .then(() => {
           setIsReady(true);
@@ -170,7 +161,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
         if (resp) {
           setPendingOrder(resp);
           const artworks = await Promise.all(
-            resp.line_items.map((item) => data.getArtwork(item.product_id.toString()))
+            resp.line_items.map((item) => data.getArtwork(item.product_id.toString())),
           );
           setArtworks(artworksToGalleryItems(artworks, undefined, data));
         }
@@ -190,11 +181,12 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       return;
     }
     setIsSaving(true);
-    data.updateUserProfile({
-      billing: {
-        invoice_type: newVal ? "receipt" : ""
-      }
-    })
+    data
+      .updateUserProfile({
+        billing: {
+          invoice_type: newVal ? "receipt" : "",
+        },
+      })
       .then(async (resp) => {
         setIsSaving(false);
         setRequireInvoice(resp.billing?.invoice_type !== "");
@@ -235,7 +227,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       instance_id: selectedShippingMethod.instance_id.toString(),
       method_id: selectedShippingMethod.method_id,
       method_title: selectedShippingMethod.method_title,
-      total: selectedShippingMethod.method_id === "local_pickup" ? "0" : estimatedShippingCost.toFixed(2)
+      total: selectedShippingMethod.method_id === "local_pickup" ? "0" : estimatedShippingCost.toFixed(2),
     };
     if (existingShippingLine) {
       updatedShippingLine.id = existingShippingLine.id;
@@ -243,7 +235,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     updatedOrder.shipping_lines = [updatedShippingLine];
     try {
       await data.updateOrder(pendingOrder.id, updatedOrder);
-      let paymentMethodForUpdate = "Santander"
+      let paymentMethodForUpdate = "Santander";
       if (paymentMethod === "Carta") {
         paymentMethodForUpdate = "card";
       } else if (paymentMethod === "Klarna") {
@@ -264,8 +256,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       setCheckoutReady(false);
       await data.updateOrder(pendingOrder.id, {
         shipping: { ...userProfile?.shipping },
-        billing:
-          requireInvoice && userProfile?.billing ? { ...userProfile?.billing } : { ...userProfile?.shipping }
+        billing: requireInvoice && userProfile?.billing ? { ...userProfile?.billing } : { ...userProfile?.shipping },
       });
       localStorage.setItem("completed-order", pendingOrder.id.toString());
       checkoutButtonRef.current.click();
@@ -294,17 +285,17 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
         }
 
         const getOrderFunction =
-        orderMode === "redeem" && urlParams.order_id
-          ? data.getOrder(+urlParams.order_id)
-          : orderMode === "onHold"
-            ? data.getOnHoldOrder()
-            : data.getPendingOrder();
-            
+          orderMode === "redeem" && urlParams.order_id
+            ? data.getOrder(+urlParams.order_id)
+            : orderMode === "onHold"
+              ? data.getOnHoldOrder()
+              : data.getPendingOrder();
+
         const order = await getOrderFunction;
         if (order) setPendingOrder(order);
         setShowCommissioni(true);
       } catch (e) {
-        console.error('Update payment method error: ', e);
+        console.error("Update payment method error: ", e);
         setShowCommissioni(false);
       }
     }
@@ -312,7 +303,10 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
   const contactHeaderButtons: ReactNode[] = [];
   if (auth.isAuthenticated) {
-    if (shippingDataEditing && (areBillingFieldsFilled(userProfile?.billing) || areBillingFieldsFilled(userProfile?.shipping))) {
+    if (
+      shippingDataEditing &&
+      (areBillingFieldsFilled(userProfile?.billing) || areBillingFieldsFilled(userProfile?.shipping))
+    ) {
       contactHeaderButtons.push(
         <Button
           key="cancel-btn"
@@ -321,13 +315,13 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           onClick={() => setShippingDataEditing(false)}
           startIcon={<Cancel />}>
           Annulla
-        </Button>
+        </Button>,
       );
     } else if (!shippingDataEditing) {
       contactHeaderButtons.push(
         <Button key="edit-btn" disabled={isSaving} onClick={() => setShippingDataEditing(true)} startIcon={<Edit />}>
           Modifica
-        </Button>
+        </Button>,
       );
     }
   }
@@ -338,30 +332,35 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const estimatedShippingCost = [0, ...artworks.map((a) => +(a.estimatedShippingCost || "0"))].reduce((a, b) => a + b);
   // const formattedSubtotal = (+(pendingOrder?.total || 0) - +(pendingOrder?.total_tax || 0)).toFixed(2);
   const thankYouPage =
-    orderMode === "loan" ? `/opera-bloccata/${artworks.length ? artworks[0].slug : ""}` : `/thank-you-page/${pendingOrder?.id}`;
+    orderMode === "loan"
+      ? `/opera-bloccata/${artworks.length ? artworks[0].slug : ""}`
+      : `/thank-you-page/${pendingOrder?.id}`;
   const checkoutEnabled =
     checkoutReady &&
     privacyChecked &&
     !isSaving &&
     (currentShippingMethod || (orderMode === "loan" && areBillingFieldsFilled(userProfile?.billing)));
 
-
-  const shippingPrice = (currentShippingMethod === "local_pickup" || !currentShippingMethod) ? 0 : estimatedShippingCost || 0;
+  const shippingPrice =
+    currentShippingMethod === "local_pickup" || !currentShippingMethod ? 0 : estimatedShippingCost || 0;
 
   const px = { xs: 3, sm: 4, md: 10, lg: 12 };
 
   if (noPendingOrder) {
-    return <DefaultLayout pageLoading={!isReady || !paymentsReady} pb={6}>
-      <Grid mt={16} spacing={3} px={3} container>
-        <Grid item xs={12}>
-          <Typography variant="h3"><ErrorIcon color="error" fontSize="large" /> Non ci sono opere nel
-            carrello</Typography>
-          <Typography sx={{ mt: 1 }} variant="subtitle1" color="textSecondary">
-            Esplora Artpay e inizia ad acquistare
-          </Typography>
+    return (
+      <DefaultLayout pageLoading={!isReady || !paymentsReady} pb={6}>
+        <Grid mt={16} spacing={3} px={3} container>
+          <Grid item xs={12}>
+            <Typography variant="h3">
+              <ErrorIcon color="error" fontSize="large" /> Non ci sono opere nel carrello
+            </Typography>
+            <Typography sx={{ mt: 1 }} variant="subtitle1" color="textSecondary">
+              Esplora Artpay e inizia ad acquistare
+            </Typography>
+          </Grid>
         </Grid>
-      </Grid>
-    </DefaultLayout>;
+      </DefaultLayout>
+    );
   }
 
   return (
@@ -402,7 +401,24 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               "Santander",
             ]}
           />
-
+          {orderMode !== "loan" && auth.isAuthenticated && (
+            <ContentCard title="Metodo di spedizione" icon={<PiTruckThin size="28px" />}>
+              <RadioGroup defaultValue="selected" name="radio-buttons-group">
+                {availableShippingMethods.map((s) => (
+                  <RadioButton
+                    sx={{ mb: 2 }}
+                    key={s.method_id}
+                    value={s.method_id}
+                    disabled={isSaving}
+                    onClick={() => handleSelectShippingMethod(s)}
+                    checked={currentShippingMethod === s.method_id}
+                    label={s.method_title}
+                    description={s.method_description(estimatedShippingCost)}
+                  />
+                ))}
+              </RadioGroup>
+            </ContentCard>
+          )}
           <ContentCard title="Informazioni di contatto" icon={<UserIcon />} headerButtons={contactHeaderButtons}>
             {!auth.isAuthenticated && (
               <Button onClick={() => auth.login()} sx={{ maxWidth: "320px", mb: 2 }} variant="contained" fullWidth>
@@ -452,24 +468,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
               </Box>
             )}
           </ContentCard>
-          {orderMode !== "loan" && auth.isAuthenticated && (
-            <ContentCard title="Metodo di spedizione" icon={<PiTruckThin size="28px" />}>
-              <RadioGroup defaultValue="selected" name="radio-buttons-group">
-                {availableShippingMethods.map((s) => (
-                  <RadioButton
-                    sx={{ mb: 2 }}
-                    key={s.method_id}
-                    value={s.method_id}
-                    disabled={isSaving}
-                    onClick={() => handleSelectShippingMethod(s)}
-                    checked={currentShippingMethod === s.method_id}
-                    label={s.method_title}
-                    description={s.method_description(estimatedShippingCost)}
-                  />
-                ))}
-              </RadioGroup>
-            </ContentCard>
-          )}
         </Grid>
         <Grid item xs={12} md={4} sx={{ mb: { xs: 4, md: 0 } }}>
           <ContentCard
@@ -536,54 +534,61 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 </>
               ) : (
                 <>
-                    <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body1" fontSize={20} fontWeight={700}>Subtotale</Typography>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body1" fontSize={20} fontWeight={700}>
+                      Subtotale
+                    </Typography>
                     <Typography variant="body1" fontSize={20} fontWeight={700}>
                       €{" "}
-                      {(
-                      +(pendingOrder?.line_items[0].total || 0) +
-                      +(pendingOrder?.line_items[0].total_tax || 0) -
-                      +(pendingOrder?.meta_data.find((meta) => meta.key === "artpay_fee")?.value || 0)
-                      ).toFixed(2)}
+                      {(+(pendingOrder?.line_items[0].total || 0) + +(pendingOrder?.line_items[0].total_tax || 0))
+                        // - +(pendingOrder?.meta_data.find((meta) => meta.key === "artpay_fee")?.value || 0)
+                        .toFixed(2)}
                     </Typography>
-                    </Box>
+                  </Box>
                   {showCommissioni && (
                     <>
-                      <Box display="flex" justifyContent="space-between">
-                      <Typography variant="body1" sx={{ mt: 1, mb: 0 }}>Commissioni ArtPay</Typography>
-                      <Typography variant="body1" sx={{ mt: 1, mb: 0 }}>
-                        €{" "}
-                        {Number(
-                        pendingOrder?.meta_data.find((meta) => meta.key === "artpay_fee")?.value || 0,
-                        ).toFixed(2)}
-                      </Typography>
-                      </Box>
-                      {pendingOrder?.fee_lines?.some((fee) => fee.name === "payment-gateway-fee") && paymentMethod !== "Santander" && (
-                      <Box display="flex" justifyContent="space-between">
-                        <Typography variant="body1">Commissioni {paymentMethod}</Typography>
-                        <Typography variant="body1">
-                        €{" "}
-                        {(
-                          +(pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")?.total || 0) +
-                          +(pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")?.total_tax || 0)
-                        ).toFixed(2)}
-                        </Typography>
-                      </Box>
-                      )}
+                      {pendingOrder?.fee_lines?.some((fee) => fee.name === "payment-gateway-fee") &&
+                        paymentMethod !== "Santander" && (
+                          <Box display="flex" justifyContent="space-between">
+                            <Typography variant="body1">Commissioni di servizio</Typography>
+                            <Typography variant="body1">
+                              €{" "}
+                              {(
+                                +(
+                                  pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")?.total || 0
+                                ) +
+                                +(
+                                  pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")
+                                    ?.total_tax || 0
+                                )
+                              ).toFixed(2)}
+                            </Typography>
+                          </Box>
+                        )}
                     </>
                   )}
 
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body1"  sx={{ mb: 1, mt: 0 }}>Spedizione (IVA esente)</Typography>
+                    <Typography variant="body1" sx={{ mb: 1, mt: 0 }}>
+                      Spedizione (IVA esente)
+                    </Typography>
                     <Typography variant="body1">€ {(shippingPrice || 0).toFixed(2)}</Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="subtitle1" fontSize={20} fontWeight={700}>Totale</Typography>
-                    <Typography variant="subtitle1" fontSize={20} fontWeight={700}>€ {(+(pendingOrder?.total || 0)).toFixed(2)}</Typography>
+                    <Typography variant="subtitle1" fontSize={20} fontWeight={700}>
+                      Totale
+                    </Typography>
+                    <Typography variant="subtitle1" fontSize={20} fontWeight={700}>
+                      € {(+(pendingOrder?.total || 0)).toFixed(2)}
+                    </Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body1" fontWeight={500} color="textSecondary" fontSize={15}>Di cui IVA</Typography>
-                    <Typography variant="body1" fontWeight={500} color="textSecondary" fontSize={15}>€ {Number(pendingOrder?.total_tax).toFixed(2)}</Typography>
+                    <Typography variant="body1" fontWeight={500} color="textSecondary" fontSize={15}>
+                      Di cui IVA
+                    </Typography>
+                    <Typography variant="body1" fontWeight={500} color="textSecondary" fontSize={15}>
+                      € {Number(pendingOrder?.total_tax).toFixed(2)}
+                    </Typography>
                   </Box>
                 </>
               )}

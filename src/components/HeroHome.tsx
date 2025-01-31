@@ -11,8 +11,8 @@ const HeroHome: React.FC<HeroHomeProps> = ({}) => {
   return (
     <Hero sx={{ pt: { xs: 0, md: 3, lg: 6 } }} variant="contrast">
       <Typography variant="display1" color="inherit" sx={{ mt: 1, mb: 6 }}>
-        La prima piattaforma per vendere e acquistare opere d'arte, garantite dai migliori galleristi italiani, che
-        offre opzioni di pagamento personalizzabili.
+        La prima piattaforma per acquistare
+        opere d’arte garantite dai migliori galleristi italiani, con opzioni di pagamento flessibili pensate per te.
       </Typography>
       {/*<Typography variant="subtitle1" sx={{ my: 6, maxWidth: "400px" }}>
       Artpay è un servizio digitale che facilita l’acquisto delle migliori opere d’arte attraverso una piattaforma

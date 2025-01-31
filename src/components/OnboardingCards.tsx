@@ -22,15 +22,13 @@ const OnboardingCards: React.FC<OnboardingCardsProps> = ({ sx = {} }) => {
       spacing={0}
       container>
       <OnboardingCard
-        title="Sei un gallerista?"
+        title="Potenzia la tua galleria con ArtPay."
         subtitle={
           <>
-            Iscriviti ad Artpay per trasformare la tua galleria in un nuovo punto di riferimento anche digitale. Accedi
-            a strumenti esclusivi per espandere la tua presenza online e offline, vendi più opere e massimizza i tuoi
-            guadagni. Il futuro dell'arte è qui!
+            Crea il tuo e-shop personalizzato e offri ai clienti diverse opzioni di pagamento rateale in un'unica piattaforma. Una soluzione completa per far crescere il tuo business nell'arte.
           </>
         }
-        ctaText="Scopri di più"
+        ctaText="Scopri ArtPay e iscriviti ora"
         sx={{ pr: { xs: 0, md: 1.5 } }}
         onClick={() => navigate("/artpay-per-gallerie")}
         background={bgOnboardingGallery}
