@@ -328,7 +328,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
   const currentShippingMethod = pendingOrder?.shipping_lines?.length
     ? pendingOrder.shipping_lines[0].method_id
-    : undefined;
+    : 'local_pickup';
   const estimatedShippingCost = [0, ...artworks.map((a) => +(a.estimatedShippingCost || "0"))].reduce((a, b) => a + b);
   // const formattedSubtotal = (+(pendingOrder?.total || 0) - +(pendingOrder?.total_tax || 0)).toFixed(2);
   const thankYouPage =

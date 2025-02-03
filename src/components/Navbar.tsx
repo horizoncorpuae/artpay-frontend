@@ -145,8 +145,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   );
 
   const menuLinks = [
-    { label: "Gallerie", href: "/gallerie ", requireAuth: true },
-    { label: "Collezionisti", href: "/artpay-per-collezionisti", requireAuth: false },
+    //{ label: "Gallerie", href: "/gallerie ", requireAuth: true },
+    //{ label: "Collezionisti", href: "/artpay-per-collezionisti", requireAuth: false },
     { label: "Chi siamo", href: "/chi-siamo", requireAuth: false }
     //{ label: "ArtMatch", href: "https://artpay.art/art-match" }
   ];
@@ -205,10 +205,23 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               <UserIcon fontSize="inherit" color="inherit" />
             </IconButton>
             {
-              showCheckout && <IconButton sx={{ mr: 0, transform: { xs: undefined, md: "translateX(8px)" } }}
-                                          onClick={() => handleCheckout()} color="primary">
-                <ShoppingBagIcon color="inherit" />
-              </IconButton>
+              showCheckout && 
+                <>
+                <IconButton sx={{ mr: 0, transform: { xs: undefined, md: "translateX(8px)" }, position: "relative" }} onClick={() => handleCheckout()} color="primary">
+                  <ShoppingBagIcon color="inherit" />
+                  <Box
+                  sx={{
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                    width: 8,
+                    height: 8,
+                    bgcolor: "red",
+                    borderRadius: "50%"
+                  }}
+                  />
+                </IconButton>
+                </>
             }
           </>
         ) : (

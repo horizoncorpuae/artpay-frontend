@@ -42,7 +42,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
 
   return (
     <ContentCard
-      title="Metodo di pagamento"
+      title="Metodi di pagamento"
       icon={<PiCreditCardThin size="28px" />}
       contentPadding={0}
       contentPaddingMobile={0}

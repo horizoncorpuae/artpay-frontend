@@ -601,7 +601,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async listArtworksForGallery(galleryId: string): Promise<Artwork[]> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(
-        `${baseUrl}/wp-json/wc/v2/products/?vendor=[${galleryId}]`,
+        `${baseUrl}/wp-json/wc/v2/products/?vendor=[${galleryId}]&per_page=100`,
         { headers: { Authorization: auth.getGuestAuth() } }
       );
 
