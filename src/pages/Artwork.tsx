@@ -468,9 +468,10 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           }}
         />
       </Box>
-      <Box sx={{ px: px }}>
+      <Box sx={{ px: px }} >
         <ArtworksList disablePadding title="Opere dello stesso artista" items={artistArtworks || []} />
         <ArtworksList
+          marginTop={6}
           disablePadding
           title="Opere della galleria"
           items={galleryArtworks || []}
