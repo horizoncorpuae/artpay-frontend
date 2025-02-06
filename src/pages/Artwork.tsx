@@ -411,11 +411,11 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
             <Divider sx={{ mt: 3 }} />
             <Box
               display="flex"
-              flexDirection={{ xs: "row", sm: "row" }}
+              flexDirection={{ xs: "column", sm: "row" }}
               gap={{ xs: 3, sm: 0 }}
               mt={{ xs: 3 }}
               alignItems={{ xs: "center", md: "center" }}>
-              <Box flexGrow={1} display="flex" flexDirection="column" sx={{ gap: { xs: 1, sm: 0 } }}>
+              <Box flexGrow={1} display="flex" flexDirection={{xs: "row", sm: "column"}} sx={{ gap: { xs: 1, sm: 1 } }}>
                 <Typography variant="subtitle1">{galleryDetails?.display_name}</Typography>
                 <Typography variant="subtitle1" color="textSecondary">
                   {galleryDetails?.address?.city}
