@@ -12,7 +12,7 @@ import {
   artworksToGalleryItems,
   galleryToGalleryContent,
   getDefaultPaddingX,
-  useNavigate
+  useNavigate,
 } from "../utils.ts";
 import GalleryArtworksList from "../components/GalleryArtworksList.tsx";
 import GalleryArtistsList from "../components/GalleryArtistsList.tsx";
@@ -62,7 +62,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
       .then(async (gallery) => {
         //const description = gallery.shop.description.split("\n")[0];
         setGalleryContent(galleryToGalleryContent(gallery));
-
+        console.log(gallery);
         const galleryAddress = [gallery.address.address_1, gallery.address.address_2].join(" ");
 
         setGalleryContacts({
@@ -73,7 +73,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
           email: gallery.email,
           phoneNumbers: [gallery.address.phone],
           website: gallery.shop.url,
-          social: { linkedin: gallery.social.linkdin, ...gallery.social }
+          social: { linkedin: gallery.social.linkdin, ...gallery.social },
         });
 
         const [artworks, artists, favouriteGalleries] = await Promise.all([
@@ -87,7 +87,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
               snackbars.error(err);
             }
             return [] as number[];
-          })
+          }),
         ]);
         setGalleryArtworks(artworksToGalleryItems(artworks, "large"));
         setGalleryArtists(artistsToGalleryItems(artists));
@@ -164,7 +164,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
               width: { xs: "100%", md: "420px", lg: "612px", xl: "612px" },
               height: { xs: "100%", md: "420px", lg: "612px", xl: "612px" },
               maxWidth: "100%",
-              objectFit: "contain"
+              objectFit: "contain",
             }}>
             <img
               src={galleryContent?.coverImage}
@@ -180,7 +180,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
               top: { xs: undefined, md: "360px", lg: "560px" },
               bottom: { xs: "0", sm: "16px", md: undefined },
               left: { xs: "24px" },
-              display: { xs: "block" }
+              display: { xs: "block" },
             }}>
             <img
               className="borderRadius"
@@ -223,7 +223,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
         <Box
           sx={{
             borderBottom: 1,
-            borderColor: "#CDCFD3"
+            borderColor: "#CDCFD3",
           }}>
           <ResponsiveTabs
             value={selectedTabPanel}
@@ -240,11 +240,17 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
           <GalleryArtworksList
             artworks={galleryArtworks}
             onSelect={handleSelectArtwork}
-            onLoadMore={handleLoadMoreArtworks}
+            onLoadMore={
+              galleryArtworks?.length &&
+              galleryContent?.productsCount &&
+              galleryArtworks.length < galleryContent?.productsCount
+                ? handleLoadMoreArtworks
+                : undefined
+            }
           />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={1}>
-          <GalleryArtistsList artists={galleryArtists || []} />
+          <GalleryArtistsList artists={galleryArtists || []} gallerySlug={urlParams.slug} />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={2}>
           {galleryInfo && <GalleryInfo {...galleryInfo} contacts={galleryContacts} />}

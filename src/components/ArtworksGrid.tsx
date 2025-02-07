@@ -121,7 +121,7 @@ const ArtworksGrid: React.FC<ArtworksGridProps> = ({
         {onLoadMore && (
           <Box display="flex" mt={4} justifyContent="center">
             <Button onClick={handleLoadMore} variant="outlined" color="primary">
-              Mostra più opere
+              Vai a tutte le opere
             </Button>
           </Box>
         )}

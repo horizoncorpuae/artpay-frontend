@@ -11,6 +11,7 @@ export interface CardListProps {
   showEmpty?: boolean;
   disablePadding?: boolean;
   maxItems?: number;
+  marginTop?: number
 }
 
 const CardList: React.FC<CardListProps> = ({
@@ -19,13 +20,14 @@ const CardList: React.FC<CardListProps> = ({
                                              cardSize = "medium",
                                              showEmpty = false,
                                              disablePadding,
-                                             maxItems
+                                             maxItems,
+                                             marginTop
                                            }) => {
   if (!showEmpty && !children?.length) {
     return <></>;
   }
   return (
-    <Box sx={{ px: disablePadding ? 0 : { xs: 3, md: 6 }, maxWidth: "100%" }}>
+    <Box sx={{ px: disablePadding ? 0 : { xs: 3, md: 6 }, maxWidth: "100%", marginTop: marginTop ? marginTop : 0 }}>
       {title && (
         <Typography sx={{ mb: { xs: 3, md: 6 } }} variant="h2">
           {title}

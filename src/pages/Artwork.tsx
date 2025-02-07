@@ -70,6 +70,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const isMd = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const isLg = useMediaQuery(theme.breakpoints.only("lg"));
 
+
   const artworkTechnique = artwork ? data.getCategoryMapValues(artwork, "tecnica").join(" ") : "";
   const artworkCertificate = artwork ? data.getCategoryMapValues(artwork, "certificato").join(" ") : "";
   const artworkUnique = artwork ? data.getCategoryMapValues(artwork, "rarita").join(" ") : "";
@@ -351,7 +352,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
             <Divider sx={{ mt: 6 }} />
             <Box display="flex" alignItems="center" my={3}>
               <Typography variant="h2" sx={{ typography: { xs: "h4", sm: "h2" } }}>
-                € {formatCurrency((+(artwork?.price || 0)))}
+                € {formatCurrency(+(artwork?.price || 0))}
               </Typography>
               <Box flexGrow={1} />
               <Button
@@ -411,11 +412,11 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
             <Divider sx={{ mt: 3 }} />
             <Box
               display="flex"
-              flexDirection={{ xs: "row", sm: "row" }}
+              flexDirection={{ xs: "column", sm: "row" }}
               gap={{ xs: 3, sm: 0 }}
               mt={{ xs: 3 }}
               alignItems={{ xs: "center", md: "center" }}>
-              <Box flexGrow={1} display="flex" flexDirection="column" sx={{ gap: { xs: 1, sm: 0 } }}>
+              <Box flexGrow={1} display="flex" flexDirection={{xs: "row", sm: "column"}} sx={{ gap: { xs: 1, sm: 1 } }}>
                 <Typography variant="subtitle1">{galleryDetails?.display_name}</Typography>
                 <Typography variant="subtitle1" color="textSecondary">
                   {galleryDetails?.address?.city}
@@ -468,11 +469,16 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
           }}
         />
       </Box>
-      <Box sx={{ px: px }}>
-        <ArtworksList disablePadding title="Opere dello stesso artista" items={artistArtworks || []} />
+      <Box sx={{ px: belowSm ? 0 : px }}>
+        <Typography sx={{ mb: { xs: 3, md: 6 }, px: {xs: 3, sm: 0}}} marginTop={6} variant="h2">
+          Opere dello stesso artista
+        </Typography>
+        <ArtworksList disablePadding  items={artistArtworks || []} />
+        <Typography sx={{ mb: { xs: 3, md: 6 }, px: {xs: 3, sm: 0}}} marginTop={6} variant="h2">
+          Opere della galleria
+        </Typography>
         <ArtworksList
           disablePadding
-          title="Opere della galleria"
           items={galleryArtworks || []}
           onSelect={handleGalleryArtworkSelect}
         />
@@ -490,6 +496,15 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         </Grid>
         <Grid xs={12} md={4} px={1} item>
           <PromoCardSmall
+            footer={
+              <Button
+                variant={"contained"}
+                color={"contrast"}
+                disabled={isOutOfStock || isReserved}
+                onClick={handleLoanPurchase}>
+                Prenota l'opera
+              </Button>
+            }
             imgSrc={prenotaOpera}
             title={
               <>
@@ -517,6 +532,14 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         </Grid>
         <Grid xs={12} md={4} px={1} item>
           <PromoCardSmall
+            footer={
+              <Button
+                variant="outlined"
+                disabled={isOutOfStock || isReserved}
+                onClick={() => handlePurchase(artwork?.id)}>
+                Compra opera
+              </Button>
+            }
             variant="white"
             imgSrc={completaAcquisto}
             title={
