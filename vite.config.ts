@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/wp-json": {
-        target: "https://artpay.art",
+        target: 'http://staging2.artpay.art',
         changeOrigin: true,
         secure: true,
         ws: true,
@@ -22,7 +22,7 @@ export default defineConfig({
           return path;
         }
       }
-    }
+    },
     /*https: {
       key: fs.readFileSync("./local_certs/artpay.art-key.pem"),
       cert: fs.readFileSync("./local_certs/artpay.art.pem")
