@@ -7,10 +7,10 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Popover,
+  Popover, SvgIconProps,
   Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import React, { createContext, ReactNode, useContext, useRef, useState } from "react";
 import { FaFacebook, FaWhatsapp } from "react-icons/fa6";
@@ -327,7 +327,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
               )}
             </Box>
             <IconButton aria-label="close" color="secondary" size="small" onClick={() => handleClose()}>
-              <CloseIcon fontSize="inherit" color={backgroundColor ? "#FFFFFF" : "secondary"} />
+              <CloseIcon fontSize="inherit" color={backgroundColor ? ("#FFFFFF" as SvgIconProps['color']) : "secondary"} />
             </IconButton>
           </Box>
         </DialogTitle>
