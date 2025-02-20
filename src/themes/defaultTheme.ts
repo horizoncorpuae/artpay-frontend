@@ -83,7 +83,7 @@ const defaultTheme: Theme = createTheme({
     h5: { fontSize: "24px", lineHeight: "120%", fontWeight: 400, fontFamily: "intertight" },
     h6: { fontSize: "24px", lineHeight: "115%", fontWeight: 400, fontFamily: "intertight" },
     subtitle1: { fontSize: "16px", lineHeight: "125%", fontWeight: 500 },
-    body1: { fontSize: "16px", lineHeight: "125%", fontWeight: 500 },
+    body1: { fontSize: "16px", lineHeight: "105%", fontWeight: 500 },
     body2: { fontSize: "12px", lineHeight: "120%", fontWeight: 500 },
     caption: { fontSize: "12px", fontWeight: 500, display: "inline-block", lineHeight: 1 }
   },
@@ -544,7 +544,7 @@ const responsiveTheme = createTheme(defaultTheme, {
     },
     subtitle1: {
       [defaultTheme.breakpoints.only("xs")]: {
-        fontSize: "14px"
+        fontSize: "16px"
       }
     }
   }

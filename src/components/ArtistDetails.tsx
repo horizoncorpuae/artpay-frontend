@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
-import DisplayImage from "./DisplayImage.tsx";
+import { Link, Typography } from "@mui/material";
 import { artistToGalleryItem } from "../utils.ts";
 import { Artist } from "../types/artist.ts";
 import sanitizeHtml from "sanitize-html";
@@ -8,20 +7,18 @@ import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import FollowButton from "./FollowButton.tsx";
 import { useNavigate } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
+import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
 export interface ArtistDetailsProps {
   artist: Artist;
 }
-
-//TODO: descrizione galleria
 
 const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
   const artistContent = artistToGalleryItem(artist);
   const data = useData();
   const auth = useAuth();
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const snackbar = useSnackbars();
 
   const [favourites, setFavourites] = useState<Artist[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,62 +51,80 @@ const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
           });
         }
       } catch (e) {
-        //TODO: notify error
         console.error(e);
+        snackbar.error(e);
       }
       setIsLoading(false);
     }
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: { xs: undefined, md: "612px" },
-        width: "100%",
-        flexDirection: { xs: "column", sm: "row" },
-        gap: { xs: 2, md: 0 },
-        alignItems: { xs: "center", sm: "flex-start" },
-        //justifyContent: { xs: "flex-start" }
-      }}
-      display="flex">
-      <DisplayImage
-        borderRadius="4px"
-        src={artistContent.imgUrl}
-        onClick={() => navigate(`/artisti/${artistContent.slug}`)}
-        width={isMobile ? "100%" : 320}
-        height={isMobile ? "auto" : 254}
-      />
-      <Box flexGrow={1} pl={{ xs: 0, sm: 3 }} pr={{ xs: 0, md: 3 }}>
-        <Box display="flex" flexDirection="row" alignItems="center">
-          <Box flexGrow={1}>
-            <Typography variant="subtitle1">
-              <Link href={`/artisti/${artistContent.slug}`}>{artistContent.title}</Link>
-            </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              {artistContent.subtitle}
-            </Typography>
-          </Box>
-          <Box>
-            <FollowButton
-              isLoading={isLoading}
-              isFavourite={favourites.some(artist => artist.id === artist.id)}
-              onClick={handleSetFavourite}
-            />
-          </Box>
-        </Box>
-        <Typography sx={{ mt: 2 }} variant="subtitle1" color="textSecondary">
+    <section>
+      <div
+        style={{
+          display: "flex",
+          gap: 8
+        }}>
+        <div
+          style={{
+            minWidth: 44,
+            height: 44,
+            borderRadius: "4px",
+            overflow: "hidden",
+          }}
+          onClick={() => {
+            navigate(`/artisti/${artistContent.slug}`);
+          }}>
+          <img
+            src={artistContent.imgUrl}
+            width={100}
+            height={100}
+            style={{
+              objectFit: "cover",
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        </div>
+        <div style={{
+          width: "100%",
+        }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}>
+            <div style={{
+              flexGrow: 1
+            }}>
+              <Typography variant="subtitle1">
+                <Link href={`/artisti/${artistContent.slug}`} style={{color: '#010F22', textDecoration: 'none', marginBottom: 4, display: 'block'}}>{artistContent.title}</Link>
+              </Typography>
+              <Typography color="textSecondary">{artistContent.subtitle}</Typography>
+            </div>
+            <div>
+              <FollowButton
+                isLoading={isLoading}
+                isFavourite={favourites.some((artist) => artist.id === artist.id)}
+                onClick={handleSetFavourite}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style={{marginTop: 16}}>
+        <Typography variant="subtitle1" color="textSecondary">
           {artistContent.artworksCount} {artistContent.artworksCount === 1 ? "Opera" : "Opere"}
         </Typography>
-        <Typography
-          sx={{ mt: 3 }}
-          variant="body1"
-          color="textSecondary"
-          dangerouslySetInnerHTML={{
-            __html: sanitizeHtml(artistContent.description || "", { allowedAttributes: false }),
-          }}
-        />
-      </Box>
-    </Box>
+      </div>
+      <Typography
+        sx={{ mt: 2, lineHeight: '20px' }}
+        color="textSecondary"
+        dangerouslySetInnerHTML={{
+          __html: sanitizeHtml(artistContent.description || "", { allowedAttributes: false }),
+        }}
+      />
+    </section>
   );
 };
 

@@ -330,6 +330,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         `${baseUrl}/wp-json/wp/v2/categories`,
         { headers: { Authorization: auth.getGuestAuth() } }
       );
+
       for (let i = 0; i < postCategoriesResp.data.length; i++) {
         const postCategory = postCategoriesResp.data[i];
         postCategoryMap[postCategory.slug] = postCategory;
@@ -337,6 +338,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       localStorage.setItem(PostCategoryMapStorageKey, JSON.stringify(postCategoryMap));
       return postCategoryMap;
     };
+
 
     Promise.all([
       loadPostCategories(),
@@ -496,7 +498,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     getOrder(id: number): Promise<Order | null>;
     createOrder(body: OrderCreateRequest): Promise<Order>;
     updateOrder(orderId: number, body: OrderUpdateRequest): Promise<Order>;
-    setOrderStatus(orderId: number, status: OrderStatus, params?: {}): Promise<Order>;
+    setOrderStatus(orderId: number, status: OrderStatus, params?: any): Promise<Order>;
     purchaseArtwork(artworkId: number, loan?: boolean): Promise<Order>;
     createPaymentIntent(body: PaymentIntentRequest): Promise<PaymentIntent>;
     createPaymentIntentCds(body: PaymentIntentRequest): Promise<PaymentIntent>;

@@ -1,10 +1,9 @@
-import { Box, Button, Divider, Grid, IconButton, Link, Tab, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import { useParams } from "react-router-dom";
 import { Artwork } from "../types/artwork.ts";
-import TabPanel from "../components/TabPanel.tsx";
 import ArtworksList from "../components/ArtworksList.tsx";
 import ArtworkDetails from "../components/ArtworkDetails.tsx";
 import {
@@ -22,7 +21,6 @@ import { Gallery } from "../types/gallery.ts";
 import GalleryDetails from "../components/GalleryDetails.tsx";
 import ArtistDetails from "../components/ArtistDetails.tsx";
 import { Artist } from "../types/artist.ts";
-import ResponsiveTabs from "../components/ResponsiveTabs.tsx";
 import FavouriteIcon from "../components/icons/FavouriteIcon.tsx";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
@@ -57,7 +55,6 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const snackbar = useSnackbars();
 
   const [isReady, setIsReady] = useState(false);
-  const [selectedTabPanel, setSelectedTabPanel] = useState(0);
   const [artwork, setArtwork] = useState<Artwork>();
   const [galleryArtworks, setGalleryArtworks] = useState<ArtworkCardProps[]>();
   const [artistArtworks, setArtistArtworks] = useState<ArtworkCardProps[]>();
@@ -65,6 +62,8 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const [artistDetails, setArtistDetails] = useState<Artist | undefined>();
   const [favouriteArtworks, setFavouriteArtworks] = useState<number[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile>();
+
+  console.log(artwork)
 
   const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
   const isMd = useMediaQuery(theme.breakpoints.between("sm", "md"));
@@ -429,45 +428,33 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
               </Box>
             </Box>
             <Divider sx={{ mt: 3 }} />
+
+            {/*WORKSPACE BEGIN--------------------*/}
+
+            <div style={{
+              paddingInline: px.toString(),
+              marginTop: 24,
+            }}>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: 24,
+              }}>
+                {artwork && <ArtworkDetails artwork={artwork} artist={artistDetails} />}
+                <Divider />
+                {artistDetails && <ArtistDetails artist={artistDetails} />}
+                <Divider />
+                {galleryDetails && <GalleryDetails gallery={galleryDetails} />}
+
+              </div>
+            </div>
           </Grid>
+
+
+        {/*WORKSPACE END--------------------*/}
+
         </Grid>
-      </Box>
-      <Box px={px} mt={5}>
-        <Box
-          sx={{
-            borderBottom: 1,
-            borderColor: "#CDCFD3",
-            mx: { xs: 0 },
-          }}>
-          <ResponsiveTabs value={selectedTabPanel} onChange={(_, newValue) => setSelectedTabPanel(newValue)}>
-            <Tab label="Opera" />
-            <Tab label="Artista" />
-            <Tab label="Galleria" />
-          </ResponsiveTabs>
-        </Box>
-        <Box display="flex" justifyContent="center">
-          <Box
-            sx={{ minHeight: { md: "120px", maxWidth: `${theme.breakpoints.values.xl}px` }, width: "100%" }}
-            display="flex"
-            flexDirection="column"
-            justifyContent="center">
-            <TabPanel value={selectedTabPanel} index={0}>
-              {artwork && <ArtworkDetails artwork={artwork} artist={artistDetails} />}
-            </TabPanel>
-            <TabPanel value={selectedTabPanel} index={1}>
-              {artistDetails && <ArtistDetails artist={artistDetails} />}
-            </TabPanel>
-            <TabPanel value={selectedTabPanel} index={2}>
-              {galleryDetails && <GalleryDetails gallery={galleryDetails} />}
-            </TabPanel>
-          </Box>
-        </Box>
-        <Divider
-          sx={{
-            mb: { xs: 3, md: 8 },
-            mx: { xs: 0 },
-          }}
-        />
       </Box>
       <Box sx={{ px: belowSm ? 0 : px }}>
         <Typography sx={{ mb: { xs: 3, md: 6 }, px: {xs: 2, sm: 0}}} marginTop={6} variant="h2">

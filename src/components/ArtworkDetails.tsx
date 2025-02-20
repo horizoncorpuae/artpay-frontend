@@ -29,44 +29,40 @@ const ArtworkDetails: React.FC<ArtworkDetailsProps> = ({ artwork, artist }) => {
   };
   return (
     <Box display="flex" flexDirection="column" sx={{ maxWidth: { xs: undefined, md: "612px" } }}>
-      <Box mb={2}>
-        <Typography variant="subtitle1">{artwork.name}</Typography>
-        <Typography variant="subtitle1" color="textSecondary">
+      <div>
+        <Typography fontSize={16} lineHeight={'125%'} fontWeight={500} marginBottom={0.5}>{artwork.name}</Typography>
+        <Typography fontSize={16} color="textSecondary">
           {getPropertyFromMetadata(artwork.meta_data, "artist")?.artist_name}, {artist?.acf.birth_nation},{" "}
           {artist?.acf.birth_year}
         </Typography>
         <Typography
-          variant="subtitle1"
+          fontWeight={500}
+          lineHeight={'20px'}
           color="textSecondary"
-          sx={{ my: 2 }}
-          dangerouslySetInnerHTML={{ __html: artwork.short_description /*TODO: eliminare falla di sicurezza*/ }}
+          sx={{ my: 3 }}
+          dangerouslySetInnerHTML={{ __html: artwork.short_description }}
         />
-      </Box>
+      </div>
       <Box
         display="flex"
+        flexDirection={"column"}
+        gap={"16px"}
         sx={{
           width: "100%",
-          flexDirection: { xs: "column", sm: "row" },
           justifyContent: { xs: "flex-start", sm: "center" },
-          gap: { xs: 0, md: 12 }
         }}>
-        <Box display="flex" flexDirection="column" gap={2} sx={{ width: { xs: "auto", sm: "50%", md: "306px" } }}>
           <DisplayProperty label="Materiale" value={artworkDetails.material} />
           <DisplayProperty label="Tecnica" value={artworkDetails.technique} />
           <DisplayProperty label="Misure" value={artworkDetails.measures} />
           <DisplayProperty label="Tipologia" value={artworkDetails.artworkClass} />
           <DisplayProperty label="Condizioni" value={artworkDetails.conditions} />
           <DisplayProperty label="Firma" value={artworkDetails.signature} />
-        </Box>
-        <Box display="flex" flexDirection="column" gap={2}
-             sx={{ width: { xs: "auto", sm: "50%", md: "306px" }, mt: { xs: 3, md: 0 } }}>
           <DisplayProperty label="Certificato di autenticità" value={artworkDetails.certificate} />
           <DisplayProperty label="Anno di creazione" value={artworkDetails.creationYear} />
           <DisplayProperty label="Stile" value={artworkDetails.style} />
           <DisplayProperty label="Cornice" value={artworkDetails.frame} />
           <DisplayProperty label="Tema" value={artworkDetails.theme} />
           <DisplayProperty label="Periodo" value={artworkDetails.epoch} />
-        </Box>
       </Box>
     </Box>
   );
