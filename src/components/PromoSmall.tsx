@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { ChevronRight } from "@mui/icons-material";
 import { Cta } from "../types/ui.ts";
+import { SvgIconOwnProps } from "@mui/material/SvgIcon/SvgIcon";
 
 export interface PromoSmallProps {
   title: string;
@@ -38,7 +39,7 @@ const PromoSmall: React.FC<PromoSmallProps> = ({ title, cta, onClick, imgUrl, co
         <Typography sx={{ typography: { xs: "h5" } }} color={textColor}>
           {cta?.text}
         </Typography>
-        <ChevronRight color={iconColor} fontSize="large" />
+        <ChevronRight color={iconColor as SvgIconOwnProps['color'] } fontSize="large" />
       </Box>
     </Box>
   );

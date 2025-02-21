@@ -42,6 +42,7 @@ const MessageDialog: React.FC<MessageDialogProps> = ({ data, galleryName, artwor
       setMessageSent(true);
     }).catch((e) => {
       setError(true);
+      console.error(e)
     }).finally(() => setIsSaving(false));
   };
 

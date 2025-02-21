@@ -1,10 +1,9 @@
-import { Box, Button, Divider, Grid, IconButton, Link, Tab, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import { useParams } from "react-router-dom";
 import { Artwork } from "../types/artwork.ts";
-import TabPanel from "../components/TabPanel.tsx";
 import ArtworksList from "../components/ArtworksList.tsx";
 import ArtworkDetails from "../components/ArtworkDetails.tsx";
 import {
@@ -22,7 +21,6 @@ import { Gallery } from "../types/gallery.ts";
 import GalleryDetails from "../components/GalleryDetails.tsx";
 import ArtistDetails from "../components/ArtistDetails.tsx";
 import { Artist } from "../types/artist.ts";
-import ResponsiveTabs from "../components/ResponsiveTabs.tsx";
 import FavouriteIcon from "../components/icons/FavouriteIcon.tsx";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
 import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
@@ -57,7 +55,6 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const snackbar = useSnackbars();
 
   const [isReady, setIsReady] = useState(false);
-  const [selectedTabPanel, setSelectedTabPanel] = useState(0);
   const [artwork, setArtwork] = useState<Artwork>();
   const [galleryArtworks, setGalleryArtworks] = useState<ArtworkCardProps[]>();
   const [artistArtworks, setArtistArtworks] = useState<ArtworkCardProps[]>();
@@ -66,9 +63,10 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const [favouriteArtworks, setFavouriteArtworks] = useState<number[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile>();
 
+  console.log(artwork)
+
   const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
-  const isMd = useMediaQuery(theme.breakpoints.between("sm", "md"));
-  const isLg = useMediaQuery(theme.breakpoints.only("lg"));
+
 
 
   const artworkTechnique = artwork ? data.getCategoryMapValues(artwork, "tecnica").join(" ") : "";
@@ -244,50 +242,22 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
     };
   }, [artwork?.id]);
 
-  let sliderHeight = "800px";
-  if (belowSm) {
-    sliderHeight = "auto";
-  } else if (isMd) {
-    sliderHeight = "660px";
-  } else if (isLg) {
-    sliderHeight = "720px";
-  }
+
   const px = getDefaultPaddingX();
 
   return (
     <DefaultLayout pageLoading={!isReady}>
-      <Box sx={{ px: { ...px, xs: 0 }, mt: { xs: 0, sm: 12, md: 18 } }} display="flex" justifyContent="center">
-        <Grid
-          sx={{ p: 0, mt: 0, justifyContent: "center", alignItems: "flex-start" }}
-          spacing={{ xs: 0, sm: 3 }}
-          maxWidth="xl"
-          container>
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{
-              maxHeight: { xs: "auto", sm: "660px", md: "1820px" },
-              width: { xs: "100%", sm: "auto" },
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center",
-            }}>
+      <Box sx={{ px: { ...px, xs: 0 }, mt: { xs: 0, sm: 12, md: 18 } }} display="flex" justifyContent="center" overflow={'visible'}>
+        <div className={'flex flex-col w-full lg:flex-row '}>
+          <div className={'w-full max-w-2xl lg:min-w-sm lg:min-h-screen '}>
             <img
               src={artwork?.images?.length ? artwork.images[0].src : ""}
-              style={{ maxHeight: sliderHeight, maxWidth: "100%", objectFit: "contain" }}
+              alt={artwork?.images[0]?.name}
+              className={` object-contain sticky top-0 `}
             />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{ px: { xs: px.xs, sm: 0 }, pt: { xs: 3, sm: 0 } }}
-            display="flex"
-            justifyContent="flex-start"
-            flexDirection="column">
-            <Box alignItems="center" mb={1} display="flex">
+          </div>
+          <div className={'flex flex-col pt-6 lg:0 max-w-2xl px-8 '}>
+            <div className={'flex items-center mb-2'}>
               <Typography
                 sx={{ textTransform: "uppercase", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
                 color="primary"
@@ -312,7 +282,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
               <IconButton onClick={handleShowQrCode} size="medium">
                 <QrCodeIcon />
               </IconButton>
-            </Box>
+            </div>
             <Typography sx={{}} variant="h1">
               {artwork?.name}
             </Typography>
@@ -429,45 +399,18 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
               </Box>
             </Box>
             <Divider sx={{ mt: 3 }} />
-          </Grid>
-        </Grid>
-      </Box>
-      <Box px={px} mt={5}>
-        <Box
-          sx={{
-            borderBottom: 1,
-            borderColor: "#CDCFD3",
-            mx: { xs: 0 },
-          }}>
-          <ResponsiveTabs value={selectedTabPanel} onChange={(_, newValue) => setSelectedTabPanel(newValue)}>
-            <Tab label="Opera" />
-            <Tab label="Artista" />
-            <Tab label="Galleria" />
-          </ResponsiveTabs>
-        </Box>
-        <Box display="flex" justifyContent="center">
-          <Box
-            sx={{ minHeight: { md: "120px", maxWidth: `${theme.breakpoints.values.xl}px` }, width: "100%" }}
-            display="flex"
-            flexDirection="column"
-            justifyContent="center">
-            <TabPanel value={selectedTabPanel} index={0}>
-              {artwork && <ArtworkDetails artwork={artwork} artist={artistDetails} />}
-            </TabPanel>
-            <TabPanel value={selectedTabPanel} index={1}>
-              {artistDetails && <ArtistDetails artist={artistDetails} />}
-            </TabPanel>
-            <TabPanel value={selectedTabPanel} index={2}>
-              {galleryDetails && <GalleryDetails gallery={galleryDetails} />}
-            </TabPanel>
-          </Box>
-        </Box>
-        <Divider
-          sx={{
-            mb: { xs: 3, md: 8 },
-            mx: { xs: 0 },
-          }}
-        />
+            <div className={`px-[${px.toString()}] mt-6`} >
+              <div className={'flex flex-col justify-center gap-6'}>
+                {artwork && <ArtworkDetails artwork={artwork} artist={artistDetails} />}
+                <Divider />
+                {artistDetails && <ArtistDetails artist={artistDetails} />}
+                <Divider />
+                {galleryDetails && <GalleryDetails gallery={galleryDetails} />}
+
+              </div>
+            </div>
+          </div>
+        </div>
       </Box>
       <Box sx={{ px: belowSm ? 0 : px }}>
         <Typography sx={{ mb: { xs: 3, md: 6 }, px: {xs: 2, sm: 0}}} marginTop={6} variant="h2">
