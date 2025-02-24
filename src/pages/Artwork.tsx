@@ -63,8 +63,6 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
   const [favouriteArtworks, setFavouriteArtworks] = useState<number[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile>();
 
-  console.log(artwork)
-
   const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
 
 
