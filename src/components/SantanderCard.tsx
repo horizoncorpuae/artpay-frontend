@@ -14,37 +14,40 @@ export interface SantanderCardProps {
 }
 
 const SantanderCard: React.FC<SantanderCardProps> = ({ background = "#F5F5F5", sx = {}, paymentIntent, artwork }) => {
-
   const { user } = useAuth();
 
+  let event_data = {};
+  const event_name = 'santander_click';
+  const properties = {
+        id: user?.id || "anonimo",
+        username: user?.username || "non fornito",
+    };
+
+  if (paymentIntent || artwork) {
+    event_data = {
+      user_email: user?.email || 'anonimo',
+      artwork: {
+        artwork_id: artwork?.id || 'view payment order',
+        artwork_title: artwork?.name || 'view payment order',
+        artwork_price: artwork?.price || paymentIntent?.amount || 'no payment intent',
+      },
+      amount: paymentIntent?.amount || 'no payment intent',
+      order_description: paymentIntent?.description || 'no payment intent'
+    }
+  }
 
   console.dir(paymentIntent)
   console.dir(artwork)
 
   const handleButtonClick = () => {
-      const event_name = 'santander_click';
-      const properties = {
-            id: user?.id || "anonimo",
-            username: user?.username || "non fornito",
-        };
 
-      const event_data = {
-        user_email: user?.email || 'anonimo',
-        artwork: {
-          artwork_id: artwork?.id || 'view payment order',
-          artwork_title: artwork?.name || 'view payment order',
-          artwork_price: artwork?.price || paymentIntent?.amount,
-        },
-        amount: paymentIntent?.amount || 'no payment intent',
-        order_description: paymentIntent?.description || 'no payment intent'
-      }
-
-      window.Brevo.track(
+    window.Brevo.track(
         event_name,
         properties,
         event_data
       );
 
+      console.log(event_data)
   };
 
   return (
