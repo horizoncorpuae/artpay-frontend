@@ -495,7 +495,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
       </Grid>
       <div style={{ top: "-80px", position: "relative", visibility: "hidden" }} id="scopri-di-piu" />
       <Box sx={{ px: { ...px, xs: 0 }, mt: 3, mb: 12 }}>
-        <LoanCard />
+        <LoanCard artwork={artwork} />
       </Box>
     </DefaultLayout>
   );

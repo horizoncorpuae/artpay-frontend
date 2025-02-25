@@ -267,7 +267,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       console.log("Payment method: ", payment, wc_order_key);
       try {
         const newPaymentIntent = await data.updatePaymentIntent({ wc_order_key, payment_method: payment });
-        console.log(newPaymentIntent);
         setPaymentIntent(newPaymentIntent);
         if (payment === "card") {
           setPaymentMethod("Carta");
@@ -338,6 +337,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     currentShippingMethod === "local_pickup" || !currentShippingMethod ? 0 : estimatedShippingCost || 0;
 
   const px = { xs: 3, sm: 4, md: 10, lg: 12 };
+
+
+  console.log(paymentIntent)
 
   if (noPendingOrder) {
     return (
