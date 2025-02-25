@@ -29,6 +29,7 @@ import weekday from "dayjs/plugin/weekday";
 import localeData from "dayjs/plugin/localeData";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import localeIt from "dayjs/locale/it";
+import { useEffect, useState } from "react";
 
 dayjs.extend(localizedFormat);
 dayjs.locale(localeIt, {}, false);
@@ -466,4 +467,24 @@ export const useNavigate = () => {
   return (to: string) => {
     window.location.href = to;
   };
+};
+
+export const useEnvDetector = (): string | undefined => {
+  const [environment, setEnvironment] = useState<string>();
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+
+    if (hostname === "localhost") {
+      setEnvironment("local");
+    } else if (hostname.startsWith("staging2.")) {
+      setEnvironment("staging");
+    } else if (hostname === "artpay.art") {
+      setEnvironment("production");
+    } else {
+      setEnvironment(undefined);
+    }
+  }, []);
+
+  return environment;
 };

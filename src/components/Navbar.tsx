@@ -18,7 +18,7 @@ import UserIcon from "./icons/UserIcon.tsx";
 
 import ShoppingBagIcon from "./icons/ShoppingBagIcon.tsx";
 import MenuIcon from "./icons/MenuIcon.tsx";
-import { useNavigate } from "../utils.ts";
+import { useEnvDetector, useNavigate } from "../utils.ts";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useLocation } from "react-router-dom";
 
@@ -33,6 +33,9 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
   const location = useLocation();
+
+  const environment = useEnvDetector();
+  console.log(environment);
 
   const [showMenu, setShowMenu] = useState(false);
   const [hasExternalPendingOrder, setHasExternalPendingOrder] = useState(false);
@@ -139,12 +142,28 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     </Link>
   );
 
-  const menuLinks = [
-    { label: "Gallerie", href: "/gallerie ", requireAuth: true },
-    //{ label: "Collezionisti", href: "/artpay-per-collezionisti", requireAuth: false },
-    { label: "Chi siamo", href: "/chi-siamo", requireAuth: false },
-    //{ label: "ArtMatch", href: "https://artpay.art/art-match" }
-  ];
+  type MenuLinks = {
+    label: string;
+    href: string;
+    requireAuth: boolean;
+  };
+
+  let menuLinks: MenuLinks[];
+
+  if (environment === 'production') {
+    menuLinks = [
+      { label: "Chi siamo", href: "/chi-siamo", requireAuth: false },
+    ];
+  } else {
+    menuLinks = [
+      { label: "Gallerie", href: "/gallerie ", requireAuth: true },
+      //{ label: "Collezionisti", href: "/artpay-per-collezionisti", requireAuth: false },
+      { label: "Chi siamo", href: "/chi-siamo", requireAuth: false },
+      //{ label: "ArtMatch", href: "https://artpay.art/art-match" }
+    ];
+  }
+
+  console.log(menuLinks)
 
   //onMenuToggle
 
