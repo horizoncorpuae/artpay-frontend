@@ -37,8 +37,6 @@ const ArtistDetails: React.FC<ArtistDetailsProps> = ({ artist }) => {
     }
   }, []);
 
-  console.log(favourites)
-
 
   useEffect(() => {
 

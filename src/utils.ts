@@ -80,7 +80,7 @@ export const artworkToGalleryItem = (
     size: cardSize,
     title: artwork.name,
     slug: artwork.slug,
-    imgUrl: artwork?.images?.length ? artwork.images[0].src : "",
+    imgUrl: artwork?.images?.length ? artwork.images[0].woocommerce_thumbnail : "",
     estimatedShippingCost: artwork?.acf?.estimated_shipping_cost,
     dimensions: getArtworkDimensions(artwork),
     technique: valueMatcher?.getCategoryMapValues(artwork, "tecnica").join(" ") || "",
@@ -96,7 +96,7 @@ export const artworkToOrderItem = (artwork: Artwork, valueMatcher?: categoryValu
     price: +artwork.price,
     title: artwork.name,
     slug: artwork.slug,
-    imgUrl: artwork?.images?.length ? artwork.images[0].src : "",
+    imgUrl: artwork?.images?.length ? artwork.images[0].woocommerce_thumbnail : "",
     artworkSize: getArtworkDimensions(artwork),
     artworkTechnique: valueMatcher?.getCategoryMapValues(artwork, "tecnica").join(" ") || "",
     reservedUntil: parseDate(artwork?.acf?.customer_reserved_until)
@@ -375,7 +375,7 @@ export const newOrder = (artwork: Artwork) => {
         price: +artwork.price,
         image: {
           id: image?.id?.toString() || "",
-          src: image?.src || ""
+          src: image?.woocommerce_thumbnail || ""
         },
         parent_name: null
       }

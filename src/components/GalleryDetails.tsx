@@ -24,11 +24,9 @@ const GalleryDetails: React.FC<GalleryDetailsProps> = ({ gallery }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [contentHeight, setContentHeight] = useState<number>(0)
 
-  const handleExpande = () => {
+  const handleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
-
-  console.log(contentHeight)
 
 
   useEffect(() => {
@@ -116,7 +114,7 @@ const GalleryDetails: React.FC<GalleryDetailsProps> = ({ gallery }) => {
             }}
           />
           {contentRef.current && contentRef.current.scrollHeight >= 120 && (
-            <button className={"text-primary mt-2 text-sm cursor-pointer self-start"} onClick={handleExpande} name={"Mostra"}>
+            <button className={"text-primary mt-2 text-sm cursor-pointer self-start"} onClick={handleExpanded} name={"Mostra"}>
               {isExpanded ? "Mostra meno" : "Mostra altro"}
             </button>
           )}
