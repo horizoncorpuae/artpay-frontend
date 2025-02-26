@@ -16,38 +16,34 @@ export interface SantanderCardProps {
 const SantanderCard: React.FC<SantanderCardProps> = ({ background = "#F5F5F5", sx = {}, paymentIntent, artwork }) => {
   const { user } = useAuth();
 
-  let event_data = {};
   const event_name = 'santander_click';
   const properties = {
         id: user?.id || "anonimo",
         username: user?.username || "non fornito",
+        event_data: {}
     };
 
   if (paymentIntent || artwork) {
-    event_data = {
-      user_email: user?.email || 'anonimo',
+    properties.event_data = {
       artwork: {
         artwork_id: artwork?.id || 'view payment order',
         artwork_title: artwork?.name || 'view payment order',
         artwork_price: artwork?.price || paymentIntent?.amount || 'no payment intent',
       },
+      user_email: user?.email || 'anonimo',
       amount: paymentIntent?.amount || 'no payment intent',
       order_description: paymentIntent?.description || 'no payment intent'
     }
   }
 
-  console.dir(paymentIntent)
-  console.dir(artwork)
-
   const handleButtonClick = () => {
 
-    window.Brevo.track(
-        event_name,
-        properties,
-        event_data
-      );
+    window.Brevo.push([
+      "track",
+      event_name,
+      properties,
+    ]);
 
-      console.log(event_data)
   };
 
   return (

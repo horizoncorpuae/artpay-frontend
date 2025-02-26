@@ -264,7 +264,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const onChangePaymentMethod = async (payment: string): Promise<void> => {
     if (pendingOrder) {
       const wc_order_key = pendingOrder.order_key;
-      console.log("Payment method: ", payment, wc_order_key);
+      /*console.log("Payment method: ", payment, wc_order_key);*/
       try {
         const newPaymentIntent = await data.updatePaymentIntent({ wc_order_key, payment_method: payment });
         setPaymentIntent(newPaymentIntent);
@@ -339,7 +339,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   const px = { xs: 3, sm: 4, md: 10, lg: 12 };
 
 
-  console.log(paymentIntent)
 
   if (noPendingOrder) {
     return (

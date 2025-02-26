@@ -466,7 +466,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, baseUrl = 
     }
   }, [authValues.user, authValues.wcToken]);
 
-  console.log(authValues)
 
   return (
     <Context.Provider value={state}>

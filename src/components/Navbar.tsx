@@ -35,7 +35,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const location = useLocation();
 
   const environment = useEnvDetector();
-  console.log(environment);
 
   const [showMenu, setShowMenu] = useState(false);
   const [hasExternalPendingOrder, setHasExternalPendingOrder] = useState(false);
@@ -162,8 +161,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       //{ label: "ArtMatch", href: "https://artpay.art/art-match" }
     ];
   }
-
-  console.log(menuLinks)
 
   //onMenuToggle
 
