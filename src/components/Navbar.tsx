@@ -130,9 +130,11 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   };
 
   const authButton = (
-    <Button sx={{ minWidth: "150px" , mb: 4}} onClick={() => handleLogin()} color="primary" variant="outlined">
-      Login/Registrati
-    </Button>
+    <div className={'mb-8 md:mb-0'}>
+      <Button sx={{ minWidth: "150px" , }} onClick={() => handleLogin()} color="primary" variant="outlined">
+        Login/Registrati
+      </Button>
+    </div>
   );
 
   const galleryLink = (
