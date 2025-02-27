@@ -80,7 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     left: 0,
     width: { xs: "calc(100% - 16px)", sm: "calc(100% - 32px)" },
     m: { xs: 1, sm: 2 },
-    height: menuOpen ? "30%" : undefined,
+    height: menuOpen ? "50%" : undefined,
     transition: "all 0.5s",
     overflow: "hidden",
     //borderRadius: 0
@@ -130,7 +130,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   };
 
   const authButton = (
-    <Button sx={{ minWidth: "150px" }} onClick={() => handleLogin()} color="primary" variant="outlined">
+    <Button sx={{ minWidth: "150px" , mb: 4}} onClick={() => handleLogin()} color="primary" variant="outlined">
       Login/Registrati
     </Button>
   );
@@ -295,12 +295,12 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               <Typography sx={{ textAlign: "center" }}  color="primary">
                 Ciao {auth.user?.username}
               </Typography>
-              <Button sx={{mb: 12}}  onClick={() => handleLogout()} color="tertiary" variant="text">
+              <Button sx={{mb: 6}}  onClick={() => handleLogout()} color="tertiary" variant="text">
                 Logout
               </Button>
             </>
           ) : (
-            <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{ mb: 12 }}>
+            <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{ mb: 6 }}>
               <Box my={1} sx={{ textAlign: "center" }}>
                 {galleryLink}
               </Box>
