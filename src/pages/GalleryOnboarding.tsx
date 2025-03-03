@@ -134,9 +134,9 @@ const GalleryOnboarding: React.FC<GalleryOnboardingProps> = ({}) => {
             style={{
               border: "0px",
               borderRadius: "4px",
-              transform: "translateZ(0px)",
+              transform: "translateZ(px)",
               width: "100%",
-              height: isMobile ? "400px" : "612px",
+              height: isMobile ? "400px" : "900px",
             }}
             allow="microphone; camera"
             title="My branded typeform"
