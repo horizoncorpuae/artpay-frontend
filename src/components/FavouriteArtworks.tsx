@@ -24,7 +24,7 @@ const FavouriteArtworks: React.FC<FavouriteArtworksProps> = ({}) => {
   useEffect(() => {
     data.getFavouriteArtworks().then((ids) => {
       return data.getArtworks(ids).then((resp) => {
-        setFavouriteArtworks(artworksToGalleryItems(resp));
+        setFavouriteArtworks(artworksToGalleryItems(resp.filter(artwork => artwork.status != 'trash')));
         setReady(true);
       });
     }).catch((e) => snackbar.error(e));

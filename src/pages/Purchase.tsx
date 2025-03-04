@@ -358,8 +358,12 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       setSubtotal(totalSum + totalTaxSum)
 
     }
+
+
   }, [pendingOrder]);
 
+
+  const cardContentTitle = pendingOrder?.created_via === 'gallery_auction' ? `Il tuo ordine presso:` : "Riassunto dell'ordine"
 
   if (noPendingOrder) {
     return (
@@ -486,40 +490,57 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
         </Grid>
         <Grid item xs={12} md={4} sx={{ mb: { xs: 4, md: 0 } }}>
           <ContentCard
-            title="Riassunto dell'ordine"
+            title={cardContentTitle}
             icon={<ShoppingBagIcon />}
             contentPadding={0}
-            contentPaddingMobile={0}
-            /*sx={{ position: "sticky", top: "96px" }}*/>
-            <Box display="flex" sx={{ px: { xs: 3, md: 5 } }} flexDirection="column" gap={3} mt={3}>
-              {pendingOrder?.line_items.map((item, i) => (
-                <Box key={item.id}>
-                  <DisplayImage src={item.image.src} width="100%" height="230px" />
-                  <Typography variant="body1" fontWeight={500} sx={{ mt: 1 }}>
-                    {item.name}
-                  </Typography>
-                  <Typography variant="body1" fontWeight={500} color="textSecondary" sx={{ mb: 1, mt: 0 }}>
-                    {artworks[i]?.artistName}
-                  </Typography>
-                  <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
-                    {artworks[i]?.technique}
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }} color="textSecondary">
-                    {artworks[i]?.dimensions}
-                  </Typography>
-                  <Typography variant="body1" fontWeight={500}>
-                    {artworks[i]?.galleryName}
-                  </Typography>
-                  {galleries?.length === artworks?.length && !!galleries[i]?.address?.city && (
-                    <Typography variant="body1" fontWeight={500} color="textSecondary">
-                      {galleries[i]?.address?.city}
-                    </Typography>
-                  )}
-                </Box>
-              ))}
-            </Box>
+            contentPaddingMobile={0}>
+            {!checkoutReady ? (
+              <div className={'flex justify-center items-center w-full'}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <>
+                {pendingOrder?.created_via === "gallery_auction" && galleries?.length && (
+                  <div className={'flex space-x-2 items-center ps-10'}>
+                    <div className={'w-11 h-11 rounded-sm overflow-hidden'}>
+                      <img src={galleries[0].shop.image} alt={galleries[0].display_name} className={'w-full h-full aspect-square object-cover'}/>
+                    </div>
+                    <h3 className={'text-xl w-full'}>{galleries[0].display_name}</h3>
+                  </div>
+                )}
+                {pendingOrder?.created_via !== 'gallery_auction' && (
+                  <Box display="flex" sx={{ px: { xs: 3, md: 5 } }} flexDirection="column" gap={3} mt={3}>
+                    {pendingOrder?.line_items.map((item, i) => (
+                      <Box key={item.id}>
+                        <DisplayImage src={item.image.src} width="100%" height="230px" />
+                        <Typography variant="body1" fontWeight={500} sx={{ mt: 1 }}>
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body1" fontWeight={500} color="textSecondary" sx={{ mb: 1, mt: 0 }}>
+                          {artworks[i]?.artistName}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
+                          {artworks[i]?.technique}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mb: 2 }} color="textSecondary">
+                          {artworks[i]?.dimensions}
+                        </Typography>
+                        <Typography variant="body1" fontWeight={500}>
+                          {artworks[i]?.galleryName}
+                        </Typography>
+                        {galleries?.length === artworks?.length && !!galleries[i]?.address?.city && (
+                          <Typography variant="body1" fontWeight={500} color="textSecondary">
+                            {galleries[i]?.address?.city}
+                          </Typography>
+                        )}
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              </>
+            )}
             <Divider sx={{ my: 3, borderColor: "#d8ddfa" }} />
-            <Box display="flex" flexDirection="column" gap={2} sx={{ px: { xs: 3, md: 5 } }}>
+            <Box display="flex" flexDirection="column" gap={2} sx={{ px: 2 }}>
               {orderMode === "loan" ? (
                 <>
                   <Box display="flex" justifyContent="space-between">
@@ -563,8 +584,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                         paymentMethod !== "Santander" && (
                           <Box display="flex" justifyContent="space-between">
                             <Typography variant="body1">Commissioni di servizio</Typography>
-                            <Typography variant="body1">
-                              €{" "}
+                            <Typography variant="body1"> €&nbsp;
                               {(
                                 +(
                                   pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")?.total || 0
