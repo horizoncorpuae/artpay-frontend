@@ -82,6 +82,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     return snackbar.error(text, { autoHideDuration: 60000 });
   };
 
+  console.log({ isReady, checkoutReady, pendingOrder, subtotal });
 
 
 
@@ -494,13 +495,13 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             icon={<ShoppingBagIcon />}
             contentPadding={0}
             contentPaddingMobile={0}>
-            {!checkoutReady ? (
+            {!checkoutReady || galleries.length == 0  ? (
               <div className={'flex justify-center items-center w-full'}>
                 <CircularProgress />
               </div>
             ) : (
               <>
-                {pendingOrder?.created_via === "gallery_auction" && galleries?.length && (
+                {pendingOrder?.created_via === "gallery_auction" && galleries?.length > 0 && (
                   <div className={'flex space-x-2 items-center justify-center w-full'}>
                     <div className={'w-11 h-11 rounded-sm overflow-hidden'}>
                       <img src={galleries[0].shop.image} alt={galleries[0].display_name} className={'w-full h-full aspect-square object-cover'}/>
