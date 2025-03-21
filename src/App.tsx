@@ -37,7 +37,6 @@ import Contacts from "./pages/Contacts.tsx";
 import Messages from "./pages/Messages.tsx";
 import Galleries from "./pages/Galleries.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
-import LandingForCampaign from "./pages/LandingForCampaign.tsx";
 import CdsPaymentPage from "./pages/CdsPaymentPage.tsx";
 
 function AppContent() {
@@ -80,8 +79,8 @@ function AppContent() {
                     <Route path="/artisti" element={<Artists />} />
                     <Route path="/tutte-le-opere" element={<Artworks />} />
                     <Route path="/acquisti" element={<Purchase />} />
-                    <Route path="/acquisto-esterno" element={<Purchase orderMode="onHold"/>} />
-                    <Route path="/bnpl" >
+                    {/*<Route path="/acquisto-esterno" element={<Purchase orderMode="onHold"/>} />*/}
+                    <Route path="/acquisto-esterno" >
                       <Route element={<CdsPaymentPage />} index />
                     </Route>
                     <Route path="/completa-acquisto/:order_id" element={<Purchase orderMode="redeem" />} />
@@ -116,7 +115,6 @@ function AppContent() {
                     <Route path="/messaggi" element={<Messages />} />
                     <Route path="/errore/:code" element={<Error />} />
                     <Route path="/errore" element={<Error />} />
-                    <Route path={"/landing-campaign"} element={<LandingForCampaign />} />
                   </Routes>
                 </PaymentProvider>
               </DataProvider>

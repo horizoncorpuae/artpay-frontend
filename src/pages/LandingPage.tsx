@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import DefaultLayout from "../components/DefaultLayout";
-import HeroHome from "../components/HeroHome.tsx";
+import React, { useEffect } from "react";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "../utils.ts";
@@ -9,7 +7,6 @@ export interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({}) => {
-  const [isReady, setIsReady] = useState(false);
   const auth = useAuth();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -18,7 +15,6 @@ const Home: React.FC<HomeProps> = ({}) => {
 
 
   useEffect(() => {
-    setIsReady(false);
     if(orderId != null) localStorage.setItem("externalOrderKey",orderId);
     if (!auth.isAuthenticated) {
       auth.login();
@@ -31,9 +27,7 @@ const Home: React.FC<HomeProps> = ({}) => {
 
 
   return (
-    <DefaultLayout pageLoading={!isReady} topBar={<HeroHome />} maxWidth="xl">
-    </DefaultLayout>
-    /*<div className={'w-full h-screen bg-primary'}></div>*/
+    <div className={'w-full h-screen bg-primary'}></div>
   );
 };
 

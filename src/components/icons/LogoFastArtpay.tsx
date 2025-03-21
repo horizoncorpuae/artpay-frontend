@@ -9,7 +9,7 @@ const LogoFastArtpay = () => {
   const handleNavigate = () => {
     if (!cdsOrder) return
 
-    navigate('/bnpl')
+    navigate('/acquisto-esterno')
   }
 
   return (
