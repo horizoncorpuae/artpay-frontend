@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, SxProps, Theme, Typography } from "@mui/material";
 import { SocialLinksProps } from "./SocialLinks.tsx";
-import Map from "./Map.tsx";
+//import Map from "./Map.tsx";
 
 export interface GalleryContactsProps {
   address: string;
@@ -34,9 +34,9 @@ const GalleryContacts: React.FC<GalleryContactsProps> = ({
           {postcode}, {city} - {country}
         </Typography>
       </Box>
-      <Box sx={{ width: "100%", overflow: "hidden" }} mt={2}>
+      {/*<Box sx={{ width: "100%", overflow: "hidden" }} mt={2}>
         <Map address={address} />
-      </Box>
+      </Box>*/}
     </Box>
   );
 };
