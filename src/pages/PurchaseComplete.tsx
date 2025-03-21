@@ -97,6 +97,8 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
           }
         }
 
+
+
         switch (paymentIntent?.status) {
           case "succeeded":
             if (completedOrderId) {
@@ -117,10 +119,11 @@ const PurchaseComplete: React.FC<PurchaseCompleteProps> = ({}) => {
 
             }
 
+            console.log(galleryName)
 
             setMessage({
               title: <>Ciao {auth.user?.username || ""},<br /> grazie per aver scelto Artpay!</>,
-              text: <>L’acquisto è andato a buon fine. A breve sarai contattato dalla galleria {galleryName} per
+              text: <>L’acquisto è andato a buon fine. A breve sarai contattato per
                 definire le modalità di acquisizione/spedizione dell’opera</>,
               cta: "",
               status: "success"

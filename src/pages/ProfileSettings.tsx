@@ -59,10 +59,14 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({}) => {
     try {
       setIsSaving(true);
       let updatedProfile: UserProfile;
+      const payload = {
+          ...formData,
+          email: profile.email
+        }
       if (isBilling) {
-        updatedProfile = await data.updateUserProfile({ billing: formData });
+        updatedProfile = await data.updateUserProfile({ billing: payload });
       } else {
-        updatedProfile = await data.updateUserProfile({ shipping: formData });
+        updatedProfile = await data.updateUserProfile({ shipping: payload });
       }
       setProfile(updatedProfile);
     } catch (e) {
