@@ -108,7 +108,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       navigate(checkoutUrl);
       localStorage.setItem("isNotified", "true");
     } else {
-      navigate("/acquisti");
+      navigate("/acquisto");
     }
   };
 
