@@ -363,8 +363,15 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       }, 0);
 
       setSubtotal(totalSum + totalTaxSum);
-    }
 
+      localStorage.setItem("showCheckout", "true");
+      localStorage.setItem("checkOrder", "true")
+
+
+      if (pendingOrder.created_via == "gallery_auction") {
+        localStorage.setItem("checkoutUrl", "/acquisto-esterno")
+      }
+    }
 
     setIsOnlySantander(subtotal > 2500.0);
   }, [pendingOrder]);
