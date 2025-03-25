@@ -6,6 +6,7 @@ import ArtistCard, { ArtistCardProps } from "./ArtistCard.tsx";
 import {useData } from "../hoc/DataProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import { Artist } from "../types/artist.ts";
+import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
 
 export interface ArtistsGridProps {
@@ -31,6 +32,7 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({
   const navigate = useNavigate();
   const auth = useAuth();
   const data = useData();
+  const snackbar = useSnackbars()
 
   const [favourites, setFavourites] = useState<ArtistCardProps[]>([]);
 
@@ -60,8 +62,8 @@ const ArtistsGrid: React.FC<ArtistsGridProps> = ({
 
 
       } catch (e) {
-        //TODO: notify error
         console.error(e);
+        snackbar.error(e);
       }
     }
   };
