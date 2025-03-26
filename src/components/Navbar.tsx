@@ -16,11 +16,11 @@ import { Search } from "@mui/icons-material";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import UserIcon from "./icons/UserIcon.tsx";
 
+import ShoppingBagIcon from "./icons/ShoppingBagIcon.tsx";
 import MenuIcon from "./icons/MenuIcon.tsx";
 import { useEnvDetector, useNavigate } from "../utils.ts";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useLocation } from "react-router-dom";
-import LogoFastArtpay from "./icons/LogoFastArtpay.tsx";
 
 export interface NavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;
@@ -37,40 +37,56 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const environment = useEnvDetector();
 
   const [showMenu, setShowMenu] = useState(false);
-  //const [hasExternalPendingOrder, setHasExternalPendingOrder] = useState(false);
   const [hasPendingOrder, setHasPendingOrder] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const handlePendingOrder = async () => {
-    const pendingOrder = await data.getPendingOrder();
-    if (pendingOrder) {
-      setShowCheckout(true);
-      setHasPendingOrder(true);
-    }
-  };
+
+  const [showCheckout, setShowCheckout] = useState<boolean>(JSON.parse(localStorage.getItem("showCheckout") as string) || false);
 
   const handleOrders = async () => {
+    const shouldCheck = JSON.parse(localStorage.getItem("checkOrder") ?? "true");
+
+    if (!shouldCheck) return;
+
     try {
-      await handlePendingOrder();
+      const pendingOrder = await data.getPendingOrder();
+      console.log(pendingOrder);
+
+      if (pendingOrder) {
+        setShowCheckout(true);
+        setHasPendingOrder(true);
+        localStorage.setItem("showCheckout", "true");
+      }
+
       if (auth.isAuthenticated) {
         const orders = await data.getOnHoldOrder();
+        console.log(orders);
         if (orders) {
           const redirectToAcquistoEsterno = localStorage.getItem("redirectToAcquistoEsterno");
 
-          if (!redirectToAcquistoEsterno && location.pathname != "/bnpl") {
-            navigate("/bnpl");
+          if (!redirectToAcquistoEsterno && location.pathname !== "/acquisto-esterno") {
+            navigate("/acquisto-esterno");
           }
 
-          //setHasExternalPendingOrder(true);
           setShowCheckout(true);
+          localStorage.setItem("showCheckout", "true");
+          localStorage.setItem("checkoutUrl", "/acquisto-esterno")
         }
       }
+
+      localStorage.setItem("checkOrder", "false");
+
     } catch (error) {
-      console.log(error);
+      console.error("Errore nel recupero degli ordini:", error);
     }
   };
 
+
   useEffect(() => {
+    if (localStorage.getItem("checkOrder") === null) {
+      localStorage.setItem("checkOrder", "true");
+    }
     handleOrders();
+
+
   }, [auth.isAuthenticated, data, hasPendingOrder]);
 
   const menuOpen = showMenu && isMobile;
@@ -86,14 +102,15 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     //borderRadius: 0
   };
 
-  /*const handleCheckout = () => {
-    if (hasExternalPendingOrder && !hasPendingOrder) {
-      navigate("/acquisto-esterno");
+  const handleCheckout = () => {
+    const checkoutUrl = localStorage.getItem("checkoutUrl")
+    if (checkoutUrl) {
+      navigate(checkoutUrl);
       localStorage.setItem("isNotified", "true");
     } else {
-      navigate("/acquisti");
+      navigate("/acquisto");
     }
-  };*/
+  };
 
   const handleLogout = async () => {
     await auth.logout();
@@ -233,7 +250,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             </IconButton>
             {showCheckout && (
               <>
-                {/*<IconButton
+                <IconButton
                   sx={{ mr: 0, transform: { xs: undefined, md: "translateX(8px)" }, position: "relative" }}
                   onClick={() => handleCheckout()}
                   color="primary">
@@ -249,8 +266,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
                       borderRadius: "50%",
                     }}
                   />
-                </IconButton>*/}
-                <LogoFastArtpay />
+                </IconButton>
               </>
             )}
           </>

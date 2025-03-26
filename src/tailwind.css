@@ -17,14 +17,14 @@
 
 }
 
-.artpay-button-style {
-    @apply disabled:cursor-not-allowed w-full max-w-md rounded-[28px] py-3.5 px-5 flex items-center justify-center gap-2 cursor-pointer transition-all;
-}
 
 html {
     scroll-behavior: smooth;
 }
 
+.artpay-button-style {
+    @apply disabled:cursor-not-allowed w-full max-w-md rounded-[28px] py-3.5 px-5 flex items-center justify-center gap-2 cursor-pointer transition-all;
+}
 
 .custom-navbar {
     box-shadow: rgba(62, 78, 236, 0.15) 0px 4px 16px 0px;
