@@ -17,7 +17,7 @@ const LandingLayout = ({ children }: { children: ReactNode }) => {
             <Logo />
           </nav>
         </header>
-        <main className={"flex-1 flex flex-col w-full lg:pt-37.5 lg:px-12 lg:flex-row lg:justify-between gap-8 scroll-mt-37.5 min-h-screen"}>
+        <main className={"flex-1 flex flex-col w-full px-6 pt-28 scroll-pt-28 lg:pt-37.5 lg:px-12 lg:flex-row lg:justify-between gap-8 scroll-mt-37.5 min-h-screen"}>
           {children}
         </main>
       </div>

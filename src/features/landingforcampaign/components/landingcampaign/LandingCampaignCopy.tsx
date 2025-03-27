@@ -1,9 +1,9 @@
-import FocusButton from "../focusbutton/FocusButton.tsx";
+import Anchor from "../anchor/Anchor.tsx";
 
 const LandingCampaignCopy = () => {
   return (
     <section className={'max-w-xl'}>
-      <section className={"leading-[105%] space-y-9"}>
+      <section className={"leading-[105%] space-y-9 mb-12"}>
         <div>
           <span className={"text-[#6576EE] uppercase text-lg font-medium"}>L'arte di vendere a rate</span>
           <h1 className={"text-[#808791] text-3xl"}>Scopri come far crescere la tua galleria con artpay</h1>
@@ -15,7 +15,7 @@ const LandingCampaignCopy = () => {
           per la tua galleria.
         </p>
       </section>
-      <FocusButton />
+      <Anchor />
       <section>
         <h3 className={"text-[#808791] text-2xl font-medium mb-12"}>Perchè scegliere artpay?</h3>
         <ul className={"ps-4 text-lg space-y-4"}>
@@ -58,7 +58,7 @@ const LandingCampaignCopy = () => {
           </li>
         </ul>
       </section>
-      <FocusButton />
+      <Anchor />
     </section>
   );
 };
