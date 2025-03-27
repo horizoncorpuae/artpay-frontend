@@ -14,6 +14,8 @@
     --text-4xl: 2.5rem;
     --text-4xl--line-height: 105%;
 
+    --shadow-custom: rgba(62, 78, 236, 0.15) 0px 4px 16px 0px;
+
 
 }
 
