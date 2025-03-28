@@ -9,7 +9,7 @@ type PaymentsProps = {
   isLoading?: boolean;
 };
 
-const Payments = ({ order, isLoading }: PaymentsProps) => {
+const ConfirmPayment = ({ order, isLoading }: PaymentsProps) => {
   const subtotal = !order?.fee_lines.length ? Number(order?.total) / 1.06 : Number(order?.total) / 1.124658;
   const { paymentMethod } = usePaymentStore();
 
@@ -54,7 +54,7 @@ const Payments = ({ order, isLoading }: PaymentsProps) => {
                 <SantanderCard
                   subtotal={subtotal}
                   paymentSelected={paymentMethod == 'santander'}
-                  disabled={Number(order.total) <= 1500 || Number(order.total) >= 30000 || isLoading}
+                  disabled={Number(order.total) < 1500 || Number(order.total) >= 30000 || isLoading}
                 />
               )}
             </li>
@@ -64,4 +64,4 @@ const Payments = ({ order, isLoading }: PaymentsProps) => {
   );
 };
 
-export default Payments;
+export default ConfirmPayment;

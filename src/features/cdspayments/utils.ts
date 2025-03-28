@@ -24,3 +24,11 @@ export const calculateTotalFee = (order: Order): number => {
 
   return artpayFee + klarnaFee;
 };
+
+export const clearLocalStorage = (order: Order) => {
+  localStorage.removeItem(`payment-intents-cds-${order.order_key}`);
+  localStorage.removeItem(`showCheckout`);
+  localStorage.removeItem(`checkoutUrl`);
+  localStorage.removeItem(`CdsOrder`);
+  localStorage.setItem("checkOrder", "true")
+}

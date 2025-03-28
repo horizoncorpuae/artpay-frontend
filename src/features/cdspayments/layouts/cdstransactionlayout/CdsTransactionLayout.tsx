@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Navbar from "../../../../components/navbar/Navbar.tsx";
+import Navbar from "../../components/ui/navbar/Navbar.tsx";
 import { NavLink } from "react-router-dom";
 import usePaymentStore from "../../store.ts";
 import SkeletonOrderDetails from "../../components/paymentmethodslist/SkeletonOrderDetails.tsx";
@@ -13,7 +13,7 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
   return (
     <CdsTransactionsProvider>
       <div className="min-h-screen flex flex-col bg-primary pt-35">
-        <div className="mx-auto container md:max-w-xl lg:max-w-4xl">
+        <div className="mx-auto container max-w-md">
           <Navbar />
           <section className="px-8 mb-6 container lg:px-0">
             <h2 className="text-4xl text-white font-normal">

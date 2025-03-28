@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
-import LogoFastArtpay from "../icons/LogoFastArtpay.tsx";
+import LogoFastArtpay from "../../../../../components/icons/LogoFastArtpay.tsx";
 
 
 
 const Navbar = () => {
   return (
-    <header className={"fixed w-full z-50 top-6 px-2 lg:px-0 md:max-w-xl lg:max-w-4xl"}>
+    <header className={"fixed w-full z-50 top-6 px-2 max-w-md md:px-0"}>
       <nav className={"p-4 custom-navbar flex justify-between items-center w-full bg-white "}>
         <NavLink to={"/"} className={"text-tertiary underline underline-offset-3 leading-[125%]"}>
           Torna su artpay

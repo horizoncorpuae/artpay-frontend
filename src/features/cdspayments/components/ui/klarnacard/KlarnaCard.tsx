@@ -1,14 +1,14 @@
 import { NavLink } from "react-router-dom";
-import { PaymentProviderCardProps } from "../../types.ts";
-import { useData } from "../../../../hoc/DataProvider.tsx";
-import usePaymentStore from "../../store.ts";
+import { PaymentProviderCardProps } from "../../../types.ts";
+import { useData } from "../../../../../hoc/DataProvider.tsx";
+import usePaymentStore from "../../../store.ts";
 import PaymentProviderCard from "../paymentprovidercard/PaymentProviderCard.tsx";
 import KlarnaIcon from "../paymentprovidercard/KlarnaIcon.tsx";
-import { calculateTotalFee } from "../../utils.ts";
+import { calculateTotalFee } from "../../../utils.ts";
 import { useEffect, useState } from "react";
 import PaymentForm from "../paymentform/PaymentForm.tsx";
 import { Elements } from "@stripe/react-stripe-js";
-import { usePayments } from "../../../../hoc/PaymentProvider.tsx";
+import { usePayments } from "../../../../../hoc/PaymentProvider.tsx";
 
 const KlarnaCard = ({ subtotal, disabled, paymentSelected = true }: Partial<PaymentProviderCardProps>) => {
   const payments = usePayments();
@@ -121,7 +121,7 @@ const KlarnaCard = ({ subtotal, disabled, paymentSelected = true }: Partial<Paym
       ) : (
         <span>
           Ci hai ripensato?{" "}
-          <button onClick={handlingKlarnaSelection} disabled={disabled || Number(order?.total) <= 2500}>
+          <button onClick={handlingKlarnaSelection} disabled={disabled || Number(order?.total) > 2500}>
             <strong className={"underline cursor-pointer disabled:cursor-not-allowed"}>Paga con Klarna</strong>
           </button>
         </span>

@@ -12,4 +12,5 @@ export type PaymentProviderCardProps = {
   subtotal: number;
   paymentSelected: boolean;
   children?: ReactNode;
+  className?: string;
 };

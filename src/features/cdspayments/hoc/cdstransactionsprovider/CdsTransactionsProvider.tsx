@@ -1,14 +1,20 @@
 import { ReactNode, useEffect} from "react";
 import { useData } from "../../../../hoc/DataProvider.tsx";
 import usePaymentStore from "../../store.ts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Artwork } from "../../../../types/artwork.ts";
 import { Gallery } from "../../../../types/gallery.ts";
+import { clearLocalStorage } from "../../utils.ts";
 
 const CdsTransactionsProvider = ({children}: {children: ReactNode}) => {
   const data = useData();
   const { setPaymentData, paymentMethod, paymentStatus } = usePaymentStore();
   const navigate = useNavigate();
+  const [searchParams]  = useSearchParams();
+
+  const hasPayment_intent = searchParams.has("payment_intent")
+
+
 
   useEffect(() => {
     const fetchPaymentDetails = async () => {
@@ -26,7 +32,7 @@ const CdsTransactionsProvider = ({children}: {children: ReactNode}) => {
             console.log("Trovato ordine in processing, NON creo il payment intent.");
           } else {
             localStorage.removeItem('CdsOrder')
-            navigate('/')
+            if (!hasPayment_intent) navigate("/");
 
             throw new Error("Nessun ordine trovato");
           }
@@ -42,7 +48,7 @@ const CdsTransactionsProvider = ({children}: {children: ReactNode}) => {
         if (!vendorResp) throw new Error("Vendor not found");
 
 
-        if (orderResp.status === "on-hold") {
+        if ((orderResp.status === "on-hold" && orderResp.payment_method != "klarna") || !hasPayment_intent) {
           const createPayment = await data.createPaymentIntentCds({ wc_order_key: orderResp?.order_key });
           if (!createPayment) throw new Error("Errore nella creazione del payment intent");
           console.log("Primo payment intent creato", createPayment);
@@ -50,6 +56,38 @@ const CdsTransactionsProvider = ({children}: {children: ReactNode}) => {
           setPaymentData({
             paymentIntent: createPayment,
           });
+        }
+
+        if (hasPayment_intent) {
+          const successPayment = searchParams.get("redirect_status") === "succeeded";
+
+          if (successPayment) {
+            try {
+
+              const updateOrderStatus = await data.setOrderStatus(orderResp.id, "completed");
+              if (!updateOrderStatus) throw new Error("Errore during comlete order setting");
+
+              console.log("Payment completed:", updateOrderStatus);
+
+              setPaymentData({paymentStatus: "completed"})
+
+              setPaymentData({
+                order: updateOrderStatus,
+                vendor: vendorResp,
+                paymentStatus: updateOrderStatus.status,
+                paymentMethod: updateOrderStatus.payment_method,
+                loading:false
+              });
+
+              clearLocalStorage(orderResp);
+
+              return
+
+            } catch (e) {
+              console.error(e);
+            }
+          }
+
         }
 
         setPaymentData({
@@ -66,7 +104,8 @@ const CdsTransactionsProvider = ({children}: {children: ReactNode}) => {
       }
     };
 
-    fetchPaymentDetails();
+    fetchPaymentDetails()
+
   }, [data, paymentMethod, paymentStatus]);
 
 

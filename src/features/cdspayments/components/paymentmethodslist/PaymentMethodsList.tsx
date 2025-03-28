@@ -1,7 +1,7 @@
 import { Order } from "../../../../types/order.ts";
-import SkeletonCard from "../paymentprovidercard/SkeletonCard.tsx";
-import KlarnaCard from "../klarnacard/KlarnaCard.tsx";
-import SantanderCard from "../santandercard/SantanderCard.tsx";
+import SkeletonCard from "../ui/paymentprovidercard/SkeletonCard.tsx";
+import KlarnaCard from "../ui/klarnacard/KlarnaCard.tsx";
+import SantanderCard from "../ui/santandercard/SantanderCard.tsx";
 
 type PaymentMethodProps = {
   order: Order;
@@ -34,14 +34,14 @@ const PaymentMethodsList = ({ order, isLoading }: PaymentMethodProps) => {
           </svg>
           Metodi di pagamento
         </h3>
-        <ul className={"flex flex-col items-center space-y-6 lg:flex-row lg:items-start lg:justify-start "}>
+        <ul className={"flex flex-col items-center space-y-6 "}>
           <li className={"w-full flex"}>
             {!order || isLoading ? (
               <SkeletonCard />
             ) : (
               <KlarnaCard
                 subtotal={subtotal}
-                disabled={Number(order.total) >= 2500 || isLoading}
+                disabled={Number(order.total) > 2500 || isLoading}
               />
             )}
           </li>
@@ -51,7 +51,7 @@ const PaymentMethodsList = ({ order, isLoading }: PaymentMethodProps) => {
             ) : (
               <SantanderCard
                 subtotal={subtotal}
-                disabled={Number(order.total) <= 1500 || Number(order.total) >= 30000 || isLoading}
+                disabled={Number(order.total) < 1500 || Number(order.total) >= 30000 || isLoading}
               />
             )}
           </li>

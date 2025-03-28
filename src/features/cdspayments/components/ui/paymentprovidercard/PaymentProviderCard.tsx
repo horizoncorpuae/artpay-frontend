@@ -1,4 +1,4 @@
-import {PaymentProviderCardProps} from "../../types.ts";
+import {PaymentProviderCardProps} from "../../../types.ts";
 
 
 const PaymentProviderCard = ({
@@ -8,6 +8,7 @@ const PaymentProviderCard = ({
   backgroundColor,
   icon,
   children,
+  className = ''
 }: Partial<PaymentProviderCardProps>) => {
 
 
@@ -15,7 +16,7 @@ const PaymentProviderCard = ({
     <div
       className={`${disabled ? "opacity-65 " : ""} ${
         backgroundColor ? backgroundColor : "bg-[#E2E6FC]"
-      } p-4 rounded-lg w-full max-w-lg lg:max-w-sm`}>
+      } p-4 rounded-lg w-full max-w-lg lg:max-w-sm ${className}`}>
       <div className={`space-y-4 `}>
         {icon && <div>{icon}</div>}
           <div className={"space-y-1"}>

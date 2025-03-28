@@ -1,14 +1,13 @@
-import SkeletonCard from "../paymentprovidercard/SkeletonCard.tsx";
+import SkeletonCard from "../ui/paymentprovidercard/SkeletonCard.tsx";
 import { Order } from "../../../../types/order.ts";
-import PaymentProviderCard from "../paymentprovidercard/PaymentProviderCard.tsx";
-import ArtpayIcon from "../paymentprovidercard/ArtpayIcon.tsx";
+import PaymentProviderCard from "../ui/paymentprovidercard/PaymentProviderCard.tsx";
+import ArtpayIcon from "../ui/paymentprovidercard/ArtpayIcon.tsx";
 import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 import { useAuth } from "../../../../hoc/AuthProvider.tsx";
 import usePaymentStore from "../../store.ts";
 import { useData } from "../../../../hoc/DataProvider.tsx";
-import AgreementCheckBox from "../agreementcheckbox/AgreementCheckBox.tsx";
+import AgreementCheckBox from "../ui/agreementcheckbox/AgreementCheckBox.tsx";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 type SantanderFlowProps = {
   isLoading?: boolean;
@@ -21,7 +20,6 @@ const SantanderFlow = ({ isLoading, order }: SantanderFlowProps) => {
   const data = useData();
   const subtotal = !order?.fee_lines.length ? Number(order?.total) / 1.06 : Number(order?.total) / 1.124658;
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const event_name = "santander_click";
   const properties = {
@@ -41,44 +39,33 @@ const SantanderFlow = ({ isLoading, order }: SantanderFlowProps) => {
   };
 
   const handleDeleteOrder = async () => {
-    if(window.confirm("Sei sicuro di voler annullare l'ordine? Questa azione è irreversibile.")) {
+    setPaymentData({
+      loading: true,
+    });
+    try {
+      if (!order) return;
+
+      const restoreToOnHold = data.updateOrder(order?.id,{status: "on-hold", payment_method: "bnpl"});
+      if (!restoreToOnHold) throw Error("Error updating order to on-hold");
+      console.log("Order restore to on-hold");
+
       setPaymentData({
-        loading: true,
+        paymentStatus: "on-hold",
+        paymentMethod: "bnpl",
       });
-      try {
-        if (!order) return;
-
-        const deleteOrder = data.setOrderStatus(order?.id, "cancelled");
-        if (!deleteOrder) throw Error("Error deleting order");
-        console.log("Order deleted");
-        localStorage.removeItem(`payment-intents-cds-${order.order_key}`);
-        localStorage.removeItem(`showCheckout`);
-        localStorage.removeItem(`checkoutUrl`);
-        localStorage.removeItem(`CdsOrder`);
-        localStorage.setItem("checkOrder", "true")
-
-        setPaymentData({
-          paymentStatus: "cancelled",
-          paymentIntent: null,
-          paymentMethod: null,
-          order: null,
-          vendor: null,
-        });
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setPaymentData({
-          loading: false,
-        });
-        navigate("/")
-      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setPaymentData({
+        loading: false,
+      });
     }
   };
 
   const handleSantanderButton = () => {
     window.Brevo.push(["track", event_name, properties]);
 
-    console.log("push");
+    console.log("push", event_name, properties);
   };
 
   return (
@@ -266,7 +253,7 @@ const SantanderFlow = ({ isLoading, order }: SantanderFlowProps) => {
                         onClick={() => setPaymentData({ readyToPay: true })}>
                         Completa pagamento
                       </button>
-                      <button className={"text-red-500 cursor-pointer"} onClick={handleDeleteOrder}>
+                      <button className={"text-secondary cursor-pointer"} onClick={handleDeleteOrder}>
                         Annulla pagamento
                       </button>
                     </div>

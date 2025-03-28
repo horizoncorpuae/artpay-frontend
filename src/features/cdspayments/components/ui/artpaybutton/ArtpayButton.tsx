@@ -1,4 +1,4 @@
-import LogoButton from "../icons/LogoButton.tsx";
+import LogoButton from "../../../../../components/icons/LogoButton.tsx";
 
 type ArtpayButtonProps = {
   onClick: () => void;
@@ -7,7 +7,7 @@ type ArtpayButtonProps = {
 }
 
 const ArtpayButton = ({onClick, disabled = false, title} : ArtpayButtonProps) => {
-  const buttonTitle = title || 'Paga ora con ';
+  const buttonTitle = title || 'Continua con ';
 
 
 
