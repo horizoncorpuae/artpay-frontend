@@ -83,6 +83,16 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
             if (!artworks) throw new Error('Error fetching artworks')
             setGalleryArtworks(artworksToGalleryItems(artworks, "large"));
 
+            if (typeof galleryArtworks != "undefined") {
+              const sortedGalleryArtworks = [...galleryArtworks].sort((a, b) =>
+                a.title.localeCompare(b.title)
+              );
+
+              setGalleryArtworks(sortedGalleryArtworks);
+              console.log(sortedGalleryArtworks)
+            }
+
+
             const artists = await data.listArtistsForGallery(gallery.id.toString())
             if (!artists) throw new Error('Error fetching artists')
             setGalleryArtists(artistsToGalleryItems(artists));
