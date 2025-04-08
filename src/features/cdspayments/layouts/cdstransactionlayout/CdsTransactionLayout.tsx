@@ -1,17 +1,20 @@
 import { ReactNode } from "react";
 import Navbar from "../../components/ui/navbar/Navbar.tsx";
 import { NavLink } from "react-router-dom";
-import usePaymentStore from "../../store.ts";
+import usePaymentStore from "../../stores/paymentStore.ts";
 import SkeletonOrderDetails from "../../components/paymentmethodslist/SkeletonOrderDetails.tsx";
 import OrderSummary from "../../components/ordersummary/OrderSummary.tsx";
 import VendorDetails from "../../components/vendordetails/VendorDetails.tsx";
 import CdsTransactionsProvider from "../../hoc/cdstransactionsprovider/CdsTransactionsProvider.tsx";
+import Tooltip from "../../components/ui/tooltip/ToolTip.tsx";
+
 
 const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
   const { order, vendor } = usePaymentStore();
 
   return (
     <CdsTransactionsProvider>
+      <Tooltip />
       <div className="min-h-screen flex flex-col bg-primary pt-35">
         <div className="mx-auto container max-w-md">
           <Navbar />

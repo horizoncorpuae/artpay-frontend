@@ -1,5 +1,5 @@
 import { useNavigate } from "../../utils.ts";
-import usePaymentStore from "../../features/cdspayments/store.ts";
+import usePaymentStore from "../../features/cdspayments/stores/paymentStore.ts";
 
 const LogoFastArtpay = () => {
   const {order} = usePaymentStore()

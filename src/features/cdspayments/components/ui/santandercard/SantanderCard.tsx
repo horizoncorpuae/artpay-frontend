@@ -4,7 +4,7 @@ import ArtpayButton from "../artpaybutton/ArtpayButton.tsx";
 import { PaymentProviderCardProps } from "../../../types.ts";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
-import usePaymentStore from "../../../store.ts";
+import usePaymentStore from "../../../stores/paymentStore.ts";
 import { calculateArtPayFee } from "../../../utils.ts";
 import { useData } from "../../../../../hoc/DataProvider.tsx";
 import AgreementCheckBox from "../agreementcheckbox/AgreementCheckBox.tsx";

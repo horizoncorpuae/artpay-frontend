@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { Order } from "../../types/order.ts";
-import { Gallery } from "../../types/gallery.ts";
+import { Order } from "../../../types/order.ts";
+import { Gallery } from "../../../types/gallery.ts";
 import { PaymentIntent } from "@stripe/stripe-js";
 
 interface PaymentState {

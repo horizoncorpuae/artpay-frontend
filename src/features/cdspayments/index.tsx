@@ -1,4 +1,4 @@
-import usePaymentStore from "./store.ts";
+import usePaymentStore from "./stores/paymentStore.ts";
 import PaymentMethodsList from "./components/paymentmethodslist/PaymentMethodsList.tsx";
 import { Order } from "../../types/order.ts";
 import CdsTransactionLayout from "./layouts/cdstransactionlayout/CdsTransactionLayout.tsx";

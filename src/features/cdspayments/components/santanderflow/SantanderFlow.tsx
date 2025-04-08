@@ -4,7 +4,7 @@ import PaymentProviderCard from "../ui/paymentprovidercard/PaymentProviderCard.t
 import ArtpayIcon from "../ui/paymentprovidercard/ArtpayIcon.tsx";
 import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 import { useAuth } from "../../../../hoc/AuthProvider.tsx";
-import usePaymentStore from "../../store.ts";
+import usePaymentStore from "../../stores/paymentStore.ts";
 import { useData } from "../../../../hoc/DataProvider.tsx";
 import BankTransfer from "../banktransfer/BankTransfer.tsx";
 

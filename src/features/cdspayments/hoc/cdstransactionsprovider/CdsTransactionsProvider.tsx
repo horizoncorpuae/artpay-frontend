@@ -1,6 +1,6 @@
 import { ReactNode, useEffect} from "react";
 import { useData } from "../../../../hoc/DataProvider.tsx";
-import usePaymentStore from "../../store.ts";
+import usePaymentStore from "../../stores/paymentStore.ts";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Artwork } from "../../../../types/artwork.ts";
 import { Gallery } from "../../../../types/gallery.ts";

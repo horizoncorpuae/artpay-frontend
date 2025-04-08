@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { PaymentProviderCardProps } from "../../../types.ts";
 import { useData } from "../../../../../hoc/DataProvider.tsx";
-import usePaymentStore from "../../../store.ts";
+import usePaymentStore from "../../../stores/paymentStore.ts";
 import PaymentProviderCard from "../paymentprovidercard/PaymentProviderCard.tsx";
 import KlarnaIcon from "../paymentprovidercard/KlarnaIcon.tsx";
 import { calculateTotalFee } from "../../../utils.ts";

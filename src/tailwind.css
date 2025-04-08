@@ -14,8 +14,40 @@
     --text-4xl: 2.5rem;
     --text-4xl--line-height: 105%;
 
+    --animate-fade-in-scale: fade-in-scale 2500ms ease-out forwards;
+
+    @keyframes fade-in-scale {
+        0% {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        20% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        40% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        60% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        80% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(1);
+        }
+    }
+
 
 }
+
+
+
 
 
 html {
