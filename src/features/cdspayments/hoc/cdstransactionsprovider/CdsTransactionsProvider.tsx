@@ -24,6 +24,7 @@ const CdsTransactionsProvider = ({ children }: { children: ReactNode }) => {
         if (orderResp) {
           console.log("Trovato ordine on-hold");
           localStorage.setItem("showCheckout", "true");
+          localStorage.setItem("redirectToAcquistoEsterno", "true");
         }
 
         if (!orderResp) {
