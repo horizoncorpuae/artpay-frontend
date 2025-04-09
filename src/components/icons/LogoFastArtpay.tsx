@@ -1,13 +1,15 @@
 import { useNavigate } from "../../utils.ts";
 import usePaymentStore from "../../features/cdspayments/stores/paymentStore.ts";
+import { useLocation } from "react-router-dom";
 
 const LogoFastArtpay = () => {
   const {order} = usePaymentStore()
   const cdsOrder = order || localStorage.getItem("CdsOrder");
   const navigate = useNavigate()
+  const pathname = useLocation().pathname
 
   const handleNavigate = () => {
-    if (!cdsOrder) return
+    if (!cdsOrder || pathname == '/acquisto-esterno') return
 
     navigate('/acquisto-esterno')
   }

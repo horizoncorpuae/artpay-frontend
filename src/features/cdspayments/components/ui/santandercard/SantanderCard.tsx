@@ -12,7 +12,7 @@ import AgreementCheckBox from "../agreementcheckbox/AgreementCheckBox.tsx";
 const SantanderCard = ({ subtotal, disabled, paymentSelected = true }: Partial<PaymentProviderCardProps>) => {
   const [fee, setFee] = useState<number>(0);
   const data = useData();
-  const { setPaymentData, order } = usePaymentStore();
+  const { setPaymentData, order, paymentIntent } = usePaymentStore();
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,20 +48,26 @@ const SantanderCard = ({ subtotal, disabled, paymentSelected = true }: Partial<P
       loading: true,
     });
     try {
-      const updatePayment = await data.updatePaymentIntent({
-        wc_order_key: order?.order_key,
-        payment_method: "santander",
-      });
-      if (!updatePayment) throw new Error("Error during updating payment intent");
+      if (paymentIntent) {
+        const updatePayment = await data.updatePaymentIntent({
+          wc_order_key: order.order_key,
+          payment_method: "santander",
+        });
+        if (!updatePayment) throw new Error("Error during updating payment intent");
+
+        setPaymentData({
+          paymentMethod: "santander",
+          paymentIntent: updatePayment,
+        });
+      }
 
       const updateOrder = await data.updateOrder(order.id, { payment_method: "santander" });
       if (!updateOrder) throw new Error("Error during updating payment intent");
 
-      await data.getOnHoldOrder();
 
       setPaymentData({
         paymentMethod: "santander",
-        paymentIntent: updatePayment,
+        paymentIntent: null,
       });
     } catch (e) {
       console.error(e);
@@ -78,20 +84,24 @@ const SantanderCard = ({ subtotal, disabled, paymentSelected = true }: Partial<P
       loading: true,
     });
     try {
-      const updatePayment = await data.updatePaymentIntent({
-        wc_order_key: order?.order_key,
-        payment_method: "bnpl",
-      });
-      if (!updatePayment) throw new Error("Error during updating payment intent");
+      if (paymentIntent) {
+        const updatePayment = await data.updatePaymentIntent({
+          wc_order_key: order?.order_key,
+          payment_method: "bnpl",
+        });
+        if (!updatePayment) throw new Error("Error during updating payment intent");
+
+        setPaymentData({
+          paymentIntent: updatePayment,
+        })
+      }
 
       const updateOrder = await data.updateOrder(order.id, { payment_method: "bnpl" });
       if (!updateOrder) throw new Error("Error during updating payment intent");
 
-      await data.getOnHoldOrder();
-
       setPaymentData({
         paymentMethod: "bnpl",
-        paymentIntent: updatePayment,
+        paymentIntent: null,
       });
     } catch (e) {
       console.error(e);

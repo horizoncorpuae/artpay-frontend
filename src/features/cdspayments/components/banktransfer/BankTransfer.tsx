@@ -5,7 +5,7 @@ import { uploadFile } from "@uploadcare/upload-client";
 import useToolTipStore from "../../stores/tooltipStore.ts";
 
 const BankTransfer = ({ order }: { order: Order }) => {
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
 
   const [loading, setLoading] = useState(false);
 

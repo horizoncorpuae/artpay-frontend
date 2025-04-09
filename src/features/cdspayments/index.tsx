@@ -18,6 +18,8 @@ const CdsPayments = () => {
   console.log('Payment total:',order?.total)
   console.log('Order:',order)
 
+  localStorage.setItem("checkOrder", "true");
+
   return (
     <CdsTransactionLayout>
       {choosePaymentMethod && !completedOrder && <PaymentMethodsList order={order as Order} isLoading={loading} /> }
