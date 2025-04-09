@@ -75,13 +75,16 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           localStorage.setItem("showCheckout", "true");
           localStorage.setItem("checkoutUrl", "/acquisto-esterno");
         } else {
-          const processedOrders = await data.getProcessingOrder()
+          const processedOrders = await data.getProcessingOrder();
           console.log(processedOrders);
-          if(!processedOrders) localStorage.removeItem("showCheckout");
+          if (!processedOrders) {
+            localStorage.removeItem("showCheckout");
+            localStorage.removeItem("checkoutUrl");
+            return
+          }
           setShowCheckout(true);
-          localStorage.setItem("showCheckout", "true");
           localStorage.setItem("checkoutUrl", "/acquisto-esterno");
-
+          localStorage.setItem("showCheckout", "true");
         }
       }
 

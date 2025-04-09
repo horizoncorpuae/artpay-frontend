@@ -32,14 +32,13 @@ const CdsTransactionsProvider = ({ children }: { children: ReactNode }) => {
           if (orderResp) {
             console.log("Trovato ordine in processing");
             localStorage.setItem("showCheckout", "true");
-          } else {
-            throw new Error("Trovato ordine in processing");
           }
         }
 
         if(!orderResp && !hasPayment_intent) {
           localStorage.removeItem("CdsOrder");
           localStorage.removeItem("showCheckout");
+          localStorage.removeItem("checkoutUrl");
           navigate("/");
 
           throw new Error("Nessun ordine trovato");
@@ -59,7 +58,7 @@ const CdsTransactionsProvider = ({ children }: { children: ReactNode }) => {
           setPaymentData({ vendor: vendorResp });
         }
 
-        if (hasPayment_intent) {
+        if (hasPayment_intent && orderResp) {
           const successPayment = searchParams.get("redirect_status") === "succeeded";
 
           if (successPayment) {
@@ -89,9 +88,9 @@ const CdsTransactionsProvider = ({ children }: { children: ReactNode }) => {
 
         setPaymentData({
           order: orderResp,
-          paymentStatus: orderResp.status,
-          paymentMethod: orderResp.payment_method,
-          orderNote: orderResp.customer_note
+          paymentStatus: orderResp?.status,
+          paymentMethod: orderResp?.payment_method,
+          orderNote: orderResp?.customer_note
         });
       } catch (error) {
         console.error(error);
