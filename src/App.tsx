@@ -37,6 +37,7 @@ import Contacts from "./pages/Contacts.tsx";
 import Messages from "./pages/Messages.tsx";
 import Galleries from "./pages/Galleries.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
+import LandingForCampaignPage from "./pages/LandingForCampaignPage.tsx";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || "";
@@ -111,6 +112,7 @@ function AppContent() {
                     <Route path="/messaggi" element={<Messages />} />
                     <Route path="/errore/:code" element={<Error />} />
                     <Route path="/errore" element={<Error />} />
+                    <Route path={"/landing-campaign"} element={<LandingForCampaignPage />} />
                   </Routes>
                 </PaymentProvider>
               </DataProvider>
