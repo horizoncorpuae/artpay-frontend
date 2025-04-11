@@ -727,7 +727,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         orderParams.status = Array.isArray(status) ? status.join(",") : (status as string);
       }
       const resp = await axios.get<OrderFilters, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
-        params: orderParams
+        params: orderParams,
+        headers: {
+          Authorization: auth.getAuthToken()
+        }
       });
       return resp.data;
     },

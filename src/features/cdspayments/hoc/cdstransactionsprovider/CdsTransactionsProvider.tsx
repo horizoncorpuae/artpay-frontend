@@ -80,6 +80,7 @@ const CdsTransactionsProvider = ({ children }: { children: ReactNode }) => {
             localStorage.removeItem("CdsOrder");
             localStorage.removeItem("showCheckout");
             localStorage.removeItem("checkoutUrl");
+            localStorage.removeItem("checkOrder");
             navigate("/");
 
             throw new Error("Nessun ordine trovato");
@@ -114,7 +115,7 @@ const CdsTransactionsProvider = ({ children }: { children: ReactNode }) => {
             try {
               let updateOrderStatus;
               updateOrderStatus = await data.setOrderStatus(orderResp.id, "completed");
-              if (!updateOrderStatus) throw new Error("Errore during comlete order setting");
+              if (!updateOrderStatus) throw new Error("Errore during complete order setting");
 
               if (user?.billing.invoice_type == "receipt") {
                 const updateBilling = await data.updateOrder(orderResp.id, { billing: user?.billing ? { ...user?.billing } : { ...user?.shipping }, });

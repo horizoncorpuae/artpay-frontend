@@ -1,5 +1,5 @@
 import PaymentProviderCard from "../paymentprovidercard/PaymentProviderCard.tsx";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "../../../../../utils.ts"
 
 const CompletePaymentCard = () => {
   const navigate = useNavigate();
