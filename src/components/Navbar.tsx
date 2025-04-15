@@ -227,6 +227,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               right: 0,
               px: { xs: undefined, lg: 6 },
               maxWidth: "1344px",
+              zIndex: 10,
             }
       }
       elevation={0}>

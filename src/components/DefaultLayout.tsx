@@ -5,6 +5,7 @@ import Navbar from "./Navbar.tsx";
 import Footer from "./Footer.tsx";
 import { Breakpoint } from "@mui/system";
 import Loader from "./Loader.tsx";
+import usePaymentStore from "../features/cdspayments/stores/paymentStore.ts";
 
 export interface DefaultLayoutProps {
   authRequired?: boolean;
@@ -36,6 +37,8 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   const [ready, setReady] = useState(false);
   const [animationReady, setAnimationReady] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const {openDraw} = usePaymentStore()
 
   useEffect(() => {
     if (authRequired && !auth.isAuthenticated) {
@@ -93,6 +96,9 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
       }}>
         <Typography variant="subtitle1" color="white">Artpay Beta version</Typography>
       </Box>
+      {openDraw && (
+        <div className={'overlay fixed z-20 inset-0 w-full min-h-screen bg-zinc-950/65 animate-fade-in'}></div>
+      )}
     </>
   );
 };
