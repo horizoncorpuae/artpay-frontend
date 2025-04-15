@@ -132,6 +132,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     height: menuOpen ? "50%" : undefined,
     transition: "all 0.5s",
     overflow: "hidden",
+    zIndex: 5
     //borderRadius: 0
   };
 

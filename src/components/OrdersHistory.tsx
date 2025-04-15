@@ -42,7 +42,7 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({
       }).catch(e => snackbar.error(e));
     } else {
       data.listOrders({ status: ["processing", "on-hold"], per_page: 10 }).then((orders) => {
-        setOrders(ordersToOrderHistoryCardProps(orders).filter(o => o.purchaseMode !== "Stripe SEPA"));
+        setOrders(ordersToOrderHistoryCardProps(orders.filter((order) => order.created_via != "gallery_auction")).filter(o => o.purchaseMode !== "Stripe SEPA" ));
       }).catch(e => snackbar.error(e));
     }
 
