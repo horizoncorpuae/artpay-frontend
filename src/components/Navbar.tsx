@@ -36,9 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {order, setPaymentData} = usePaymentStore()
-
-  console.dir(order)
+  const {setPaymentData} = usePaymentStore()
 
   const environment = useEnvDetector();
 

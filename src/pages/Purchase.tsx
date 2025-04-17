@@ -66,12 +66,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
   const [showCommissioni, setShowCommissioni] = useState(true);
 
-  const [isOnlySantander, setIsOnlySantander] = useState(false);
-
-  const isGalleryAuction = pendingOrder?.created_via === "gallery_auction";
-
-  const KLARNA_FEE = 1.064658;
-
   orderMode = orderMode === "loan" || pendingOrder?.customer_note === "Blocco opera" ? "loan" : orderMode;
 
   const showError = async (err?: unknown, text: string = "Si è verificato un errore") => {
@@ -81,8 +75,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
     return snackbar.error(text, { autoHideDuration: 60000 });
   };
   useEffect(() => {
-    if (isGalleryAuction) setShowCommissioni(true);
-
     if (auth.isAuthenticated) {
       const getOrderFunction =
         orderMode === "redeem" && urlParams.order_id
@@ -126,12 +118,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             } else if (resp.payment_method === "bnpl") {
               localStorage.setItem("redirectToAcquistoEsterno", "true");
               paymentIntent = await data.createPaymentIntentCds({ wc_order_key: resp.order_key });
-              if (Number(pendingOrder?.total) < 1500) {
-                paymentIntent = await data.updatePaymentIntent({
-                  wc_order_key: resp.order_key,
-                  payment_method: "klarna",
-                });
-              }
             } else {
               if (orderMode === "loan") {
                 paymentIntent = await data.createBlockIntent({ wc_order_key: resp.order_key });
@@ -244,7 +230,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
         paymentMethodForUpdate = "klarna";
       }
       await onChangePaymentMethod(paymentMethodForUpdate);
-      //setPendingOrder(updatedOrderResp);
+      /*setPendingOrder(updatedOrderResp);*/
     } catch (e) {
       console.error(e);
       await showError(e);
@@ -271,26 +257,23 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
   };
 
   const onChangePaymentMethod = async (payment: string): Promise<void> => {
+    console.log('payment method', payment);
     setShowCommissioni(false);
     if (pendingOrder) {
       const wc_order_key = pendingOrder.order_key;
       /*console.log("Payment method: ", payment, wc_order_key);*/
       try {
-        if (Number(pendingOrder.total) * KLARNA_FEE <= 2500) {
-          const newPaymentIntent = await data.updatePaymentIntent({ wc_order_key, payment_method: payment });
-          setPaymentIntent(newPaymentIntent);
-          if (payment === "card") {
-            setPaymentMethod("Carta");
-          } else if (payment === "klarna") {
-            setPaymentMethod("Klarna");
-          } else if (payment === "Santander") {
-            setPaymentMethod("Santander");
-          } else setPaymentMethod("Santander");
-        } else {
-          const newPaymentIntent = await data.updatePaymentIntent({ wc_order_key, payment_method: "Santander" });
-          setPaymentIntent(newPaymentIntent);
+
+        const newPaymentIntent = await data.updatePaymentIntent({ wc_order_key, payment_method: payment });
+        setPaymentIntent(newPaymentIntent);
+        console.log(newPaymentIntent)
+        if (payment === "card") {
+          setPaymentMethod("Carta");
+        } else if (payment === "klarna") {
+          setPaymentMethod("Klarna");
+        } else if (payment === "Santander") {
           setPaymentMethod("Santander");
-        }
+        } else setPaymentMethod("Bonifico");
 
         const getOrderFunction =
           orderMode === "redeem" && urlParams.order_id
@@ -302,6 +285,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
         const order = await getOrderFunction;
         if (order) setPendingOrder(order);
         setShowCommissioni(true);
+        console.log(order)
       } catch (e) {
         console.error("Update payment method error: ", e);
         setShowCommissioni(false);
@@ -368,20 +352,10 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
 
       localStorage.setItem("showCheckout", "true");
       localStorage.setItem("checkOrder", "true");
-
-      if (pendingOrder.created_via == "gallery_auction") {
-        localStorage.setItem("checkoutUrl", "/acquisto-esterno");
-      }
     }
-
-    setIsOnlySantander(subtotal > 2500.0);
   }, [pendingOrder]);
 
-  const reverseFee = (base: number): number => {
-    return Number((base / 1.06).toFixed(2));
-  };
-
-  const cardContentTitle = isGalleryAuction ? `Il tuo ordine presso:` : "Riassunto dell'ordine";
+  const cardContentTitle = "Riassunto dell'ordine";
 
   if (noPendingOrder) {
     return (
@@ -399,6 +373,9 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
       </DefaultLayout>
     );
   }
+
+
+  console.log(paymentMethod)
 
   return (
     <DefaultLayout pageLoading={!isReady || !paymentsReady} pb={6} authRequired>
@@ -418,7 +395,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
           )}
           <PaymentCard
             orderMode={orderMode}
-            auction={isGalleryAuction}
             checkoutButtonRef={checkoutButtonRef}
             onCheckout={() => handleSubmitCheckout()}
             onChange={(payment_method: string) => onChangePaymentMethod(payment_method)}
@@ -444,8 +420,6 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
             <ContentCard title="Metodo di spedizione" icon={<PiTruckThin size="28px" />}>
               <RadioGroup defaultValue="selected" name="radio-buttons-group">
                 {availableShippingMethods.map((s) => {
-                  if (isGalleryAuction && s.method_id == "mvx_vendor_shipping") return;
-
                   return (
                     <RadioButton
                       sx={{ mb: 2 }}
@@ -519,49 +493,33 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                 <CircularProgress />
               </div>
             ) : (
-              <>
-                {isGalleryAuction && galleries?.length > 0 && (
-                  <div className={"flex space-x-2 items-center justify-center w-full"}>
-                    <div className={"w-11 h-11 rounded-sm overflow-hidden"}>
-                      <img
-                        src={galleries[0].shop.image}
-                        alt={galleries[0].display_name}
-                        className={"w-full h-full aspect-square object-cover"}
-                      />
-                    </div>
-                    <h3 className={"text-xl"}>{galleries[0].display_name}</h3>
-                  </div>
-                )}
-                {!isGalleryAuction && (
-                  <Box display="flex" sx={{ px: { xs: 3, md: 5 } }} flexDirection="column" gap={3} mt={3}>
-                    {pendingOrder?.line_items.map((item, i) => (
-                      <Box key={item.id}>
-                        <DisplayImage src={item.image.src} width="100%" height="230px" />
-                        <Typography variant="body1" fontWeight={500} sx={{ mt: 1 }}>
-                          {item.name}
-                        </Typography>
-                        <Typography variant="body1" fontWeight={500} color="textSecondary" sx={{ mb: 1, mt: 0 }}>
-                          {artworks[i]?.artistName}
-                        </Typography>
-                        <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
-                          {artworks[i]?.technique}
-                        </Typography>
-                        <Typography variant="body2" sx={{ mb: 2 }} color="textSecondary">
-                          {artworks[i]?.dimensions}
-                        </Typography>
-                        <Typography variant="body1" fontWeight={500}>
-                          {artworks[i]?.galleryName}
-                        </Typography>
-                        {galleries?.length === artworks?.length && !!galleries[i]?.address?.city && (
-                          <Typography variant="body1" fontWeight={500} color="textSecondary">
-                            {galleries[i]?.address?.city}
-                          </Typography>
-                        )}
-                      </Box>
-                    ))}
+              <Box display="flex" sx={{ px: { xs: 3, md: 5 } }} flexDirection="column" gap={3} mt={3}>
+                {pendingOrder?.line_items.map((item, i) => (
+                  <Box key={item.id}>
+                    <DisplayImage src={item.image.src} width="100%" height="230px" />
+                    <Typography variant="body1" fontWeight={500} sx={{ mt: 1 }}>
+                      {item.name}
+                    </Typography>
+                    <Typography variant="body1" fontWeight={500} color="textSecondary" sx={{ mb: 1, mt: 0 }}>
+                      {artworks[i]?.artistName}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
+                      {artworks[i]?.technique}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2 }} color="textSecondary">
+                      {artworks[i]?.dimensions}
+                    </Typography>
+                    <Typography variant="body1" fontWeight={500}>
+                      {artworks[i]?.galleryName}
+                    </Typography>
+                    {galleries?.length === artworks?.length && !!galleries[i]?.address?.city && (
+                      <Typography variant="body1" fontWeight={500} color="textSecondary">
+                        {galleries[i]?.address?.city}
+                      </Typography>
+                    )}
                   </Box>
-                )}
-              </>
+                ))}
+              </Box>
             )}
             <Divider sx={{ my: 3, borderColor: "#d8ddfa" }} />
             <Box display="flex" flexDirection="column" gap={2} sx={{ px: 2 }}>
@@ -599,54 +557,31 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                       Subtotale
                     </Typography>
                     <Typography variant="body1" fontSize={20} fontWeight={500}>
-                      {`€ ${isGalleryAuction ? reverseFee(subtotal) : subtotal.toFixed(2) || 0}`}
+                      {`€ ${subtotal.toFixed(2) || 0}`}
                     </Typography>
                   </Box>
                   {showCommissioni ? (
-                    !isGalleryAuction ? (
-                      <>
-                        {pendingOrder?.fee_lines?.some((fee) => fee.name === "payment-gateway-fee") &&
-                          paymentMethod !== "Santander" && (
-                            <Box display="flex" justifyContent="space-between">
-                              <Typography variant="body1">Commissioni di servizio</Typography>
-                              <Typography variant="body1">
-                                {" "}
-                                €&nbsp;
-                                {(
-                                  +(
-                                    pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")?.total ||
-                                    0
-                                  ) +
-                                  +(
-                                    pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")
-                                      ?.total_tax || 0
-                                  )
-                                ).toFixed(2)}
-                              </Typography>
-                            </Box>
-                          )}
-                      </>
-                    ) : (
-                      <Box display="flex" justifyContent="space-between">
-                        <Typography variant="body1">Commissioni Artpay</Typography>
-                        <Typography variant="body1">
-                          {" "}
-                          €&nbsp;
-                          {!isOnlySantander
-                            ? (
+                    <>
+                      {pendingOrder?.fee_lines?.some((fee) => fee.name === "payment-gateway-fee") &&
+                        paymentMethod !== "Santander" && (
+                          <Box display="flex" justifyContent="space-between">
+                            <Typography variant="body1">Commissioni di servizio</Typography>
+                            <Typography variant="body1">
+                              {" "}
+                              €&nbsp;
+                              {(
                                 +(
                                   pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")?.total || 0
                                 ) +
                                 +(
                                   pendingOrder?.fee_lines.find((fee) => fee.name === "payment-gateway-fee")
                                     ?.total_tax || 0
-                                ) +
-                                +(subtotal - reverseFee(subtotal))
-                              ).toFixed(2)
-                            : (+(subtotal - reverseFee(subtotal))).toFixed(2)}
-                        </Typography>
-                      </Box>
-                    )
+                                )
+                              ).toFixed(2)}
+                            </Typography>
+                          </Box>
+                        )}
+                    </>
                   ) : (
                     <p className={"flex gap-3 w-full text-gray-700 justify-between"}>
                       <span className={"animate-pulse"}>Calcolo commissioni...</span>
@@ -671,16 +606,14 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                       € {(+(pendingOrder?.total || 0)).toFixed(2)}
                     </Typography>
                   </Box>
-                  {!isGalleryAuction && (
-                    <Box display="flex" justifyContent="space-between">
-                      <Typography variant="body1" fontWeight={500} color="textSecondary" fontSize={15}>
-                        Di cui IVA
-                      </Typography>
-                      <Typography variant="body1" fontWeight={500} color="textSecondary" fontSize={15}>
-                        € {Number(pendingOrder?.total_tax).toFixed(2)}
-                      </Typography>
-                    </Box>
-                  )}
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body1" fontWeight={500} color="textSecondary" fontSize={15}>
+                      Di cui IVA
+                    </Typography>
+                    <Typography variant="body1" fontWeight={500} color="textSecondary" fontSize={15}>
+                      € {Number(pendingOrder?.total_tax).toFixed(2)}
+                    </Typography>
+                  </Box>
                 </>
               )}
               <Checkbox
@@ -697,8 +630,7 @@ const Purchase: React.FC<PurchaseProps> = ({ orderMode = "standard" }) => {
                   </Typography>
                 }
               />
-              {(Number(pendingOrder?.total) * 1.064658 > 2500 && isGalleryAuction && orderMode !== "redeem") ||
-              (paymentMethod === "Santander" && orderMode !== "redeem") ? (
+              {paymentMethod === "Santander" ? (
                 <div className={"w-full flex justify-center my-12"}>
                   <SantanderButton order={pendingOrder as Order} disabled={!privacyChecked} />
                 </div>
