@@ -23,7 +23,7 @@ const BrevoForm = () => {
           className={'border border-[#CDCFD3] rounded-3xl w-full shadow-custom'}
           width={400}
           height={isMobile ? 720 : 600}
-          src={"https://51f5628d.sibforms.com/serve/MUIFAAnobJXYgeNGqAAUiOeUbi7xAyVaAT6Bm_TFv5lvE2NVeWIFFwJDzhRo15BUE7Cxl_YbJczSloMeMKQ4i1DqO5PBmpYaqptsVYTn33aXP1Ti7aP2hedBUYT7SNpmTDDgdPx7M3Xh-4j11VxX519BkWDOcLmaQwCXf8V3L2cL8cXuXcwPHwTj2G5mOsiDEnz2jX3GeGYr286Z"}
+          src="https://51f5628d.sibforms.com/serve/MUIFAB6QSxF0CrGWDiuqxTMnXL1j0-Y0w15NePddNu7kui2e3cMT-uAIQ99vvSFlL3hHuXlmEfzI-V9ORKOjHA_79mw34tfUThoLdxsXLIyfA8UmuuuS5gO6Y1cjbsJli97VMbUjFZEKYy4UZCh5TUPrENmS7Lf4EOS0LciA8J_NU3_LLfB2SVbMIH1DXtm47aUwhjIE6Tf_baTp"
           style={{
             display: "block",
             padding: 0,
