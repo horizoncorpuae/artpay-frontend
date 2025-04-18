@@ -23,37 +23,36 @@ const LandingCampaignCopy = () => {
             className={
               'before:text-[#6576EE] before:content-["•"] relative before:absolute before:-top-2 before:-left-4 before:text-2xl ps-4 leading-[115%]'
             }>
-            <strong>Aumenta le vendite</strong>
+            <strong>Più vendite, meno limiti</strong>
             <p>
-              Con le nostre soluzioni di pagamento dilazionato, rendi l’arte più accessibile senza compromettere il
-              valore delle tue opere.
+              Con artpay, rendi le tue opere accessibili a un pubblico più ampio grazie a soluzioni di pagamento dilazionato. Più persone potranno acquistare, senza sminuire il valore dell’arte.
             </p>
           </li>
           <li
             className={
               'before:text-[#6576EE] before:content-["•"] relative before:absolute before:-top-2 before:-left-4 before:text-2xl ps-4 leading-[115%]'
             }>
-            <strong>Pagamenti sicuri e garantiti</strong>
+            <strong>Il prezzo non è più un ostacolo</strong>
             <p>
-              Ricevi l’intero importo in poche settimane, senza alcun rischio di insolvenza.
+              Comprare diventa più facile. Con artpay offri ai tuoi clienti la possibilità di pagare con piani personalizzati, sicuri e nel rispetto delle loro possibilità.
             </p>
           </li>
           <li
             className={
               'before:text-[#6576EE] before:content-["•"] relative before:absolute before:-top-2 before:-left-4 before:text-2xl ps-4 leading-[115%]'
             }>
-            <strong>Soluzione esclusiva per il mondo dell’arte</strong>
+            <strong>Pagamenti garantiti, zero pensieri</strong>
             <p>
-              Sviluppata su misura per le gallerie, in collaborazione con partner finanziari affidabili.
+              Dimentica insolvenze e ritardi. Con artpay incassi l’intero importo in poche settimane, in totale sicurezza.
             </p>
           </li>
           <li
             className={
               'before:text-[#6576EE] before:content-["•"] relative before:absolute before:-top-2 before:-left-4 before:text-2xl ps-4 leading-[115%]'
             }>
-            <strong>Supera il freno del prezzo</strong>
+            <strong>Soluzione esclusiva per il mondo dell'arte</strong>
             <p>
-              I tuoi clienti potranno acquistare le opere che amano con soluzioni di pagamento su misura, in totale sicurezza e nel rispetto delle loro possibilità
+              artpay è pensato per gallerie e professionisti del settore. Una piattaforma digitale costruita su misura, in collaborazione con partner finanziari selezionati.
             </p>
           </li>
         </ul>
