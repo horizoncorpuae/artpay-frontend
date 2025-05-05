@@ -2,7 +2,7 @@ import SkeletonCard from "../ui/paymentprovidercard/SkeletonCard.tsx";
 import { Order } from "../../../../types/order.ts";
 import PaymentProviderCard from "../ui/paymentprovidercard/PaymentProviderCard.tsx";
 import ArtpayIcon from "../ui/paymentprovidercard/ArtpayIcon.tsx";
-import { ArrowLeft, ArrowRight } from "@mui/icons-material";
+import { ArrowRight } from "@mui/icons-material";
 import { useAuth } from "../../../../hoc/AuthProvider.tsx";
 import usePaymentStore from "../../stores/paymentStore.ts";
 import { useData } from "../../../../hoc/DataProvider.tsx";
@@ -140,19 +140,12 @@ const SantanderFlow = ({ isLoading, order }: SantanderFlowProps) => {
                   </div>
                 </PaymentProviderCard>
 
-                <PaymentProviderCard backgroundColor={"bg-[#FAFAFB]"}>
                   {orderNote != "" ? (
                     <>
-                      <div className={"space-y-1"}>
-                        <h3 className={"font-bold leading-[125%] text-tertiary"}>Calcola la rata</h3>
-                      </div>
-                      <button className={"cursor-pointer"} onClick={() => setPaymentData({ orderNote: "" })}>
-                        <ArrowLeft />
-                        <span>Torna indietro</span>
-                      </button>
+
                     </>
                   ) : (
-                    <>
+                    <PaymentProviderCard backgroundColor={"bg-[#FAFAFB]"}>
                       <div className={"space-y-1 border-b border-b-zinc-300 pb-4"}>
                         <h3 className={"font-bold leading-[125%] text-tertiary"}>Calcola la rata</h3>
                         <p>Avvia la procedura di richiesta prestito</p>
@@ -180,12 +173,11 @@ const SantanderFlow = ({ isLoading, order }: SantanderFlowProps) => {
                         <span>Calcola la rata con Santander</span>
                         <ArrowRight />
                       </a>
-                    </>
+                    </PaymentProviderCard>
                   )}
-                </PaymentProviderCard>
                 {orderNote != "" ? (
                   <PaymentProviderCard backgroundColor={"bg-[#FAFAFB]"}>
-                    <BankTransfer order={order} />
+                    <BankTransfer order={order} handleRestoreOrder={handleDeleteOrder}/>
                   </PaymentProviderCard>
                 ) : (
                   <PaymentProviderCard backgroundColor={"bg-[#FAFAFB]"}>
@@ -200,7 +192,7 @@ const SantanderFlow = ({ isLoading, order }: SantanderFlowProps) => {
                         Completa pagamento
                       </button>
                       <button className={"text-secondary cursor-pointer"} onClick={handleDeleteOrder}>
-                        Annulla pagamento
+                        Annulla
                       </button>
                     </div>
                   </PaymentProviderCard>

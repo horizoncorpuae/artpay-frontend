@@ -46,7 +46,7 @@ const PaymentDraw = () => {
   }, [])
 
  return (
-    <aside className={`${openDraw ? '' : 'translate-y-full md:translate-y-0 md:translate-x-full'} py-6 payment-draw fixed w-full z-50 rounded-t-2xl bottom-0 h-3/5  bg-white transition-all overflow-y-scroll md:overflow-y-auto md:top-0 md:right-0 md:h-screen md:w-2/5 max-w-md`}>
+    <aside className={`${openDraw ? '' : 'translate-y-full md:translate-y-0 md:translate-x-full'} py-6 payment-draw fixed w-full z-50 rounded-t-2xl bottom-0 h-3/5 bg-white transition-all overflow-y-scroll md:rounded-s-2xl md:overflow-y-auto md:top-0 md:right-0 md:h-screen md:w-2/5 max-w-md`}>
       <div className={'flex items-center justify-between px-8 md:flex-col-reverse md:items-start '}>
         <h3 className={'pt-10 text-2xl leading-6 mb-6 '}>Le tue transazioni</h3>
         <button className={'cursor-pointer -translate-y-full translate-x-1/2 md:translate-0 bg-gray-100 rounded-full p-1'} onClick={() => setPaymentData({openDraw: false})}><Close /></button>

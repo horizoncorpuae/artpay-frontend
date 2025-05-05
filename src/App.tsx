@@ -40,6 +40,7 @@ import LandingPage from "./pages/LandingPage.tsx";
 import LandingForCampaignPage from "./pages/LandingForCampaignPage.tsx";
 import CdsPaymentsPage from "./pages/CdsPaymentsPage.tsx";
 import PaymentDraw from "./features/cdspayments/components/ui/paymentdraw/PaymentDraw.tsx";
+import { useScrollToTop } from "./utils.ts";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || "";
@@ -136,6 +137,7 @@ const App = () => {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <BrowserRouter>
+          <ScrollWrapper />
           <AppContent />
         </BrowserRouter>
       </ThemeProvider>
@@ -144,3 +146,9 @@ const App = () => {
 };
 
 export default App;
+
+
+function ScrollWrapper() {
+  useScrollToTop()
+  return null;
+}

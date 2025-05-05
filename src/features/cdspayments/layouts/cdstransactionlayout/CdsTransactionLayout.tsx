@@ -12,6 +12,8 @@ import BillingDataPreview from "../../../../components/BillingDataPreview.tsx";
 import { BillingData } from "../../../../types/user.ts";
 import { useData } from "../../../../hoc/DataProvider.tsx";
 import PaymentProviderCard from "../../components/ui/paymentprovidercard/PaymentProviderCard.tsx";
+import { useNavigate } from "../../../../utils.ts";
+import { clearLocalStorage } from "../../utils.ts";
 
 const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
   const { order, vendor, user, setPaymentData, paymentMethod } = usePaymentStore();
@@ -19,6 +21,41 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
   const data = useData();
   const [saving, setSaving] = useState(false);
   const [requireInvoice, setRequireInvoice] = useState<boolean>(user?.billing.invoice_type == "receipt");
+
+  const navigate = useNavigate();
+
+
+  const handleCancelPayment = async () => {
+    setPaymentData({
+      loading: true,
+    });
+    try {
+      if (!order) return;
+
+      const cancelOrder = await data.updateOrder(order?.id, {
+        status: "cancelled",
+      });
+      if (!cancelOrder) throw Error("Error deleting order!");
+      console.log("Order deleted");
+
+      setPaymentData({
+        paymentStatus: "cancelled",
+        paymentMethod: "",
+        orderNote: "",
+      });
+
+      clearLocalStorage(order)
+
+
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setPaymentData({
+        loading: false,
+      })
+      navigate(`/`);
+    }
+  };
 
 
   const handleProfileDataSubmit = async (formData: BillingData) => {
@@ -130,6 +167,9 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
                 </PaymentProviderCard>
               </>
             )}
+            <button className={"text-secondary artpay-button-style mt-8 bg-[#FAFAFB]"} onClick={handleCancelPayment}>
+              Annulla pagamento
+            </button>
             {vendor && <VendorDetails vendor={vendor} />}
           </main>
         </div>

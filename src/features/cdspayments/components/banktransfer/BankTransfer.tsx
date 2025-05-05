@@ -7,7 +7,7 @@ import usePaymentStore from "../../stores/paymentStore.ts";
 import { useData } from "../../../../hoc/DataProvider.tsx";
 import { sendBrevoEmail } from "../../utils.ts";
 
-const BankTransfer = ({ order }: { order: Order }) => {
+const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleRestoreOrder: () => void }) => {
   const { setPaymentData, orderNote, user } = usePaymentStore();
 
   const [step, setStep] = useState(
@@ -21,7 +21,6 @@ const BankTransfer = ({ order }: { order: Order }) => {
   const bankAccountRef = useRef(null);
   const bankRef = useRef(null);
   const orderRef = useRef(null);
-  const [copied, setCopied] = useState(false);
 
   const [fileData, setFileData] = useState<File | null>(null);
   const { showToolTip } = useToolTipStore();
@@ -30,8 +29,10 @@ const BankTransfer = ({ order }: { order: Order }) => {
     if (inputRef.current) {
       try {
         await navigator.clipboard.writeText(inputRef.current.innerText);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        showToolTip({
+          visible: true,
+          message: "Elemento copiato",
+        });
       } catch (err) {
         console.error("Errore nella copia", err);
       }
@@ -84,7 +85,7 @@ const BankTransfer = ({ order }: { order: Order }) => {
           toName: "Team Artpay",
           params: {
             order: order.id,
-            user: `${user?.first_name} ${user?.last_name}` ,
+            user: `${user?.first_name} ${user?.last_name}`,
             email: user?.email,
             fileName: result.originalFilename,
           },
@@ -110,17 +111,13 @@ const BankTransfer = ({ order }: { order: Order }) => {
     <section>
       <div className={"space-y-1 mb-6 relative"}>
         <h3 className={"font-bold leading-[125%] text-tertiary"}>Completa pagamento</h3>
-        {copied && <span className={"absolute right-0 top-0 -translate-y-full animate-pulse"}>Elemento copiato</span>}
         <div className={"mt-4 space-y-6"}>
-          <label htmlFor="payment-method" className={"flex items-center justify-between"}>
-            <div>
-              <input type={"radio"} defaultChecked={true} className={"me-2"} />
-              <span>Bonifico Bancario</span>
-            </div>
-            <span>
+          <div className={"flex items-center space-x-2"}>
+            <span className={"-left-1 relative"}>
               <BankIcon />
             </span>
-          </label>
+            <span>Bonifico Bancario</span>
+          </div>
           <div>
             <ul className={"ps-1.5 "}>
               <li
@@ -200,7 +197,7 @@ const BankTransfer = ({ order }: { order: Order }) => {
                 <strong>Step 2</strong>
                 {step == 2 && (
                   <div>
-                    <p>Carica la ricevuta della banca nel pannello</p>
+                    <p>Carica la ricevuta del bonifico effettuato</p>
 
                     <div className="flex items-center justify-center w-full mt-6">
                       <label
@@ -270,34 +267,60 @@ const BankTransfer = ({ order }: { order: Order }) => {
       </div>
       <div className={"space-y-6 flex flex-col"}>
         {step == 1 && (
-          <button
-            className={"artpay-button-style bg-primary py-3! text-white disabled:opacity-65"}
-            onClick={() => {
-              setStep(2);
-              showToolTip({
-                visible: true,
-                message: "Bonifico confermato",
-              });
-            }}>
-            Conferma bonifico
-          </button>
+          <div className={"space-y-6"}>
+            <button
+              className={"artpay-button-style bg-primary py-3! text-white disabled:opacity-65"}
+              onClick={() => {
+                setStep(2);
+                showToolTip({
+                  visible: true,
+                  message: "Bonifico confermato",
+                });
+              }}>
+              Conferma bonifico
+            </button>
+            <button
+              type={"button"}
+              className={"artpay-button-style py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"}
+              onClick={handleRestoreOrder}>
+              Annulla
+            </button>
+          </div>
         )}
         {step == 2 && (
-          <button
-            type={"button"}
-            disabled={loading || !fileData}
-            className={
-              "artpay-button-style bg-primary py-3! text-white disabled:opacity-65 disabled:cursor-not-allowed"
-            }
-            onClick={handleSubmit}>
-            {loading ? (
-              <div
-                className="size-4 border border-white border-b-transparent rounded-full animate-spin"
-                id="spinner"></div>
-            ) : (
-              "Completa operazione"
-            )}
-          </button>
+          <div className={"space-y-6"}>
+            <button
+              type={"button"}
+              disabled={loading || !fileData}
+              className={
+                "artpay-button-style bg-primary py-3! text-white disabled:opacity-65 disabled:cursor-not-allowed"
+              }
+              onClick={handleSubmit}>
+              {loading ? (
+                <div
+                  className="size-4 border border-white border-b-transparent rounded-full animate-spin"
+                  id="spinner"></div>
+              ) : (
+                "Completa operazione"
+              )}
+            </button>
+            <button
+              type={"button"}
+              className={"artpay-button-style py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"}
+              onClick={handleRestoreOrder}>
+              Annulla
+            </button>
+          </div>
+        )}
+        {step == 3 && (
+          <div className={"space-y-6"}>
+            <button
+              type={"button"}
+              className={"artpay-button-style py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"}
+              onClick={handleRestoreOrder}>
+              Annulla
+            </button>
+          </div>
         )}
       </div>
     </section>

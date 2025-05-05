@@ -3,8 +3,13 @@ import { useState } from "react";
 import AgreementCheckBox from "../agreementcheckbox/AgreementCheckBox.tsx";
 import { useEnvDetector } from "../../../../../utils.ts";
 import usePaymentStore from "../../../stores/paymentStore.ts";
+import { useData } from "../../../../../hoc/DataProvider.tsx";
 
 const PaymentForm = () => {
+  const {setPaymentData} = usePaymentStore()
+
+  const data = useData();
+
   const stripe = useStripe();
   const elements = useElements();
   const {order} = usePaymentStore()
@@ -19,6 +24,35 @@ const PaymentForm = () => {
     local: "http://localhost:5173/acquisto-esterno?order=" + order?.id,
     staging: "https://staging2.artpay.art/acquisto-esterno?order=" + order?.id,
     production: "http://artpay.art/acquisto-esterno?order=" + order?.id,
+  };
+
+  const handleDeleteOrder = async () => {
+    setPaymentData({
+      loading: true,
+    });
+    try {
+      if (!order) return;
+
+      const restoreToOnHold = await data.updateOrder(order?.id, {
+        status: "on-hold",
+        payment_method: "bnpl",
+        customer_note: "",
+      });
+      if (!restoreToOnHold) throw Error("Error updating order to on-hold");
+      console.log("Order restore to on-hold");
+
+      setPaymentData({
+        paymentStatus: "on-hold",
+        paymentMethod: "bnpl",
+        orderNote: "",
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setPaymentData({
+        loading: false,
+      });
+    }
   };
 
   const handleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,10 +96,11 @@ const PaymentForm = () => {
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" options={{ layout: "accordion" }} />
       <AgreementCheckBox isChecked={isChecked} handleChange={handleCheckBox} />
-      <button
-        disabled={isLoading || !stripe || !elements || !isChecked}
-        id="submit"
-        className={"artpay-button-style bg-klarna hover:bg-klarna-hover mt-6 disabled:opacity-65"}>
+      <div className={'space-y-6'}>
+        <button
+          disabled={isLoading || !stripe || !elements || !isChecked}
+          id="submit"
+          className={"artpay-button-style bg-klarna hover:bg-klarna-hover mt-6 disabled:opacity-65"}>
         <span id="button-text">
           {isLoading ? (
             <div
@@ -75,7 +110,11 @@ const PaymentForm = () => {
             "Paga ora"
           )}
         </span>
-      </button>
+        </button>
+        <button className={"text-secondary artpay-button-style"} onClick={handleDeleteOrder}>
+          Annulla
+        </button>
+      </div>
       {/* Show any error or success messages */}
       {message && <div id="payment-message " className={'text-red-500 text-sm mt-4'}>*{message}</div>}
     </form>

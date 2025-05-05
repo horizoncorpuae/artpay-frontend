@@ -22,7 +22,7 @@ const VendorDetails = ({vendor}: VendorDetailsProps) => {
   }, []);
 
   return (
-    <article className="border-t border-secondary pt-6 mt-24 space-y-3">
+    <article className="border-t border-[#E2E6FC] pt-6 mt-24 space-y-3">
       <div className={'flex items-center space-x-2'}>
         <div className="min-h-12 max-h-12 min-w-12 max-w-12 overflow-hidden p-1 border border-gray-200 rounded-md">
           <img src={vendor?.shop.image} alt={vendor?.name} width={100} height={100} className="border border-gray-200 w-full h-full aspect-square object-cover" />

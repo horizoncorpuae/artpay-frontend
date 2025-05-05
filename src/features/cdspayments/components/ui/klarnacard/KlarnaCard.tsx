@@ -103,12 +103,17 @@ const KlarnaCard = ({ subtotal, disabled, paymentSelected = true }: Partial<Paym
                 loader: "always",
                 appearance: {
                   theme: "flat",
+                  variables: {
+                    colorBackground: '#fff',
+                    colorTextSecondary: '#808791'
+                  },
                   rules: {
                     ".Block": {
                       backgroundColor: "#FFE9EE",
                     },
                   },
                 },
+
               }}>
               <PaymentForm />
             </Elements>
@@ -146,12 +151,16 @@ const KlarnaCard = ({ subtotal, disabled, paymentSelected = true }: Partial<Paym
           </NavLink>
         </>
       ) : (
-        <span>
+        disabled ? (
+          <></>
+        ) : (
+          <span>
           Ci hai ripensato?{" "}
-          <button onClick={handlingKlarnaSelection} disabled={disabled || Number(order?.total) > 2500}>
+            <button onClick={handlingKlarnaSelection} disabled={disabled || Number(order?.total) > 2500}>
             <strong className={"underline cursor-pointer disabled:cursor-not-allowed"}>Paga con Klarna</strong>
           </button>
         </span>
+        )
       )}
     </PaymentProviderCard>
   );

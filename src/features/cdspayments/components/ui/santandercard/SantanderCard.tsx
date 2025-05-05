@@ -168,12 +168,14 @@ const SantanderCard = ({ subtotal, disabled, paymentSelected = true }: Partial<P
           )}
         </>
       ) : (
-        <span>
+        disabled ? (<></>) : (
+          <span>
           Ci hai ripensato?{" "}
-          <button onClick={handlingArtpaySelection} className={"cursor-pointer"} disabled={disabled}>
+            <button onClick={handlingArtpaySelection} className={"cursor-pointer"} disabled={disabled}>
             <strong className={"underline"}>Paga con Prestito</strong>
           </button>
         </span>
+        )
       )}
     </PaymentProviderCard>
   );
