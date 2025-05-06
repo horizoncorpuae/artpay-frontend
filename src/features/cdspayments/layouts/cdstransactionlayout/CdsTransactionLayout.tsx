@@ -16,7 +16,7 @@ import { useNavigate } from "../../../../utils.ts";
 import { clearLocalStorage } from "../../utils.ts";
 
 const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
-  const { order, vendor, user, setPaymentData, paymentMethod } = usePaymentStore();
+  const { order, vendor, user, setPaymentData, paymentMethod, loading } = usePaymentStore();
   const [shippingDataEditing, setShippingDataEditing] = useState(false);
   const data = useData();
   const [saving, setSaving] = useState(false);
@@ -167,7 +167,7 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
                 </PaymentProviderCard>
               </>
             )}
-            <button className={"text-[#EC6F7B] artpay-button-style mt-8 bg-[#FAFAFB]"} onClick={handleCancelPayment}>
+            <button className={"text-[#EC6F7B] artpay-button-style mt-8 bg-[#FAFAFB] disabled:cursor-not-allowed disabled:opacity-65"} onClick={handleCancelPayment} disabled={loading}>
               Elimina Transazione
             </button>
             {vendor && <VendorDetails vendor={vendor} />}

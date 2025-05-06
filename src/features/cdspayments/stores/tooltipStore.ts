@@ -3,7 +3,7 @@ import { create } from "zustand";
 interface ToolTipState {
   visible: boolean;
   message: string;
-  type: "success" | "error";
+  type: "success" | "error" | "info";
   icon?: Element | null;
   showToolTip: (message: Partial<ToolTipState>) => void;
 }

@@ -31,6 +31,7 @@ const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleResto
         await navigator.clipboard.writeText(inputRef.current.innerText);
         showToolTip({
           visible: true,
+          type: "info",
           message: "Elemento copiato",
         });
       } catch (err) {
@@ -93,6 +94,12 @@ const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleResto
 
         setPaymentData({
           orderNote: "Documentazione caricata, in attesa di conferma da artpay",
+        });
+      } else {
+        showToolTip({
+          visible: true,
+          message: "Errore durante l'invio.",
+          type: "error",
         });
       }
     } catch (e) {
