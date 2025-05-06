@@ -122,7 +122,7 @@ const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleResto
             <ul className={"ps-1.5 "}>
               <li
                 className={
-                  'leading-5 border-l border-gray-200 pb-8 before:absolute before:content-["•"] before:text-primary before:text-3xl before:-left-4 before:translate-x-1/2 relative ps-4'
+                  'leading-5 border-l border-[#CDCFD3] pb-8 before:absolute before:content-["•"] before:text-primary before:text-3xl before:-left-4 before:translate-x-1/2 relative ps-4'
                 }>
                 <strong>Step 1</strong>
                 {step == 1 && (
@@ -191,10 +191,10 @@ const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleResto
                 )}
               </li>
               <li
-                className={`leading-5 border-l border-gray-200 pb-8 before:absolute before:content-["•"] ${
-                  step > 1 ? "before:text-primary" : "before:text-secondary"
+                className={`leading-5 border-l border-[#CDCFD3] pb-8 before:absolute before:content-["•"] ${
+                  step > 1 ? "before:text-primary" : "before:text-[#CDCFD3]"
                 } before:text-3xl before:-left-4 before:translate-x-1/2 relative ps-4`}>
-                <strong>Step 2</strong>
+                <strong className={`${step >= 2 ? '' : 'text-[#CDCFD3]'}`}>Step 2</strong>
                 {step == 2 && (
                   <div>
                     <p>Carica la ricevuta del bonifico effettuato</p>
@@ -205,7 +205,7 @@ const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleResto
                         className="flex flex-col items-center justify-center w-full h-32 border border-[#CDCFD3] rounded-lg cursor-pointer bg-white hover:bg-gray-100 ">
                         {!fileData ? (
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <p className="mb-1 text-secondary">Ricevuta (JPG, PNG, PDF)</p>
+                            <p className="mb-1 text-[]">Ricevuta (JPG, PNG, PDF)</p>
                             <p className="text-primary underline font-normal">Carica file</p>
                           </div>
                         ) : (
@@ -220,7 +220,7 @@ const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleResto
                     </div>
                   </div>
                 )}
-                {step != 2 && step < 3 && <p className={"text-secondary"}>Ricevuta</p>}
+                {step != 2 && step < 3 && <p className={"text-[#CDCFD3]"}>Ricevuta</p>}
                 {step == 3 && (
                   <>
                     <p>File caricato</p>
@@ -234,8 +234,8 @@ const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleResto
               </li>
               <li
                 className={`${
-                  step == 3 ? "before:text-[#42B396]" : "before:text-secondary"
-                } leading-5 border-l border-gray-200 pb-8 before:absolute before:content-["•"] before:text-3xl before:-left-4 before:translate-x-1/2 relative ps-4`}>
+                  step == 3 ? "before:text-[#42B396]" : "before:text-[#CDCFD3]"
+                } leading-5 border-l border-[#CDCFD3] pb-8 before:absolute before:content-["•"] before:text-3xl before:-left-4 before:translate-x-1/2 relative ps-4`}>
                 {step > 2 && (
                   <span>
                     <svg
@@ -252,13 +252,13 @@ const BankTransfer = ({ order, handleRestoreOrder }: { order: Order; handleResto
                     </svg>
                   </span>
                 )}
-                <strong>Step 3</strong>
+                <strong className={`${step >= 3 ? '' : 'text-[#CDCFD3]'}`}>Step 3</strong>
                 {step == 3 ? (
                   <p className={"text-balance font-normal"}>
                     Complimenti hai inviato con successo i documenti, ti aggiorneremo sui risultati!
                   </p>
                 ) : (
-                  <p className={"text-secondary"}>Completamento</p>
+                  <p className={"text-[#CDCFD3]"}>Completamento</p>
                 )}
               </li>
             </ul>

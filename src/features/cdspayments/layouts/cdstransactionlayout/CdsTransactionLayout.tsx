@@ -167,8 +167,8 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
                 </PaymentProviderCard>
               </>
             )}
-            <button className={"text-secondary artpay-button-style mt-8 bg-[#FAFAFB]"} onClick={handleCancelPayment}>
-              Annulla pagamento
+            <button className={"text-[#EC6F7B] artpay-button-style mt-8 bg-[#FAFAFB]"} onClick={handleCancelPayment}>
+              Elimina Transazione
             </button>
             {vendor && <VendorDetails vendor={vendor} />}
           </main>
