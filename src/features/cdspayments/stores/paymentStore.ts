@@ -16,6 +16,7 @@ interface PaymentState {
   isError: boolean;
   receipt: boolean;
   orderNote: string;
+  iFrameUrl: string | null;
   user: UserProfile | null;
   openDraw?: boolean;
 
@@ -36,6 +37,7 @@ const usePaymentStore = create<PaymentState>((set) => ({
   orderNote: "",
   user: null,
   openDraw: false,
+  iFrameUrl: null,
 
   setPaymentData: (data) => set((state) => ({ ...state, ...data })),
 }));

@@ -2,6 +2,7 @@ import { Order } from "../../../../types/order.ts";
 import SkeletonCard from "../ui/paymentprovidercard/SkeletonCard.tsx";
 import KlarnaCard from "../ui/klarnacard/KlarnaCard.tsx";
 import SantanderCard from "../ui/santandercard/SantanderCard.tsx";
+import HeyLightCard from "../../../heylight/components/heylightcard/HeyLightCard.tsx";
 
 type PaymentMethodProps = {
   order: Order;
@@ -10,7 +11,6 @@ type PaymentMethodProps = {
 
 const PaymentMethodsList = ({ order, isLoading }: PaymentMethodProps) => {
   const subtotal = !order?.fee_lines.length ? Number(order?.total) / 1.06 : Number(order?.total) / 1.124658;
-
 
   return (
     <section className={"space-y-6"}>
@@ -38,10 +38,7 @@ const PaymentMethodsList = ({ order, isLoading }: PaymentMethodProps) => {
             {!order || isLoading ? (
               <SkeletonCard />
             ) : (
-              <KlarnaCard
-                subtotal={subtotal}
-                disabled={Number(order.total) > 2500 || isLoading}
-              />
+              <KlarnaCard subtotal={subtotal} disabled={Number(order.total) > 2500 || isLoading} />
             )}
           </li>
           <li className={"w-full"}>
@@ -51,6 +48,16 @@ const PaymentMethodsList = ({ order, isLoading }: PaymentMethodProps) => {
               <SantanderCard
                 subtotal={subtotal}
                 disabled={Number(order.total) < 1500 || Number(order.total) >= 30000 || isLoading}
+              />
+            )}
+          </li>
+          <li className={"w-full"}>
+            {!order || isLoading ? (
+              <SkeletonCard />
+            ) : (
+              <HeyLightCard
+                subtotal={subtotal}
+                disabled={Number(order.total) >= 5000 || isLoading}
               />
             )}
           </li>

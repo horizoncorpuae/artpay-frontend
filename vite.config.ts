@@ -26,6 +26,12 @@ export default defineConfig({
           return path;
         },
       },
+      "/api-sandbox": {
+        target: "https://sbx-origination.heidipay.io",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api-sandbox/, ""),
+      }
     },
     /*https: {
       key: fs.readFileSync("./local_certs/artpay.art-key.pem"),

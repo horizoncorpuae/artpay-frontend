@@ -3,6 +3,7 @@ import SkeletonCard from "../ui/paymentprovidercard/SkeletonCard.tsx";
 import KlarnaCard from "../ui/klarnacard/KlarnaCard.tsx";
 import SantanderCard from "../ui/santandercard/SantanderCard.tsx";
 import usePaymentStore from "../../stores/paymentStore.ts";
+import HeyLightCard from "../../../heylight/components/heylightcard/HeyLightCard.tsx";
 
 type PaymentsProps = {
   order: Order;
@@ -55,6 +56,17 @@ const ConfirmPayment = ({ order, isLoading }: PaymentsProps) => {
                   subtotal={subtotal}
                   paymentSelected={paymentMethod == 'santander'}
                   disabled={Number(order.total) < 1500 || Number(order.total) >= 30000 || isLoading}
+                />
+              )}
+            </li>
+            <li className={"w-full"}>
+              {!order || isLoading ? (
+                <SkeletonCard />
+              ) : (
+                <HeyLightCard
+                  subtotal={subtotal}
+                  paymentSelected={paymentMethod == 'heylight'}
+                  disabled={Number(order.total) >= 5000 || isLoading}
                 />
               )}
             </li>
