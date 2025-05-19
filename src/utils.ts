@@ -30,6 +30,7 @@ import localeData from "dayjs/plugin/localeData";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import localeIt from "dayjs/locale/it";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 dayjs.extend(localizedFormat);
 dayjs.locale(localeIt, {}, false);
@@ -489,4 +490,13 @@ export const useEnvDetector = (): string | undefined => {
   }, []);
 
   return environment;
+};
+
+
+export const useScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 };

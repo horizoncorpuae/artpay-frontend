@@ -38,6 +38,9 @@ import Messages from "./pages/Messages.tsx";
 import Galleries from "./pages/Galleries.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
 import LandingForCampaignPage from "./pages/LandingForCampaignPage.tsx";
+import CdsPaymentsPage from "./pages/CdsPaymentsPage.tsx";
+import PaymentDraw from "./features/cdspayments/components/ui/paymentdraw/PaymentDraw.tsx";
+import { useScrollToTop } from "./utils.ts";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || "";
@@ -63,6 +66,7 @@ function AppContent() {
           <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
             <AuthProvider baseUrl={baseUrl}>
               <DataProvider baseUrl={baseUrl}>
+                <PaymentDraw />
                 <PaymentProvider>
                   <Routes>
                     <Route path="/" element={<Home />} />
@@ -79,7 +83,9 @@ function AppContent() {
                     <Route path="/artisti" element={<Artists />} />
                     <Route path="/tutte-le-opere" element={<Artworks />} />
                     <Route path="/acquisto" element={<Purchase />} />
-                    <Route path="/acquisto-esterno" element={<Purchase orderMode="onHold"/>} />
+                    <Route path="/acquisto-esterno" >
+                      <Route element={<CdsPaymentsPage />} index />
+                    </Route>
                     <Route path="/completa-acquisto/:order_id" element={<Purchase orderMode="redeem" />} />
                     <Route path="/acconto-blocca-opera" element={<Purchase orderMode="loan" />} />
                     <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
@@ -131,6 +137,7 @@ const App = () => {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <BrowserRouter>
+          <ScrollWrapper />
           <AppContent />
         </BrowserRouter>
       </ThemeProvider>
@@ -139,3 +146,9 @@ const App = () => {
 };
 
 export default App;
+
+
+function ScrollWrapper() {
+  useScrollToTop()
+  return null;
+}
