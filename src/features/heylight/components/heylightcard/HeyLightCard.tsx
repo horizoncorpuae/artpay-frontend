@@ -8,63 +8,16 @@ import usePaymentStore from "../../../cdspayments/stores/paymentStore.ts";
 import { calculateArtPayFee } from "../../../cdspayments/utils.ts";
 import axios from "axios";
 import IFrameHeyLight from "../iFrameHeyLight.tsx";
+import { UserProfile } from "../../../../types/user.ts";
 
 
-const paymentRequest: HeyLightPaymentRequest = {
-  amount: {
-    currency: "EUR",
-    amount: "2000.00"
-  },
-  amount_format: "DECIMAL",
-  redirect_urls: {
-    success_url: "https://staging2.artpay.art/acquisto-esterno",
-    failure_url: "https://staging2.artpay.art/acquisto-esterno"
-  },
-  customer_details: {
-    email_address: "giacomo.bartoli@me.com",
-    contact_number: "3513027045",
-    first_name: "Giacomo",
-    last_name: "Bartoli"
-  },
-  billing_address: {
-    country_code: "IT",
-    is_client_validated: false,
-    address_line_1: "VIA TAORMINA 29",
-    zip_code: "09045",
-    city: "QUARTU SE"
-  },
-  shipping_address: {
-    country_code: "IT",
-    is_client_validated: false,
-    address_line_1: "VIA TAORMINA 29",
-    zip_code: "09045",
-    city: "QUARTU SE"
-  },
-  store_id: "ecommerce",
-  store_name: "ecommerce",
-  store_number: "ecommerce",
-  products: [
-    {
-      sku: "GD001",
-      quantity: 1,
-      price: "2000.00",
-      name: "LOTTO 111"
-    }
-  ],
-  pricing_structure_code: "PC6",
-  language: "it"
-};
-
-
-const authorizationRequest = {
-  merchant_key: "329fa1a44aae7e6271d444f1de3d6bc90c86caeb"
-}
 
 const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<PaymentProviderCardProps>) => {
   const [fee, setFee] = useState<number>(0);
   const data = useData();
   const { setPaymentData, order, paymentIntent } = usePaymentStore();
   const [isChecked, setIsChecked] = useState(false);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   const handleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
@@ -141,25 +94,53 @@ const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<Pay
     }
   };
 
+  console.log(order)
+
   const handlePayment = async () => {
-    if (!order) return;
+    if (!order || !profile) return;
     setPaymentData({
       loading: true,
     });
     try {
-      const authorization = await axios.post("/api-sandbox/auth/v1/generate/", authorizationRequest, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
-      if (!authorization) throw new Error("Error during authorization");
 
-      const createApplication = await axios.post("/api-sandbox/api/checkout/v1/init/", paymentRequest, {
-        headers: {
-          Authorization: `Bearer ${authorization.data.data.token}`,
+      const getProducts = order.line_items.map(item => {
+        return {
+          sku: item.sku,
+          quantity: item.quantity,
+          price: (Number(item.subtotal) + Number(item.subtotal_tax)).toFixed(2),
+          name: item.name
+        }
+      })
+
+      const paymentRequest: Partial<HeyLightPaymentRequest> = {
+        amount: {
+          currency: "EUR",
+          amount: order.total,
         },
-      });
+        customer_details: {
+          email_address: profile?.email ,
+          contact_number: profile.billing.phone,
+          first_name: profile.first_name,
+          last_name: profile.last_name
+        },
+        billing_address: {
+          country_code: "IT",
+          is_client_validated: false,
+          address_line_1: profile.billing.address_1,
+          zip_code: profile.billing.postcode,
+          city: profile.billing.city
+        },
+        shipping_address: {
+          country_code: "IT",
+          is_client_validated: false,
+          address_line_1: profile.billing.address_1,
+          zip_code: profile.billing.postcode,
+          city: profile.billing.city
+        },
+        products: getProducts
+      };
+
+      const createApplication = await axios.post(`${import.meta.env.VITE_ARTPAY_WEB_SERVICE}/api/heylight/new-heylight-application`, paymentRequest);
       const redirectUrl = createApplication.data.redirect_url;
       if (redirectUrl) window.open(redirectUrl, "_blank");
 
@@ -172,12 +153,26 @@ const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<Pay
     }
   };
 
+  const getUser = async () => {
+    try {
+      const resp = await data.getUserProfile()
+      setProfile(resp)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   useEffect(() => {
     if (order) {
       const artpayFee = calculateArtPayFee(order);
       setFee(artpayFee);
     }
-  }, [order]);
+    if (!profile) getUser()
+
+  }, [order, profile]);
+
+
+  console.log(profile)
 
 
   return (
