@@ -136,7 +136,7 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
             {!order ? <SkeletonOrderDetails /> : <OrderSummary vendor={vendor} order={order} />}
             {children}
 
-            {paymentMethod != "bnpl" && (order?.status == "processing" || order?.status == "on-hold") && (
+            {(paymentMethod == "klarna" || paymentMethod == "santander") && (order?.status == "processing" || order?.status == "on-hold") && (
               <>
                 <PaymentProviderCard className={"mt-6 "} backgroundColor={"bg-[#FAFAFB]"}>
                   <p className={"flex gap-2"}>
