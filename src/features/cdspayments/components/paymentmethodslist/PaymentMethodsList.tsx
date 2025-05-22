@@ -57,7 +57,7 @@ const PaymentMethodsList = ({ order, isLoading }: PaymentMethodProps) => {
             ) : (
               <HeyLightCard
                 subtotal={subtotal}
-                disabled={Number(order.total) >= 5000 || isLoading}
+                disabled={Number(order.total) < 100 || Number(order.total) > 5000 || isLoading}
               />
             )}
           </li>

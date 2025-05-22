@@ -140,7 +140,7 @@ const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<Pay
         products: getProducts
       };
 
-      const createApplication = await axios.post(`${import.meta.env.VITE_ARTPAY_WEB_SERVICE}/api/heylight/new-heylight-application`, paymentRequest);
+      const createApplication = await axios.post(`${import.meta.env.VITE_ARTPAY_WEB_SERVICE}/api/heylight/new-application`, paymentRequest);
       const redirectUrl = createApplication.data.redirect_url;
 
       if (redirectUrl) {

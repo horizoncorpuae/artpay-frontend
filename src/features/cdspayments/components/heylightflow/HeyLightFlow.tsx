@@ -2,16 +2,48 @@ import SkeletonCard from "../ui/paymentprovidercard/SkeletonCard.tsx";
 import { Order } from "../../../../types/order.ts";
 import PaymentProviderCard from "../ui/paymentprovidercard/PaymentProviderCard.tsx";
 import HeyLightIcon from "../../../../components/icons/HeyLightIcon.tsx";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 type HeyLightProps = {
   isLoading?: boolean;
   order?: Order;
 };
 
+function extractFullNumber(str:string) {
+  const regex = /\b\d{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b/;
+  const match = str.match(regex);
+  return match ? match[0] : null;
+}
+
 const HeyLightFlow = ({ isLoading, order }: HeyLightProps) => {
-
   const subtotal = !order?.fee_lines.length ? Number(order?.total) / 1.06 : Number(order?.total) / 1.124658;
+  const external_uuid = order ? extractFullNumber(order?.customer_note) : ""
+  const [applicationStatus, setApplicationStatus] = useState<string | null>(null)
 
+  const getApplicationStatus = async () => {
+    try {
+
+      const checkApplication = await axios.post(`${import.meta.env.VITE_ARTPAY_WEB_SERVICE}/api/heylight/check-application-status`, {
+        external_contract_uuids: [external_uuid]
+      });
+
+      if(checkApplication.data.statuses[0].status == 'pending') setApplicationStatus('Procedura di richiesta prestito in corso.')
+      if(checkApplication.data.statuses[0].status == 'awaiting_confirmation') setApplicationStatus('Richiesta prestito avviata, in attesa di conferma.')
+      if(checkApplication.data.statuses[0].status == 'cancelled') setApplicationStatus('Richiesta prestito cancellata.')
+      if(checkApplication.data.statuses[0].status == 'success') setApplicationStatus('Richiesta prestito conclusa con successo.')
+
+
+    }catch(e) {
+      console.error(e)
+    }
+  }
+
+  useEffect(() => {
+    getApplicationStatus()
+  }, []);
+
+  console.log(applicationStatus)
 
 
   return (
@@ -54,12 +86,16 @@ const HeyLightFlow = ({ isLoading, order }: HeyLightProps) => {
                     <div className={"flex flex-col gap-1"}>
                       <span className={"text-secondary"}>N. Ordine</span>
                       <span className={"text-lg"}>{order.id}</span>
-                      <p>Completa la procedura di richiesta prestito tramite HeyLight.</p>
+                    </div>
+                    <div className={"flex flex-col gap-1"}>
+                      <span className={"text-secondary"}>N. Contratto</span>
+                      <span className={"text-base"}>{external_uuid}</span>
                     </div>
                     <div className={"flex flex-col gap-1"}>
                       <span className={"text-secondary"}>Stato</span>
-                      <p>Richiesta prestito in corso</p>
+                      <p>{applicationStatus}</p>
                     </div>
+                    <p>Completa la procedura di richiesta prestito tramite HeyLight.</p>
                   </div>
                 </PaymentProviderCard>
               </div>
