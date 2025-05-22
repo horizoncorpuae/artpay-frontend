@@ -16,6 +16,30 @@ function extractFullNumber(str:string) {
   return match ? match[0] : null;
 }
 
+const copyes:Record<string, {h3: string, state: string}> = {
+  success: {
+    h3: "Complimenti, hai completato il pagamento con successo.",
+    state: "Pagamento concluso con successo."
+  },
+  pending: {
+    h3: "Complimenti il tuo lotto è pronto per completare il pagamento",
+    state: "Procedura di richiesta prestito in corso."
+  },
+  cancelled: {
+    h3: "Hai cancellato il pagamento. Se hai bisogno di aiuto, contatta il nostro team.",
+    state: "Richiesta prestito cancellata."
+  },
+  awaiting_confirmation: {
+    h3: "Grazie per aver completato la procedura di richiesta prestito.",
+    state: "Richiesta prestito avviata, in attesa di conferma."
+  },
+  default: {
+    h3: "Nessuna informazione disponibile.",
+    state: "In attesa di ricevere informazioni dal sistema."
+  }
+}
+
+
 const HeyLightFlow = ({ isLoading, order }: HeyLightProps) => {
   const subtotal = !order?.fee_lines.length ? Number(order?.total) / 1.06 : Number(order?.total) / 1.124658;
   const external_uuid = order ? extractFullNumber(order?.customer_note) : ""
@@ -28,10 +52,9 @@ const HeyLightFlow = ({ isLoading, order }: HeyLightProps) => {
         external_contract_uuids: [external_uuid]
       });
 
-      if(checkApplication.data.statuses[0].status == 'pending') setApplicationStatus('Procedura di richiesta prestito in corso.')
-      if(checkApplication.data.statuses[0].status == 'awaiting_confirmation') setApplicationStatus('Richiesta prestito avviata, in attesa di conferma.')
-      if(checkApplication.data.statuses[0].status == 'cancelled') setApplicationStatus('Richiesta prestito cancellata.')
-      if(checkApplication.data.statuses[0].status == 'success') setApplicationStatus('Richiesta prestito conclusa con successo.')
+      if (checkApplication.data.statuses.length > 0) {
+        setApplicationStatus(checkApplication.data.statuses[0].status)
+      }
 
 
     }catch(e) {
@@ -41,9 +64,9 @@ const HeyLightFlow = ({ isLoading, order }: HeyLightProps) => {
 
   useEffect(() => {
     getApplicationStatus()
+
   }, []);
 
-  console.log(applicationStatus)
 
 
   return (
@@ -80,7 +103,7 @@ const HeyLightFlow = ({ isLoading, order }: HeyLightProps) => {
                         <HeyLightIcon />
                       </span>
                       <h3 className={"text-lg leading-[125%] text-tertiary text-balance"}>
-                        Complimenti il tuo lotto è pronto per completare il pagamento
+                        {applicationStatus ? copyes[applicationStatus].h3 : copyes.default.h3}
                       </h3>
                     </div>
                     <div className={"flex flex-col gap-1"}>
@@ -93,9 +116,8 @@ const HeyLightFlow = ({ isLoading, order }: HeyLightProps) => {
                     </div>
                     <div className={"flex flex-col gap-1"}>
                       <span className={"text-secondary"}>Stato</span>
-                      <p>{applicationStatus}</p>
+                      <p>{applicationStatus ? copyes[applicationStatus].state : copyes.default.state}</p>
                     </div>
-                    <p>Completa la procedura di richiesta prestito tramite HeyLight.</p>
                   </div>
                 </PaymentProviderCard>
               </div>
