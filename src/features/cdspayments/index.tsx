@@ -6,6 +6,7 @@ import ConfirmPayment from "./components/confirmpayment/ConfirmPayment.tsx";
 import SantanderFlow from "./components/santanderflow/SantanderFlow.tsx";
 import PaymentFailed from "./components/paymentfailed/PaymentFailed.tsx";
 import PaymentComplete from "./components/paymentcomplete/PaymentComplete.tsx";
+import HeyLightFlow from "./components/heylightflow/HeyLightFlow.tsx";
 
 
 const CdsPayments = () => {
@@ -27,7 +28,8 @@ const CdsPayments = () => {
     <CdsTransactionLayout>
       {choosePaymentMethod && !completedOrder && !failedOrder && <PaymentMethodsList order={order as Order} isLoading={loading} /> }
       {!choosePaymentMethod && !processedOrder && !completedOrder && !failedOrder && <ConfirmPayment order={order as Order} isLoading={loading} /> }
-      {processedOrder && (<SantanderFlow order={order as Order} isLoading={loading} />)}
+      {processedOrder && orderNote.startsWith('Contratto') && (<HeyLightFlow order={order as Order} isLoading={loading} />)}
+      {processedOrder && !orderNote.startsWith('Contratto') && (<SantanderFlow order={order as Order} isLoading={loading} />)}
       {completedOrder && <PaymentComplete order={order as Order} isLoading={loading} />}
       {failedOrder && <PaymentFailed order={order as Order} isLoading={loading} />}
     </CdsTransactionLayout>

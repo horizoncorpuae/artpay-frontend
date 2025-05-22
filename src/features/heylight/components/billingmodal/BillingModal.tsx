@@ -4,13 +4,13 @@ import usePaymentStore from "../../../cdspayments/stores/paymentStore.ts";
 import { useState } from "react";
 import { useData } from "../../../../hoc/DataProvider.tsx";
 //import { Close } from "@mui/icons-material";
-//import useModalStore from "../../store/addressModalStore.ts";
+import useModalStore from "../../store/addressModalStore.ts";
 
 const BillingModal = () => {
   const { user, setPaymentData, order} = usePaymentStore();
   const data = useData();
   const [saving, setSaving] = useState(false);
-  //const {showModal} = useModalStore()
+  const {showModal} = useModalStore()
 
   const handleRestoreOrder = async () => {
     setPaymentData({
@@ -35,6 +35,7 @@ const BillingModal = () => {
     } catch (e) {
       console.error(e);
     } finally {
+      showModal({ visible: false });
       setPaymentData({
         loading: false,
       });
@@ -55,16 +56,21 @@ const BillingModal = () => {
         user: updatedProfile,
       });
 
+      console.log(user)
+
     } catch (e) {
       console.error(e);
     } finally {
       setSaving(false);
+      if (user.billing.email){
+        showModal({ visible: false });
+      }
     }
   };
 
   return (
-    <div className={'w-full max-w-xs absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white z-100 pt-10 pb-6 rounded-3xl animate-fade-in-slow md:max-w-lg'}>
-      <header className={'px-4 border-b border-[#E2E6FC] pb-6'}>
+    <div className={'w-full max-w-xs absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white z-100 pb-6 rounded-3xl animate-fade-in-slow md:max-w-lg'}>
+      <header className={'px-4 border-b border-[#E2E6FC] pb-6 shadow-custom pt-10'}>
         {/*<button
           className={
             "cursor-pointer bg-gray-100 rounded-full p-1 -translate-y-1/2 float-end relative right-3 top-3 "
@@ -80,7 +86,7 @@ const BillingModal = () => {
           defaultValues={user?.billing}
           shippingData={user?.shipping}
           isOnlyCDS={true}
-          onSubmit={(formData) => handleProfileDataSubmit({ ...formData})} />
+          onSubmit={(formData) => handleProfileDataSubmit({ ...formData, email: user?.email})} />
       </main>
       <footer className={'flex w-full justify-center border-t border-[#E2E6FC] pt-4 shadow-custom-top'}>
         <button

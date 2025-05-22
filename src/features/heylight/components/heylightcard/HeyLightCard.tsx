@@ -8,16 +8,16 @@ import usePaymentStore from "../../../cdspayments/stores/paymentStore.ts";
 import { calculateArtPayFee } from "../../../cdspayments/utils.ts";
 import axios from "axios";
 import IFrameHeyLight from "../iFrameHeyLight.tsx";
-import { UserProfile } from "../../../../types/user.ts";
+//import { UserProfile } from "../../../../types/user.ts";
 
 
 
 const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<PaymentProviderCardProps>) => {
   const [fee, setFee] = useState<number>(0);
   const data = useData();
-  const { setPaymentData, order, paymentIntent } = usePaymentStore();
+  const { setPaymentData, order, paymentIntent, user } = usePaymentStore();
   const [isChecked, setIsChecked] = useState(false);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  //const [profile, setProfile] = useState<UserProfile | null>(null);
 
   const handleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
@@ -94,10 +94,9 @@ const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<Pay
     }
   };
 
-  console.log(order)
 
   const handlePayment = async () => {
-    if (!order || !profile) return;
+    if (!order || !user) return;
     setPaymentData({
       loading: true,
     });
@@ -118,31 +117,42 @@ const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<Pay
           amount: order.total,
         },
         customer_details: {
-          email_address: profile?.email ,
-          contact_number: profile.billing.phone,
-          first_name: profile.first_name,
-          last_name: profile.last_name
+          email_address: user?.email ,
+          contact_number: user.billing.phone,
+          first_name: user.first_name,
+          last_name: user.last_name
         },
         billing_address: {
           country_code: "IT",
           is_client_validated: false,
-          address_line_1: profile.billing.address_1,
-          zip_code: profile.billing.postcode,
-          city: profile.billing.city
+          address_line_1: user.billing.address_1,
+          zip_code: user.billing.postcode,
+          city: user.billing.city
         },
         shipping_address: {
           country_code: "IT",
           is_client_validated: false,
-          address_line_1: profile.billing.address_1,
-          zip_code: profile.billing.postcode,
-          city: profile.billing.city
+          address_line_1: user.billing.address_1,
+          zip_code: user.billing.postcode,
+          city: user.billing.city
         },
         products: getProducts
       };
 
       const createApplication = await axios.post(`${import.meta.env.VITE_ARTPAY_WEB_SERVICE}/api/heylight/new-heylight-application`, paymentRequest);
       const redirectUrl = createApplication.data.redirect_url;
-      if (redirectUrl) window.open(redirectUrl, "_blank");
+
+      if (redirectUrl) {
+        const updateOrder = await data.updateOrder(order.id, { payment_method: "heylight", status: "processing", customer_note: `Contratto N. ${createApplication.data.application_uuid}` });
+        if (updateOrder.status == 'processing') window.open(redirectUrl, "_blank");
+        setPaymentData({
+          order: updateOrder,
+          paymentStatus: "processing",
+          paymentMethod: "heylight",
+          orderNote: createApplication.data.application_uuid,
+        })
+      }
+
 
     } catch (e) {
       console.error(e);
@@ -153,26 +163,20 @@ const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<Pay
     }
   };
 
-  const getUser = async () => {
-    try {
-      const resp = await data.getUserProfile()
-      setProfile(resp)
-    } catch (e) {
-      console.error(e)
-    }
-  }
+  console.log(order)
 
   useEffect(() => {
     if (order) {
       const artpayFee = calculateArtPayFee(order);
       setFee(artpayFee);
     }
-    if (!profile) getUser()
-
-  }, [order, profile]);
 
 
-  console.log(profile)
+
+  }, [order, user]);
+
+
+  console.log(user)
 
 
   return (

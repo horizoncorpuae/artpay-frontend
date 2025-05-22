@@ -115,21 +115,26 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
     }
     getUserProfile();
 
-    if (user?.billing.email) {
-      showModal({visible: true})
-    }
 
-    if (visible) {
+
+
+  }, [user]);
+
+
+  useEffect(() => {
+    if (!user?.billing.address_1 && paymentMethod == "heylight") {
       document.body.classList.add("overflow-hidden");
+      showModal({visible: true})
     } else {
       document.body.classList.remove("overflow-hidden");
+      showModal({visible: false})
     }
-
-  }, [user, visible]);
+  }, [visible, paymentMethod]);
 
 
   return (
     <CdsTransactionsProvider>
+      <ScrollWrapper />
       {visible && <div className={"overlay fixed z-80 inset-0 w-full h-screen bg-zinc-950/65 animate-fade-in"}></div>}
       {visible && <BillingModal />}
       <Tooltip />
@@ -246,3 +251,16 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
 };
 
 export default CdsTransactionLayout;
+
+
+const useScrollToTopComponent = () => {
+  const { visible } = useModalStore();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [visible]);
+};
+function ScrollWrapper() {
+  useScrollToTopComponent();
+  return null;
+}
