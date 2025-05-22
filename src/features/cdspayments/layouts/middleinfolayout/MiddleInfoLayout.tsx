@@ -75,7 +75,7 @@ const MiddleInfoLayout = ({ children }: { children: ReactNode }) => {
                   </div>
                   <h4 className={"text-2xl text-balance"}>Artpay per {vendor?.display_name}</h4>
                 </div>
-                <p className={'mt-8 mb-4 leading-[125%] line-clamp-4 text-balance'}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos error eum laboriosam maxime optio perspiciatis quaerat qui similique. Lorem ipsum dolor.
+                <p className={'mt-8 mb-4 leading-[125%] line-clamp-5 text-balance'}>Stai per completare l’acquisto con artpay, un nuovo servizio selezionato da Sant’Agostino casa d'aste per rendere l’arte più accessibile Rateizza il tuo pagamento in modo sicuro, 100% online scegliendo tra i nostri partner selezionati.
                 </p>
                 <button onClick={()=> {
                   setOpenArticleDraw({openArticleDraw: true})
