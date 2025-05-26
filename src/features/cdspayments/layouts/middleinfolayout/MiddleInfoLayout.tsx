@@ -63,7 +63,7 @@ const MiddleInfoLayout = ({ children }: { children: ReactNode }) => {
               </div>
             ) : (
               <article className="border-b border-[#E2E6FC] space-y-3 pb-12">
-                <div className={"flex items-start space-x-2"}>
+                <div className={"flex items-center space-x-2"}>
                   <div className="min-h-12 h-full min-w-12 max-w-16 aspect-square overflow-hidden p-1 border border-gray-200 rounded-md">
                     <img
                       src={vendor?.shop.image}

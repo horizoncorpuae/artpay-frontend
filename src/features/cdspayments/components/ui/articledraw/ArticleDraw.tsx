@@ -46,13 +46,11 @@ const ArticleDraw = () => {
                 Grazie a questa <strong>nuova</strong> collaborazione puoi acquistare le opere che ami dilazionando il pagamento
                 in modo trasparente, grazie ai partner di artpay senza complicazioni.
               </p>
-              <p>
                <ul className={'ps-8 list-disc space-y-2 l leading-[125%] '}>
                  <li>Scegli tra più soluzioni</li>
                  <li>Piani su misura per i tuoi acquisti</li>
                  <li>Finanzi fino a €30.000 in 84 rate</li>
                </ul>
-              </p>
               <p className={"leading-[125%]"}>
                 La tua sicurezza è garantita conforme ai più alti standard di privacy e sicurezza.
               </p>
