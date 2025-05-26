@@ -182,19 +182,19 @@ const HeyLightCard = ({subtotal, disabled, paymentSelected = true} : Partial<Pay
 
 
   return (
-    <PaymentProviderCard icon={<HeyLightIcon />} cardTitle={'HeyLight'} backgroundColor={'bg-[#F2E9F7]'} subtitle={'Da € 100.00 fino a € 5000.00. Commissioni artpay: 6%'} disabled={disabled} subtotal={subtotal}>
+    <PaymentProviderCard icon={<HeyLightIcon />} cardTitle={'HeyLight'} backgroundColor={'bg-[#F2E9F7]'} subtitle={<span className={'tracking-wide'}>Da € 100.00 fino a € 5.000,00. Commissioni artpay: 6% </span>} disabled={disabled} subtotal={subtotal}>
         <IFrameHeyLight />
       {!disabled && paymentSelected ? (
         <>
           <ul className={"space-y-4 py-4"}>
             <li className={"w-full flex justify-between"}>
-              Subtotale: <span>€&nbsp;{subtotal?.toFixed(2)}</span>
+              Subtotale: <span>€&nbsp;{subtotal?.toLocaleString('it-IT', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
             </li>
             <li className={"w-full flex justify-between"}>
-              Commissioni artpay: <span>€&nbsp;{fee.toFixed(2)}</span>
+              Commissioni artpay: <span>€&nbsp;{fee.toLocaleString('it-IT', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
             </li>
             <li className={"w-full flex justify-between"}>
-              <strong>Totale:</strong> <strong>€&nbsp;{(Number(subtotal) + Number(fee)).toFixed(2)}</strong>
+              <strong>Totale:</strong> <strong>€&nbsp;{(Number(subtotal) + Number(fee)).toLocaleString('it-IT', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong>
             </li>
           </ul>
           {order?.payment_method == "heylight" ? (

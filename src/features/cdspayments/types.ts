@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 export type PaymentProviderCardProps = {
   cardTitle: string;
   icon?: ReactNode;
-  subtitle?: string;
+  subtitle?: string | ReactNode;
   instructions?: string | ReactNode;
   button: React.JSX.Element;
   infoUrl: string;

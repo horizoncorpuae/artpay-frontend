@@ -23,7 +23,7 @@ const PaymentProviderCard = ({
         {cardTitle && (
           <div className={"space-y-1"}>
             <h3 className={"font-bold leading-[125%] text-tertiary"}>{cardTitle}</h3>
-            <p className={"text-sm"}>{subtitle}</p>
+            <p className={"text-sm text-balance"}>{subtitle}</p>
           </div>
         )}
         {children}
