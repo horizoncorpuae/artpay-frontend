@@ -28,19 +28,19 @@ const Payments = () => {
           <li className={"w-full"}>
             <PaymentProviderCard
               backgroundColor={"bg-[#FFE9EE]"}
-              cardTitle={"Pagamento con klarna"}
+              cardTitle={"klarna"}
               icon={<KlarnaIcon />}
-              subtitle={"Pagamento in 3 rate fino a €2.500,00. Commissioni artpay: 6% + 5%"}></PaymentProviderCard>
+              subtitle={"Pagamento in 3 rate fino a €2.500,00. Inclusi i costi del finanziamento."}></PaymentProviderCard>
           </li>
           <li className={"w-full flex"}>
             <PaymentProviderCard
               icon={<SantanderIcon />}
-              cardTitle={"Pagamento con prestito"}
-              subtitle={"A partire da € 1.500,00 fino a € 30.000,00 Commissioni artpay: 6%"}>
+              cardTitle={"Santander"}
+              subtitle={"A partire da € 1.500,00 fino a € 30.000,00. Inclusi i costi del finanziamento."}>
               <ol className={"list-decimal ps-4 space-y-1"}>
-                <li>Avvia finanziamento</li>
-                <li>Calcola la rata e richiedi prestito</li>
-                <li>Completa pagamento</li>
+                <li>Richiedi finanziamento</li>
+                <li>Calcola rata e conferma richiesta</li>
+                <li>Paga su artpay con il finanziamento ricevuto</li>
               </ol>
             </PaymentProviderCard>
           </li>
