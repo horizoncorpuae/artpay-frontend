@@ -1,5 +1,4 @@
 import PaymentProviderCard from "../paymentprovidercard/PaymentProviderCard.tsx";
-import ArtpayIcon from "../paymentprovidercard/ArtpayIcon.tsx";
 import ArtpayButton from "../artpaybutton/ArtpayButton.tsx";
 import { PaymentProviderCardProps } from "../../../types.ts";
 import { NavLink } from "react-router-dom";
@@ -8,6 +7,7 @@ import usePaymentStore from "../../../stores/paymentStore.ts";
 import { calculateArtPayFee } from "../../../utils.ts";
 import { useData } from "../../../../../hoc/DataProvider.tsx";
 import AgreementCheckBox from "../agreementcheckbox/AgreementCheckBox.tsx";
+import SantanderIcon from "../../../../../components/icons/SantanderIcon.tsx";
 
 const SantanderCard = ({ subtotal, disabled, paymentSelected = true }: Partial<PaymentProviderCardProps>) => {
   const [fee, setFee] = useState<number>(0);
@@ -123,23 +123,26 @@ const SantanderCard = ({ subtotal, disabled, paymentSelected = true }: Partial<P
   return (
     <PaymentProviderCard
       disabled={disabled}
-      icon={<ArtpayIcon />}
-      cardTitle={"Pagamento con prestito"}
-      subtitle={"A partire da € 1.500,00 fino a € 30.000,00 Commissioni artpay: 6%"}
+      icon={<SantanderIcon />}
+      cardTitle={"Santander"}
+      subtitle={"A partire da € 1.500,00 fino a € 30.000,00"}
       paymentSelected={paymentSelected}>
       {!disabled && paymentSelected ? (
         <>
           <ol className={"list-decimal ps-4 space-y-1 border-b border-zinc-300 pb-6"}>
-            <li>Avvia finanziamento</li>
-            <li>Calcola la rata e richiedi prestito</li>
-            <li>Completa pagamento</li>
+            <li>Richiedi finanziamento</li>
+            <li>Calcola rata e conferma richiesta</li>
+            <li>Paga su artpay con il finanziamento ricevuto</li>
           </ol>
           <ul className={"space-y-4 py-4"}>
             <li className={"w-full flex justify-between"}>
               Subtotale: <span>€&nbsp;{subtotal?.toLocaleString('it-IT', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
             </li>
-            <li className={"w-full flex justify-between"}>
+            <li>
+              <div className={"w-full flex justify-between"}>
               Commissioni artpay: <span>€&nbsp;{fee.toLocaleString('it-IT', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span>
+              </div>
+              <p className={'text-secondary text-xs'}>Inclusi costi del finanziamento</p>
             </li>
             <li className={"w-full flex justify-between"}>
               <strong>Totale:</strong> <strong>€&nbsp;{(Number(subtotal) + Number(fee)).toLocaleString('it-IT', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong>
@@ -161,7 +164,7 @@ const SantanderCard = ({ subtotal, disabled, paymentSelected = true }: Partial<P
               <div className={"flex justify-center"}>
                 <ArtpayButton onClick={handlingArtpaySelection} disabled={disabled} />
               </div>
-              <NavLink to={"/"} className={"text-tertiary underline underline-offset-2 mt-8 block"}>
+              <NavLink to={"/guide/santander"} className={"text-tertiary underline underline-offset-2 mt-8 block"}>
                 Scopri di più
               </NavLink>
             </>
