@@ -44,7 +44,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({ children }) =>
         setReady(true);
       });
     }
-  }, []);
+  }, [location.pathname, data.isAuthenticated]);
 
   const paymentProvider: PaymentProvider = {
     get isReady() {
@@ -54,6 +54,7 @@ export const PaymentProvider: React.FC<PaymentProviderProps> = ({ children }) =>
       return stripe;
     }
   };
+  console.log(paymentProvider);
   //
   return (
     <>
