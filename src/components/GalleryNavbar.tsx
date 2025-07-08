@@ -15,12 +15,12 @@ import LogoFastArtpay from "./icons/LogoFastArtpay.tsx";
 import usePaymentStore from "../features/cdspayments/stores/paymentStore.ts";
 import ArrowLeftIcon from "./icons/ArrowLeftIcon.tsx";
 
-export interface NavbarProps {
+export interface GalleryNavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;
 }
 
 
-const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
+const GalleryNavbar: React.FC<GalleryNavbarProps> = ({ onMenuToggle }) => {
   const auth = useAuth();
   const data = useData();
   const navigate = useNavigate();
@@ -195,4 +195,4 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   );
 };
 
-export default Navbar;
+export default GalleryNavbar;
