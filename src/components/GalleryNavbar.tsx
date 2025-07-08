@@ -99,7 +99,7 @@ const GalleryNavbar: React.FC<GalleryNavbarProps> = ({ onMenuToggle }) => {
 
   useEffect(() => {
     handleOrders();
-  }, [auth.isAuthenticated, data, hasPendingOrder]);
+  }, [auth.isAuthenticated, data, hasPendingOrder, localStorage]);
 
   const handleCheckout = () => {
     localStorage.setItem("isNotified", "true");

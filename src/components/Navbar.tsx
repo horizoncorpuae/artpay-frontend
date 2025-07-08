@@ -12,8 +12,7 @@ import {
 import Logo from "./icons/Logo";
 import { Search } from "@mui/icons-material";
 import { useAuth } from "../hoc/AuthProvider.tsx";
-import MenuIcon from "./icons/MenuIcon.tsx";
-import { useEnvDetector, useNavigate } from "../utils.ts";
+import { useNavigate } from "../utils.ts";
 
 export interface NavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;
@@ -25,7 +24,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const environment = useEnvDetector();
 
   const [showMenu, setShowMenu] = useState(false);
 
@@ -80,15 +78,17 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         isMobile
           ? mobileStyleOverrides
           : {
-              mx: { xs: 8, md: 6, lg: 6, xl: "auto" },
-              right: 0,
-              px: { xs: undefined, lg: 6 },
-              maxWidth: "1344px",
-              zIndex: 10,
-            }
+            mx: { xs: 8, md: 6, lg: 6, xl: "auto" },
+            right: 0,
+            px: { xs: undefined, lg: 6 },
+            maxWidth: "1344px",
+            zIndex: 10,
+          }
       }
       elevation={0}>
-      <Box display="flex" alignItems="center" sx={{}}>
+      <Box display="flex" alignItems="center" sx={{
+        mt: { xs: 1, md: 0 }
+      }}>
         <Box
           sx={{ height: "24px", cursor: "pointer" }}
           display="flex"
@@ -101,8 +101,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             {menuLinks
               .filter((l) => auth.isAuthenticated || !l.requireAuth)
               .map((link, i) => {
-                if (link.label === "Chi siamo" && environment !== "production" && auth.isAuthenticated) return;
-
                 return (
                   <Button
                     key={`btn-link-${i}`}
@@ -125,11 +123,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         {isMobile && false && (
           <IconButton>
             <Search />
-          </IconButton>
-        )}
-        {isMobile && (
-          <IconButton sx={{ transform: "translateX(8px)" }} onClick={() => handleShowMenu(!showMenu)}>
-            <MenuIcon color="inherit" />
           </IconButton>
         )}
       </Box>

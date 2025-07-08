@@ -83,7 +83,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
       {hasNavBar ? (
         <GalleryNavbar onMenuToggle={handleMenuToggle} />
       ) : (
-        <Navbar onMenuToggle={handleMenuToggle} />
+        <Navbar  />
       )}
       {topBar || ""}
       <Container
