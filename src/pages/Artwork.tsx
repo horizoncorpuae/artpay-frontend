@@ -65,8 +65,6 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
 
   const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
 
-  console.log(artwork)
-
   const artworkTechnique = artwork ? data.getCategoryMapValues(artwork, "tecnica").join(" ") : "";
   const artworkCertificate = artwork ? data.getCategoryMapValues(artwork, "certificato").join(" ") : "";
   const artworkUnique = artwork ? data.getCategoryMapValues(artwork, "rarita").join(" ") : "";
@@ -245,16 +243,16 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
 
   return (
     <DefaultLayout pageLoading={!isReady}>
-      <Box sx={{ px: { ...px, xs: 0 }, mt: { xs: 0, sm: 12, md: 18 } }} display="flex" justifyContent="center" overflow={'visible'}>
+      <Box sx={{mt: { xs: 0, sm: 12, md: 18 } }} display="flex" justifyContent="center" overflow={'visible'}>
         <div className={'flex flex-col w-full lg:flex-row '}>
-          <div className={'w-full max-w-2xl lg:min-w-sm lg:min-h-screen '}>
+          <div className={'w-full max-w-2xl lg:min-w-sm lg:min-h-screen rounded-2xl overflow-hidden'}>
             <img
               src={artwork?.images?.length ? artwork.images[0].woocommerce_single : ""}
               alt={artwork?.images[0]?.name}
-              className={` object-contain sticky top-0 w-full`}
+              className={` object-contain sticky top-0 w-full rounded-2xl `}
             />
           </div>
-          <div className={'flex flex-col pt-6 lg:0 max-w-2xl px-8 '}>
+          <div className={'flex flex-col pt-6 lg:0 max-w-2xl px-8 md:px-8'}>
             <div className={'flex items-center mb-2'}>
               <Typography
                 sx={{ textTransform: "uppercase", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
@@ -404,18 +402,18 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
                 {artistDetails && <ArtistDetails artist={artistDetails} />}
                 <Divider />
                 {galleryDetails && <GalleryDetails gallery={galleryDetails} />}
-
+                <Divider />
               </div>
             </div>
           </div>
         </div>
       </Box>
-      <Box sx={{ px: belowSm ? 0 : px }}>
-        <Typography sx={{ mb: { xs: 3, md: 6 }, px: {xs: 2, sm: 0}}} marginTop={6} variant="h2">
+      <Box>
+        <Typography sx={{ mb: { xs: 3, md: 6 }, px: {xs: 4, sm: 0}}} marginTop={6} variant="h2">
           Opere dello stesso artista
         </Typography>
         <ArtworksList disablePadding  items={artistArtworks || []} />
-        <Typography sx={{ mb: { xs: 3, md: 6 }, px: {xs: 2, sm: 0}}} marginTop={6} variant="h2">
+        <Typography sx={{ mb: { xs: 3, md: 6 }, px: {xs: 4, sm: 0}}} marginTop={6} variant="h2">
           Opere della galleria
         </Typography>
         <ArtworksList
@@ -426,7 +424,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         <ArtworksList disablePadding title="Simili per prezzo" items={[]} />
       </Box>
       <Box id="prenota-opera" sx={{ top: "-20px", position: "relative" }}></Box>
-      <Grid sx={{ pt: 12, px: px }} spacing={3} display="flex" container>
+      <Grid className={'pt-24 px-8 md:px-0'} spacing={3} display="flex" container>
         <Grid xs={12} item>
           <Typography variant="h2">
             Non vuoi farti sfuggire un’opera? <span style={{ color: theme.palette.primary.main }}>Prenotala!</span>
@@ -494,7 +492,7 @@ const Artwork: React.FC<ArtworkProps> = ({}) => {
         </Grid>
       </Grid>
       <div style={{ top: "-80px", position: "relative", visibility: "hidden" }} id="scopri-di-piu" />
-      <Box sx={{ px: { ...px, xs: 0 }, mt: 3, mb: 12 }}>
+      <Box sx={{mt: 3, mb: 12 }}>
         <LoanCard artwork={artwork} />
       </Box>
     </DefaultLayout>

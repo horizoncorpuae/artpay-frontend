@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, Grid, IconButton, Tab, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, IconButton, Tab, Typography } from "@mui/material";
 import TabPanel from "../components/TabPanel.tsx";
 import GalleryInfo, { GalleryInfoProps } from "../components/GalleryInfo.tsx";
 import { GalleryContactsProps } from "../components/GalleryContacts.tsx";
@@ -11,7 +11,6 @@ import {
   artistsToGalleryItems,
   artworksToGalleryItems,
   galleryToGalleryContent,
-  getDefaultPaddingX,
   useNavigate,
 } from "../utils.ts";
 import GalleryArtworksList from "../components/GalleryArtworksList.tsx";
@@ -38,9 +37,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
   const navigate = useNavigate();
   const dialogs = useDialogs();
   const snackbars = useSnackbars();
-  const theme = useTheme();
 
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [isReady, setIsReady] = useState(false);
   const [selectedTabPanel, setSelectedTabPanel] = useState(selectedTab);
@@ -168,22 +165,22 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
         website: "galleria.it",
       };*/
 
-  const px = getDefaultPaddingX();
+  //const px = getDefaultPaddingX();
 
   return (
     <DefaultLayout pageLoading={!isReady || !galleryContent}>
-      <Grid sx={{ px: { ...px, xs: 0, sm: 0 }, mt: { xs: 0, md: 16 } }} container>
-        <Grid item xs={12} md="auto" sx={{ position: "relative" }}>
+      <div className={"flex gap-6 flex-col md:flex-row mb-12 md:mb-36"}>
+        <div className={"relative mb-12"}>
           <Box
             sx={{
               width: { xs: "100%", md: "420px", lg: "612px", xl: "612px" },
-              height: { xs: "100%", md: "420px", lg: "612px", xl: "612px" },
+              height: { xs: "100%", md: "420px", },
               maxWidth: "100%",
               objectFit: "contain",
             }}>
             <img
               src={galleryContent?.coverImage}
-              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: isMobile ? "0" : "4px" }}
+              className="object-cover w-full min-h-96 max-h-96 lg:max-h-none md:h-[420px] md:w-[420px] lg:h-[612px] lg:w-[612px] rounded-b-2xl md:rounded-2xl "
             />
           </Box>
           <Box
@@ -198,32 +195,31 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
               display: { xs: "block" },
             }}>
             <img
-              className="borderRadius"
+              className="borderRadius md:hidden"
               src={galleryContent?.logoImage}
               style={{ width: "100%", maxHeight: "100px" }}
             />
           </Box>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sx={{ pt: { xs: 3, md: 0 }, pl: { xs: px.xs, sm: px.sm, md: 3 }, pr: { xs: px.xs, sm: px.sm, md: 0 } }}
-          md
-          display="flex"
-          justifyContent="flex-start"
-          flexDirection="column">
-          <Box display="flex" alignItems="center" mb={{ xs: 1, md: 5 }}>
+        </div>
+        <div className={'flex flex-col px-8 md:px-0 md:w-full'}>
+          <div className={'flex items-center mb-2 md:mb-10'}>
             <FollowButton isFavourite={isFavourite} onClick={handleSetFavourite} />
             <Box flexGrow={1} />
             <IconButton onClick={handleShare} color="primary" size="small">
               <ShareIcon />
             </IconButton>
-          </Box>
+          </div>
+
           <Typography variant="h1">{galleryContent?.title}</Typography>
           <Typography variant="h4" color="textSecondary" sx={{ mt: 3 }}>
             {galleryContent?.subtitle}
             {galleryContent?.foundationYear ? `, ${galleryContent.foundationYear}` : ""}
           </Typography>
+            <img
+              src={galleryContent?.logoImage}
+              className="hidden md:block size-16 object-cover md:size-25 mt-6"
+              alt={galleryContent?.description}
+            />
           <Typography variant="subtitle1" sx={{ mt: 6, maxWidth: { md: "400px" } }}>
             {galleryContent?.description}
           </Typography>
@@ -232,9 +228,9 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
               {galleryContent?.productsCount} opere presenti su Artpay
             </Typography>
           )}
-        </Grid>
-      </Grid>
-      <Box sx={{ mt: { xs: 6, md: 12 }, mb: 12, px: px }}>
+        </div>
+      </div>
+      <div className={'mb-24 '}>
         <Box
           sx={{
             borderBottom: 1,
@@ -252,17 +248,17 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
           </ResponsiveTabs>
         </Box>
         <TabPanel value={selectedTabPanel} index={0}>
-          <GalleryArtworksList
-            artworks={galleryArtworks}
-            onSelect={handleSelectArtwork}
-            onLoadMore={
-              galleryArtworks?.length &&
-              galleryContent?.productsCount &&
-              galleryArtworks.length < galleryContent?.productsCount
-                ? handleLoadMoreArtworks
-                : undefined
-            }
-          />
+            <GalleryArtworksList
+              artworks={galleryArtworks}
+              onSelect={handleSelectArtwork}
+              onLoadMore={
+                galleryArtworks?.length &&
+                galleryContent?.productsCount &&
+                galleryArtworks.length < galleryContent?.productsCount
+                  ? handleLoadMoreArtworks
+                  : undefined
+              }
+            />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={1}>
           <GalleryArtistsList artists={galleryArtists || []} />
@@ -270,7 +266,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
         <TabPanel value={selectedTabPanel} index={2}>
           {galleryInfo && <GalleryInfo {...galleryInfo} contacts={galleryContacts} />}
         </TabPanel>
-      </Box>
+      </div>
     </DefaultLayout>
   );
 };

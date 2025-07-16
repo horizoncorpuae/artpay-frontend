@@ -1,62 +1,11 @@
-import React, { useState } from "react";
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  SxProps,
-  Theme,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import React from "react";
 import Logo from "./icons/Logo";
-import { Search } from "@mui/icons-material";
 import { useAuth } from "../hoc/AuthProvider.tsx";
-import { useNavigate } from "../utils.ts";
+import { Link, NavLink } from "react-router-dom";
 
-export interface NavbarProps {
-  onMenuToggle?: (isOpen: boolean) => void;
-}
 
-const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
-  const theme = useTheme();
+const Navbar: React.FC = () => {
   const auth = useAuth();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const navigate = useNavigate();
-
-
-  const [showMenu, setShowMenu] = useState(false);
-
-  const menuOpen = showMenu && isMobile;
-
-  const mobileStyleOverrides: SxProps<Theme> = {
-    top: 0,
-    left: 0,
-    width: { xs: "calc(100% - 16px)", sm: "calc(100% - 32px)" },
-    m: { xs: 1, sm: 2 },
-    height: menuOpen ? "50%" : undefined,
-    transition: "all 0.5s",
-    overflow: "hidden",
-    zIndex: 5
-  };
-
-
-  const handleShowMenu = (newValue: boolean) => {
-    setShowMenu(newValue);
-    if (onMenuToggle) {
-      onMenuToggle(newValue);
-    }
-  };
-
-
-  const handleNavigate = (link: string) => {
-    handleShowMenu(false);
-    if (link.startsWith("http")) {
-      window.location.href = link;
-    } else {
-      navigate(link);
-    }
-  };
 
   type MenuLinks = {
     label: string;
@@ -65,68 +14,28 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   };
 
   const menuLinks: MenuLinks[] = [
-    /*{ label: "Gallerie", href: "/gallerie ", requireAuth: true },*/
-    //{ label: "Collezionisti", href: "/artpay-per-collezionisti", requireAuth: false },
     { label: "Chi siamo", href: "/chi-siamo", requireAuth: false },
-    //{ label: "ArtMatch", href: "https://artpay.art/art-match" }
   ];
 
   return (
-    <AppBar
-      color="default"
-      sx={
-        isMobile
-          ? mobileStyleOverrides
-          : {
-            mx: { xs: 8, md: 6, lg: 6, xl: "auto" },
-            right: 0,
-            px: { xs: undefined, lg: 6 },
-            maxWidth: "1344px",
-            zIndex: 10,
-          }
-      }
-      elevation={0}>
-      <Box display="flex" alignItems="center" sx={{
-        mt: { xs: 1, md: 0 }
-      }}>
-        <Box
-          sx={{ height: "24px", cursor: "pointer" }}
-          display="flex"
-          alignItems="center"
-          onClick={() => handleNavigate("/")}>
-          <Logo />
-        </Box>
-        {!isMobile && (
-          <Box sx={{ ml: 3 }}>
+    <header className={"fixed w-full z-10 top-6 px-6 flex items-center gap-8 justify-between "}>
+        <nav className={"px-6 py-4.5 custom-navbar flex justify-center md:justify-start items-center bg-white space-x-4 w-full max-w-7xl mx-auto"}>
+          <Link to={'/'}>
+            <Logo />
+          </Link>
+          <div className={'ms-4'}>
             {menuLinks
               .filter((l) => auth.isAuthenticated || !l.requireAuth)
               .map((link, i) => {
                 return (
-                  <Button
-                    key={`btn-link-${i}`}
-                    sx={{ px: 2 }}
-                    onClick={() => handleNavigate(link.href)}
-                    color="inherit"
-                    variant="text">
+                  <NavLink key={i} to={link.href} className={'hover:bg-[#f5f5f5] px-4 py-2 rounded-full text-tertiary transition-all'}>
                     {link.label}
-                  </Button>
+                  </NavLink>
                 );
               })}
-          </Box>
-        )}
-        {!isMobile && false && (
-          <IconButton>
-            <Search />
-          </IconButton>
-        )}
-        <Box mx={2} flexGrow={1} />
-        {isMobile && false && (
-          <IconButton>
-            <Search />
-          </IconButton>
-        )}
-      </Box>
-    </AppBar>
+          </div>
+        </nav>
+    </header>
   );
 };
 
