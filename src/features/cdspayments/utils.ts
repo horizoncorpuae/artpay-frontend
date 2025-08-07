@@ -39,14 +39,11 @@ type SendBrevoEmailParams = {
   params: Record<string, any>;
 };
 
-
-
 export const sendBrevoEmail = async ({
   toEmail,
   toName = "Team Artpay",
   params,
 }: SendBrevoEmailParams): Promise<void> => {
-
   const html = `
 <!DOCTYPE html>
 <html lang="it">
@@ -101,16 +98,16 @@ export const sendBrevoEmail = async ({
       </div>
     </div>
   </body>
-</html>`
+</html>`;
 
   try {
     await axios.post(
       "https://api.brevo.com/v3/smtp/email",
       {
-        sender: { name: 'Team artpay', email: 'hello@artpay.art' },
-        to: [{ email: toEmail, name: toName}],
+        sender: { name: "Team artpay", email: "hello@artpay.art" },
+        to: [{ email: toEmail, name: toName }],
         subject: "Nuova ricevuta bancaria caricata",
-        htmlContent : html,
+        htmlContent: html,
         params,
       },
       {
