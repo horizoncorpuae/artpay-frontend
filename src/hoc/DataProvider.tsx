@@ -13,30 +13,163 @@ import {
   newOrder,
   postAndMediaToHeroSlide,
   postAndMediaToPromoItem,
-  processUserProfile
+  processUserProfile,
 } from "../utils.ts";
 import { HomeContent } from "../types/home.ts";
 import { PromoComponentType } from "../components/PromoItem.tsx";
 import {
   Order,
   OrderCreateRequest,
-  OrderFilters, OrderStatus,
+  OrderFilters,
+  OrderStatus,
   OrderUpdateRequest,
   PaymentIntentRequest,
   ShippingMethodOption,
-  UpdatePaymentIntentRequest
+  UpdatePaymentIntentRequest,
 } from "../types/order.ts";
 import { PaymentIntent } from "@stripe/stripe-js";
 import {
   BillingData,
-  CustomerQuestion, CustomerQuestionResponse, GroupedMessage, Message, QuestionWithAnswer,
+  CustomerQuestion,
+  CustomerQuestionResponse,
+  GroupedMessage,
+  Message,
+  QuestionWithAnswer,
   UnprocessedUserProfile,
   UpdateUserProfile,
   User,
-  UserProfile
+  UserProfile,
 } from "../types/user.ts";
 import dayjs from "dayjs";
 
+
+const BENAPPI = {
+  id: 202,
+  avatar_id:
+    "https://secure.gravatar.com/avatar/779b5be1311610b53af01b56aad82d29229e4262680fe18fe0491caa160d23c4?s=96&d=mm&r=g",
+  products_count: 0,
+  orders_count: 0,
+  followers_count: 0,
+  login: "benappi-test",
+  first_name: "",
+  last_name: "",
+  nice_name: "benappi-test",
+  display_name: "Galleria Benappi Test",
+  email: "giacomo.bartoli+68@me.com",
+  url: "",
+  registered: "2025-07-23 08:20:02",
+  status: "0",
+  roles: ["dc_vendor"],
+  allcaps: {
+    aioseo_page_advanced_settings: true,
+    aioseo_page_analysis: true,
+    aioseo_page_general_settings: true,
+    aioseo_page_schema_settings: true,
+    aioseo_page_social_settings: true,
+    assign_product_terms: true,
+    delete_posts: true,
+    delete_private_products: true,
+    delete_private_shop_orders: true,
+    delete_product: true,
+    delete_products: true,
+    delete_published_products: true,
+    delete_published_shop_coupons: true,
+    delete_published_shop_orders: true,
+    delete_shop_coupon: true,
+    delete_shop_coupons: true,
+    delete_shop_order: true,
+    delete_shop_orders: true,
+    edit_post: true,
+    edit_posts: true,
+    edit_private_products: true,
+    edit_private_shop_orders: true,
+    edit_product: true,
+    edit_products: true,
+    edit_published_products: true,
+    edit_published_shop_coupons: true,
+    edit_published_shop_orders: true,
+    edit_shop_coupon: true,
+    edit_shop_coupons: true,
+    edit_shop_order: true,
+    edit_shop_orders: true,
+    edit_users: true,
+    list_roles: true,
+    list_users: true,
+    manage_product: true,
+    publish_posts: true,
+    publish_products: true,
+    publish_shop_coupons: true,
+    publish_shop_orders: true,
+    read: true,
+    read_private_products: true,
+    read_private_shop_coupons: true,
+    read_private_shop_orders: true,
+    read_product: true,
+    read_shop_coupon: true,
+    read_shop_order: true,
+    upload_files: true,
+    view_woocommerce_reports: true,
+    dc_vendor: true,
+  },
+  timezone_string: "",
+  gmt_offset: "",
+  shop: {
+    url: "https://artpay.art/vendor/benappi-test/",
+    title: "Galleria Benappi",
+    slug: "benappi-test",
+    description: "",
+    image: "https://artpay.art/wp-content/uploads/2025/07/Screenshot-2025-07-17-alle-18.51.50.png",
+    banner: "https://artpay.art/wp-content/uploads/2025/07/Foto-profilo-Galleria-scaled.jpg",
+    foundation_year: "",
+  },
+  address: {
+    address_1: "",
+    address_2: "",
+    city: "",
+    state: "",
+    country: "",
+    postcode: "",
+    phone: "",
+  },
+  social: {
+    facebook: "",
+    twitter: "",
+    google_plus: "",
+    linkdin: "",
+    youtube: "",
+    instagram: "",
+  },
+  payment: {
+    payment_mode: "",
+    bank_account_type: "current",
+    bank_name: "",
+    bank_account_number: "",
+    bank_address: "",
+    account_holder_name: "",
+    aba_routing_number: "",
+    destination_currency: "",
+    iban: "",
+    paypal_email: "",
+  },
+  message_to_buyers: "",
+  rating_count: 0,
+  avg_rating: "0.0",
+  _links: {
+    self: [
+      {
+        href: "https://artpay.art/wp-json/mvx/v1/vendors/202",
+        targetHints: {
+          allow: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+        },
+      },
+    ],
+    collection: [
+      {
+        href: "https://artpay.art/wp-json/mvx/v1/vendors",
+      },
+    ],
+  },
+};
 
 const availableShippingMethods: ShippingMethodOption[] = [
   {
@@ -46,7 +179,7 @@ const availableShippingMethods: ShippingMethodOption[] = [
     method_id: "local_pickup",
     method_title: "Ritiro in sede",
     method_description: () =>
-      "Selezionando questa opzione l'opera viene ritirata dall'acquirente direttamente alla sede della galleria, senza incorrere in costi aggiuntivi. Una volta completato il processo di acquisto, acquirente e galleria si accorderanno su modalità e tempi di ritiro."
+      "Selezionando questa opzione l'opera viene ritirata dall'acquirente direttamente alla sede della galleria, senza incorrere in costi aggiuntivi. Una volta completato il processo di acquisto, acquirente e galleria si accorderanno su modalità e tempi di ritiro.",
   },
   {
     id: 7,
@@ -57,8 +190,8 @@ const availableShippingMethods: ShippingMethodOption[] = [
     method_description: (shippingCost) =>
       `Selezionando questa opzione l'opera viene direttamente spedita dalla galleria all'acquirente. Per questa opera il costo di spedizione è: €${
         shippingCost?.toFixed(2) || ""
-      }`
-  }
+      }`,
+  },
 ];
 
 export interface DataContext {
@@ -102,9 +235,9 @@ export interface DataContext {
 
   getPendingOrder(): Promise<Order | null>;
 
-  getOnHoldOrder(): Promise<Order| null>;
+  getOnHoldOrder(): Promise<Order | null>;
 
-  getProcessingOrder(): Promise<Order| null>;
+  getProcessingOrder(): Promise<Order | null>;
 
   getExternalOrder(): Promise<void>;
 
@@ -239,7 +372,7 @@ const defaultContext: DataContext = {
   updatePaymentIntent: () => Promise.reject("Data provider loaded"),
   getCategoryMapValues: () => [],
   getArtistCategories: () => [],
-  downpaymentPercentage: () => 0
+  downpaymentPercentage: () => 0,
 };
 
 const PostCategoryMapStorageKey = "PostCategoryMap";
@@ -256,15 +389,15 @@ const postCategoryMap: PostCategoryMap = {};
 const favouritesMap: FavouritesMap = {
   galleries: null,
   artists: null,
-  artworks: null
+  artworks: null,
 };
 
 export const FAVOURITES_UPDATED_EVENT = "favourites:updated";
 export const dispatchFavouritesUpdated = (data: FavouritesMap) =>
   document.dispatchEvent(
     new CustomEvent<FavouritesMap>(FAVOURITES_UPDATED_EVENT, {
-      detail: data
-    })
+      detail: data,
+    }),
   );
 export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -286,7 +419,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
 
       let categoriesResp = await axios.get<SignInFormData, AxiosResponse<Category[]>>(endpointUrl, {
         headers: { Authorization: auth.getGuestAuth() },
-        params: { per_page: 100 }
+        params: { per_page: 100 },
       });
       const categoriesData = [...categoriesResp.data];
       let page = 1;
@@ -294,7 +427,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         page++;
         categoriesResp = await axios.get<SignInFormData, AxiosResponse<Category[]>>(endpointUrl, {
           headers: { Authorization: auth.getGuestAuth() },
-          params: { per_page: 100, page: page }
+          params: { per_page: 100, page: page },
         });
         categoriesData.push(...categoriesResp.data);
       }
@@ -305,7 +438,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const categoryGroups = parents.map((p) => {
         const categoryGroup: CategoryGroup = {
           ...p,
-          children: children.filter((c) => c.parent === p.id)
+          children: children.filter((c) => c.parent === p.id),
         };
         return categoryGroup;
       });
@@ -331,7 +464,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       }
       const postCategoriesResp = await axios.get<SignInFormData, AxiosResponse<PostCategory[]>>(
         `${baseUrl}/wp-json/wp/v2/categories`,
-        { headers: { Authorization: auth.getGuestAuth() } }
+        { headers: { Authorization: auth.getGuestAuth() } },
       );
 
       for (let i = 0; i < postCategoriesResp.data.length; i++) {
@@ -342,7 +475,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return postCategoryMap;
     };
 
-
     Promise.all([
       loadPostCategories(),
       loadCategories(CategoryMapStorageKey, "/wp-json/wc/v3/products/categories").then((categoryMapResp) => {
@@ -350,7 +482,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       }),
       loadCategories(ArtistCategoryMapStorageKey, "/wp-json/wp/v2/categoria_artisti").then((categoryMapResp) => {
         Object.assign(artistCategoryMap, categoryMapResp);
-      })
+      }),
     ]).then(() => {
       setIsLoading(false);
     });
@@ -370,13 +502,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     };
   }, []);
 
-
   const loadMedia = async (ids: number[]): Promise<Media[]> => {
     const mediaResp = await axios.get<unknown, AxiosResponse<Media[]>>(
       `${baseUrl}/wp-json/wp/v2/media?include=${ids.join(",")}`,
       {
-        headers: { Authorization: auth.getGuestAuth() }
-      }
+        headers: { Authorization: auth.getGuestAuth() },
+      },
     );
     return mediaResp.data;
   };
@@ -390,14 +521,17 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         return favouritesMap.artists;
       }
       const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(
-        `${baseUrl}/wp-json/wp/v2/getUserFavoriteArtists`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/getUserFavoriteArtists`,
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.artists = resp.data || [];
       return resp.data || [];
     },
     async addFavouriteArtist(id: string): Promise<Artist[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<Artist[]>>(
-        `${baseUrl}/wp-json/wp/v2/addUserFavoriteArtist/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/addUserFavoriteArtist/${id}`,
+        {},
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.artists = resp.data || favouritesMap.artists;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -405,7 +539,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async removeFavouriteArtist(id: string): Promise<Artist[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<Artist[]>>(
-        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteArtist/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteArtist/${id}`,
+        {},
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.artists = resp.data || favouritesMap.artists;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -420,14 +556,17 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         return favouritesMap.artworks;
       }
       const resp = await axios.get<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/getUserFavoriteArtworks`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/getUserFavoriteArtworks`,
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.artworks = resp.data || [];
       return resp.data || [];
     },
     async addFavouriteArtwork(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/addUserFavoriteArtwork/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/addUserFavoriteArtwork/${id}`,
+        {},
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.artworks = resp.data || favouritesMap.artworks;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -435,7 +574,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async removeFavouriteArtwork(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteArtwork/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteArtwork/${id}`,
+        {},
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.artworks = resp.data || favouritesMap.artworks;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -450,14 +591,17 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         return favouritesMap.galleries;
       }
       const resp = await axios.get<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/getUserFavoriteGalleries`, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/getUserFavoriteGalleries`,
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.galleries = resp.data || [];
       return resp.data || [];
     },
     async addFavouriteGallery(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/addUserFavoriteGallery/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/addUserFavoriteGallery/${id}`,
+        {},
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.galleries = resp.data || favouritesMap.galleries;
       dispatchFavouritesUpdated({ ...favouritesMap });
@@ -465,12 +609,14 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async removeFavouriteGallery(id: string): Promise<number[]> {
       const resp = await axios.post<SignInFormData, AxiosResponse<number[]>>(
-        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteGallery/${id}`, {}, { headers: { Authorization: auth.getAuthToken() } }
+        `${baseUrl}/wp-json/wp/v2/removeUserFavoriteGallery/${id}`,
+        {},
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       favouritesMap.galleries = resp.data || favouritesMap.galleries;
       dispatchFavouritesUpdated({ ...favouritesMap });
       return resp.data;
-    }
+    },
   };
 
   const dataContext: {
@@ -529,7 +675,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     removeFavouriteArtwork(id: string): Promise<number[]>;
     getFavouriteGalleries(): Promise<number[]>;
     addFavouriteGallery(id: string): Promise<number[]>;
-    removeFavouriteGallery(id: string): Promise<number[]>
+    removeFavouriteGallery(id: string): Promise<number[]>;
   } = {
     info(): Promise<string> {
       return Promise.resolve("");
@@ -548,7 +694,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       // ?${categoryFilter}
 
       const postsResp = await axios.get<unknown, AxiosResponse<Post[]>>(`${baseUrl}/wp-json/wp/v2/posts`, {
-        headers: { Authorization: auth.getGuestAuth() }
+        headers: { Authorization: auth.getGuestAuth() },
       });
 
       const media = await loadMedia(postsResp.data.map((p) => p.featured_media).filter((id) => !!id));
@@ -561,7 +707,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const heroSlides = mappedHeroPosts.map(({ post, media }) => postAndMediaToHeroSlide(post, media));
 
       const promoPosts = postsResp.data.filter(
-        (p) => p.categories.indexOf(promoBigCategory) !== -1 || p.categories.indexOf(promoSmallCategory) !== -1
+        (p) => p.categories.indexOf(promoBigCategory) !== -1 || p.categories.indexOf(promoSmallCategory) !== -1,
       );
       const mappedPromoPosts = promoPosts.map((post) => {
         const postMedia = media.find((m) => m.id === post.featured_media);
@@ -575,15 +721,15 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
 
       return {
         heroSlides: heroSlides.sort((a, b) => a.order - b.order),
-        promoItems: promoItems
+        promoItems: promoItems,
       };
     },
     async getPageBySlug(slug: string): Promise<Post> {
       // /wp-json/wp/v2/pages?slug=informativa-e-gestione-dei-cookies
       const resp = await axios.get<SignInFormData, AxiosResponse<Post[]>>(`/wp-json/wp/v2/pages`, {
         params: {
-          slug: slug
-        }
+          slug: slug,
+        },
       });
       if (resp.data.length === 0) {
         throw "Pagina non trovata";
@@ -591,28 +737,27 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       return resp.data[0];
     },
     async getArtwork(id: string): Promise<Artwork> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork>>(`${baseUrl}/wp-json/wc/v3/products/${id}`, { headers: { Authorization: auth.getGuestAuth() } });
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork>>(`${baseUrl}/wp-json/wc/v3/products/${id}`, {
+        headers: { Authorization: auth.getGuestAuth() },
+      });
       return resp.data;
     },
     async getArtworks(ids: number[]): Promise<Artwork[]> {
       if (ids.length === 0) {
         return [];
       }
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(
-        `${baseUrl}/wp-json/wc/v3/products`,
-        {
-          headers: { Authorization: auth.getGuestAuth() },
-          params: {
-            include: ids.join(",") //include=${ids.join(",")}
-          }
-        }
-      );
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, {
+        headers: { Authorization: auth.getGuestAuth() },
+        params: {
+          include: ids.join(","), //include=${ids.join(",")}
+        },
+      });
       return resp.data;
     },
     async getArtworkBySlug(slug: string): Promise<Artwork> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(
         `${baseUrl}/wp-json/wc/v3/products?slug=${slug}`,
-        { headers: { Authorization: auth.getGuestAuth() } }
+        { headers: { Authorization: auth.getGuestAuth() } },
       );
       if (!resp.data?.length) {
         throw "Not found";
@@ -621,52 +766,59 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async getGallery(id: string): Promise<Gallery | null> {
       try {
-        const resp = await axios.get<SignInFormData, AxiosResponse<Gallery>>(`${baseUrl}/wp-json/mvx/v1/vendors/${id}`, {
-          headers: {
-            Authorization: auth.getGuestAuth()
-          }
-        });
+        const resp = await axios.get<SignInFormData, AxiosResponse<Gallery>>(
+          `${baseUrl}/wp-json/mvx/v1/vendors/${id}`,
+          {
+            headers: {
+              Authorization: auth.getGuestAuth(),
+            },
+          },
+        );
         return resp.data ?? null;
       } catch (e) {
-        console.error(e)
-        return null
+        console.error(e);
+        return null;
       }
     },
     async getGalleries(ids?: number[]): Promise<Gallery[]> {
       if (!ids) {
-        const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(
-          `${baseUrl}/wp-json/mvx/v1/vendors`,
-          { headers: { Authorization: auth.getGuestAuth() } }
-        );
+        const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(`${baseUrl}/wp-json/mvx/v1/vendors`, {
+          headers: { Authorization: auth.getGuestAuth() },
+        });
         return resp.data;
       }
-      const galleries = await  Promise.all(ids.map((id) => this.getGallery(id.toString())));
+      const galleries = await Promise.all(ids.map((id) => this.getGallery(id.toString())));
       return galleries.filter((gallery): gallery is Gallery => gallery !== null);
     },
     async getGalleryBySlug(slug: string): Promise<Gallery> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(
         `${baseUrl}/wp-json/mvx/v1/vendors?nice_name=${slug}`,
-        { headers: { Authorization: auth.getGuestAuth() } }
+        { headers: { Authorization: auth.getGuestAuth() } },
       );
-      const gallery = resp.data.find((g) => g.shop?.slug === slug);
+      const allData = [...resp.data, BENAPPI ];
+      const gallery = allData.find((g) => g.shop?.slug === slug);
       if (!gallery) {
         throw "Gallery not found";
       }
-      return gallery;
+      return gallery as Gallery;
     },
     async listGalleries(): Promise<Gallery[]> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(`${baseUrl}/wp-json/mvx/v1/vendors`, { headers: { Authorization: auth.getGuestAuth() } });
+      const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(`${baseUrl}/wp-json/mvx/v1/vendors`, {
+        headers: { Authorization: auth.getGuestAuth() },
+      });
       return resp.data;
     },
     async listArtworks(): Promise<Artwork[]> {
-      const resp = await axios.get<unknown, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, { headers: { Authorization: auth.getGuestAuth() } });
+      const resp = await axios.get<unknown, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, {
+        headers: { Authorization: auth.getGuestAuth() },
+      });
 
       return resp.data;
     },
     async listFeaturedArtworks(): Promise<Artwork[]> {
       const resp = await axios.get<unknown, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, {
         params: { featured: true },
-        headers: { Authorization: auth.getGuestAuth() }
+        headers: { Authorization: auth.getGuestAuth() },
       });
 
       return resp.data;
@@ -674,37 +826,42 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async listArtworksForGallery(galleryId: string): Promise<Artwork[]> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(
         `${baseUrl}/wp-json/wc/v2/products/?vendor=[${galleryId}]&per_page=100`,
-        { headers: { Authorization: auth.getGuestAuth() } }
+        { headers: { Authorization: auth.getGuestAuth() } },
       );
 
       return resp.data;
     },
     async listArtworksForArtist(/*artistId: string*/): Promise<Artwork[]> {
       //TODO: listArtworksForArtist filter
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, { headers: { Authorization: auth.getGuestAuth() } });
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artwork[]>>(`${baseUrl}/wp-json/wc/v3/products`, {
+        headers: { Authorization: auth.getGuestAuth() },
+      });
       return resp.data;
     },
     async listFeaturedArtists(): Promise<Artist[]> {
       //TODO: featured filter
       const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(`${baseUrl}/wp-json/wp/v2/artist`, {
-        headers: { Authorization: auth.getGuestAuth() }
+        headers: { Authorization: auth.getGuestAuth() },
       });
       return resp.data;
     },
     async listArtistsForGallery(galleryId: string): Promise<Artist[]> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(
-        `${baseUrl}/wp-json/wp/v2/artistsOfVendor/${galleryId}`
+        `${baseUrl}/wp-json/wp/v2/artistsOfVendor/${galleryId}`,
       );
       return resp.data || [];
     },
     async getArtist(artistId: string): Promise<Artist> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Artist>>(
-        `${baseUrl}/wp-json/wp/v2/artist/${artistId}`
+        `${baseUrl}/wp-json/wp/v2/artist/${artistId}`,
       );
       return resp.data;
     },
     async getArtistBySlug(artistSlug: string): Promise<Artist> {
-      const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(`${baseUrl}/wp-json/wp/v2/artistBySlug/${artistSlug}`, {});
+      const resp = await axios.get<SignInFormData, AxiosResponse<Artist[]>>(
+        `${baseUrl}/wp-json/wp/v2/artistBySlug/${artistSlug}`,
+        {},
+      );
       if (resp.data.length === 0) {
         throw "Pagina non trovata";
       }
@@ -729,8 +886,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const resp = await axios.get<OrderFilters, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v3/orders`, {
         params: orderParams,
         headers: {
-          Authorization: auth.getAuthToken()
-        }
+          Authorization: auth.getAuthToken(),
+        },
       });
       return resp.data;
     },
@@ -752,9 +909,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           order: "desc",
           per_page: 1,
           parent: 0,
-          customer: customerId
+          customer: customerId,
         },
-        headers: { Authorization: auth.getAuthToken() }
+        headers: { Authorization: auth.getAuthToken() },
       });
       return resp.data.length === 1 ? resp.data[0] : null;
     },
@@ -770,22 +927,19 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         return null;
       }
 
-      const externalOrderKey = localStorage.getItem('externalOrderKey');
-      if(externalOrderKey){
-        try{
-          await axios.get(
-            `${baseUrl}/wp-json/wp/v2/regain-flash-order`,
-            {
-              params: {
-                order_id: externalOrderKey,
-              },
-              headers: {
-                Authorization: auth.getAuthToken()
-              }
-            }
-          );
-          localStorage.removeItem('externalOrderKey');
-        }catch(e){
+      const externalOrderKey = localStorage.getItem("externalOrderKey");
+      if (externalOrderKey) {
+        try {
+          await axios.get(`${baseUrl}/wp-json/wp/v2/regain-flash-order`, {
+            params: {
+              order_id: externalOrderKey,
+            },
+            headers: {
+              Authorization: auth.getAuthToken(),
+            },
+          });
+          localStorage.removeItem("externalOrderKey");
+        } catch (e) {
           console.log(e);
         }
       }
@@ -797,12 +951,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           order: "desc",
           per_page: 1,
           parent: 0,
-          customer: customerId
+          customer: customerId,
         },
-        headers: { Authorization: auth.getAuthToken() }
+        headers: { Authorization: auth.getAuthToken() },
       });
 
-      localStorage.setItem('CdsOrder', JSON.stringify(resp.data[0]))
+      localStorage.setItem("CdsOrder", JSON.stringify(resp.data[0]));
 
       return resp.data.length === 1 ? resp.data[0] : null;
     },
@@ -810,28 +964,24 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     async getExternalOrder(): Promise<void> {
       const checkedExternalOrder = localStorage.getItem(CheckedExternalOrderKey);
 
-      if(!checkedExternalOrder){
+      if (!checkedExternalOrder) {
         try {
-          await axios.get<Order[]>(
-            `${baseUrl}/wp-json/wp/v2/flashOrder`,
-            { headers: { Authorization: auth.getAuthToken() } }
-          );
+          await axios.get<Order[]>(`${baseUrl}/wp-json/wp/v2/flashOrder`, {
+            headers: { Authorization: auth.getAuthToken() },
+          });
 
-          localStorage.setItem(CheckedExternalOrderKey, 'true');
-
+          localStorage.setItem(CheckedExternalOrderKey, "true");
         } catch (error) {
-          throw 'order not found';
+          throw "order not found";
         }
+      } else {
+        throw "order not found";
       }
-      else{
-        throw 'order not found';
-      }
-
     },
 
     async getOrder(id: number): Promise<Order | null> {
       const resp = await axios.get<unknown, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders/${id}`, {
-        headers: { Authorization: auth.getAuthToken() }
+        headers: { Authorization: auth.getAuthToken() },
       });
       return resp.data;
     },
@@ -848,19 +998,19 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           order: "desc",
           per_page: 1,
           parent: 0,
-          customer: customerId
+          customer: customerId,
         },
-        headers: { Authorization: auth.getAuthToken() }
+        headers: { Authorization: auth.getAuthToken() },
       });
 
-      localStorage.setItem('CdsOrder', JSON.stringify(resp.data[0]))
+      localStorage.setItem("CdsOrder", JSON.stringify(resp.data[0]));
 
       return resp.data.length === 1 ? resp.data[0] : null;
     },
 
     async createOrder(body: OrderCreateRequest): Promise<Order> {
       const resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body, {
-        headers: { Authorization: auth.getAuthToken() }
+        headers: { Authorization: auth.getAuthToken() },
       });
       return resp.data;
     },
@@ -869,15 +1019,15 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         `${baseUrl}/wp-json/wc/v3/orders/${orderId}`,
         body,
         {
-          headers: { Authorization: auth.getAuthToken() }
-        }
+          headers: { Authorization: auth.getAuthToken() },
+        },
       );
       return resp.data;
     },
     async setOrderStatus(orderId: number, status: OrderStatus, params = {}): Promise<Order> {
       const resp = await axios.put<OrderUpdateRequest, AxiosResponse<Order>>(
         `${baseUrl}/wp-json/wc/v3/orders/${orderId}`,
-        { status: status, ...params }
+        { status: status, ...params },
       );
       return resp.data;
     },
@@ -899,12 +1049,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         line_items: [
           {
             product_id: artworkId,
-            quantity: 1
-          }
+            quantity: 1,
+          },
         ],
         set_paid: false,
         shipping: { ...profile.shipping },
-        shipping_lines: []
+        shipping_lines: [],
       };
       if (loan) {
         //body.payment_method = "card";
@@ -915,9 +1065,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           await axios.put<OrderCreateRequest, AxiosResponse<Order>>(
             `${baseUrl}/wp-json/wc/v3/orders/${pendingOrder.id}`,
             { status: "cancelled", set_paid: false, customer_id: customerId, id: pendingOrder.id },
-            { headers: {
-                Authorization: auth.getAuthToken()
-              }}
+            {
+              headers: {
+                Authorization: auth.getAuthToken(),
+              },
+            },
           );
         } catch (e) {
           console.error(e);
@@ -925,8 +1077,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       }
       const resp = await axios.post<OrderCreateRequest, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders`, body, {
         headers: {
-          Authorization: auth.getAuthToken()
-        }
+          Authorization: auth.getAuthToken(),
+        },
       });
 
       return resp.data;
@@ -949,9 +1101,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
         body,
         {
           headers: {
-            Authorization: auth.getAuthToken()
-          }
-        }
+            Authorization: auth.getAuthToken(),
+          },
+        },
       );
       localStorage.setItem(cacheKey, JSON.stringify(resp.data));
       return resp.data;
@@ -972,23 +1124,25 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       }
       const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
         `${baseUrl}/wp-json/wc/v3/stripe/cds_payment_intent`,
-        body
+        body,
       );
-      if(resp.data.amount < 150000) {
-        const updateFee = await this.updatePaymentIntent({ wc_order_key: body.wc_order_key, payment_method: "klarna" })
+      if (resp.data.amount < 150000) {
+        const updateFee = await this.updatePaymentIntent({ wc_order_key: body.wc_order_key, payment_method: "klarna" });
         localStorage.setItem(cacheKey, JSON.stringify(updateFee));
         return updateFee;
       }
       localStorage.setItem(cacheKey, JSON.stringify(resp.data));
       return resp.data;
     },
-    async updatePaymentIntent (data: UpdatePaymentIntentRequest): Promise<PaymentIntent> {
+    async updatePaymentIntent(data: UpdatePaymentIntentRequest): Promise<PaymentIntent> {
       const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
         `${baseUrl}/wp-json/wc/v3/stripe/upd_payment_intent_fee`,
         data,
-        {headers: {
-          Authorization: auth.getAuthToken()
-        }}
+        {
+          headers: {
+            Authorization: auth.getAuthToken(),
+          },
+        },
       );
       return resp.data;
     },
@@ -1007,7 +1161,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       }
       const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
         `${baseUrl}/wp-json/wc/v3/stripe/redeem_payment_intent`,
-        body
+        body,
       );
       localStorage.setItem(cacheKey, JSON.stringify(resp.data));
       return resp.data;
@@ -1028,9 +1182,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
         `${baseUrl}/wp-json/wc/v3/stripe/block_intent`,
         body,
-        {headers: {
-          Authorization: auth.getAuthToken()
-          }}
+        {
+          headers: {
+            Authorization: auth.getAuthToken(),
+          },
+        },
       );
       // localStorage.setItem(cacheKey, JSON.stringify(resp.data));
       return resp.data;
@@ -1041,7 +1197,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async getUserInfo(): Promise<User> {
       const resp = await axios.get<unknown, AxiosResponse<User>>(`${baseUrl}/wp-json/wp/v2/users/me`, {
-        headers: { Authorization: auth.getAuthToken() }
+        headers: { Authorization: auth.getAuthToken() },
       });
       return resp.data;
     },
@@ -1050,9 +1206,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       if (!userId) {
         throw "Not authenticated";
       }
-      const resp = await axios.get<unknown, AxiosResponse<UnprocessedUserProfile>>(`${baseUrl}/wp-json/wc/v3/customers/${userId}`, {
-        headers: { Authorization: auth.getAuthToken() }
-      });
+      const resp = await axios.get<unknown, AxiosResponse<UnprocessedUserProfile>>(
+        `${baseUrl}/wp-json/wc/v3/customers/${userId}`,
+        {
+          headers: { Authorization: auth.getAuthToken() },
+        },
+      );
       return processUserProfile(resp.data);
     },
     async deleteUser(): Promise<void> {
@@ -1060,11 +1219,15 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       if (!userId) {
         throw "Not authenticated";
       }
-      await axios.post<unknown, AxiosResponse<object>>(`${baseUrl}/wp-json/wp/v2/gdpr-delete`, {}, {
-        headers: {
-          Authorization: auth.getAuthToken()
-        }
-      });
+      await axios.post<unknown, AxiosResponse<object>>(
+        `${baseUrl}/wp-json/wp/v2/gdpr-delete`,
+        {},
+        {
+          headers: {
+            Authorization: auth.getAuthToken(),
+          },
+        },
+      );
     },
     async updateUserProfile(body: Partial<UpdateUserProfile>): Promise<UserProfile> {
       const userId = auth.user?.id;
@@ -1091,7 +1254,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       body.id = userId;
       const resp = await axios.put<Partial<UserProfile>, AxiosResponse<UnprocessedUserProfile>>(
         `${baseUrl}/wp-json/wc/v3/customers/${userId}`,
-        body
+        body,
       );
       return processUserProfile(resp.data);
     },
@@ -1099,18 +1262,14 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const resp = await axios.post<CustomerQuestion, AxiosResponse<CustomerQuestionResponse>>(
         `${baseUrl}/wp-json/wc/v3/customer-question`,
         data,
-        { headers: { Authorization: auth.getAuthToken() } }
+        { headers: { Authorization: auth.getAuthToken() } },
       );
       return resp.data;
     },
     async getChatHistory(): Promise<GroupedMessage[]> {
-      const resp = await axios.get<QuestionWithAnswer[]>(
-        `${baseUrl}/wp-json/wc/v3/customer-question`,
-        {
-          headers: { Authorization: auth.getAuthToken() }
-        }
-      );
-
+      const resp = await axios.get<QuestionWithAnswer[]>(`${baseUrl}/wp-json/wc/v3/customer-question`, {
+        headers: { Authorization: auth.getAuthToken() },
+      });
 
       const messageGroups: { [key: string]: Message[] } = {};
       const messages: GroupedMessage[] = [];
@@ -1123,7 +1282,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           messageGroups[msg.product_ID].push({
             text: msg.ques_details,
             userMessage: true,
-            date: dayjs((msg.ques_created))
+            date: dayjs(msg.ques_created),
           });
         } catch (e) {
           console.error("chat message error", e);
@@ -1133,7 +1292,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
             messageGroups[msg.product_ID].push({
               text: msg.answer.ans_details,
               userMessage: false,
-              date: dayjs((msg.answer.ans_created))
+              date: dayjs(msg.answer.ans_created),
             });
           } catch (e) {
             console.error("chat message error", e);
@@ -1143,10 +1302,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       for (const productId in messageGroups) {
         messageGroups[productId] = messageGroups[productId].sort((a, b) => a.date.diff(b.date));
       }
-      const productKeys = Object.keys(messageGroups).map(k => +k);
+      const productKeys = Object.keys(messageGroups).map((k) => +k);
       const products = await this.getArtworks(productKeys);
 
-      products.forEach(product => {
+      products.forEach((product) => {
         const productMessages = messageGroups[product.id.toString()];
         if (productMessages?.length < 1) {
           return;
@@ -1156,22 +1315,19 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           product: { ...product },
           lastMessageDate: lastMessage.date,
           lastMessageText: lastMessage.text,
-          messages: messageGroups[product.id.toString()]
+          messages: messageGroups[product.id.toString()],
         });
       });
 
       return messages.sort((a, b) => b.lastMessageDate.diff(a.lastMessageDate));
     },
     async getProductChatHistory(productId: number): Promise<Message[]> {
-      const resp = await axios.get<QuestionWithAnswer[]>(
-        `${baseUrl}/wp-json/wc/v3/customer-question`,
-        {
-          params: {
-            product_id: productId
-          },
-          headers: { Authorization: auth.getAuthToken() }
-        }
-      );
+      const resp = await axios.get<QuestionWithAnswer[]>(`${baseUrl}/wp-json/wc/v3/customer-question`, {
+        params: {
+          product_id: productId,
+        },
+        headers: { Authorization: auth.getAuthToken() },
+      });
 
       const messages: Message[] = [];
       resp.data.forEach((msg) => {
@@ -1179,13 +1335,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           return;
         }
         try {
-          messages.push({ text: msg.ques_details, userMessage: true, date: dayjs((msg.ques_created)) });
+          messages.push({ text: msg.ques_details, userMessage: true, date: dayjs(msg.ques_created) });
         } catch (e) {
           console.error("chat message error", e);
         }
         if (msg.answer) {
           try {
-            messages.push({ text: msg.answer.ans_details, userMessage: false, date: dayjs((msg.answer.ans_created)) });
+            messages.push({ text: msg.answer.ans_details, userMessage: false, date: dayjs(msg.answer.ans_created) });
           } catch (e) {
             console.error("chat message error", e);
           }
@@ -1197,13 +1353,15 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const formData = new FormData();
       formData.append("EMAIL", email);
       formData.append("OPT_IN", optIn);
-      await axios.post<FormData, AxiosResponse<unknown>>(formUrl, formData, { headers: { Authorization: undefined } }).catch((err) => {
-        if (isAxiosError(err) && err.code === "ERR_NETWORK") {
-          return;
-        } else {
-          throw err;
-        }
-      });
+      await axios
+        .post<FormData, AxiosResponse<unknown>>(formUrl, formData, { headers: { Authorization: undefined } })
+        .catch((err) => {
+          if (isAxiosError(err) && err.code === "ERR_NETWORK") {
+            return;
+          } else {
+            throw err;
+          }
+        });
     },
 
     getCategoryMapValues(artwork: Artwork, key: string): string[] {
@@ -1236,7 +1394,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
             return artist.categoria_artisti.filter((c) => childrenIds.indexOf(c) !== -1).map((c) => c.name);*/
     },
     downpaymentPercentage: () => 5,
-    ...favourites
+    ...favourites,
   };
 
   useEffect(() => {
@@ -1255,7 +1413,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
           localStorage.removeItem(PendingOrderStorageKey);
         }
       } catch (error) {
-        console.error('Errore nel recupero dell\'ordine:', error);
+        console.error("Errore nel recupero dell'ordine:", error);
       } finally {
         setIsLoading(false);
       }
@@ -1267,7 +1425,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       document.removeEventListener(USER_LOGIN_EVENT, handleUserLoggedIn);
     };
   }, [dataContext.purchaseArtwork]);
-
 
   return <Context.Provider value={dataContext as DataContext}>{isLoading ? <></> : children}</Context.Provider>;
 };
