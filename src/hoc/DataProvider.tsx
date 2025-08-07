@@ -792,11 +792,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
     },
     async getGalleryBySlug(slug: string): Promise<Gallery> {
       const resp = await axios.get<SignInFormData, AxiosResponse<Gallery[]>>(
-        `${baseUrl}/wp-json/mvx/v1/vendors?nice_name=${slug}`,
+        `${baseUrl}/wp-json/mvx/v1/vendors?page=1&per_page=100&nice_name${slug}`,
         { headers: { Authorization: auth.getGuestAuth() } },
       );
-      const allData = [...resp.data, BENAPPI ];
-      const gallery = allData.find((g) => g.shop?.slug === slug);
+      //const allData = [...resp.data, BENAPPI ];
+      const gallery = resp.data.find((g) => g.shop?.slug === slug);
       if (!gallery) {
         throw "Gallery not found";
       }
