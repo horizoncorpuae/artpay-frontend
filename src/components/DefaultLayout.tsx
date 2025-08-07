@@ -79,7 +79,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         {children}
       </main>
       {menuOpen && isMobile ? <></> : <Footer />}
-      {openDraw && <div className={"overlay fixed z-20 inset-0 w-full h-screen bg-zinc-950/65 animate-fade-in"}></div>}
+      {openDraw && <div className={"overlay fixed z-40 inset-0 w-full h-screen bg-zinc-950/65 animate-fade-in"}></div>}
     </>
   );
 };

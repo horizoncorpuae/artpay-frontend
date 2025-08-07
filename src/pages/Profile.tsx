@@ -7,7 +7,7 @@ import ResponsiveTabs from "../components/ResponsiveTabs.tsx";
 import TabPanel from "../components/TabPanel.tsx";
 import FavouriteArtworks from "../components/FavouriteArtworks.tsx";
 import FavouriteArtists from "../components/FavouriteArtists.tsx";
-import FavouriteGalleries from "../components/FavouriteGalleries.tsx";
+import FavouriteGalleriesGrid from "../components/FavouriteGalleriesGrid.tsx";
 import ProfileHeader from "../components/ProfileHeader.tsx";
 import { useNavigate } from "../utils.ts";
 import { useAuth } from "../hoc/AuthProvider.tsx";
@@ -89,7 +89,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
           <OrdersHistory mode="on-hold" title="Opere bloccate" />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={2}>
-          <FavouriteGalleries />
+          <FavouriteGalleriesGrid />
         </TabPanel>
         <TabPanel value={selectedTabPanel} index={3}>
           <FavouriteArtists />

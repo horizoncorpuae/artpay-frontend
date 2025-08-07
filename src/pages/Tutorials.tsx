@@ -65,7 +65,7 @@ const Tutorials = () => {
 
   return (
     <DefaultLayout hasNavBar={true}>
-      <div className={"flex gap-6 flex-col mb-12 md:mb-36 pt-35 md:pt-0"}>
+      <div className={"flex gap-6 flex-col mb-22 md:mb-22 pt-35 md:pt-0"}>
         <div className={"max-w-md mb-24 px-8 lg:px-0"}>
           <Typography variant={"display3"} className={"text-balance"}>
             Hai bisogno di aiuto? Parti da qui.
@@ -108,7 +108,7 @@ const Tutorials = () => {
                   style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
                   {tutorialSlides.map((slide) => (
                     <div key={slide.id} className={"slider-item flex flex-col min-w-full"}>
-                      <img src={slide.image} alt={slide.imageAlt} className={"w-full h-auto object-cover"} />
+                      <img src={slide.image} alt={slide.imageAlt} className={"w-full h-auto object-cover"} loading={'eager'}/>
                       <div className={"mt-12 md:mt-7 max-w-2xl"}>
                         <Typography variant={"h4"} color={"white"}>
                           {slide.title}

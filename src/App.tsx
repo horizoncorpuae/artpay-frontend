@@ -43,6 +43,7 @@ import PaymentDraw from "./features/cdspayments/components/ui/paymentdraw/Paymen
 import { useScrollToTop } from "./utils.ts";
 import Tutorials from "./pages/Tutorials.tsx";
 import SinglePostPage from "./pages/SinglePostPage.tsx";
+import DashboardPage from "./pages/DashboardPage.tsx";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || "";
@@ -72,7 +73,7 @@ function AppContent() {
                 <PaymentProvider>
                   <Routes>
                     <Route path="/" element={<Home />} />
-                    {/*<Route path="/dashboard" element={<DashboardPage />} />*/}
+                    <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/showcase" element={<Showcase />} />
                     <Route path="/gallerie" element={<Galleries />} />
                     <Route path="/landing" element={<LandingPage />} />
