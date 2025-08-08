@@ -93,7 +93,7 @@ function AppContent() {
                       <Route element={<CdsPaymentsPage />} index />
                     </Route>
                     <Route path="/completa-acquisto/:order_id" element={<Purchase orderMode="redeem" />} />
-                     <Route path="/guidda-klarna" element={<KlarnaPage />} />
+                     <Route path="/guida-klarna" element={<KlarnaPage />} />
                     <Route path="/guida-santander" element={<SantanderPage />} />
 
                     <Route path="/guide/:slug" element={<SinglePostPage />} />
