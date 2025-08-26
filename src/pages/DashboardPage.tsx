@@ -37,7 +37,6 @@ const Skeleton = () => {
 
 const DashboardPage = () => {
   const [artworks, setArtworks] = useState<ArtworkCardProps[]>([]);
-  const [favoriteGalleries, setFavouriteGalleries] = useState<number[]>([])
   const [loading, setLoading] = useState(true);
   const data = useData();
   const snackbar = useSnackbars();
@@ -49,32 +48,16 @@ const DashboardPage = () => {
 
       const favArtworks = await data.getArtworks(responseIds);
       if (!favArtworks) throw new Error("Failed to fetch artworks");
-      setArtworks(artworksToGalleryItems(favArtworks.filter(artwork => artwork.status != 'trash')));
+      setArtworks(artworksToGalleryItems(favArtworks.filter((artwork) => artwork.status != "trash")));
     } catch (error) {
       snackbar.error(error);
     } finally {
       setLoading(false);
     }
-  }
-
-  const getFavoriteGalleries = async () => {
-    try {
-      const responseIds = await data.getFavouriteGalleries();
-      if (!responseIds) throw new Error("Failed to fetch artwork ids");
-
-      setFavouriteGalleries(responseIds);
-    } catch (error) {
-      snackbar.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  };
 
   useEffect(() => {
     getArtworks();
-    getFavoriteGalleries();
-
   }, [data]);
 
   return (
@@ -84,58 +67,61 @@ const DashboardPage = () => {
           Inizia a collezionare
         </h2>
       </section>
-      <section className={'space-y-24 mb-22'}>
+      <section className={"space-y-24 mb-22"}>
         {/*<ArtMatch />*/}
         <div>
-          {artworks.length > 0 && (
+          {loading ? (
+            <>
+              <div className={"flex justify-between pe-8 md:pe-0"}>
+                <div className="ps-8 md:px-0 animate-pulse">
+                  <div className="h-9 w-64 bg-gray-200 rounded"></div>
+                </div>
+                <div className="animate-pulse hidden md:block">
+                  <div className="h-10 w-24 bg-gray-200 rounded-full"></div>
+                </div>
+              </div>
+              <div className={"flex gap-8 my-12 overflow-x-hidden"}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} />
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
             <div className={"flex justify-between pe-8 md:pe-0"}>
-              <h3 className={"ps-8 md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>Lista dei desideri</h3>
+              <h3 className={"ps-8 md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>
+                Lista dei desideri
+              </h3>
               <NavLink
-                to={'/profile/opere-preferite'}
+                to={"/profile/opere-preferite"}
                 className={
                   "cursor-pointer border border-primary py-2 px-4 text-primary rounded-full hover:bg-primary hover:text-white transition-all hidden md:block"
                 }>
                 Vedi tutte
               </NavLink>
             </div>
-          )}
-          {loading ? (
-            <div className={"flex gap-8 my-12 overflow-x-hidden"}>
-              {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} />)}
+            <div className={"my-12 min-h-80"}>
+              <ArtworksList items={artworks} disablePadding cardSize="medium" />
             </div>
-          ) : (
-            <div className={"my-12"}>
-              {artworks.length > 0 ? <ArtworksList items={artworks} disablePadding cardSize="medium" /> : (
-                <></>
-              )}
-            </div>
+            </>
           )}
         </div>
-        {favoriteGalleries.length > 0 && (
-          <div>
-            <div className={"flex justify-between pe-8 md:pe-0"}>
-              <h3 className={"ps-8 md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>Shop seguiti</h3>
-              <NavLink
-                to={'/profile/gallerie'}
-                className={
-                  "cursor-pointer border border-primary py-2 px-4 text-primary rounded-full hover:bg-primary hover:text-white transition-all hidden md:block"
-                }>
-                Vedi tutte
-              </NavLink>
-            </div>
-            <div className={"my-12 pl-8 md:pl-0"}>
-              <FavouriteGalleriesList />
-            </div>
+          <div className={"my-12 pl-8 md:pl-0"}>
+            <FavouriteGalleriesList />
           </div>
-        )}
         <div className={"tutorials-wrapper pl-8 md:pl-0"}>
           <div className={"flex justify-between pe-8 md:pe-0 items-center"}>
-            <div className={'space-y-2'}>
-              <h3 className={"md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>Hai bisogno di aiuto? Parti da qui.</h3>
-              <p className={'text-secondary text-xl max-w-xl '}>Scopri come esplorare gli spazi, salvare le tue opere preferite e acquistare con artpay in modo semplice e sicuro.</p>
+            <div className={"space-y-2"}>
+              <h3 className={"md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>
+                Hai bisogno di aiuto? Parti da qui.
+              </h3>
+              <p className={"text-secondary text-xl max-w-xl "}>
+                Scopri come esplorare gli spazi, salvare le tue opere preferite e acquistare con artpay in modo semplice
+                e sicuro.
+              </p>
             </div>
             <NavLink
-              to={'/guide'}
+              to={"/guide"}
               className={
                 "cursor-pointer border border-primary py-2 px-4 text-primary rounded-full hover:bg-primary hover:text-white transition-all hidden md:block mb-6"
               }>
@@ -144,7 +130,7 @@ const DashboardPage = () => {
           </div>
           <PostList />
         </div>
-        <div className={'px-8 md:px-0'}>
+        <div className={"px-8 md:px-0"}>
           <NewsletterBig title="Accedi in anteprima a opere, artisti e storie selezionate." />
         </div>
       </section>

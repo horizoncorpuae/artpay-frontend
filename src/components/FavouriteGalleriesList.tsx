@@ -4,12 +4,9 @@ import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import { Box, Skeleton } from "@mui/material";
 import { GalleryCardProps } from "./GalleryCard.tsx";
 import { galleriesToGalleryItems } from "../utils.ts";
-import ListHeader from "./ListHeader.tsx";
 import GalleriesList from "./GalleriesList.tsx";
+import { NavLink } from "react-router-dom";
 
-export interface FavouriteGalleriesProps {
-  withHeader?: boolean;
-}
 
 function GalleryListSkeleton() {
   return (
@@ -32,7 +29,7 @@ function GalleryListSkeleton() {
 
 const emptyText =
   "Non ci sono gallerie seguite, clicca sul pulsante \"follow\" a fianco di ogni galleria per salvare in questa sezione le gallerie che vuoi tenere d'occhio";
-const FavouriteGalleriesList : React.FC<FavouriteGalleriesProps> = ({withHeader = false}) => {
+const FavouriteGalleriesList : React.FC = () => {
   const data = useData();
   const snackbar = useSnackbars();
 
@@ -60,19 +57,37 @@ const FavouriteGalleriesList : React.FC<FavouriteGalleriesProps> = ({withHeader 
 
   return (
     <Box sx={{ width: "100%" }}>
-      {withHeader && (
-        <ListHeader
-          boxSx={{ px: 0 }}
-          title="Gallerie che segui"
-          subtitle="In questa sezione troverai tutte le gallerie che stai seguendo"
-        />
-      )}
+
       {ready ? (
-        <GalleriesList disablePadding items={favouriteGalleries} emptyText={emptyText} />
+          <>
+            <div className={"flex justify-between pe-8 md:pe-0"}>
+              <h3 className={"ps-8 md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>Shop seguiti</h3>
+              <NavLink
+                to={"/profile/gallerie"}
+                className={
+                  "cursor-pointer border border-primary py-2 px-4 text-primary rounded-full hover:bg-primary hover:text-white transition-all hidden md:block"
+                }>
+                Vedi tutte
+              </NavLink>
+            </div>
+            <GalleriesList disablePadding items={favouriteGalleries} emptyText={emptyText} />
+          </>
       ) : (
-        <div className={"flex gap-8 my-12 overflow-x-hidden"}>
-          <GalleryListSkeleton  />
-        </div>
+        <>
+          <div className={"flex justify-between pe-8 md:pe-0"}>
+            <div className="ps-8 md:px-0 animate-pulse">
+              <div className="h-9 w-48 bg-gray-200 rounded"></div>
+            </div>
+            <div className="animate-pulse hidden md:block">
+              <div className="h-10 w-24 bg-gray-200 rounded-full"></div>
+            </div>
+          </div>
+          <div className={"flex gap-8 my-12 overflow-x-hidden mb-24"}>
+            <ul className={'flex gap-8'}>
+              <GalleryListSkeleton  />
+            </ul>
+          </div>
+        </>
       )}
     </Box>
   );
