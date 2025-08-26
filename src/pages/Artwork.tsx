@@ -214,7 +214,7 @@ const Artwork: React.FC = () => {
     };
 
     void fetchArtworkData();
-  }, [urlParams.slug_opera, data, navigate, auth.isAuthenticated]);
+  },[]);
 
   useEffect(() => {
     const handleFavouritesUpdated = (e: CustomEvent<FavouritesMap>) => {
