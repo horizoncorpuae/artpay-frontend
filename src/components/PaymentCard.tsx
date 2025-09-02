@@ -92,16 +92,16 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
           className="bg-[#FAFAFB] rounded-lg p-4 cursor-pointer transition-colors "
           onClick={() => {}}
         >
-          <div className="flex items-center space-x-3">
+          <div className="flex items-start space-x-3">
             <input
               type="radio"
               name="payment-method"
               value="Santander"
-              className="w-4 h-4 text-blue-600 border-[#CDCFD3] focus:ring-blue-500 cursor-pointer"
+              className="w-4 h-4 text-blue-600 border-[#CDCFD3] focus:ring-blue-500 cursor-pointer mt-1"
               checked={paymentMethod === "Santander"}
               onChange={(e) => onChange?.(e.target.value)}
             />
-            <label className={`${paymentMethod === "Santander" ? "text-[#007AFF]" : "text-[#808791] "} text-sm font-semibold cursor-pointer flex space-x-5 flex items-center`}>
+            <label className={`${paymentMethod === "Santander" ? "text-[#007AFF]" : "text-[#808791] "} text-sm font-semibold cursor-pointer space-x-5 flex items-start`}>
               <svg width="24" height="24" viewBox="0 0 34 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="0.5" y="0.5" width="33" height="23" rx="3.5" fill="#EA1D25" />
                 <rect x="0.5" y="0.5" width="33" height="23" rx="3.5" stroke="#F9F7F6" />
@@ -110,7 +110,10 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
                   fill="white"
                 />
               </svg>
-             <span> Santander</span>
+             <div>
+               <span> Santander</span>
+               <p className={'font-normal text-xs'}>Finanzia fino a 30.000 €, in max 84 rate, soggetto ad approvazione dell'istituto di credito.</p>
+             </div>
             </label>
           </div>
         </div>

@@ -16,13 +16,18 @@ export const usePurchaseHandlers = (
   const handleRequireInvoice = useCallback(async (newVal: boolean) => {
     if (!pageData.userProfile) return;
     
-    updateState({ isSaving: true });
+    // Update state immediately for instant UI feedback
+    updateState({ requireInvoice: newVal, isSaving: true });
+    
     try {
       const resp = await data.updateUserProfile({
         billing: { invoice_type: newVal ? "receipt" : "" }
       });
+      // Sync with server response in case of discrepancy
       updateState({ requireInvoice: resp.billing?.invoice_type !== "" });
     } catch (e) {
+      // Revert to previous state on error
+      updateState({ requireInvoice: !newVal });
       await showError(e);
     } finally {
       updateState({ isSaving: false });

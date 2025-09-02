@@ -11,6 +11,7 @@ export interface ContentCardProps {
   hideHeader?: boolean;
   sx?: PaperProps["sx"];
   variant?: "default" | "shadow";
+  className?: string;
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({
@@ -21,7 +22,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
                                                    contentPadding = 5,
                                                    contentPaddingMobile = 3,
                                                    hideHeader = false,
-                                                   variant= "default"
+                                                   variant= "default",
+                                                   className = "",
                                                  }) => {
   const style = {
     default: 'md:border-t border-[#CDCFD3] pt-6 px-2 md:px-0',
@@ -29,7 +31,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   }
 
   return (
-    <div className={`${style[variant]} pb-6 w-full `}>
+    <div className={`${style[variant]} pb-6 w-full ${className}`}>
       <Box display="flex" flexDirection="column">
         {!hideHeader && <Box gap={2} mb={4} alignItems="center" display="flex">
           {icon}

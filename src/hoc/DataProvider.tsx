@@ -938,6 +938,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const resp = await axios.post<PaymentIntentRequest, AxiosResponse<PaymentIntent>>(
         `${baseUrl}/wp-json/wc/v3/stripe/cds_payment_intent`,
         body,
+        {
+          headers: {
+            Authorization: auth.getAuthToken(),
+          }
+        }
       );
       if (resp.data.amount < 150000) {
         const updateFee = await this.updatePaymentIntent({ wc_order_key: body.wc_order_key, payment_method: "klarna" });
@@ -1068,6 +1073,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, baseUrl })
       const resp = await axios.put<Partial<UserProfile>, AxiosResponse<UnprocessedUserProfile>>(
         `${baseUrl}/wp-json/wc/v3/customers/${userId}`,
         body,
+        {
+          headers: {
+            Authorization: auth.getAuthToken(),
+          }
+        },
       );
       return processUserProfile(resp.data);
     },
