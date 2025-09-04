@@ -45,6 +45,8 @@ import SinglePostPage from "./pages/SinglePostPage.tsx";
 import DashboardPage from "./pages/DashboardPage.tsx";
 import PersonalSettingsPage from "./pages/PersonalSettingsPage.tsx";
 import ShippingSettingsPage from "./pages/ShippingSettingsPage.tsx";
+import FollowedGalleriesPage from "./pages/FollowedGalleriesPage.tsx";
+import FavoritesArtworksPage from "./pages/FavoritesArtworksPage.tsx";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || "";
@@ -97,6 +99,8 @@ function AppContent() {
                     <Route path="/acconto-blocca-opera" element={<Purchase orderMode="loan" />} />
                     <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/profile/seguiti" element={<FollowedGalleriesPage />} />
+                    <Route path="/profile/opere-preferite" element={<FavoritesArtworksPage />} />
                     <Route path="/profile/personal-settings" element={<PersonalSettingsPage />} />
                     <Route path="/profile/shipping-invoice-settings" element={<ShippingSettingsPage />} />
                     <Route path="/thank-you-page" element={<PurchaseComplete />} />

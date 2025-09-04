@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Skeleton } from "@mui/material";
 import { UserProfile } from "../types/user.ts";
 import countries from "../countries.ts";
 import Avatar from "./Avatar.tsx";
@@ -27,6 +27,27 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
 
   const country = countries.find((c) => c.code === profile?.shipping?.country)?.name;
 
+
+  if (!profile) {
+    return (
+      <Box
+        display="flex"
+        gap={3}
+        sx={{
+          maxWidth: theme.breakpoints.values.xl,
+          marginLeft: "auto",
+          marginRight: "auto",
+          flexDirection: { xs: "column", md: "row" }
+        }}
+        alignItems="center">
+        <Skeleton width={100} height={160} />
+        <Box display="flex" flexDirection="column" gap={1} sx={{ maxWidth: "100%" }}>
+          <Skeleton variant="text" sx={{ typography: { xs: "h4", sm: "h3", md: "h1" }, width: 200 }} />
+          <Skeleton variant="text" width={150} />
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box

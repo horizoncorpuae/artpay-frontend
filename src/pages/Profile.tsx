@@ -61,20 +61,3 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 };
 
 export default Profile;
-
-{/* <Box>
-        <TabPanel value={selectedTabPanel} index={0}>
-        </TabPanel>
-        <TabPanel value={selectedTabPanel} index={1}>
-          <OrdersHistory mode="on-hold" title="Opere bloccate" />
-        </TabPanel>
-        <TabPanel value={selectedTabPanel} index={2}>
-          <FavouriteGalleriesGrid />
-        </TabPanel>
-        <TabPanel value={selectedTabPanel} index={3}>
-          <FavouriteArtists />
-        </TabPanel>
-        <TabPanel value={selectedTabPanel} index={4}>
-          <FavouriteArtworks />
-        </TabPanel>
-      </Box>*/}

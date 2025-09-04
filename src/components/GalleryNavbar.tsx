@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, IconButton } from "@mui/material";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import UserIcon from "./icons/UserIcon.tsx";
-import { useNavigate } from "../utils.ts";
+import { useNavigate } from "react-router-dom";
 import { useData } from "../hoc/DataProvider.tsx";
 import { NavLink, useLocation } from "react-router-dom";
 import LogoFastArtpay from "./icons/LogoFastArtpay.tsx";
@@ -258,7 +258,7 @@ const AuthenticatedUserSection: React.FC<{
         Feed
       </NavLink>
       <NavLink
-        to={"/profile/gallerie"}
+        to={"/profile/seguiti"}
         className="hidden md:block md:px-4 py-3 text-tertiary hover:bg-gray-50 transition-colors rounded-full">
         Seguiti
       </NavLink>
@@ -273,7 +273,7 @@ const AuthenticatedUserSection: React.FC<{
     </div>
 
     <div className="custom-navbar p-3 bg-white ">
-     <NavLink to={'/messaggi'}>
+     <NavLink to={'/profile/messaggi'}>
        <IconButton sx={{ position: "relative" }}>
          <MessageIcon size={"small"} />
        </IconButton>
