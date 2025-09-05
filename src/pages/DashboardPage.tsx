@@ -69,7 +69,7 @@ const DashboardPage = () => {
       </section>
       <section className={"space-y-24 mb-22"}>
         {/*<ArtMatch />*/}
-        <div>
+        <div >
           {loading ? (
             <>
               <div className={"flex justify-between pe-8 md:pe-0"}>
@@ -80,7 +80,7 @@ const DashboardPage = () => {
                   <div className="h-10 w-24 bg-gray-200 rounded-full"></div>
                 </div>
               </div>
-              <div className={"flex gap-8 my-12 overflow-x-hidden"}>
+              <div className={"flex gap-8 my-12 overflow-x-hidden ps-4"}>
                 {Array.from({ length: 4 }).map((_, i) => (
                   <Skeleton key={i} />
                 ))}

@@ -25,7 +25,7 @@ const ProfileSettings: React.FC = ({}) => {
 
   return (
     <section className="space-y-6 mb-24">
-      <div className="pb-6 flex justify-between items-center border-b border-[#CDCFD3] mt-24">
+      <div className="pb-6 flex flex-col md:flex-row justify-between md:items-center border-b border-[#CDCFD3] items-start gap-6 mt-24">
         <div className="space-y-4">
           <h5 className={'text-secondary'}>
             Impostazioni personali
@@ -49,7 +49,7 @@ const ProfileSettings: React.FC = ({}) => {
         </div>
         <Button variant={'outlined'} onClick={() => navigate("/profile/personal-settings")}>Modifica</Button>
       </div>
-      <div className="pb-6 flex justify-between items-center border-b border-[#CDCFD3] ">
+      <div className="pb-6 flex flex-col md:flex-row justify-between md:items-center border-b border-[#CDCFD3] items-start gap-6 ">
         <div className="space-y-4">
           <h5 className={'text-secondary'}>
             Dati di spedizione
@@ -96,7 +96,7 @@ const ProfileSettings: React.FC = ({}) => {
 
 
       {requireInvoice && (
-        <div className="pb-6 flex justify-between items-center border-b border-[#CDCFD3] ">
+        <div className="pb-6 flex flex-col md:flex-row justify-between md:items-center border-b border-[#CDCFD3] items-start gap-6 ">
           <div className="space-y-4">
             <h5 className={'text-secondary'}>
               Dati di fatturazione

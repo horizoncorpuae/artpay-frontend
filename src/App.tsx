@@ -47,6 +47,7 @@ import PersonalSettingsPage from "./pages/PersonalSettingsPage.tsx";
 import ShippingSettingsPage from "./pages/ShippingSettingsPage.tsx";
 import FollowedGalleriesPage from "./pages/FollowedGalleriesPage.tsx";
 import FavoritesArtworksPage from "./pages/FavoritesArtworksPage.tsx";
+import HistoryOrdersPage from "./pages/HistoryOrdersPage.tsx";
 
 function AppContent() {
   const baseUrl = import.meta.env.VITE_SERVER_URL || "";
@@ -102,6 +103,7 @@ function AppContent() {
                     <Route path="/profile/seguiti" element={<FollowedGalleriesPage />} />
                     <Route path="/profile/opere-preferite" element={<FavoritesArtworksPage />} />
                     <Route path="/profile/personal-settings" element={<PersonalSettingsPage />} />
+                    <Route path="/profile/history-orders" element={<HistoryOrdersPage />} />
                     <Route path="/profile/shipping-invoice-settings" element={<ShippingSettingsPage />} />
                     <Route path="/thank-you-page" element={<PurchaseComplete />} />
                     <Route path="/thank-you-page/:order_id" element={<PurchaseComplete />} />
@@ -126,7 +128,7 @@ function AppContent() {
                     <Route path="/artpay-per-collezionisti" element={<CustomerOnboarding />} />
                     <Route path="/artpay-per-gallerie" element={<GalleryOnboarding />} />
                     <Route path="/contatti" element={<Contacts />} />
-                    <Route path="/messaggi" element={<Messages />} />
+                    <Route path="/profile/messaggi" element={<Messages />} />
                     <Route path="/errore/:code" element={<Error />} />
                     <Route path="/errore" element={<Error />} />
                     <Route path={"/landing-campaign"} element={<LandingForCampaignPage />} />

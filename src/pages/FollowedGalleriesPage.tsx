@@ -13,7 +13,7 @@ const FollowedGalleriesPage = () => {
 
   return (
     <DefaultLayout authRequired>
-      <section className={'pt-35 md:pt-0 space-y-12 mb-24'}>
+      <section className={'pt-35 md:pt-0 space-y-12 mb-24 px-8 md:px-0'}>
         {isReady ? (
         <>
           <h1 className={'text-5xl leading-[105%] font-normal'}>I tuoi seguiti</h1>

@@ -7,6 +7,7 @@ import { useAuth } from "../hoc/AuthProvider.tsx";
 import ProfileSettings from "../components/ProfileSettings.tsx";
 import OrdersHistory from "../components/OrdersHistory.tsx";
 import ProfileSettingsSkeleton from "../components/ProfileSettingsSkeleton.tsx";
+import StepProgress from "../components/StepProgress.tsx";
 
 export interface ProfileProps {
 }
@@ -14,17 +15,13 @@ export interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({}) => {
   const data = useData();
   const auth = useAuth();
-
+  
   const [isReady, setIsReady] = useState(false);
   const [profile, setProfile] = useState<UserProfile>();
-
 
   if (!auth.isAuthenticated) {
     auth.login()
   }
-
-  console.log(profile)
-
 
   useEffect(() => {
     data.getUserProfile().then((resp) => {
@@ -32,25 +29,33 @@ const Profile: React.FC<ProfileProps> = ({}) => {
       setIsReady(true);
     });
   }, [data]);
+
+  // Calculate completion steps based on profile data
+  const calculateCompletionSteps = (profile: UserProfile | undefined): number => {
+    if (!profile) return 1;
+    
+    let completedSteps = 1; // Base step (profile exists)
+    
+    if (profile.billing) completedSteps++;
+    if (profile.shipping) completedSteps++;
+    if (profile.avatar_url) completedSteps++;
+    
+    return completedSteps;
+  };
   return (
     <DefaultLayout authRequired>
-      <section className={'pt-35 md:pt-0 space-y-6 mb-24'}>
+      <section className={'pt-35 md:pt-0 space-y-6 mb-24 px-3 md:px-0'}>
       <ProfileHeader
         profile={profile}
       />
-        <div className={'bg-[#fafafb] p-6 rounded-lg flex space-x-6 '}>
-          <div className={'relative w-18 h-18 rotate-45'}>
-            <div className={'h-18 w-18 aspect-square border-7 rounded-full border-[#C2C9FF] absolute top-0 left-0'}></div>
-            <div className={'h-18 w-18 aspect-square border-7 rounded-full border-transparent border-t-primary absolute top-0 left-0'}></div>
-          </div>
-          <div className={'space-y-2'}>
-            <h4 className={'text-secondary'}>Completamento del profilo</h4>
-            <span>Step 1/4</span>
-          </div>
-        </div>
+        <StepProgress 
+          currentStep={calculateCompletionSteps(profile)} 
+          totalSteps={4}
+          title="Completamento del profilo"
+        />
 
       </section>
-      <section className={'mb-24'}>
+      <section className={'mb-24 px-3 md:px-0'}>
         {!isReady && !profile ? (<ProfileSettingsSkeleton />) : (
           <ProfileSettings />
         )}

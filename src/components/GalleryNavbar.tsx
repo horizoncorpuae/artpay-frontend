@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, IconButton } from "@mui/material";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import UserIcon from "./icons/UserIcon.tsx";
@@ -202,11 +202,7 @@ const GalleryNavbar: React.FC<GalleryNavbarProps> = ({ onMenuToggle }) => {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <MobileMenu
-          isAuthenticated={auth.isAuthenticated}
-          onLogout={handleLogout}
-          onNavigate={handleNavigate}
-        />
+        <MobileMenu isAuthenticated={auth.isAuthenticated} onLogout={handleLogout} onNavigate={handleNavigate} />
       )}
     </>
   );
@@ -242,7 +238,7 @@ const MainNavigation: React.FC<{
     {isAuthenticated ? (
       <AuthenticatedUserSection showCheckout={showCheckout} onLogout={onLogout} onProfileClick={onProfileClick} />
     ) : (
-      <div className={'custom-navbar bg-white p-3'}>
+      <div className={"custom-navbar bg-white p-3"}>
         <Button sx={{ minWidth: "150px" }} onClick={onLogin} color="primary" variant="contained">
           Login/Registrati
         </Button>
@@ -251,11 +247,126 @@ const MainNavigation: React.FC<{
   </nav>
 );
 
+const ProfileDropdown: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpen(false);
+    }, 300); // Small delay to allow moving to menu
+  };
+
+  const handleMenuMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  };
+
+  const handleMenuMouseLeave = () => {
+    setOpen(false);
+  };
+
+  const handleMenuItemClick = (path: string) => {
+    navigate(path);
+    setOpen(false);
+  };
+
+  return (
+    <div 
+      ref={anchorRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="relative"
+    >
+      <IconButton
+        color="primary"
+        aria-controls={open ? "profile-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
+        aria-haspopup="true"
+      >
+        <UserIcon />
+      </IconButton>
+      
+      {open && (
+        <div 
+          className="absolute right-0 top-full mt-2 w-64 bg-[#F5F5F5] rounded-lg  z-50"
+          onMouseEnter={handleMenuMouseEnter}
+          onMouseLeave={handleMenuMouseLeave}
+        >
+          <div className="py-2">
+            <button
+              onClick={() => handleMenuItemClick("/profile")}
+              className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer"
+            >
+              Il mio account
+            </button>
+            <button
+              onClick={() => handleMenuItemClick("/profile/history-orders")}
+              className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer"
+            >
+              I miei ordini
+            </button>
+            <button
+              onClick={() => handleMenuItemClick("/profile/shipping-invoice-settings")}
+              className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer "
+            >
+              Fatturazione e spedizione
+            </button>
+            <button
+              onClick={() => handleMenuItemClick("/chi-siamo")}
+              className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer "
+            >
+              Chi siamo
+            </button>
+            <button
+              onClick={() => handleMenuItemClick("/contatti")}
+              className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer "
+            >
+              Contatti
+            </button>
+            <button
+              onClick={() => handleMenuItemClick("/guide")}
+              className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer "
+            >
+              Guide
+            </button>
+            <button
+              onClick={() => handleMenuItemClick("/faq")}
+              className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer "
+            >
+              FAQ
+            </button>
+            <button
+              onClick={() => {
+                onLogout();
+                setOpen(false);
+              }}
+              className="w-full text-left px-4 py-2 text-base text-[#EC6F7B] hover:underline transition-all cursor-pointer "
+            >
+              Esci
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AuthenticatedUserSection: React.FC<{
   showCheckout: boolean;
   onLogout: () => void;
   onProfileClick: () => void;
-}> = ({ showCheckout, onLogout, onProfileClick }) => (
+}> = ({ showCheckout, onLogout }) => (
   <div className="flex items-center justify-center gap-3">
     <div className="flex items-center custom-navbar px-6 py-3.5  bg-white ">
       <NavLink
@@ -273,17 +384,15 @@ const AuthenticatedUserSection: React.FC<{
         className="md:px-4 py-3 text-tertiary hover:bg-gray-50 transition-colors rounded-full">
         <FavouriteIcon fontSize="small" />
       </NavLink>
-      <IconButton onClick={onProfileClick} color="primary">
-        <UserIcon />
-      </IconButton>
+      <ProfileDropdown onLogout={onLogout} />
     </div>
 
     <div className="custom-navbar p-3 bg-white ">
-     <NavLink to={'/profile/messaggi'}>
-       <IconButton sx={{ position: "relative" }}>
-         <MessageIcon size={"small"} />
-       </IconButton>
-     </NavLink>
+      <NavLink to={"/profile/messaggi"}>
+        <IconButton sx={{ position: "relative" }}>
+          <MessageIcon size={"small"} />
+        </IconButton>
+      </NavLink>
     </div>
 
     <div className="custom-navbar p-5 bg-white ">
@@ -323,7 +432,7 @@ const AuthenticatedMobileSection: React.FC<{
 }> = ({ showCheckout, onMenuToggle, isMenuOpen }) => (
   <div className="flex items-center justify-center gap-3">
     <div className="custom-navbar p-2 bg-white rounded-full">
-      <NavLink to={'/messaggi'} >
+      <NavLink to={"/profile/messaggi"}>
         <IconButton size="small">
           <MessageIcon size={"small"} />
         </IconButton>
@@ -334,11 +443,7 @@ const AuthenticatedMobileSection: React.FC<{
       <LogoFastArtpay size="small" showCheckOut={showCheckout} />
     </div>
     <div className="custom-navbar p-4 bg-white rounded-full md:hidden">
-      <button
-        type="button"
-        onClick={onMenuToggle}
-        aria-label="Toggle menu"
-      >
+      <button type="button" onClick={onMenuToggle} aria-label="Toggle menu">
         {isMenuOpen ? (
           <svg className="w-6 h-6 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -361,25 +466,55 @@ const MobileMenu: React.FC<{
     <div className="flex flex-col h-full">
       <div className="flex-1 px-6 py-8 text-white">
         {isAuthenticated ? (
-          <MobileMenuList onNavigate={onNavigate} onLogout={onLogout} />
+          <>
+            <MobileMenuList onNavigate={onNavigate} onLogout={onLogout} />
+            <div className="mt-14">
+              <ul className={"text-white ps-8 leading-[125%] space-y-4"}>
+                <li>
+                  <NavLink to={"/profile"}>Il mio account</NavLink>
+                </li>
+                <li>
+                  <NavLink to={"/profile/history-orders"}>I miei ordini</NavLink>
+                </li>
+                <li>
+                  <NavLink to={"/profile/shipping-invoice-settings"}>Fatturazione e spedizione</NavLink>
+                </li>
+                <li>
+                  <NavLink to={"/chi-siamo"}>Chi siamo</NavLink>
+                </li>
+                <li>
+                  <NavLink to={"/contatti"}>Contatti</NavLink>
+                </li>
+                <li>
+                  <NavLink to={"/guide"}>Guide</NavLink>
+                </li>
+                <li>
+                  <NavLink to={"/faq"}>FAQ</NavLink>
+                </li>
+                <li>
+                  <button onClick={onLogout} className={'text-[#EC6F7B]'}>Esci</button>
+                </li>
+              </ul>
+            </div>
+          </>
         ) : (
           <UnauthenticatedMenuContent onNavigate={onNavigate} />
         )}
       </div>
 
       {/* Footer with horizontal links */}
-      <div className="p-6 border-t bg-gray-50">
-        <div className="flex justify-center space-x-8 text-sm text-secondary">
-          <button onClick={() => onNavigate('/privacy')} className="hover:text-primary transition-colors">
+      <div className="p-6">
+        <div className="flex justify-center space-x-8 text-sm text-primary">
+          <button onClick={() => onNavigate("/privacy")} className="hover:text-secondary transition-colors">
             Privacy
           </button>
-          <button onClick={() => onNavigate('/terms')} className="hover:text-primary transition-colors">
+          <button onClick={() => onNavigate("/terms")} className="hover:text-secondary transition-colors">
             Termini
           </button>
-          <button onClick={() => onNavigate('/help')} className="hover:text-primary transition-colors">
+          <button onClick={() => onNavigate("/help")} className="hover:text-secondary transition-colors">
             Aiuto
           </button>
-          <button onClick={() => onNavigate('/about')} className="hover:text-primary transition-colors">
+          <button onClick={() => onNavigate("/about")} className="hover:text-secondary transition-colors">
             Info
           </button>
         </div>
@@ -392,47 +527,24 @@ const MobileMenuList: React.FC<{
   onNavigate: (link: string) => void;
   onLogout: () => void;
 }> = ({ onNavigate }) => (
-  <div className="space-y-3 ">
-
+  <div className="space-y-6 ps-8">
     <button
       onClick={() => onNavigate("/dashboard")}
-      className="flex items-center space-x-4 w-full p-4 rounded-lg text-left transition-colors"
-    >
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-        />
-      </svg>
+      className="flex items-center space-x-4 w-full rounded-lg text-left transition-colors">
       <span className="text-white text-2xl">Feed</span>
     </button>
 
     <button
-      onClick={() => onNavigate("/profile/gallerie")}
-      className="flex items-center space-x-4 w-full p-4 rounded-lg text-left transition-colors"
-    >
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-        />
-      </svg>
+      onClick={() => onNavigate("/profile/seguiti")}
+      className="flex items-center space-x-4 w-full rounded-lg text-left transition-colors">
       <span className="text-white text-2xl">Seguiti</span>
     </button>
 
     <button
       onClick={() => onNavigate("/profile/opere-preferite")}
-      className="flex items-center space-x-4 w-full p-4 rounded-lg text-left transition-colors"
-    >
-      <FavouriteIcon />
+      className="flex items-center space-x-4 w-full rounded-lg text-left transition-colors">
       <span className="text-white text-2xl">Lista dei desderi</span>
     </button>
-
-
   </div>
 );
 
@@ -444,19 +556,12 @@ const UnauthenticatedMenuContent: React.FC<{
       <h3 className="text-xl font-medium text-white mb-4">Accedi per vedere il menu completo</h3>
       <p className="text-secondary mb-6">Effettua il login per accedere a tutte le funzionalità</p>
       <div className="custom-navbar bg-wgite p-3">
-        <Button
-          onClick={() => onNavigate('/login')}
-          color="primary"
-          variant="contained"
-          size="large"
-          fullWidth
-        >
+        <Button onClick={() => onNavigate("/login")} color="primary" variant="contained" size="large" fullWidth>
           Login/Registrati
         </Button>
       </div>
     </div>
   </div>
 );
-
 
 export default GalleryNavbar;
