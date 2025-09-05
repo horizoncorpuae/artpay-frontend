@@ -63,7 +63,7 @@ const FavouriteGalleriesList : React.FC = () => {
             <div className={"flex justify-between pe-8 md:pe-0 mb-12"}>
               <h3 className={"ps-8 md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>Shop seguiti</h3>
               <NavLink
-                to={"/profile/gallerie"}
+                to={"/profile/seguiti"}
                 className={
                   "cursor-pointer border border-primary py-2 px-4 text-primary rounded-full hover:bg-primary hover:text-white transition-all hidden md:block"
                 }>
@@ -75,7 +75,7 @@ const FavouriteGalleriesList : React.FC = () => {
       ) : (
         <>
           <div className={"flex justify-between pe-8 md:pe-0"}>
-            <div className="ps-8 md:px-0 animate-pulse">
+            <div className="ps-8 md:ps-0 animate-pulse">
               <div className="h-9 w-48 bg-gray-200 rounded"></div>
             </div>
             <div className="animate-pulse hidden md:block">
