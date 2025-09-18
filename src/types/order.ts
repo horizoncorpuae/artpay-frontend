@@ -190,6 +190,7 @@ export type LineItem = {
 
 export type PaymentIntentRequest = {
   wc_order_key: string;
+  payment_method: string;
 };
 
 export type UpdatePaymentIntentRequest = {

@@ -23,6 +23,7 @@ import BillingDataPreview from "../../../components/BillingDataPreview.tsx";*/
 // import { Order } from "../../../types/order.ts";
 import { useDirectPurchase } from "../contexts/DirectPurchaseContext.tsx";
 import DirectPurchaseLayout from "../layouts/DirectPurchaseLayout.tsx";
+import PaymentsSelection from "./PaymentsSelection.tsx";
 //import CheckoutForm from "../../../components/CheckoutForm.tsx";
 
 const DirectPurchaseView = () => {
@@ -46,7 +47,7 @@ const DirectPurchaseView = () => {
     // Data
     userProfile,
     availableShippingMethods,
-    // pendingOrder,
+    pendingOrder,
     paymentIntent,
     artworks,
     // galleries,
@@ -125,6 +126,44 @@ const DirectPurchaseView = () => {
     );
   }
 
+  console.log(paymentMethod);
+  console.log(pendingOrder);
+
+  const renderer = () => {
+    switch (pendingOrder?.payment_method) {
+      case "":
+        return (
+          <PaymentsSelection paymentMethod={paymentMethod} onChange={onChangePaymentMethod} />
+        )
+      case "card":
+        return (
+          <PaymentCard
+            orderMode={orderMode}
+            paymentMethod={paymentMethod || ""}
+            checkoutButtonRef={checkoutButtonRef}
+            onCheckout={() => handleSubmitCheckout()}
+            onChange={(payment_method: string) => onChangePaymentMethod(payment_method)}
+            onReady={() => updateState({ checkoutReady: true })}
+            paymentIntent={paymentIntent}
+            thankYouPage={thankYouPage}
+          />
+        )
+      case "klarna":
+        return (
+          <PaymentCard
+            orderMode={orderMode}
+            paymentMethod={paymentMethod || ""}
+            checkoutButtonRef={checkoutButtonRef}
+            onCheckout={() => handleSubmitCheckout()}
+            onChange={(payment_method: string) => onChangePaymentMethod(payment_method)}
+            onReady={() => updateState({ checkoutReady: true })}
+            paymentIntent={paymentIntent}
+            thankYouPage={thankYouPage}
+          />
+        )
+    }
+  }
+
   console.log(paymentIntent);
 
   return (
@@ -143,16 +182,7 @@ const DirectPurchaseView = () => {
               </Typography>
             </Box>
           )}
-          <PaymentCard
-            orderMode={orderMode}
-            paymentMethod={paymentMethod || ""}
-            checkoutButtonRef={checkoutButtonRef}
-            onCheckout={() => handleSubmitCheckout()}
-            onChange={(payment_method: string) => onChangePaymentMethod(payment_method)}
-            onReady={() => updateState({ checkoutReady: true })}
-            paymentIntent={paymentIntent}
-            thankYouPage={thankYouPage}
-          />
+          {renderer()}
           {orderMode !== "loan" && auth.isAuthenticated && (
             <ContentCard contentPadding={0} title="Metodo di spedizione" icon={<PiTruckThin size="28px" />}>
               <RadioGroup defaultValue="selected" name="radio-buttons-group" className={"p-0!"}>

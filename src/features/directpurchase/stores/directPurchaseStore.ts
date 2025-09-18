@@ -19,7 +19,6 @@ export interface DirectPurchaseState {
   showCommissioni: boolean;
   subtotal: number;
   loading: boolean;
-
   // Data State
   userProfile?: UserProfile;
   availableShippingMethods: ShippingMethodOption[];

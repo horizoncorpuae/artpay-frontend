@@ -19,18 +19,28 @@ export const useDirectPurchaseData = () => {
     updatePageData,
   } = useDirectPurchaseStore();
 
-  const createPaymentIntent = useCallback(async (resp: Order, orderMode: string): Promise<PaymentIntent> => {
+  const createPaymentIntent = useCallback(async (resp: Order, orderMode: string, paymentMethod?: string): Promise<PaymentIntent> => {
+    // Usa SEMPRE il metodo passato come parametro se fornito, altrimenti quello dell'ordine
+    const methodToUse = paymentMethod || resp.payment_method;
+
     if (resp.payment_method === "bnpl" && orderMode === "redeem") {
-      resp.payment_method = "";
-      return await data.createRedeemIntent({ wc_order_key: resp.order_key });
+      return await data.createRedeemIntent({
+        wc_order_key: resp.order_key as string,
+        payment_method: methodToUse || ""
+      });
     }
-    
-    const intentMap: Record<string, () => Promise<PaymentIntent>> = {
-      loan: () => data.createBlockIntent({ wc_order_key: resp.order_key }),
-      redeem: () => data.createRedeemIntent({ wc_order_key: resp.order_key }),
-      default: () => data.createPaymentIntent({ wc_order_key: resp.order_key }),
+
+    const intentParams: any = {
+      wc_order_key: resp.order_key,
+      payment_method: methodToUse || ""
     };
-    
+
+    const intentMap: Record<string, () => Promise<PaymentIntent>> = {
+      loan: () => data.createBlockIntent(intentParams),
+      redeem: () => data.createRedeemIntent(intentParams),
+      default: () => data.createPaymentIntent(intentParams),
+    };
+
     return await (intentMap[orderMode] || intentMap.default)();
   }, [data]);
 
@@ -46,10 +56,26 @@ export const useDirectPurchaseData = () => {
           const artworks = await Promise.all(
             resp.line_items.map((item) => data.getArtwork(item.product_id.toString())),
           );
-          updatePageData({ 
-            pendingOrder: resp, 
-            artworks: artworksToGalleryItems(artworks, undefined, data) 
+          updatePageData({
+            pendingOrder: resp,
+            artworks: artworksToGalleryItems(artworks, undefined, data)
           });
+
+          // Imposta il paymentMethod solo se è supportato
+          const supportedMethods = ["card", "klarna"];
+          if (resp.payment_method && supportedMethods.includes(resp.payment_method)) {
+            updateState({ paymentMethod: resp.payment_method });
+
+            // Crea il payment intent per il metodo esistente
+            try {
+              const paymentIntent = await createPaymentIntent(resp, orderMode);
+              updatePageData({ paymentIntent });
+            } catch (e) {
+              console.error("Error creating payment intent for existing method:", e);
+            }
+          } else {
+            updateState({ paymentMethod: null });
+          }
         }
         updateState({ isReady: true });
       } catch (e) {
@@ -82,18 +108,32 @@ export const useDirectPurchaseData = () => {
           order.line_items.map((item) => data.getArtwork(item.product_id.toString())),
         );
         const artworkItems = artworksToGalleryItems(artworks, undefined, data);
-        const paymentIntent = await createPaymentIntent(order, orderMode);
 
-        updatePageData({ 
+        updatePageData({
           userProfile,
           availableShippingMethods: shippingMethods,
-          pendingOrder: order, 
-          artworks: artworkItems, 
-          paymentIntent 
+          pendingOrder: order,
+          artworks: artworkItems
         });
 
+        // Imposta il paymentMethod solo se è supportato
+        const supportedMethods = ["card", "klarna"];
+        if (order.payment_method && supportedMethods.includes(order.payment_method)) {
+          updateState({ paymentMethod: order.payment_method });
+
+          // Crea il payment intent per il metodo esistente
+          try {
+            const paymentIntent = await createPaymentIntent(order, orderMode);
+            updatePageData({ paymentIntent });
+          } catch (e) {
+            console.error("Error creating payment intent for existing method:", e);
+          }
+        } else {
+          updateState({ paymentMethod: null });
+        }
+
         updateState({
-          shippingDataEditing: !areBillingFieldsFilled(userProfile.shipping) || 
+          shippingDataEditing: !areBillingFieldsFilled(userProfile.shipping) ||
             (!areBillingFieldsFilled(userProfile.billing) && orderMode === "loan"),
           requireInvoice: userProfile?.billing?.invoice_type !== ""
         });
@@ -110,7 +150,7 @@ export const useDirectPurchaseData = () => {
       logError(e);
       updateState({ isReady: true });
     }
-  }, [auth.isAuthenticated, orderMode, urlParams.order_id, data, createPaymentIntent, updatePageData, updateState, logError]);
+  }, [auth.isAuthenticated, orderMode, urlParams.order_id, data, updatePageData, updateState, logError]);
 
   const initialize = useCallback((initialOrderMode: "standard" | "loan" | "redeem" | "onHold" = "standard") => {
     setDirectPurchaseData({ orderMode: initialOrderMode });

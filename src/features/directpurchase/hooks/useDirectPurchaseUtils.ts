@@ -4,11 +4,13 @@ import { useSnackbars } from "../../../hoc/SnackbarProvider.tsx";
 import { useData } from "../../../hoc/DataProvider.tsx";
 import useDirectPurchaseStore from "../stores/directPurchaseStore.ts";
 import { areBillingFieldsFilled } from "../../../utils.ts";
+import { useDirectPurchaseData } from "./useDirectPurchaseData.ts";
 
 export const useDirectPurchaseUtils = () => {
   const snackbar = useSnackbars();
   const data = useData();
-  
+  const { createPaymentIntent } = useDirectPurchaseData();
+
   const {
     orderMode,
     pendingOrder,
@@ -27,37 +29,61 @@ export const useDirectPurchaseUtils = () => {
 
   const onChangePaymentMethod = useCallback(async (payment: string): Promise<void> => {
     console.log("payment method", payment);
-    updateState({ showCommissioni: false });
+    updateState({ showCommissioni: false, isSaving: true });
 
     if (pendingOrder) {
       const wc_order_key = pendingOrder.order_key;
+
+      const paymentMethodMap: Record<string, string> = {
+        card: "Carta",
+        klarna: "Klarna",
+        Santander: "Santander",
+        bank_transfer: "Bonifico",
+      };
+
+      const displayName = paymentMethodMap[payment] || payment;
+
       try {
-        const newPaymentIntent = await data.updatePaymentIntent({ wc_order_key, payment_method: payment });
+        // 1. Aggiorna il metodo di pagamento su WooCommerce prima
+        if (pendingOrder.id) {
+          await data.updateOrder(pendingOrder.id, {
+            payment_method: payment,
+            payment_method_title: displayName,
+          });
+        }
+
+        // 2. Crea il payment intent con il metodo di pagamento specificato
+        const newPaymentIntent = await createPaymentIntent(pendingOrder, orderMode, payment);
         updatePageData({ paymentIntent: newPaymentIntent });
 
-        const paymentMethodMap: Record<string, string> = {
-          card: "Carta",
-          klarna: "Klarna",
-          Santander: "Santander",
-        };
-        updateState({ paymentMethod: paymentMethodMap[payment] || "Bonifico" });
+        // 3. Aggiorna lo stato locale (usa il valore raw per il renderer)
+        updateState({ paymentMethod: payment });
 
-        const getOrderFunction =
-          orderMode === "redeem" && window.location.pathname.includes('order_id')
-            ? data.getOrder(+window.location.pathname.split('/').pop()!)
-            : orderMode === "onHold"
-              ? data.getOnHoldOrder()
-              : data.getPendingOrder();
+        // 4. Recupera l'ordine aggiornato da WooCommerce
+        let order;
+        if (orderMode === "redeem" && window.location.pathname.includes('order_id')) {
+          const orderId = +window.location.pathname.split('/').pop()!;
+          order = await data.getOrder(orderId);
+        } else if (orderMode === "onHold") {
+          order = await data.getOnHoldOrder();
+        } else {
+          order = await data.getPendingOrder();
+        }
+        if (order) {
+          updatePageData({ pendingOrder: order });
+          console.log("Order updated both locally and on WooCommerce:", order);
+        }
 
-        const order = await getOrderFunction;
-        if (order) updatePageData({ pendingOrder: order });
-        updateState({ showCommissioni: true });
+        updateState({ showCommissioni: true, isSaving: false });
       } catch (e) {
         console.error("Update payment method error: ", e);
-        updateState({ showCommissioni: false });
+        await showError(e, "Errore durante l'aggiornamento del metodo di pagamento");
+        updateState({ showCommissioni: false, isSaving: false });
       }
+    } else {
+      updateState({ isSaving: false });
     }
-  }, [pendingOrder, orderMode, data, updateState, updatePageData]);
+  }, [pendingOrder, orderMode, data, updateState, updatePageData, showError, createPaymentIntent]);
 
   const getCurrentShippingMethod = useCallback((): string => {
     return pendingOrder?.shipping_lines?.length
