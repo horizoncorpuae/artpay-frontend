@@ -1,9 +1,7 @@
 import { useMemo, useCallback } from "react";
-import BankIcon from "../../../../components/icons/BankIcon.tsx";
 import { useStepFlow } from "./hooks/useStepFlow.ts";
 import { useFileUpload } from "./hooks/useFileUpload.ts";
 import { useData } from "../../../../hoc/DataProvider.tsx";
-import usePaymentStore from "../../stores/paymentStore.ts";
 import useToolTipStore from "../../stores/tooltipStore.ts";
 import { sendBrevoEmail } from "../../utils.ts";
 import CopyableField from "./components/CopyableField.tsx";
@@ -27,17 +25,26 @@ const DEFAULT_BANK_CONFIG: BankTransferConfig = {
   }
 };
 
-const BankTransferFlow = ({ 
-  order, 
-  onCancel, 
-  onComplete, 
-  config = DEFAULT_BANK_CONFIG 
+const BankTransferFlow = ({
+  order,
+  user,
+  onCancel,
+  onComplete,
+  onOrderUpdate,
+  config = DEFAULT_BANK_CONFIG
 }: PaymentFlowProps) => {
-  const { setPaymentData, orderNote, user } = usePaymentStore();
   const { showToolTip } = useToolTipStore();
   const data = useData();
   
-  const { currentStep, nextStep, goToStep } = useStepFlow(PaymentFlowStep.INSTRUCTIONS, orderNote);
+  // Determine initial step based on order status
+  const getInitialStep = useCallback(() => {
+    if (order.customer_note?.includes("Documentazione caricata")) {
+      return PaymentFlowStep.CONFIRMATION;
+    }
+    return PaymentFlowStep.INSTRUCTIONS;
+  }, [order.customer_note]);
+
+  const { currentStep, nextStep, goToStep } = useStepFlow(getInitialStep(), "");
   const { 
     selectedFile, 
     isUploading, 
@@ -115,11 +122,8 @@ const BankTransferFlow = ({
         },
       });
 
-      // Update payment data
-      setPaymentData({
-        order: updateOrder,
-        orderNote: "Documentazione caricata, in attesa di conferma da artpay",
-      });
+      // Notify parent about order update
+      onOrderUpdate?.(updateOrder);
 
       nextStep();
       onComplete?.(uploadedFile);
@@ -132,65 +136,15 @@ const BankTransferFlow = ({
         message: "Errore durante l'invio."
       });
     }
-  }, [selectedFile, uploadSelectedFile, data, order, user, config, setPaymentData, nextStep, onComplete, showToolTip]);
+  }, [selectedFile, uploadSelectedFile, data, order, user, config, onOrderUpdate, nextStep, onComplete, showToolTip]);
 
-  const renderStepActions = () => {
-    switch (currentStep) {
-      case PaymentFlowStep.INSTRUCTIONS:
-        return (
-          <div className="space-y-6">
-            <button
-              className="artpay-button-style bg-primary py-3! text-white disabled:opacity-65"
-              onClick={handleConfirmTransfer}>
-              Conferma bonifico
-            </button>
-            <button
-              type="button"
-              className="artpay-button-style py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"
-              onClick={onCancel}>
-              Annulla
-            </button>
-          </div>
-        );
-
-      case PaymentFlowStep.DOCUMENT_UPLOAD:
-        return (
-          <div className="space-y-6">
-            <button
-              type="button"
-              disabled={isUploading || !selectedFile}
-              className="artpay-button-style bg-primary py-3! text-white disabled:opacity-65 disabled:cursor-not-allowed"
-              onClick={handleCompleteOperation}>
-              {isUploading ? (
-                <div className="size-4 border border-white border-b-transparent rounded-full animate-spin" />
-              ) : (
-                "Completa operazione"
-              )}
-            </button>
-            <button
-              type="button"
-              className="artpay-button-style py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"
-              onClick={onCancel}>
-              Annulla
-            </button>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
 
 
   return (
-    <section>
+    <section className="w-full p-2">
       <div className="space-y-1 mb-6 relative">
-        <h3 className="font-bold leading-[125%] text-tertiary">Completa pagamento</h3>
         <div className="mt-4 space-y-6">
-          <div className="flex items-center space-x-2">
-            <span className="-left-1 relative">
-              <BankIcon />
-            </span>
+          <div className="flex items-center space-x-2 border-b border-gray-950/20 w-full pb-6">
             <span>Bonifico Bancario</span>
           </div>
           
@@ -202,30 +156,67 @@ const BankTransferFlow = ({
             
             {/* Step Content */}
             {currentStep === PaymentFlowStep.INSTRUCTIONS && (
-              <ul className="space-y-6 mt-6">
-                {copyableFields.map((field, index) => (
-                  <CopyableField key={index} field={field} />
-                ))}
-              </ul>
-            )}
-            
-            {currentStep === PaymentFlowStep.DOCUMENT_UPLOAD && (
-              <div className="mt-6">
-                <FileUploadZone
-                  selectedFile={selectedFile}
-                  onFileSelect={handleFileUpload}
-                  acceptedTypes={config.fileUpload.acceptedTypes}
-                />
+              <div>
+                <ul className="space-y-6 mt-6">
+                  {copyableFields.map((field, index) => (
+                    <CopyableField key={index} field={field} />
+                  ))}
+                </ul>
+
+                {/* Actions for Instructions step */}
+                <div className="space-y-6 mt-8">
+                  <button
+                    className="artpay-button-style max-w-none! bg-primary py-3! text-white disabled:opacity-65"
+                    onClick={handleConfirmTransfer}>
+                    Conferma bonifico
+                  </button>
+                  <button
+                    type="button"
+                    className="artpay-button-style max-w-none! py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"
+                    onClick={onCancel}>
+                    Annulla
+                  </button>
+                </div>
               </div>
             )}
+
+            {currentStep === PaymentFlowStep.DOCUMENT_UPLOAD && (
+              <div>
+                <div className="mt-6">
+                  <FileUploadZone
+                    selectedFile={selectedFile}
+                    onFileSelect={handleFileUpload}
+                    acceptedTypes={config.fileUpload.acceptedTypes}
+                  />
+                </div>
+
+                {/* Actions for Document Upload step */}
+                <div className="space-y-6 mt-8">
+                  <button
+                    type="button"
+                    disabled={isUploading || !selectedFile}
+                    className="artpay-button-style max-w-none! bg-primary py-3! text-white disabled:opacity-65 disabled:cursor-not-allowed"
+                    onClick={handleCompleteOperation}>
+                    {isUploading ? (
+                      <div className="size-4 border border-white border-b-transparent rounded-full animate-spin" />
+                    ) : (
+                      "Completa operazione"
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    className="artpay-button-style max-w-none! py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"
+                    onClick={onCancel}>
+                    Annulla
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       </div>
 
-      {/* Step Actions */}
-      <div className="space-y-6 flex flex-col">
-        {renderStepActions()}
-      </div>
     </section>
   );
 };

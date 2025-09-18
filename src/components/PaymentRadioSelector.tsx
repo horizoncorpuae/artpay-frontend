@@ -41,15 +41,15 @@ const PaymentRadioSelector: React.FC<PaymentRadioSelectorProps> = ({
               onChange={(e) => onMethodChange(e.target.value)}
             />
             <label className={`${
-              selectedMethod === method.value ? "text-[#007AFF]" : "text-[#808791]"
-            } text-sm font-semibold cursor-pointer space-x-5 flex items-start w-full ${disabled ? "cursor-not-allowed" : ""}`}>
-              {method.icon}
+              selectedMethod === method.value ? "text-[#007AFF]" : "text-[#010F22]"
+            } text-sm font-semibold cursor-pointer space-x-5 flex items-center w-full ${disabled ? "cursor-not-allowed" : ""}`}>
               <div className="flex-1">
                 <span>{method.label}</span>
                 <p className="font-normal text-xs !text-[#808791] mt-1">
                   {method.description}
                 </p>
               </div>
+              {method.icon}
             </label>
           </div>
         </div>

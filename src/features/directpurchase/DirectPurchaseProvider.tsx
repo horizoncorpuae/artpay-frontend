@@ -21,7 +21,7 @@ const DirectPurchaseProvider: React.FC<PurchaseProps> = ({ orderMode = "standard
   const { initialize, loadInitialData } = useDirectPurchaseData();
   const { showError, onChangePaymentMethod, getCurrentShippingMethod, 
           getEstimatedShippingCost, getThankYouPage, getCheckoutEnabled,
-          getShippingPrice, getCardContentTitle } = useDirectPurchaseUtils();
+          getShippingPrice, getCardContentTitle, onCancelPaymentMethod } = useDirectPurchaseUtils();
   const handlers = useDirectPurchaseHandlers(showError);
 
   // Get store state
@@ -87,6 +87,7 @@ const DirectPurchaseProvider: React.FC<PurchaseProps> = ({ orderMode = "standard
     getCheckoutEnabled,
     getShippingPrice,
     getCardContentTitle,
+    onCancelPaymentMethod,
   };
 
   console.log(contextValue);

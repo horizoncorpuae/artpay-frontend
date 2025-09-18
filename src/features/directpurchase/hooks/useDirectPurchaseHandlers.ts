@@ -86,7 +86,7 @@ export const useDirectPurchaseHandlers = (
         "Klarna": "klarna"
       };
       
-      const paymentMethodForUpdate = paymentMethodMap[paymentMethod || ""] || "Santander";
+      const paymentMethodForUpdate = paymentMethodMap[paymentMethod || ""] || "card";
       await onChangePaymentMethod(paymentMethodForUpdate);
     } catch (e) {
       await showError(e);

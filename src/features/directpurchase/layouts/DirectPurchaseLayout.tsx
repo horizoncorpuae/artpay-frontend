@@ -1,42 +1,31 @@
 import Navbar from "../../cdspayments/components/ui/navbar/Navbar.tsx";
 import SkeletonOrderDetails from "../../cdspayments/components/paymentmethodslist/SkeletonOrderDetails.tsx";
 import PaymentProviderCard from "../../cdspayments/components/ui/paymentprovidercard/PaymentProviderCard.tsx";
-import BillingDataForm from "../../../components/BillingDataForm.tsx";
-import BillingDataPreview from "../../../components/BillingDataPreview.tsx";
 import { Link, NavLink } from "react-router-dom";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { useDirectPurchase } from "../contexts/DirectPurchaseContext.tsx";
 import { Box, Typography } from "@mui/material";
 import DisplayImage from "../../../components/DisplayImage.tsx";
-import ShippingDataForm from "../../../components/ShippingDataForm.tsx";
-import ShippingDataPreview from "../../../components/BillingDataPreview.tsx";
 import ShoppingBagIcon from "../../../components/icons/ShoppingBagIcon.tsx";
 import UserIcon from "../../../components/icons/UserIcon.tsx";
+import FaqComponent from "../components/FaqComponent.tsx";
+import Tooltip from "../../cdspayments/components/ui/tooltip/ToolTip.tsx";
 
-const DirectPurchaseLayout = ({children}: {children: ReactNode}) => {
-  const {pendingOrder, loading, subtotal, artworks, orderMode, requireInvoice, handleRequireInvoice, isSaving, userProfile, handleProfileDataSubmit} = useDirectPurchase()
-  const [shippingDataEditing, setShippingDataEditing] = useState<boolean>(false)
-  /*const [showBillingSection, setShowBillingSection] = useState(true)
-
-  if (!requireInvoice) {
-    setShowBillingSection(true)
-  }*/
-
-  const showBillingSection = userProfile && (requireInvoice || orderMode === "loan")
-
-  console.log(loading)
-
+const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
+  const { pendingOrder, loading, subtotal, artworks, requireInvoice, handleRequireInvoice, isSaving, userProfile } =
+    useDirectPurchase();
 
   return (
     <div className="min-h-screen flex flex-col pt-35">
+      <Tooltip />
       <div className="mx-auto container max-w-2xl">
         <Navbar />
         <section className="px-8 mb-6 container lg:px-2">
           <h2 className="text-4xl font-normal flex flex-col mb-13">
             {pendingOrder ? (
               <>
-                <span className={' leading-[125%] text-primary font-light'}>Acquista</span>
-                <span className={'leading-[125%]  text-2xl'}>Ordine N.{pendingOrder.id}</span>
+                <span className={" leading-[125%] text-primary font-light"}>Acquista</span>
+                <span className={"leading-[125%]  text-2xl"}>Ordine N.{pendingOrder.id}</span>
               </>
             ) : (
               <span className="size-12 my-5 block border-2 border-white border-b-transparent rounded-full animate-spin"></span>
@@ -44,14 +33,15 @@ const DirectPurchaseLayout = ({children}: {children: ReactNode}) => {
           </h2>
         </section>
         <main className="flex-1 bg-white rounded-t-3xl pb-24 shadow-custom-variant p-8 md:p-8">
-          {loading ? <SkeletonOrderDetails /> : (
+          {loading ? (
+            <SkeletonOrderDetails />
+          ) : (
             <>
-              <div className={'flex flex-col space-y-8 pb-12 border-b border-[#CDCFD3] '}>
-                <div className={'flex space-x-2 items-center'}>
-                  <ShoppingBagIcon className={'size-4'} />
-                  <Typography className={`flex-1 text-secondary`}>
-                    Riassunto dell'ordine
-                  </Typography></div>
+              <div className={"flex flex-col space-y-8 pb-12 border-b border-[#CDCFD3] "}>
+                <div className={"flex space-x-2 items-center"}>
+                  <ShoppingBagIcon className={"size-4"} />
+                  <Typography className={`flex-1 text-secondary`}>Riassunto dell'ordine</Typography>
+                </div>
                 {pendingOrder?.line_items.map((item: any, i: number) => (
                   <Box key={item.id} className={"flex items-center w-full gap-4 mb-8"}>
                     <DisplayImage
@@ -80,39 +70,33 @@ const DirectPurchaseLayout = ({children}: {children: ReactNode}) => {
                         </Typography>
                       </div>
                     </div>
-
                   </Box>
                 ))}
                 <div className={"flex flex-col space-y-4"}>
                   <div>
-                    <Typography variant="body1" color="textSecondary" className={'block'} mb={0.5}>
+                    <Typography variant="body1" color="textSecondary" className={"block"} mb={0.5}>
                       Venditore
                     </Typography>
-                    <Typography variant="body1">
-                      {artworks[0]?.galleryName}
-                    </Typography>
+                    <Typography variant="body1">{artworks[0]?.galleryName}</Typography>
                   </div>
                   <div>
-                    <Typography variant="body1" color="textSecondary" className={'block'} mb={0.5}>
+                    <Typography variant="body1" color="textSecondary" className={"block"} mb={0.5}>
                       Prezzo
                     </Typography>
                     <Typography variant="body1">
-                      € {subtotal.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      € {subtotal.toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </Typography>
                   </div>
                 </div>
               </div>
-              <div className={'flex flex-col space-y-8 mb-6'}>
-                <div className={'flex space-x-2 items-center pt-4'}>
-                  <UserIcon className={'size-4'} />
-                  <Typography className={`flex-1 text-secondary`}>
-                   Informazioni di contatto
-                  </Typography></div>
+              <div className={"flex flex-col space-y-8 mb-6"}>
+                <div className={"flex space-x-2 items-center pt-4"}>
+                  <UserIcon className={"size-4"} />
+                  <Typography className={`flex-1 text-secondary`}>Informazioni di contatto</Typography>
+                </div>
                 <div className={"flex flex-col space-y-4"}>
                   <div className={"flex flex-col gap-2 p-6 bg-[#FAFAFB] rounded-lg "}>
-                    <Typography variant="body1">
-                      Informazioni personali
-                    </Typography>
+                    <Typography variant="body1">Informazioni personali</Typography>
                     <Typography variant="body1" color="textSecondary">
                       {userProfile?.first_name || "Nome e Cognome"} {userProfile?.last_name || ""}
                     </Typography>
@@ -122,13 +106,15 @@ const DirectPurchaseLayout = ({children}: {children: ReactNode}) => {
                     <Typography variant="body1" color="textSecondary">
                       {userProfile?.shipping?.phone || "Telefono"}
                     </Typography>
-                    <Link to={"/profile/settings-profile"} className={'text-primary underline block font-light mt-4'}>Modifica</Link>
+                    <Link to={"/profile/settings-profile"} className={"text-primary underline block font-light mt-4"}>
+                      Modifica
+                    </Link>
                   </div>
                 </div>
               </div>
             </>
           )}
-          <PaymentProviderCard className={'w-full mb-6'} backgroundColor={"bg-[#FAFAFB]"}>
+          <PaymentProviderCard className={"w-full mb-6"} backgroundColor={"bg-[#FAFAFB]"}>
             <p className={"flex gap-2"}>
               <button
                 className={`${
@@ -136,11 +122,11 @@ const DirectPurchaseLayout = ({children}: {children: ReactNode}) => {
                 } rounded-full border border-gray-300 px-3 cursor-pointer relative`}
                 onClick={() => handleRequireInvoice(!requireInvoice)}
                 disabled={isSaving}>
-                  <span
-                    className={`block absolute rounded-full size-3 bg-white top-1/2 -translate-y-1/2 transition-all ${
-                      requireInvoice ? "right-0 -translate-x-full" : "left-0 translate-x-full"
-                    }`}
-                  />
+                <span
+                  className={`block absolute rounded-full size-3 bg-white top-1/2 -translate-y-1/2 transition-all ${
+                    requireInvoice ? "right-0 -translate-x-full" : "left-0 translate-x-full"
+                  }`}
+                />
               </button>
               Hai bisogno di una fattura?
             </p>
@@ -148,51 +134,34 @@ const DirectPurchaseLayout = ({children}: {children: ReactNode}) => {
 
           {children}
 
-          {showBillingSection && (
-            <>
-              {orderMode !== "loan" && (
-                <div className={"bg-[#FAFAFB] p-4 rounded-lg"}>
-                  <Typography variant="h6" sx={{ mb: 4 }} color="textSecondary">
-                    Dati di spedizione
-                  </Typography>
-                  {userProfile &&
-                    (shippingDataEditing ? (
-                      <ShippingDataForm
-                        defaultValues={userProfile.shipping}
-                        onSubmit={(formData) => handleProfileDataSubmit(formData, false)}
-                      />
-                    ) : (
-                      <ShippingDataPreview value={userProfile.shipping} />
-                    ))}
-                </div>
-              )}
-              <PaymentProviderCard
-                backgroundColor={"bg-[#FAFAFB]"}
-                className={"mt-6"}
-                cardTitle={"Dati fatturazione"}
-                disabled={!requireInvoice}
-                button={
-                  <button
-                    onClick={() => setShippingDataEditing(!shippingDataEditing)}
-                    disabled={!requireInvoice}
-                    className={"font-normal text-primary underline cursor-pointer disabled:cursor-not-allowed"}>
-                    {shippingDataEditing ? "Annulla" : "Modifica"}
-                  </button>
-                }>
-                {shippingDataEditing ? (
-                  <BillingDataForm
-                    disabled={isSaving}
-                    defaultValues={userProfile?.billing}
-                    shippingData={userProfile?.shipping}
-                    isOnlyCDS={true}
-                    onSubmit={(formData) => handleProfileDataSubmit({ ...formData, email: userProfile?.email })}
-                  />
-                ) : (
-                  <BillingDataPreview value={userProfile?.billing} />
-                )}
-              </PaymentProviderCard>
-            </>
-          )}
+          <div className={"border-t border-b border-[#D9DDFB] mt-18 py-6"}>
+            <p className={"flex items-center gap-2"}>
+              <span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_1269_3042)">
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                      fill="#010F22"
+                    />
+                    <path
+                      d="M11.4148 14.4602V14.1534C11.4186 13.5549 11.4848 13.0682 11.6136 12.6932C11.7424 12.3182 11.9318 12.0019 12.1818 11.7443C12.4356 11.483 12.75 11.233 13.125 10.9943C13.4053 10.8125 13.6402 10.6212 13.8295 10.4205C14.0227 10.2159 14.1686 9.99242 14.267 9.75C14.3693 9.50379 14.4205 9.23674 14.4205 8.94886C14.4205 8.53977 14.3239 8.18182 14.1307 7.875C13.9413 7.56818 13.6837 7.33144 13.358 7.16477C13.0322 6.99432 12.6705 6.90909 12.2727 6.90909C11.8939 6.90909 11.5398 6.99242 11.2102 7.15909C10.8845 7.32197 10.6174 7.56439 10.4091 7.88636C10.2045 8.20455 10.0928 8.59849 10.0739 9.06818H9C9.01894 8.44318 9.17424 7.90152 9.46591 7.44318C9.75758 6.98485 10.1477 6.63068 10.6364 6.38068C11.125 6.12689 11.6705 6 12.2727 6C12.9015 6 13.4545 6.13068 13.9318 6.39205C14.4091 6.64962 14.7822 7.00379 15.0511 7.45455C15.3201 7.90152 15.4545 8.41477 15.4545 8.99432C15.4545 9.37689 15.3939 9.72538 15.2727 10.0398C15.1515 10.3542 14.9697 10.6439 14.7273 10.9091C14.4886 11.1742 14.1894 11.4242 13.8295 11.6591C13.4886 11.8864 13.2178 12.1117 13.017 12.3352C12.8163 12.5587 12.6723 12.8144 12.5852 13.1023C12.4981 13.3864 12.4508 13.7367 12.4432 14.1534V14.4602H11.4148ZM11.9602 17.8807C11.7367 17.8807 11.5436 17.8011 11.3807 17.642C11.2216 17.4792 11.142 17.286 11.142 17.0625C11.142 16.8352 11.2216 16.642 11.3807 16.483C11.5436 16.3239 11.7367 16.2443 11.9602 16.2443C12.1837 16.2443 12.375 16.3239 12.5341 16.483C12.697 16.642 12.7784 16.8352 12.7784 17.0625C12.7784 17.2102 12.7405 17.3466 12.6648 17.4716C12.5928 17.5966 12.4943 17.697 12.3693 17.7727C12.2481 17.8447 12.1117 17.8807 11.9602 17.8807Z"
+                      fill="#010F22"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_1269_3042">
+                      <rect width="24" height="24" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </span>
+              Hai bisogno di aiuto?
+            </p>
+            <Link to="/contatti" className={'text-[#808791] underline block mt-6'}>Scrivici</Link>
+          </div>
+          <FaqComponent />
         </main>
       </div>
       <footer className={"p-6 pt-8 w-full bg-[#FAFAFB] text-xs text-secondary"}>

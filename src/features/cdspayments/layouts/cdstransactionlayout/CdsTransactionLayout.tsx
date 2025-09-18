@@ -147,7 +147,7 @@ const CdsTransactionLayout = ({ children }: { children: ReactNode }) => {
     <CdsTransactionsProvider>
       <Tooltip />
       <div className="min-h-screen flex flex-col bg-primary pt-35">
-        <div className="mx-auto container max-w-md">
+        <div className="mx-auto container max-w-2xl">
           <Navbar />
           <section className="px-8 mb-6 container lg:px-0">
             <h2 className="text-4xl text-white font-normal">

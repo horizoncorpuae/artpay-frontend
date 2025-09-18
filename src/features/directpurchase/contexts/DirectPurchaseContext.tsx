@@ -13,6 +13,7 @@ export interface DirectPurchaseContextType extends DirectPurchaseState {
   handlePurchase: (checkoutButtonRef: React.RefObject<HTMLButtonElement>) => Promise<void>;
   handleSubmitCheckout: () => void;
   onChangePaymentMethod: (payment: string) => Promise<void>;
+  onCancelPaymentMethod: () => void;
   
   // Utils
   showError: (err?: unknown, text?: string) => Promise<void>;

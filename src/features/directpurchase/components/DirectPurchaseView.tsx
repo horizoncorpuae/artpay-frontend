@@ -9,7 +9,7 @@ import ErrorIcon from "../../../components/icons/ErrorIcon.tsx";
 // import PurchaseSectionSkeleton from "../../../components/PurchaseSectionSkeleton.tsx";
 import PaymentCard from "../../../components/PaymentCard.tsx";
 import ContentCard from "../../../components/ContentCard.tsx";
-import { PiTruckThin } from "react-icons/pi";
+import { PiCreditCardThin, PiTruckThin } from "react-icons/pi";
 import RadioButton from "../../../components/RadioButton.tsx";
 /*import UserIcon from "../../../components/icons/custom/UserIcon.tsx";
 import ShippingDataForm from "../../../components/ShippingDataForm.tsx";
@@ -24,6 +24,10 @@ import BillingDataPreview from "../../../components/BillingDataPreview.tsx";*/
 import { useDirectPurchase } from "../contexts/DirectPurchaseContext.tsx";
 import DirectPurchaseLayout from "../layouts/DirectPurchaseLayout.tsx";
 import PaymentsSelection from "./PaymentsSelection.tsx";
+import PaymentProviderCard from "../../cdspayments/components/ui/paymentprovidercard/PaymentProviderCard.tsx";
+import BillingDataPreview from "../../../components/BillingDataPreview.tsx";
+import { Link } from "react-router-dom";
+import { BankTransfer } from "../../cdspayments/components/banktransfer";
 //import CheckoutForm from "../../../components/CheckoutForm.tsx";
 
 const DirectPurchaseView = () => {
@@ -39,10 +43,7 @@ const DirectPurchaseView = () => {
     isSaving,
     noPendingOrder,
     shippingDataEditing,
-    // requireInvoice,
-    // privacyChecked,
-    // showCommissioni,
-    // subtotal,
+    requireInvoice,
 
     // Data
     userProfile,
@@ -50,17 +51,11 @@ const DirectPurchaseView = () => {
     pendingOrder,
     paymentIntent,
     artworks,
-    // galleries,
     orderMode,
 
     // Actions
     updateState,
-
-    // Handlers
-    // handleRequireInvoice,
-    // handleProfileDataSubmit,
     handleSelectShippingMethod,
-    // handlePurchase,
     handleSubmitCheckout,
     onChangePaymentMethod,
 
@@ -68,9 +63,7 @@ const DirectPurchaseView = () => {
     getCurrentShippingMethod,
     getEstimatedShippingCost,
     getThankYouPage,
-    // getCheckoutEnabled,
-    // getShippingPrice,
-    // getCardContentTitle,
+    onCancelPaymentMethod
   } = useDirectPurchase();
 
   const contactHeaderButtons: ReactNode[] = [];
@@ -105,6 +98,8 @@ const DirectPurchaseView = () => {
   const currentShippingMethod = getCurrentShippingMethod();
   const estimatedShippingCost = getEstimatedShippingCost();
   const thankYouPage = getThankYouPage();
+
+  const showBillingSection = userProfile && (requireInvoice || orderMode === "loan")
   // const checkoutEnabled = getCheckoutEnabled();
   // const shippingPrice = getShippingPrice();
   // const cardContentTitle = getCardContentTitle();
@@ -161,6 +156,20 @@ const DirectPurchaseView = () => {
             thankYouPage={thankYouPage}
           />
         )
+      case "bank_transfer":
+        return (
+          <ContentCard
+            title="Pagamento"
+            icon={<PiCreditCardThin size="28px" />}
+            contentPadding={0}
+            contentPaddingMobile={0}
+          >
+            <PaymentProviderCard>
+              <BankTransfer order={pendingOrder} handleRestoreOrder={onCancelPaymentMethod} />
+            </PaymentProviderCard>
+          </ContentCard>
+        )
+
     }
   }
 
@@ -183,7 +192,7 @@ const DirectPurchaseView = () => {
             </Box>
           )}
           {renderer()}
-          {orderMode !== "loan" && auth.isAuthenticated && (
+          {orderMode !== "loan" && auth.isAuthenticated && (paymentMethod == 'card' || paymentMethod == 'klarna') && (
             <ContentCard contentPadding={0} title="Metodo di spedizione" icon={<PiTruckThin size="28px" />}>
               <RadioGroup defaultValue="selected" name="radio-buttons-group" className={"p-0!"}>
                 {availableShippingMethods.map((s) => {
@@ -204,8 +213,31 @@ const DirectPurchaseView = () => {
                   );
                 })}
               </RadioGroup>
+            {showBillingSection && (
+              <>
+                <PaymentProviderCard
+                  backgroundColor={"bg-[#FAFAFB]"}
+                  className={"mt-6"}
+                  cardTitle={"Dati fatturazione"}
+                  disabled={!requireInvoice}
+                  button={<Link to={"/profile/settings-profile"} className={'text-primary underline block font-light mt-4'}>Modifica</Link>}>
+                    <BillingDataPreview value={userProfile?.billing} />
+                </PaymentProviderCard>
+              </>
+            )}
+              {currentShippingMethod !== "local_pickup" && (
+                <PaymentProviderCard
+                  backgroundColor={"bg-[#FAFAFB]"}
+                  className={"mt-6"}
+                  cardTitle={"Dati spedizione"}
+                  disabled={!requireInvoice}
+                  button={<Link to={"/profile/settings-profile"} className={'text-primary underline block font-light mt-4'}>Modifica</Link>}>
+                  <BillingDataPreview value={userProfile?.billing} />
+                </PaymentProviderCard>
+              )}
             </ContentCard>
           )}
+
           {/*<ContentCard
             title="Informazioni di contatto"
             icon={<UserIcon />}
@@ -382,19 +414,7 @@ const DirectPurchaseView = () => {
                   </>
                 )}
                 <div className={"mt-6"}>
-                  <Checkbox
-                    disabled={isSaving}
-                    checked={privacyChecked}
-                    onChange={(e) => updateState({ privacyChecked: e.target.checked })}
-                    label={
-                      <Typography variant="body1">
-                        Accetto le{" "}
-                        <Link href="/condizioni-generali-di-acquisto" target="_blank">
-                          condizioni generali d'acquisto
-                        </Link>
-                      </Typography>
-                    }
-                  />
+
                 </div>
                 {paymentMethod === "Santander" ? (
                   <div className={"w-full flex justify-center "}>

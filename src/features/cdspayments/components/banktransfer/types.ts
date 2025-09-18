@@ -40,8 +40,10 @@ export interface BankTransferConfig {
 
 export interface PaymentFlowProps {
   order: Order;
+  user?: any; // User data passed as prop
   onCancel: () => void;
   onComplete?: (result: any) => void;
+  onOrderUpdate?: (order: Order) => void; // Callback for order updates
   config: BankTransferConfig;
 }
 

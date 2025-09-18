@@ -5,6 +5,7 @@ import {
   StripePaymentElementChangeEvent
 } from "@stripe/stripe-js";
 import { Alert, AlertTitle, Box, Button, Grid } from "@mui/material";
+import { useDirectPurchase } from "../features/directpurchase";
 
 type CheckoutFormProps = {
   thankYouPage?: string;
@@ -12,11 +13,29 @@ type CheckoutFormProps = {
   onCheckout?: () => void;
   onChange?: (payment_method: string) => void;
   ref?: MutableRefObject<HTMLButtonElement | null>;
+  paymentMethod?: string | null;
 };
+
+
+const buttonStyles = {
+  card:{
+    text: "Completa acquisto",
+    style: "!bg-[#181F5D] !text-[#FFF] disabled:opacity-40"
+  },
+  klarna : {
+    text: "Paga la prima rata",
+    style: "!bg-[#FEB4C7] !text-[#010F22] disabled:opacity-40"
+  }
+}
+
+
+
 const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
-  ({ onReady, thankYouPage = "/thank-you-page", onCheckout, onChange}, ref) => {
+  ({ onReady, thankYouPage = "/thank-you-page", onCheckout, onChange, paymentMethod = "card"}, ref) => {
     const stripe = useStripe();
     const elements = useElements();
+
+    const {privacyChecked} = useDirectPurchase()
 
     const [error, setError] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +59,7 @@ const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
           return_url: window.location.origin + thankYouPage
         }
       });
+
 
       // This point will only be reached if there is an immediate error when
       // confirming the payment. Otherwise, your customer will be redirected to
@@ -94,16 +114,15 @@ const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          sx={{ height: 0, overflow: "hidden" }}
           my={2}>
           <Button
-            color="primary"
+            className={`${buttonStyles[paymentMethod as keyof typeof buttonStyles]?.style || buttonStyles.card.style} w-full`}
             variant="contained"
             type="submit"
             ref={ref}
-            disabled={isLoading || !stripe || !elements}
+            disabled={isLoading || !stripe || !elements || !privacyChecked}
             id="submit">
-            <span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}</span>
+            <span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : (buttonStyles[paymentMethod as keyof typeof buttonStyles]?.text || buttonStyles.card.text)}</span>
           </Button>
         </Box>
       </form>

@@ -100,7 +100,7 @@ function AppContent() {
                     <Route path="/completa-acquisto/:order_id" element={<NewDirectPurchase orderMode="redeem" />} />
                     <Route path={"/guide"} element={<Tutorials />} />
                     <Route path="/guide/:slug" element={<SinglePostPage />} />
-                    <Route path="/acconto-blocca-opera" element={<Purchase orderMode="loan" />} />
+                    <Route path="/acconto-blocca-opera" element={<NewDirectPurchase orderMode="loan" />} />
                     <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/profile/seguiti" element={<FollowedGalleriesPage />} />

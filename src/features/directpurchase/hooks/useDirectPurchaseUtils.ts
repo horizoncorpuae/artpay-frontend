@@ -32,7 +32,7 @@ export const useDirectPurchaseUtils = () => {
     updateState({ showCommissioni: false, isSaving: true });
 
     if (pendingOrder) {
-      const wc_order_key = pendingOrder.order_key;
+      //const wc_order_key = pendingOrder.order_key;
 
       const paymentMethodMap: Record<string, string> = {
         card: "Carta",
@@ -121,9 +121,38 @@ export const useDirectPurchaseUtils = () => {
     return "Dettagli dell'ordine";
   }, []);
 
+  const onCancelPaymentMethod = useCallback(async (): Promise<void> => {
+    updateState({ isSaving: true });
+
+    try {
+      // Reset payment method to null in store
+      updateState({ paymentMethod: null });
+
+      // Update order to remove payment method
+      if (pendingOrder?.id) {
+        await data.updateOrder(pendingOrder.id, {
+          payment_method: "",
+          payment_method_title: ""
+        });
+
+        // Refresh the order to get updated state
+        const updatedOrder = await data.getPendingOrder();
+        if (updatedOrder) {
+          updatePageData({ pendingOrder: updatedOrder });
+        }
+      }
+    } catch (e) {
+      console.error("Error cancelling payment method:", e);
+      await showError(e, "Errore durante l'annullamento del metodo di pagamento");
+    } finally {
+      updateState({ isSaving: false });
+    }
+  }, [pendingOrder, data, updateState, updatePageData, showError]);
+
   return {
     showError,
     onChangePaymentMethod,
+    onCancelPaymentMethod,
     getCurrentShippingMethod,
     getEstimatedShippingCost,
     getThankYouPage,
