@@ -6,6 +6,7 @@ import {
 } from "@stripe/stripe-js";
 import { Alert, AlertTitle, Box, Button, Grid } from "@mui/material";
 import { useDirectPurchase } from "../features/directpurchase";
+import { useEnvDetector } from "../utils.ts";
 
 type CheckoutFormProps = {
   thankYouPage?: string;
@@ -31,14 +32,26 @@ const buttonStyles = {
 
 
 const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
-  ({ onReady, thankYouPage = "/thank-you-page", onCheckout, onChange, paymentMethod = "card"}, ref) => {
+  ({ onReady, onCheckout, onChange, paymentMethod = "card"}, ref) => {
     const stripe = useStripe();
     const elements = useElements();
 
-    const {privacyChecked} = useDirectPurchase()
+    const {privacyChecked, pendingOrder, orderMode} = useDirectPurchase()
+
+    const environment = useEnvDetector();
 
     const [error, setError] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
+
+    const returnUrl: Record<any, any> = {
+      local:
+        (orderMode == "loan"
+          ? "http://localhost:5173/opera-bloccata"
+          : "http://localhost:5173/acquisto?order=" + pendingOrder?.id) ,
+      staging: "https://staging2.artpay.art/acquisto?order=" + pendingOrder?.id,
+      production: "https://artpay.art/acquisto?order=" + pendingOrder?.id,
+    };
+
     const handleSubmit = async (e: { preventDefault: () => void }) => {
       setError(undefined);
       e.preventDefault();
@@ -56,7 +69,7 @@ const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: window.location.origin + thankYouPage
+          return_url: environment ? returnUrl[environment] : returnUrl.local,
         }
       });
 

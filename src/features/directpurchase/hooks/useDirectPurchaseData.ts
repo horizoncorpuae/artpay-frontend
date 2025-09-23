@@ -64,7 +64,7 @@ export const useDirectPurchaseData = () => {
           // Se orderMode è "loan", controlla se c'è già un metodo impostato o usa "card" di default
           if (orderMode === "loan") {
             const currentPaymentMethod = useDirectPurchaseStore.getState().paymentMethod;
-            const supportedMethods = ["card", "klarna"];
+            const supportedMethods = ["card"];
             const methodToUse = currentPaymentMethod && supportedMethods.includes(currentPaymentMethod)
               ? currentPaymentMethod
               : (resp.payment_method && supportedMethods.includes(resp.payment_method)
@@ -149,7 +149,7 @@ export const useDirectPurchaseData = () => {
         // Se orderMode è "loan", controlla se c'è già un metodo impostato o usa "card" di default
         if (orderMode === "loan") {
           const currentPaymentMethod = useDirectPurchaseStore.getState().paymentMethod;
-          const supportedMethods = ["card", "klarna"];
+          const supportedMethods = ["card"];
           const methodToUse = currentPaymentMethod && supportedMethods.includes(currentPaymentMethod)
             ? currentPaymentMethod
             : (order.payment_method && supportedMethods.includes(order.payment_method)

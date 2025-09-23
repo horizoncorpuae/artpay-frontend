@@ -100,7 +100,7 @@ function AppContent() {
                     <Route path={"/guide"} element={<Tutorials />} />
                     <Route path="/guide/:slug" element={<SinglePostPage />} />
                     <Route path="/acconto-blocca-opera" element={<NewDirectPurchase orderMode="loan" />} />
-                    <Route path="/opera-bloccata/:slug_opera" element={<ArtworkReserved />} />
+                    <Route path="/opera-bloccata" element={<ArtworkReserved />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/profile/seguiti" element={<FollowedGalleriesPage />} />
                     <Route path="/profile/opere-preferite" element={<FavoritesArtworksPage />} />
