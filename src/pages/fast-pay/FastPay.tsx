@@ -5,7 +5,7 @@ const FastPay = () => {
   const {setOpenListDraw} = useListDrawStore();
 
   return (
-    <main className="text-white text-2xl flex flex-col h-full flex-1">
+    <main className="text-white text-2xl flex flex-col h-full flex-1 mx-auto max-w-lg">
        <h1 className={'text-secondary '}>Menu</h1>
        <ul className={'mt-6 space-y-6'}>
          <li><button onClick={() => setOpenListDraw({openListDraw: true})}>Lista offerte/ Crea offerta</button></li>

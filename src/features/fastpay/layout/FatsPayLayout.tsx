@@ -30,7 +30,7 @@ const Footer :  React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
   if (!isVisible) return <div />;
 
   return (
-    <footer className={"mt-6 space-y-6 pb-6"}>
+    <footer className={"mt-6 space-y-6 pb-6 max-w-lg mx-auto"}>
       <div>
         <Typography variant="body2" color="textSecondary">
           © artpay srl 2024 - Tutti i diritti riservati
@@ -80,18 +80,22 @@ const FatsPayLayout = () => {
     return () => {
       document.body.classList.remove("fast-pay");
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <>
-      <div className="bg-tertiary min-h-screen w-full flex flex-col px-6 pt-6">
-        <nav className="flex items-center justify-between mb-14">
-          <BackButton isVisible={!isVisible} />
-          <div className="custom-navbar bg-white p-6 w-fit">
-            <Logo />
+      <div className="bg-tertiary min-h-screen w-full flex flex-col">
+        <nav className="fixed top-0 left-0 right-0 z-50 pt-6 pb-6">
+          <div className="flex items-center justify-between mx-6 w-full max-w-lg md:mx-auto">
+            <BackButton isVisible={!isVisible} />
+            <div className="custom-navbar bg-white p-6 w-fit">
+              <Logo />
+            </div>
           </div>
         </nav>
-        <Outlet />
+        <div className="pt-20 mt-20">
+          <Outlet />
+        </div>
         <Footer isVisible={isVisible} />
       </div>
       <FastPayDraw />
