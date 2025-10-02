@@ -14,13 +14,13 @@ const LandingForCampaign = () => {
             <Logo className={"w-20"}/> {"x"}
 
             <div
-              className={"w-20 h-10 top-2 relative invert bg-no-repeat bg-contain bg-center"}
-              style={{ backgroundImage: "url('/images/logo-TheOthers_W-300x134.png')" }}
+              className={"w-20 h-10 top-2 relative bg-no-repeat bg-contain bg-center"}
+              style={{ backgroundImage: "url('/images/logo-TheOthers_Y.png')" }}
               role="img"
               aria-label="Logo the others logo"
             />
           </div>
-          <p className={"text-lg leading-[125%] text-balance"}>
+          <p className={"text-2xl leading-[125%] text-balance"}>
             The Others 2025 - XIV edizione sceglie artpay per promuovere l’utilizzo di soluzioni di pagamento digitali, flessibili e innovative al servizio di gallerie, artisti e collezionisti
           </p>
         </div>
