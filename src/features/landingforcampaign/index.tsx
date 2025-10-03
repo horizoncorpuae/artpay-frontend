@@ -15,7 +15,7 @@ const LandingForCampaign = () => {
 
             <div
               className={"w-20 h-10 top-2 relative bg-no-repeat bg-contain bg-center"}
-              style={{ backgroundImage: "url('/images/logo-TheOthers_Y.png')" }}
+              style={{ backgroundImage: "url('/images/TheOthers_BLACK.png')" }}
               role="img"
               aria-label="Logo the others logo"
             />
