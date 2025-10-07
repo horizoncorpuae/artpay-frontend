@@ -258,8 +258,7 @@ const DirectPurchaseTransactionsProvider = ({ children }: DirectPurchaseTransact
       if (orderResp.status === ORDER_STATUS.COMPLETED && !hasPaymentIntent) {
         console.log("Payment completed:", orderResp);
         updatePageData({ pendingOrder: orderResp });
-        setDirectPurchaseData({ loading: false,
-          paymentStatus: "completed" });
+        setDirectPurchaseData({ loading: false });
         clearLocalStorage(orderResp);
         return;
       }
@@ -281,17 +280,8 @@ const DirectPurchaseTransactionsProvider = ({ children }: DirectPurchaseTransact
       // Final payment data update
       updatePageData({ pendingOrder: finalOrder });
 
-      // Only set paymentStatus when we have transaction-related URL params
-      // For normal orders without params, don't set paymentStatus to let normal flow work
-      const hasTransactionParams = hasPaymentIntent || orderParam || redirectStatus;
-
-      // Only set paymentStatus for terminal states AND when handling transactions
-      const terminalStates = [ORDER_STATUS.COMPLETED, ORDER_STATUS.FAILED, ORDER_STATUS.CANCELLED];
-      const shouldShowStatus = hasTransactionParams && terminalStates.includes(finalOrder?.status);
-
       setDirectPurchaseData({
-        loading: false,
-        paymentStatus: shouldShowStatus ? finalOrder?.status as "completed" | "failed" | "cancelled" : undefined
+        loading: false
       });
 
     } catch (error) {

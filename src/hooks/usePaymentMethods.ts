@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useData } from '../hoc/DataProvider';
-import { PaymentMethod, PaymentMethodsResponse } from '../types/order';
+import { PaymentMethod } from '../types/order';
 
 export const usePaymentMethods = () => {
   const data = useData();
@@ -10,22 +10,22 @@ export const usePaymentMethods = () => {
 
   // Separa i metodi di pagamento
   const cardAndBankMethods = paymentMethods.filter(
-    method => method.id === 'stripe' || method.id === 'bacs'
+    (method: PaymentMethod) => method.id === 'stripe' || method.id === 'bacs'
   );
-  
+
   const klarnaMethods = paymentMethods.filter(
-    method => method.id === 'klarna'
+    (method: PaymentMethod) => method.id === 'klarna'
   );
 
   useEffect(() => {
     const fetchPaymentMethods = async () => {
       try {
         setIsLoading(true);
-        const response: PaymentMethodsResponse = await data.getAvailablePaymentMethods();
-        
-        // Filtra solo i metodi abilitati
-        const enabledMethods = response.available_methods.filter(method => method.enabled);
-        setPaymentMethods(enabledMethods);
+        // TODO: Implement getAvailablePaymentMethods in DataProvider
+        // const response = await data.getAvailablePaymentMethods();
+        // const enabledMethods = response.available_methods.filter((method: PaymentMethod) => method.enabled);
+        // setPaymentMethods(enabledMethods);
+        setPaymentMethods([]);
         setError(null);
       } catch (err) {
         console.error('Failed to fetch payment methods:', err);

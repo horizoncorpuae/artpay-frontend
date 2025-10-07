@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useData } from "../hoc/DataProvider.tsx";
 import { useStripe } from "@stripe/react-stripe-js";
 import { useAuth } from "../hoc/AuthProvider.tsx";
 import Tooltip from "../features/cdspayments/components/ui/tooltip/ToolTip.tsx";
 import Navbar from "../features/cdspayments/components/ui/navbar/Navbar.tsx";
-import SkeletonCard from "../features/cdspayments/components/ui/paymentprovidercard/SkeletonCard.tsx";
-import PaymentProviderCard from "../features/cdspayments/components/ui/paymentprovidercard/PaymentProviderCard.tsx";
-import CompletePaymentCard from "../features/cdspayments/components/ui/completepaymentcard/CompletePaymentCard.tsx";
 import useDirectPurchaseStore from "../features/directpurchase/stores/directPurchaseStore";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import FaqComponent from "../features/directpurchase/components/FaqComponent.tsx";
 import CountdownTimer from "../components/CountdownTimer.tsx";
+import { useDialogs } from "../hoc/DialogProvider.tsx";
 
 export interface ArtworkReservedProps {}
 
@@ -18,6 +16,7 @@ const ArtworkReserved: React.FC<ArtworkReservedProps> = ({}) => {
   const data = useData();
   const auth = useAuth();
   const stripe = useStripe();
+  const dialogs = useDialogs();
 
   const { pendingOrder } = useDirectPurchaseStore();
 
@@ -25,6 +24,86 @@ const ArtworkReserved: React.FC<ArtworkReservedProps> = ({}) => {
     status: "success" | "failed" | "processing" | "pending" | "on-hold" | null;
     message: string;
   }>({ status: null, message: "" });
+  const [shouldBlock, setShouldBlock] = useState(true);
+  const navigate = useNavigate();
+  const navigationRef = useRef<string | null>(null);
+
+  console.log(paymentResult);
+
+  // Funzione per annullare l'ordine
+  const cancelOrder = useCallback(async () => {
+    if (pendingOrder?.id) {
+      try {
+        await data.setOrderStatus(pendingOrder.id, "cancelled");
+        console.log("Order cancelled successfully");
+      } catch (error) {
+        console.error("Error cancelling order:", error);
+      }
+    }
+  }, [pendingOrder?.id, data]);
+
+  // Intercetta click sui link per bloccare navigazione
+  useEffect(() => {
+    const handleClick = async (e: MouseEvent) => {
+      if (!shouldBlock) return;
+
+      const target = e.target as HTMLElement;
+      const link = target.closest("a");
+
+      if (link && link.getAttribute("href")) {
+        const href = link.getAttribute("href");
+
+        // Verifica se è un link interno (non assoluto)
+        if (href && !href.startsWith("http") && !href.startsWith("mailto:")) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const confirmed = await dialogs.yesNo(
+            "Vuoi davvero uscire?",
+            "Se esci da questa pagina, la tua prenotazione verrà annullata. Sei sicuro di voler continuare?",
+            {
+              txtYes: "Sì, annulla prenotazione",
+              txtNo: "No, resta qui",
+              invertColors: true,
+            }
+          );
+
+          if (confirmed) {
+            setShouldBlock(false);
+            await cancelOrder();
+            navigationRef.current = href;
+            // Naviga dopo aver annullato l'ordine
+            setTimeout(() => {
+              navigate(href);
+            }, 100);
+          }
+        }
+      }
+    };
+
+    document.addEventListener("click", handleClick, true);
+
+    return () => {
+      document.removeEventListener("click", handleClick, true);
+    };
+  }, [shouldBlock, dialogs, cancelOrder, navigate]);
+
+  // Gestione chiusura scheda/finestra browser
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (shouldBlock) {
+        e.preventDefault();
+        e.returnValue = "";
+        return "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [shouldBlock]);
 
   // Calcola la data di scadenza: 7 giorni dalla creazione dell'ordine
   const getExpiryDate = (): Date => {

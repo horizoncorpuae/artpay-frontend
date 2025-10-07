@@ -10,8 +10,20 @@ interface PaymentsSelectionProps {
 
 const PaymentsSelection = ({ paymentMethod, onChange }: PaymentsSelectionProps) => {
 
-  const {orderMode} = useDirectPurchase()
+  const { orderMode, pendingOrder } = useDirectPurchase();
 
+  // Calcola il totale dell'ordine (incluse commissioni)
+  const orderTotal = Number(pendingOrder?.total || 0);
+
+  // Determina se un metodo di pagamento è disponibile in base all'importo
+  const isPaymentMethodAvailable = (method: string): boolean => {
+    switch (method) {
+      case "klarna":
+        return orderTotal <= 2500;
+      default:
+        return true;
+    }
+  };
 
   const paymentMethods = {
     Santander: {
@@ -130,7 +142,7 @@ const PaymentsSelection = ({ paymentMethod, onChange }: PaymentsSelectionProps) 
       contentPadding={0}
       contentPaddingMobile={0}>
       <div className="space-y-8">
-        {orderMode !== "redeem" && (
+        {orderMode !== "redeem" && isPaymentMethodAvailable("klarna") && (
           <div className="space-y-4">
             <h3>Pagamento dilazionato</h3>
             <PaymentRadioSelector
@@ -142,12 +154,12 @@ const PaymentsSelection = ({ paymentMethod, onChange }: PaymentsSelectionProps) 
         )}
         <div className="space-y-4">
           {orderMode != "redeem" && <h3>Unica soluzione</h3>}
-          <PaymentRadioSelector method={paymentMethods.card} selectedMethod={paymentMethod} onMethodChange={onChange} />
-          <PaymentRadioSelector
-            method={paymentMethods.bank_transfer}
-            selectedMethod={paymentMethod}
-            onMethodChange={onChange}
-          />
+            <PaymentRadioSelector method={paymentMethods.card} selectedMethod={paymentMethod} onMethodChange={onChange} />
+            <PaymentRadioSelector
+              method={paymentMethods.bank_transfer}
+              selectedMethod={paymentMethod}
+              onMethodChange={onChange}
+            />
         </div>
       </div>
     </ContentCard>

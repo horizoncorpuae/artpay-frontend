@@ -7,8 +7,6 @@ import {
 import { Alert, AlertTitle, Box, Button, Grid } from "@mui/material";
 import { useDirectPurchase } from "../features/directpurchase";
 import { useEnvDetector } from "../utils.ts";
-import { useData } from "../hoc/DataProvider.tsx";
-import { usePurchaseHandlers } from "../hooks/usePurchaseHandlers.ts";
 
 type CheckoutFormProps = {
   thankYouPage?: string;
@@ -38,7 +36,7 @@ const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
     const stripe = useStripe();
     const elements = useElements();
 
-    const {privacyChecked, pendingOrder, orderMode, handlePurchase} = useDirectPurchase()
+    const {privacyChecked, pendingOrder, orderMode} = useDirectPurchase()
 
     const environment = useEnvDetector();
 

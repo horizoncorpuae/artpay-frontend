@@ -18,6 +18,7 @@ export const useDirectPurchaseUtils = () => {
     artworks,
     updateState,
     updatePageData,
+    paymentMethod
   } = useDirectPurchaseStore();
 
   const showError = useCallback(async (err?: unknown, text: string = "Si è verificato un errore"): Promise<void> => {
@@ -50,17 +51,29 @@ export const useDirectPurchaseUtils = () => {
           await data.updateOrder(pendingOrder.id, {
             payment_method: payment,
             payment_method_title: displayName,
+            customer_note: "Pagamento da completare"
           });
         }
 
-        // 2. Crea il payment intent con il metodo di pagamento specificato
-        const newPaymentIntent = await createPaymentIntent(pendingOrder, orderMode, payment);
-        console.log("New payment intent created:", newPaymentIntent);
-        updatePageData({ paymentIntent: newPaymentIntent });
-
-        // 3. Aggiorna lo stato locale (usa il valore raw per il renderer)
         updateState({ paymentMethod: payment });
+        console.log(paymentMethod)
+        updatePageData({
+          pendingOrder: {
+            ...pendingOrder,
+            customer_note: "Pagamento da completare",
+          },
+        });
         console.log("Payment method updated to:", payment);
+
+
+
+        if (payment != "bank_transfer") {
+          const newPaymentIntent = await createPaymentIntent(pendingOrder, orderMode, payment);
+          console.log("New payment intent created:", newPaymentIntent);
+          updatePageData({ paymentIntent: newPaymentIntent });
+        }
+
+
 
         // Force update after a short delay to override any async overwrites
         setTimeout(() => {

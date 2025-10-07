@@ -232,7 +232,7 @@ const ArtworkPage: React.FC = () => {
       {!isReady ? (
         <ArtworkPageSkeleton />
       ) : (
-        <Box sx={{ mt: { xs: 0, sm: 12, md: 18 } }} display="flex" justifyContent="center" overflow={"visible"}>
+        <Box className={'md:mt-18'} display="flex" justifyContent="center" overflow={"visible"}>
           <div className={"flex flex-col w-full lg:flex-row "}>
             <div className={"w-full max-w-2xl lg:min-w-sm lg:min-h-screen rounded-b-2xl md:rounded-2xl"}>
               <img
@@ -316,7 +316,7 @@ const ArtworkPage: React.FC = () => {
                 </div>
                 <div className={"flex flex-col w-full md:flex-row justify-between space-y-4 md:space-y-0"}>
                   <ul className={"flex flex-col gap-2 text-secondary leading-6 w-full "}>
-                    {(Number(artwork?.price) * KLARNA_FEE) <= KLARNA_MAX_LIMIT && (
+                    {Number(artwork?.price) * KLARNA_FEE <= KLARNA_MAX_LIMIT && (
                       <li className={"flex justify-between items-center"}>
                         <span>Pagamento dilazionato</span>
                         <img src={klarna_card} alt={"Klarna payment Card "} />
@@ -330,38 +330,52 @@ const ArtworkPage: React.FC = () => {
                 </div>
               </Box>
 
-              <Box
-                mt={3}
-                sx={{ my: 3 }}
-                display="flex"
-                flexDirection={"column"}
-                gap={1}
-                bgcolor={"#FAFAFB"}
-                borderRadius={2}
-                padding={2}>
-                <div className={"flex w-full justify-between items-center pb-6"}>
-                  <Typography variant="h2" sx={{ typography: { xs: "h4", sm: "h2" } }}>
-                    € {formatCurrency((+(artwork?.price || 0) * data.downpaymentPercentage()) / 100)}
-                  </Typography>
-                  <Button variant="outlined" disabled={isOutOfStock || isReserved} onClick={handleLoanPurchase}>
-                    Prenota l'opera
-                  </Button>
-                </div>
-                <div className={"mb-6 border-b border-[#010F22]/20 pb-6 flex justify-between"}>
-                  <p className={' text-secondary'}>Prenota l’opera e paga a rate</p>
-                  <img src={santander_card} alt={"Santender payment Card "} />
-                </div>
-                <div className={" text-secondary space-y-2"}>
-                  <p>Come funziona?</p>
-                  <ol className={"list-decimal ps-5 space-y-2"}>
-                    <li>Prenota l’opera per 7 giorni versando solo il 5%. <br/><span className={'text-sm'}>(Se non concludi l’acquisto, ti rimborsiamo tutto.)</span></li>
-                    <li>Richiedi il prestito. <br/><span className={'text-sm'}>(Soggetto ad approvazione dell'istituto di credito.)</span></li>
-                    <li>Concludi l’acquisto e transazione su artpay.</li>
-                  </ol>
-                  <p className={'mt-6 text-xs'}><a href="#" className={' text-primary underline'}>Vuoi saperne di più? Leggi qui</a></p>
-                </div>
-              </Box>
-              <Divider sx={{ mb: 3 }} />
+              {Number(artwork?.price) >= 2500 && (
+                <>
+                  <Box
+                    mt={3}
+                    sx={{ my: 3 }}
+                    display="flex"
+                    flexDirection={"column"}
+                    gap={1}
+                    bgcolor={"#FAFAFB"}
+                    borderRadius={2}
+                    padding={2}>
+                    <div className={"flex w-full justify-between items-center pb-6"}>
+                      <Typography variant="h2" sx={{ typography: { xs: "h4", sm: "h2" } }}>
+                        € {formatCurrency((+(artwork?.price || 0) * data.downpaymentPercentage()) / 100)}
+                      </Typography>
+                      <Button variant="outlined" disabled={isOutOfStock || isReserved} onClick={handleLoanPurchase}>
+                        Prenota l'opera
+                      </Button>
+                    </div>
+                    <div className={"mb-6 border-b border-[#010F22]/20 pb-6 flex justify-between"}>
+                      <p className={" text-secondary"}>Prenota l’opera e paga a rate</p>
+                      <img src={santander_card} alt={"Santender payment Card "} />
+                    </div>
+                    <div className={" text-secondary space-y-2"}>
+                      <p>Come funziona?</p>
+                      <ol className={"list-decimal ps-5 space-y-2"}>
+                        <li>
+                          Prenota l’opera per 7 giorni versando solo il 5%. <br />
+                          <span className={"text-sm"}>(Se non concludi l’acquisto, ti rimborsiamo tutto.)</span>
+                        </li>
+                        <li>
+                          Richiedi il prestito. <br />
+                          <span className={"text-sm"}>(Soggetto ad approvazione dell'istituto di credito.)</span>
+                        </li>
+                        <li>Concludi l’acquisto e transazione su artpay.</li>
+                      </ol>
+                      <p className={"mt-6 text-xs"}>
+                        <a href="#" className={" text-primary underline"}>
+                          Vuoi saperne di più? Leggi qui
+                        </a>
+                      </p>
+                    </div>
+                  </Box>
+                  <Divider sx={{ mb: 3 }} />
+                </>
+              )}
               <Box
                 display="flex"
                 flexDirection={{ xs: "column", sm: "row" }}

@@ -64,6 +64,8 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({ title = "Opere acquistate
         setOrders(ordersToOrderHistoryCardProps(orders));
       })
       .catch((e) => snackbar.error(e));
+
+
   }, []);
 
   return (
@@ -91,11 +93,17 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({ title = "Opere acquistate
         ))
       ) : (
         <div>
-          <div className={"flex gap-8 my-12 overflow-x-hidden"}>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i}  />
-            ))}
-          </div>
+          {orders?.length === 0 ? (
+            <div className={'text-lg text-secondary'}>
+              Non ci sono transazioni in corso
+            </div>
+          ) : (
+            <div className={"flex gap-8 my-12 overflow-x-hidden"}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i}  />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </Grid>

@@ -59,7 +59,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         {!isReady && !profile ? (<ProfileSettingsSkeleton />) : (
           <ProfileSettings />
         )}
-        <OrdersHistory mode={"all"} title={'La tua collezione di opere acquistate'} />
+        <OrdersHistory mode={["completed"]} title={'La tua collezione di opere acquistate'} />
       </section>
     </DefaultLayout>
   );

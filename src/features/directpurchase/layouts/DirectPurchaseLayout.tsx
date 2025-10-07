@@ -13,7 +13,7 @@ import Tooltip from "../../cdspayments/components/ui/tooltip/ToolTip.tsx";
 import CountdownTimer from "../../../components/CountdownTimer.tsx";
 
 const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
-  const { pendingOrder, loading, subtotal, artworks, requireInvoice, handleRequireInvoice, isSaving, userProfile, orderMode, paymentsReady } = useDirectPurchase();
+  const { pendingOrder, loading, subtotal, artworks, requireInvoice, handleRequireInvoice, isSaving, userProfile, orderMode } = useDirectPurchase();
     useDirectPurchase();
 
   const getExpiryDate = (): Date => {
@@ -96,7 +96,7 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
                     </div>
                   </Box>
                 ))}
-                {isReedemPurchase ? (
+                {isReedemPurchase && pendingOrder?.payment_method_title.includes('Blocco opera') ? (
                   <div className={"space-y-4"}>
                     <div className={"space-y-1"}>
                       <p className={'text-secondary'}>Scadenza della prenotazione</p>
@@ -188,7 +188,7 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
               </div>
             </>
           )}
-          {pendingOrder?.status != "pending" && (
+          {orderMode != "loan" && (
             <PaymentProviderCard className={"w-full mb-6"} backgroundColor={"bg-[#FAFAFB]"}>
               <p className={"flex gap-2"}>
                 <button

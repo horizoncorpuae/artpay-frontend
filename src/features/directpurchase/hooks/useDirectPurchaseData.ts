@@ -235,7 +235,7 @@ export const useDirectPurchaseData = () => {
 
     const getOrderFunction =
       orderMode === "redeem" || urlParams.order_id
-        ? data.getOrder(+urlParams.order_id)
+        ? data.getOrder(+(urlParams?.order_id ?? 0))
         : orderMode === "onHold"
           ? data.getOnHoldOrder()
           : data.getPendingOrder();

@@ -1,13 +1,12 @@
 import DefaultLayout from "../components/DefaultLayout.tsx";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import DisplayImage from "../components/DisplayImage.tsx";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useData } from "../hoc/DataProvider.tsx";
 import { Order } from "../types/order.ts";
 import { ArtworkCardProps } from "../components/ArtworkCard.tsx";
 import { artworksToGalleryItems } from "../utils.ts";
-import CountdownTimer from "../components/CountdownTimer.tsx";
 
 const OrderCompleted = () => {
   const { order_id } = useParams<{ order_id: string }>();
@@ -94,7 +93,7 @@ const OrderCompleted = () => {
 
   return (
     <DefaultLayout authRequired>
-      <div className={"flex-1 flex min-h-[600px] justify-between mb-24"}>
+      <div className={"flex-1 flex flex-col min-h-[600px] justify-between mb-24 pt-35 md:pt-0 px-8"}>
         <div className={"order-details"}>
           <div className={"flex flex-col  "}>
             <div className={"flex space-x-2 items-center mb-12"}>

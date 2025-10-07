@@ -283,3 +283,14 @@ export type BankTransferAction = {
   };
   type: "display_bank_transfer_instructions";
 };
+
+export type PaymentMethod = {
+  id: string;
+  title: string;
+  description: string;
+  enabled: boolean;
+};
+
+export type PaymentMethodsResponse = {
+  available_methods: PaymentMethod[];
+};

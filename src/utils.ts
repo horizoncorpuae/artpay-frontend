@@ -162,7 +162,7 @@ export const orderToOrderHistoryCardProps = (order: Order): OrderHistoryCardProp
     formattePrice: `€ ${order.total}`,
     galleryName: galleryName || "",
     purchaseDate: datePaid,
-    purchaseMode: order.payment_method || "",
+    purchaseMode: order.payment_method_title || "",
     waitingPayment: order.status === "on-hold" && order.payment_method === "Stripe SEPA",
     subtitle: "",
     title: orderDesc || lineItem?.name || "Opera senza titolo",

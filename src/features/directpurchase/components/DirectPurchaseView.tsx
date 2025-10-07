@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef, useEffect, useState, useCallback } from "react";
+import { ReactNode, useRef, useEffect, useState, useCallback } from "react";
 import { useAuth } from "../../../hoc/AuthProvider.tsx";
 import { useData } from "../../../hoc/DataProvider.tsx";
 import { areBillingFieldsFilled } from "../../../utils.ts";
@@ -14,22 +14,17 @@ import DirectPurchaseLayout from "../layouts/DirectPurchaseLayout.tsx";
 import PaymentsSelection from "./PaymentsSelection.tsx";
 import PaymentProviderCard from "../../cdspayments/components/ui/paymentprovidercard/PaymentProviderCard.tsx";
 import BillingDataPreview from "../../../components/BillingDataPreview.tsx";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BankTransfer } from "../../cdspayments/components/banktransfer";
 import PaymentStatusPlaceholder from "./PaymentStatusPlaceholder.tsx";
-import SantanderCard from "../../cdspayments/components/ui/santandercard/SantanderCard.tsx";
 import SantanderIcon from "../../../components/icons/SantanderIcon.tsx";
-import AgreementCheckBox from "../../cdspayments/components/ui/agreementcheckbox/AgreementCheckBox.tsx";
-import ArtpayButton from "../../cdspayments/components/ui/artpaybutton/ArtpayButton.tsx";
 import Checkbox from "../../../components/Checkbox.tsx";
-import { useDialogs } from "../../../hoc/DialogProvider.tsx";
 import usePaymentStore from "../../cdspayments/stores/paymentStore.ts";
 
 const DirectPurchaseView = () => {
   const auth = useAuth();
   const data = useData();
   const stripe = useStripe();
-  const dialogs = useDialogs();
   const navigate = useNavigate();
   const { refreshOrders } = usePaymentStore();
   const checkoutButtonRef = useRef<HTMLButtonElement>(null);
@@ -41,9 +36,6 @@ const DirectPurchaseView = () => {
     orderTotal?: string;
   }>({ status: null });
 
-  const [shouldBlock, setShouldBlock] = useState(false);
-  const isBlockingRef = useRef(false);
-  const isMountedRef = useRef(false);
 
   const {
     // State
@@ -144,33 +136,29 @@ const DirectPurchaseView = () => {
   };
 
   const handleSantanderLoanRequest = () => {
-    setShouldBlock(false); // Disabilita il blocco prima di procedere
-    isBlockingRef.current = false;
+
     handleUpdateCustomerNote("Richiesta prestito in corso", true);
   };
 
   const handleLoanCompleted = () => {
-    setShouldBlock(false); // Disabilita il blocco prima di procedere
-    isBlockingRef.current = false;
+
     handleUpdateCustomerNote("Ottenuto", false);
   };
 
   // Wrapping di onCancelPaymentMethod per disabilitare il blocco
   const handleCancelPaymentMethod = useCallback(() => {
-    setShouldBlock(false);
-    isBlockingRef.current = false;
+
     onCancelPaymentMethod();
   }, [onCancelPaymentMethod]);
 
   // Wrapping di handleSubmitCheckout per disabilitare il blocco
   const handleCheckout = useCallback(() => {
-    setShouldBlock(false);
-    isBlockingRef.current = false;
+
     handleSubmitCheckout();
   }, [handleSubmitCheckout]);
 
   // Funzione per annullare l'ordine
-  const cancelOrder = useCallback(async () => {
+ /* const cancelOrder = useCallback(async () => {
     if (pendingOrder?.id) {
       try {
         await data.setOrderStatus(pendingOrder.id, "cancelled");
@@ -180,141 +168,9 @@ const DirectPurchaseView = () => {
         console.error("Error cancelling order:", error);
       }
     }
-  }, [pendingOrder?.id, data, refreshOrders]);
+  }, [pendingOrder?.id, data, refreshOrders]);*/
 
-  // Abilita il blocco solo quando siamo in modalità loan e l'ordine è pending
-  useEffect(() => {
-    const newBlockState = orderMode === "loan" && pendingOrder?.status === "pending";
 
-    if (newBlockState !== shouldBlock) {
-      setShouldBlock(newBlockState);
-      isBlockingRef.current = newBlockState;
-    }
-  }, [orderMode, pendingOrder?.status, shouldBlock]);
-
-  // Segna che il componente è stato montato
-  useEffect(() => {
-    isMountedRef.current = true;
-  }, []);
-
-  // Intercetta navigazione con history API e popstate
-  useEffect(() => {
-    if (!shouldBlock || !isMountedRef.current) return;
-
-    // Blocca il tasto indietro del browser
-    const handlePopState = async (e: PopStateEvent) => {
-      e.preventDefault();
-
-      // Ripristina lo stato corrente senza triggering l'intercetta
-      isBlockingRef.current = false;
-      window.history.pushState(null, "", window.location.href);
-      isBlockingRef.current = true;
-
-      const confirmed = await dialogs.yesNo(
-        "Vuoi davvero uscire?",
-        "Se esci da questa pagina, la tua prenotazione verrà annullata. Sei sicuro di voler continuare?",
-        {
-          txtYes: "Sì, annulla prenotazione",
-          txtNo: "No, resta qui",
-          invertColors: true,
-        }
-      );
-
-      if (confirmed) {
-        isBlockingRef.current = false;
-        setShouldBlock(false);
-        await cancelOrder();
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 100);
-      }
-    };
-
-    // Intercetta pushState per catturare navigazioni programmatiche
-    const originalPushState = window.history.pushState;
-
-    window.history.pushState = function (...args) {
-      // Non intercettare se isBlockingRef è false (stiamo facendo noi il push)
-      if (!isBlockingRef.current) {
-        return originalPushState.apply(window.history, args);
-      }
-
-      // Mostra dialog e aspetta conferma
-      dialogs
-        .yesNo(
-          "Vuoi davvero uscire?",
-          "Se esci da questa pagina, la tua prenotazione verrà annullata. Sei sicuro di voler continuare?",
-          {
-            txtYes: "Sì, annulla prenotazione",
-            txtNo: "No, resta qui",
-            invertColors: true,
-          }
-        )
-        .then(async (confirmed) => {
-          if (confirmed) {
-            isBlockingRef.current = false;
-            setShouldBlock(false);
-            await cancelOrder();
-            setTimeout(() => {
-              navigate('/dashboard');
-            }, 100);
-          }
-        });
-    };
-
-    // Aggiungi uno stato alla history per poter intercettare il back button
-    isBlockingRef.current = false;
-    window.history.pushState(null, "", window.location.href);
-    isBlockingRef.current = true;
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-      window.history.pushState = originalPushState;
-    };
-  }, [shouldBlock, dialogs, cancelOrder]);
-
-  // Gestione chiusura scheda/finestra browser
-  useEffect(() => {
-    if (!shouldBlock) return;
-
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = "";
-
-      // Prova ad annullare l'ordine con fetch keepalive (sincrono)
-      if (pendingOrder?.id && auth.isAuthenticated) {
-        const authToken = auth.getAuthToken();
-        if (authToken) {
-          try {
-            // Usa fetch con keepalive per garantire che la richiesta venga completata
-            fetch(`${import.meta.env.VITE_SERVER_URL}/wp-json/wc/v3/orders/${pendingOrder.id}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: authToken,
-              },
-              body: JSON.stringify({ status: "cancelled" }),
-              keepalive: true, // Mantiene la richiesta attiva anche dopo la chiusura
-            }).catch(() => {
-              // Ignora errori, la pagina si sta chiudendo
-            });
-          } catch (error) {
-            // Ignora errori silenziosamente
-          }
-        }
-      }
-
-      return "";
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [shouldBlock, pendingOrder?.id, auth]);
 
   /*if (noPendingOrder && !pendingOrder && ) {
     return (
@@ -359,7 +215,7 @@ const DirectPurchaseView = () => {
     // Se orderMode è "loan", controlla prima lo stato dell'ordine
     if (orderMode === "loan") {
       // Se l'ordine è completato, mostra il risultato
-      if (pendingOrder?.status === "completed" || pendingOrder?.status === "failed") {
+      /*if (pendingOrder?.status === "completed" || pendingOrder?.status === "failed") {
         return (
           <PaymentStatusPlaceholder
             status={pendingOrder.status}
@@ -367,7 +223,7 @@ const DirectPurchaseView = () => {
             orderTotal={pendingOrder?.total}
           />
         );
-      }
+      }*/
 
       // Altrimenti mostra il form di pagamento
       return (
@@ -388,14 +244,10 @@ const DirectPurchaseView = () => {
       // Se l'ordine è già completato, mostra il messaggio di successo
       // @ts-expect-error "si si ok"
       if (pendingOrder?.status === "completed" || pendingOrder?.status === "failed") {
-        return (
-          <PaymentStatusPlaceholder
-            status={pendingOrder.status}
-            orderNumber={pendingOrder?.id}
-            orderTotal={pendingOrder?.total}
-          />
-        );
+          navigate(`/complete-order/${pendingOrder.id}`);
       }
+
+      console.log(isReedemPurchase);
 
       if (isReedemPurchase) {
         return (
@@ -409,7 +261,8 @@ const DirectPurchaseView = () => {
               if (
                 !pendingOrder.customer_note.includes("Richiesta prestito in corso") &&
                 !pendingOrder.customer_note.includes("Ottenuto") &&
-                !pendingOrder.customer_note.includes("Documentazione caricata")
+                !pendingOrder.customer_note.includes("Documentazione caricata") &&
+                !pendingOrder.payment_method.includes("bank_transfer")
               ) {
                 return (
                   <PaymentProviderCard
@@ -465,7 +318,8 @@ const DirectPurchaseView = () => {
               // Caso 2: Prestito ottenuto o documentazione caricata - mostra BankTransfer
               if (
                 pendingOrder.customer_note.includes("Ottenuto") ||
-                pendingOrder.customer_note.includes("Documentazione caricata")
+                pendingOrder.customer_note.includes("Documentazione caricata") ||
+                pendingOrder.payment_method.includes( "bank_transfer")
               ) {
                 return (
                   <PaymentProviderCard>
@@ -522,6 +376,18 @@ const DirectPurchaseView = () => {
               paymentIntent={paymentIntent}
               thankYouPage={thankYouPage}
             />
+          );
+          case "bank_transfer":
+          return (
+            <ContentCard
+              title="Pagamento"
+              icon={<PiCreditCardThin size="28px" />}
+              contentPadding={0}
+              contentPaddingMobile={0}>
+              <PaymentProviderCard>
+                <BankTransfer order={pendingOrder} handleRestoreOrder={handleCancelPaymentMethod} />
+              </PaymentProviderCard>
+            </ContentCard>
           );
         default:
           return <PaymentsSelection paymentMethod={paymentMethod} onChange={onChangePaymentMethod} />;
@@ -612,6 +478,7 @@ const DirectPurchaseView = () => {
             localStorage.removeItem("completed-order");
             localStorage.removeItem("showCheckout");
             localStorage.removeItem("checkoutUrl");
+            navigate(`/complete-order/${pendingOrder?.id}`);
             break;
 
           case "requires_capture":
