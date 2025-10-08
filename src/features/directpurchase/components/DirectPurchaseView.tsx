@@ -111,17 +111,17 @@ const DirectPurchaseView = () => {
 
     try {
       // Aggiorna le customer note su WooCommerce
-      await data.updateOrder(pendingOrder.id, {
+      const updatedOrder = await data.updateOrder(pendingOrder.id, {
         customer_note: note,
       });
 
       // Aggiorna anche lo stato locale
       updatePageData({
-        pendingOrder: {
-          ...pendingOrder,
-          customer_note: note,
-        },
+        pendingOrder: updatedOrder,
       });
+
+      // Refresh ordini in PaymentDraw
+      refreshOrders();
 
       // Apri Santander in una nuova finestra se richiesto
       if (openSantander) {
