@@ -9,6 +9,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import FaqComponent from "../features/directpurchase/components/FaqComponent.tsx";
 import CountdownTimer from "../components/CountdownTimer.tsx";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
+import { Button } from "@mui/material";
 
 export interface ArtworkReservedProps {}
 
@@ -222,6 +223,22 @@ const ArtworkReserved: React.FC<ArtworkReservedProps> = ({}) => {
               <p className={'text-secondary'}>La tua prenotazione scade tra</p>
               <div className="mt-6">
                 <CountdownTimer expiryDate={getExpiryDate()} />
+              </div>
+              <div className={"gap-4 items-center mt-12 flex flex-col"}>
+                <Button
+                  className={"w-fit"}
+                  variant={"contained"}
+                  onClick={() => {
+                    navigate("/profile/history-orders");
+                  }}>
+                  Vai ai miei ordini
+                </Button>
+                <Button
+                  onClick={() => {
+                    navigate("/dashboard");
+                  }}>
+                  Torna al feed
+                </Button>
               </div>
             </div>
           </div>

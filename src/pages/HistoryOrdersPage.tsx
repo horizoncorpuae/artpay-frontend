@@ -24,7 +24,7 @@ const HistoryOrdersPage = () => {
           <div className={' border-t border-[#CDCFD3] pt-12'}>
             <OrdersHistory mode={["on-hold", "pending"]} title={'Transazioni in corso'} />
           </div>
-          <div className={'bg-[#EC6F7B26] mt-12 flex justify-between items-center p-6 rounded-lg leading-[125%]'}>
+          <div className={'bg-[#EC6F7B26] mt-12 flex flex-col gap-4 md:flex-row justify-between items-center p-6 rounded-lg leading-[125%]'}>
             <span>Le tue transazioni non andate a buon fine</span>
             <Button variant={'contained'} onClick={() => navigate('/profile/history-failed-orders')}>Vedi Storico</Button>
           </div>

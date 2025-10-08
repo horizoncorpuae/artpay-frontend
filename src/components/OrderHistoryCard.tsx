@@ -2,19 +2,19 @@ import React from "react";
 import OrderCard from "./OrderCard.tsx";
 import { Button } from "@mui/material";
 import { OrderStatus } from "../types/order.ts";
-import CountdownTimer from "./CountdownTimer.tsx";
+import TransactionCard from "../features/directpurchase/components/transaction-card.tsx";
 
 export interface OrderHistoryCardProps {
   id: number;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   galleryName: string;
   orderType?: string;
   formattePrice: string;
   purchaseDate: string;
   dateCreated: string;
   purchaseMode: string;
-  waitingPayment: boolean;
+  waitingPayment?: boolean;
   imgSrc: string;
   status: OrderStatus;
   onClick?: (orderId: number) => Promise<void>;
@@ -34,88 +34,26 @@ const OrderHistoryCard: React.FC<OrderHistoryCardProps> = ({
   onClick,
   orderType,
   status,
-  expiryDate,
   customer_note,
+  expiryDate,
 }) => {
-  const getExpiryDate = (): Date => {
-    // Se abbiamo una expiryDate dall'ordine, usala
-    if (expiryDate) {
-      return new Date(expiryDate);
-    }
-    // Altrimenti calcola 7 giorni dalla data di creazione dell'ordine
-    if (dateCreated) {
-      const createdDate = new Date(dateCreated);
-      const calculatedExpiry = new Date(createdDate);
-      calculatedExpiry.setDate(createdDate.getDate() + 7);
-      return calculatedExpiry;
-    }
-    // Fallback: 7 giorni da ora se non abbiamo nessuna data
-    const now = new Date();
-    const fallbackExpiry = new Date(now);
-    fallbackExpiry.setDate(now.getDate() + 7);
-    return fallbackExpiry;
-  };
-
   if (status != "completed")
     return (
-      <div className="flex flex-col h-full border border-[#E2E6FC] rounded-lg max-w-md">
-        <div className={"card-header flex p-4 gap-3 items-center justify-between border-b border-[#E2E6FC]"}>
-          <div className="flex gap-3 items-center">
-            <div className={"overflow-hidden size-8 rounded-md"}>
-              <img src={imgSrc} alt="Img order" className={"object-cover h-full w-full"} />
-            </div>
-            <div className={"flex flex-col gap-1"}>
-              <span>{title}</span>
-            </div>
-          </div>
-          <div className={"flex flex-col gap-1"}>
-            <strong>{formattePrice}</strong>
-          </div>
-        </div>
-        <div className={"card-body flex-1 min-h-20 p-4 flex-col space-y-4"}>
-          <div className={"flex flex-col "}>
-            <span>Tipo:</span>
-            <span className={"text-secondary"}>{orderType}</span>
-          </div>
-
-          {purchaseMode.includes("Blocco opera") && (
-            <div className={"space-y-1"}>
-              <p className={"text-secondary"}>Scadenza della prenotazione</p>
-              <CountdownTimer expiryDate={getExpiryDate()} />
-            </div>
-          )}
-
-          {status !== "failed" ? (
-            <div className={"w-full rounded-sm bg-[#FED1824D] p-4 space-y-2 flex flex-col"}>
-              {purchaseMode?.includes("Blocco opera") && (
-                <span className={"px-2 py-1 rounded-full text-xs font-medium bg-[#6576EE] text-white w-fit"}>
-                Opera prenotata
-              </span>
-              )}
-              <div className={"flex flex-col gap-1"}>
-                <span className={"text-secondary"}>Stato</span>
-                <span>{customer_note}</span>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className={"w-full rounded-sm bg-[#EC6F7B40] p-4 space-y-2 flex flex-col"}>
-                <span className={"px-2 py-1 rounded-full text-xs font-medium bg-[#EC6F7B] text-white w-fit"}>
-                  Transazione fallita
-                </span>
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className={"card-footer border-t border-[#E2E6FC] p-4"}>
-          {onClick && (
-            <Button sx={{ mt: 2, width: "100%" }} onClick={() => onClick(id)} variant="outlined">
-              Gestisci transazione
-            </Button>
-          )}
-        </div>
-      </div>
+      <TransactionCard
+        orderType={orderType}
+        customer_note={customer_note}
+        id={id}
+        title={title}
+        galleryName={galleryName}
+        formattePrice={formattePrice}
+        purchaseDate={purchaseDate}
+        dateCreated={dateCreated}
+        purchaseMode={purchaseMode}
+        imgSrc={imgSrc}
+        status={status}
+        expiryDate={expiryDate}
+        onClick={onClick}
+      />
     );
 
   return (

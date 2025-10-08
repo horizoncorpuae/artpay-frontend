@@ -10,7 +10,7 @@ interface PaymentsSelectionProps {
 
 const PaymentsSelection = ({ paymentMethod, onChange }: PaymentsSelectionProps) => {
 
-  const { orderMode, pendingOrder } = useDirectPurchase();
+  const { orderMode, pendingOrder, loading } = useDirectPurchase();
 
   // Calcola il totale dell'ordine (incluse commissioni)
   const orderTotal = Number(pendingOrder?.total || 0);
@@ -134,6 +134,52 @@ const PaymentsSelection = ({ paymentMethod, onChange }: PaymentsSelectionProps) 
       ),
     },
   };
+
+  if (loading || !pendingOrder) {
+    return (
+      <ContentCard
+        title="Metodi di pagamento"
+        icon={<PiCreditCardThin size="28px" />}
+        contentPadding={0}
+        contentPaddingMobile={0}>
+        <div className="space-y-8 animate-pulse">
+          <div className="space-y-4">
+            <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+            <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+            <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              </div>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ContentCard>
+    );
+  }
 
   return (
     <ContentCard

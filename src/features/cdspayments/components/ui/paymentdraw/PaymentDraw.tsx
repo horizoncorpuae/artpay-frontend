@@ -3,19 +3,35 @@ import { useEffect, useState } from "react";
 import { useData } from "../../../../../hoc/DataProvider.tsx";
 import { Order } from "../../../../../types/order.ts";
 import { Close } from "@mui/icons-material";
-import { useNavigate } from "../../../../../utils.ts";
+import { orderToOrderHistoryCardProps, useNavigate } from "../../../../../utils.ts";
 import { useAuth } from "../../../../../hoc/AuthProvider.tsx";
 import { User } from "../../../../../types/user.ts";
+import TransactionCard from "../../../../directpurchase/components/transaction-card.tsx";
 
 const PaymentDraw = () => {
   const data = useData();
   const auth = useAuth();
+  const navigate = useNavigate();
   const { openDraw, setPaymentData, refreshTimestamp } = usePaymentStore();
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
   const user: User = JSON.parse(localStorage.getItem("artpay-user") as string);
   console.log(orders);
+
+  const handleOrderClick = async (orderId: number) => {
+    setPaymentData({ openDraw: false });
+
+    const order = orders?.find(o => o.id === orderId);
+    if (!order) return;
+
+    if (order.status === "completed") {
+      navigate(`/complete-order/${order.id}`);
+    } else if (order.created_via == "gallery_auction") {
+      navigate(`/acquisto-esterno?order=${order.id}`);
+    } else {
+      navigate(`/completa-acquisto/${order.id}`);
+    }
+  };
 
   useEffect(() => {
     const getOrders = async () => {
@@ -30,7 +46,7 @@ const PaymentDraw = () => {
 
         if (!listOrders) throw new Error("Order list not found");
 
-        setOrders(listOrders.filter(order => order.created_via !== "mvx_vendor_order"));
+        setOrders(listOrders.filter(order => order.created_via !== "mvx_vendor_order").filter(order => order.status !== "completed"));
       } catch (e) {
         console.error(e);
       } finally {
@@ -63,78 +79,27 @@ const PaymentDraw = () => {
         {!loading && orders && orders.length > 0 ? (
           <ul className={"flex flex-col gap-6 mt-4 px-8"}>
             {orders
-              .slice(0, 10)
+              .slice(0, 20)
               .map((order) => {
-                const orderDesc: string[] = order?.meta_data
-                  .filter((data) => data.key == "original_order_desc")
-                  .map((data) => data.value)
-
-                const subtotal = Number(order.total);
+                const formattedOrder = orderToOrderHistoryCardProps(order);
 
                 return (
-                  <li key={order.id} className={"border border-[#E2E6FC] p-4 rounded-lg space-y-4 max-w-sm"}>
-                    <div className={"flex items-center justify-between"}>
-                      <p className={"text-secondary"}>{orderDesc.length > 0 ? orderDesc : order?.line_items[0].name}</p>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        order.status === "completed"
-                          ? "bg-green-100 text-green-800"
-                          : order.status === "on-hold"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : order.status === "pending"
-                          ? "bg-blue-100 text-blue-800"
-                          : order.status === "processing"
-                          ? "bg-purple-100 text-purple-800"
-                          : order.status === "cancelled"
-                          ? "bg-red-100 text-red-800"
-                          : order.status === "failed"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}>
-                        {order.status === "completed"
-                          ? "Completato"
-                          : order.status === "on-hold"
-                          ? "Opera prenotata"
-                          : order.status === "pending"
-                          ? "In sospeso"
-                          : order.status === "processing"
-                          ? "Elaborazione"
-                          : order.status === "cancelled"
-                          ? "Annullato"
-                          : order.status === "failed"
-                          ? "Fallito"
-                          : order.status}
-                      </span>
-                    </div>
-                    <div className={"flex flex-col gap-1"}>
-                      <span className={"text-secondary"}>Tipo</span>
-                      <span className={"text-tertiary"}>{order.created_via == "gallery_auction" ? "Casa D'Asta" : "Galleria"}</span>
-                    </div>
-                    <div className={"flex flex-col gap-1"}>
-                      <span className={"text-secondary"}>Prezzo</span>
-                      <span className={"text-tertiary"}>€&nbsp;{subtotal.toFixed(2)}</span>
-                    </div>
-                      <div className={"mt-6 border-t border-[#E2E6FC] pt-4"}>
-                        <button
-                          onClick={() => {
-                            setPaymentData({
-                              openDraw: !openDraw,
-                            });
-
-                            // Se l'ordine è completato, vai alla pagina di riepilogo
-                            if (order.status === "completed") {
-                              navigate(`/complete-order/${order.id}`);
-                            } else if (order.created_via == "gallery_auction") {
-                              navigate(`/acquisto-esterno?order=${order.id}`);
-                            } else {
-                              navigate(`/completa-acquisto/${order.id}`);
-                            }
-                          }}
-                          className={
-                            "cursor-pointer rounded-full bg-white border border-primary  text-primary py-2 px-6 w-full hover:text-primary-hover hover:border-primary-hover transition-all"
-                          }>
-                          Gestisci transazione
-                        </button>
-                      </div>
+                  <li key={order.id} className={" max-w-sm"}>
+                    <TransactionCard
+                      orderType={formattedOrder.orderType}
+                      customer_note={formattedOrder.customer_note}
+                      id={formattedOrder.id}
+                      title={formattedOrder.title}
+                      galleryName={formattedOrder.galleryName}
+                      formattePrice={formattedOrder.formattePrice}
+                      purchaseDate={formattedOrder.purchaseDate}
+                      dateCreated={formattedOrder.dateCreated}
+                      purchaseMode={formattedOrder.purchaseMode}
+                      imgSrc={formattedOrder.imgSrc}
+                      status={formattedOrder.status}
+                      expiryDate={formattedOrder.expiryDate}
+                      onClick={handleOrderClick}
+                    />
                   </li>
                 );
               })}

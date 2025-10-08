@@ -47,7 +47,7 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({ title = "Opere acquistate
   const [orders, setOrders] = useState<OrderHistoryCardProps[]>();
 
   // Determina se usare 3 colonne (per pending/on-hold) o 2 colonne
-  const useThreeColumns = mode.includes("pending") || mode.includes("on-hold") || mode.includes("failed");
+  const useThreeColumns = mode.includes("pending") || mode.includes("on-hold") || mode.includes("failed") || mode.includes("cancelled");
 
   const handleClick = async (orderId: number) => {
     navigate(`/completa-acquisto/${orderId}`);

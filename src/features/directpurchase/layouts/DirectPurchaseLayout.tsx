@@ -1,8 +1,8 @@
 import Navbar from "../../cdspayments/components/ui/navbar/Navbar.tsx";
 import SkeletonOrderDetails from "../../cdspayments/components/paymentmethodslist/SkeletonOrderDetails.tsx";
 import PaymentProviderCard from "../../cdspayments/components/ui/paymentprovidercard/PaymentProviderCard.tsx";
-import { Link, NavLink } from "react-router-dom";
-import { ReactNode } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { ReactNode, useState } from "react";
 import { useDirectPurchase } from "../contexts/DirectPurchaseContext.tsx";
 import { Box, Typography } from "@mui/material";
 import DisplayImage from "../../../components/DisplayImage.tsx";
@@ -11,19 +11,38 @@ import UserIcon from "../../../components/icons/UserIcon.tsx";
 import FaqComponent from "../components/FaqComponent.tsx";
 import Tooltip from "../../cdspayments/components/ui/tooltip/ToolTip.tsx";
 import CountdownTimer from "../../../components/CountdownTimer.tsx";
+import useDirectPurchaseStore from "../stores/directPurchaseStore.ts";
+import { useData } from "../../../hoc/DataProvider.tsx";
+import { useDialogs } from "../../../hoc/DialogProvider.tsx";
 
 const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
-  const { pendingOrder, loading, subtotal, artworks, requireInvoice, handleRequireInvoice, isSaving, userProfile, orderMode } = useDirectPurchase();
-    useDirectPurchase();
+  const {
+    pendingOrder,
+    loading,
+    subtotal,
+    artworks,
+    requireInvoice,
+    handleRequireInvoice,
+    isSaving,
+    userProfile,
+    orderMode,
+  } = useDirectPurchase();
+
+  const navigate = useNavigate();
+  const data = useData();
+  const dialogs = useDialogs();
+  const { reset } = useDirectPurchaseStore();
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const getExpiryDate = (): Date => {
     // Prima prova a usare la data di scadenza dai meta_data
     if (pendingOrder?.meta_data) {
-      const expiryDateMeta = pendingOrder.meta_data.find((m) =>
-        m.key.toLowerCase() === "_expiry_date" ||
-        m.key.toLowerCase() === "expiry_date" ||
-        m.key.toLowerCase() === "_reservation_expiry" ||
-        m.key.toLowerCase() === "reservation_expiry"
+      const expiryDateMeta = pendingOrder.meta_data.find(
+        (m) =>
+          m.key.toLowerCase() === "_expiry_date" ||
+          m.key.toLowerCase() === "expiry_date" ||
+          m.key.toLowerCase() === "_reservation_expiry" ||
+          m.key.toLowerCase() === "reservation_expiry",
       )?.value;
 
       if (expiryDateMeta) {
@@ -46,6 +65,50 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
     return fallbackExpiry;
   };
 
+  const handleCancelTransaction = async () => {
+    if (!pendingOrder?.id) return;
+
+    const confirmed = await dialogs.yesNo(
+      "Richiesta annullamento",
+      "Sei sicuro di voler richiedere l'annullamento di questa transazione? Verrà inviata una richiesta di cancellazione e rimborso alla galleria.",
+      {
+        txtYes: "Sì, richiedi annullamento",
+        txtNo: "No, torna indietro"
+      }
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setIsCancelling(true);
+
+      // Invia richiesta di cancellazione alla galleria
+      if (pendingOrder.line_items && pendingOrder.line_items.length > 0) {
+        const productId = pendingOrder.line_items[0].product_id;
+        const artworkName = pendingOrder.line_items[0].name;
+
+        await data.sendQuestionToVendor({
+          product_id: productId,
+          question: `RICHIESTA DI CANCELLAZIONE E RIMBORSO\n\nOrdine #${pendingOrder.id}\nOpera: ${artworkName}\n\nIl cliente richiede la cancellazione della transazione e il rimborso dell'acconto versato. Si prega di procedere con l'annullamento dell'ordine e il rilascio della prenotazione dell'opera.`,
+        });
+      }
+
+      // Mostra messaggio di conferma
+      await dialogs.okOnly(
+        "Richiesta inviata",
+        "La richiesta di cancellazione e rimborso è stata inviata alla galleria. Riceverai una notifica quando la richiesta sarà elaborata."
+      );
+
+    } catch (error) {
+      console.error("Error sending cancellation request:", error);
+      await dialogs.okOnly(
+        "Errore",
+        "Si è verificato un errore durante l'invio della richiesta. Riprova più tardi."
+      );
+    } finally {
+      setIsCancelling(false);
+    }
+  };
 
   const isReedemPurchase = pendingOrder?.status === "on-hold" && pendingOrder?.created_via === "rest-api";
 
@@ -57,9 +120,9 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
         <section className="px-8 mb-6 container lg:px-2">
           {orderMode === "loan" ? (
             <h2 className="text-4xl font-normal flex flex-col mb-13">
-                <span className={" leading-[125%] text-primary font-light"}>Prenota</span>
+              <span className={" leading-[125%] text-primary font-light"}>Prenota</span>
             </h2>
-            ) : (
+          ) : (
             <h2 className="text-4xl font-normal flex flex-col mb-13">
               {pendingOrder ? (
                 <>
@@ -73,7 +136,7 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
           )}
         </section>
         <main className="flex-1 bg-white rounded-t-3xl pb-24 shadow-custom-variant p-8 md:p-8">
-          {loading  ? (
+          {loading ? (
             <SkeletonOrderDetails />
           ) : (
             <>
@@ -112,31 +175,35 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
                     </div>
                   </Box>
                 ))}
-                {isReedemPurchase && pendingOrder?.payment_method_title.includes('Blocco opera') ? (
+                {isReedemPurchase && pendingOrder?.payment_method_title.includes("Blocco opera") ? (
                   <div className={"space-y-4"}>
                     <div className={"space-y-1"}>
-                      <p className={'text-secondary'}>Scadenza della prenotazione</p>
+                      <p className={"text-secondary"}>Scadenza della prenotazione</p>
                       <CountdownTimer expiryDate={getExpiryDate()} />
                     </div>
-                    <div className={"w-full rounded-sm bg-[#FED1824D] p-4 space-y-2 flex flex-col"}>
-                      <span className={'px-2 py-1 rounded-full text-xs font-medium bg-[#6576EE] text-white w-fit'}>Opera prenotata</span>
-                       <div className={"flex flex-col gap-1"}>
-                         <span className={'text-secondary'}>Prestito</span>
-                         <span>{pendingOrder?.customer_note}</span>
-                       </div>
+                    <div className={`w-full rounded-sm p-4 space-y-2 flex flex-col ${pendingOrder?.customer_note.includes("Ottenuto") ? "bg-[#42B3964D]" : "bg-[#FED1824D] "}`}>
+                      <span className={"px-2 py-1 rounded-full text-xs font-medium bg-[#6576EE] text-white w-fit"}>
+                        Opera prenotata
+                      </span>
                       <div className={"flex flex-col gap-1"}>
-                         <span className={'text-secondary'}>Stato</span>
-                         <span>Pagamento da completare</span>
-                       </div>
+                        <span className={"text-secondary"}>Prestito</span>
+                        <span>{pendingOrder?.customer_note}</span>
+                      </div>
+                      <div className={"flex flex-col gap-1"}>
+                        <span className={"text-secondary"}>Stato</span>
+                        <span>Pagamento da completare</span>
+                      </div>
                     </div>
                   </div>
                 ) : (
                   <div className={"w-full rounded-sm bg-[#FED1824D] p-4 space-y-2 flex flex-col"}>
                     {pendingOrder?.status != "pending" && (
-                      <span className={'px-2 py-1 rounded-full text-xs font-medium bg-[#6576EE] text-white w-fit'}>{pendingOrder?.status}</span>
+                      <span className={"px-2 py-1 rounded-full text-xs font-medium bg-[#6576EE] text-white w-fit"}>
+                        {pendingOrder?.status}
+                      </span>
                     )}
                     <div className={"flex flex-col gap-1"}>
-                      <span className={'text-secondary'}>Stato</span>
+                      <span className={"text-secondary"}>Stato</span>
                       <span>{pendingOrder?.customer_note || "Pagamento da completare"}</span>
                     </div>
                   </div>
@@ -162,19 +229,26 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
                         Caparra
                       </Typography>
                       <Typography variant="body1">
-                        € {(subtotal * 0.05).toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        €{" "}
+                        {(subtotal * 0.05).toLocaleString("it-IT", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </Typography>
                       <p className={"mt-2 text-[#D49B38]"}>
                         Prenota l'opera per 7 giorni. La caparra ti verrà rimborsata al completamento del pagamento.
                       </p>
                       <div className={" text-secondary space-y-2 mt-6"}>
-                      <p>Come funziona?</p>
-                      <ol className={"list-decimal ps-5 space-y-2"}>
-                        <li>Prenota l'opera per 7 giorni versando solo il 5%. (Se non concludi l'acquisto, ti rimborsiamo tutto.</li>
-                        <li>Richiedi il prestito. Soggetto ad approvazione dell'istituto di credito.</li>
-                        <li>Concludi l'acquisto e transazione su artpay.</li>
-                      </ol>
-                    </div>
+                        <p>Come funziona?</p>
+                        <ol className={"list-decimal ps-5 space-y-2"}>
+                          <li>
+                            Prenota l'opera per 7 giorni versando solo il 5%. (Se non concludi l'acquisto, ti
+                            rimborsiamo tutto.
+                          </li>
+                          <li>Richiedi il prestito. Soggetto ad approvazione dell'istituto di credito.</li>
+                          <li>Concludi l'acquisto e transazione su artpay.</li>
+                        </ol>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -213,11 +287,11 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
                   } rounded-full border border-gray-300 px-3 cursor-pointer relative`}
                   onClick={() => handleRequireInvoice(!requireInvoice)}
                   disabled={isSaving}>
-                <span
-                  className={`block absolute rounded-full size-3 bg-white top-1/2 -translate-y-1/2 transition-all ${
-                    requireInvoice ? "right-0 -translate-x-full" : "left-0 translate-x-full"
-                  }`}
-                />
+                  <span
+                    className={`block absolute rounded-full size-3 bg-white top-1/2 -translate-y-1/2 transition-all ${
+                      requireInvoice ? "right-0 -translate-x-full" : "left-0 translate-x-full"
+                    }`}
+                  />
                 </button>
                 Hai bisogno di una fattura?
               </p>
@@ -225,7 +299,22 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
           )}
 
           {children}
-
+          {pendingOrder?.payment_method.includes("Acconto") && (
+            <div className={"flex flex-col items-center space-y-6 mt-12"}>
+              <p className={"leading-[125%] text-center"}>
+                Se interrompi la procedura con artpay l’opera non sarà più prenotata a tuo nome. Il costo dell’acconto
+                ti verrà rimborsato.
+              </p>
+              <button
+                className={
+                  "text-[#EC6F7B] artpay-button-style bg-[#FAFAFB] disabled:cursor-not-allowed disabled:opacity-65"
+                }
+                onClick={handleCancelTransaction}
+                disabled={loading || isCancelling}>
+                {isCancelling ? "Annullamento in corso..." : "Elimina Transazione"}
+              </button>
+            </div>
+          )}
           <div className={"border-t border-b border-[#D9DDFB] mt-18 py-6"}>
             <p className={"flex items-center gap-2"}>
               <span>
@@ -251,8 +340,11 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
               </span>
               Hai bisogno di aiuto?
             </p>
-            <Link to="/contatti" className={'text-[#808791] underline block mt-6'}>Scrivici</Link>
+            <Link to="/contatti" className={"text-[#808791] underline block mt-6"}>
+              Scrivici
+            </Link>
           </div>
+
           <FaqComponent />
         </main>
       </div>
