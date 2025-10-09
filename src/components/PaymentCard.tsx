@@ -196,6 +196,10 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
                   colorText: "#808791",
                 },
                 rules: {
+                  ".StripeElement": {
+                    border: "none",
+                    backgroundColor: paymentMethod == "klarna" ? "#FFE9EE" : "#EAF0FF",
+                  },
                   ".AccordionItem": {
                     border: "none",
                     backgroundColor: paymentMethod == "klarna" ? "#FFE9EE" : "#EAF0FF",
