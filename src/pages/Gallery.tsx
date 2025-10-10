@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, IconButton, Tab, Typography } from "@mui/material";
+import { Box, IconButton, Tab, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
 import TabPanel from "../components/TabPanel.tsx";
 import GalleryInfo, { GalleryInfoProps } from "../components/GalleryInfo.tsx";
 import { GalleryContactsProps } from "../components/GalleryContacts.tsx";
@@ -34,6 +34,8 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
   const navigate = useNavigate();
   const dialogs = useDialogs();
   const snackbars = useSnackbars();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [isReady, setIsReady] = useState(false);
   const [selectedTabPanel, setSelectedTabPanel] = useState(selectedTab);
@@ -43,6 +45,8 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
   const [galleryArtists, setGalleryArtists] = useState<ArtistCardProps[]>();
   const [favouriteGalleries, setFavouriteGalleries] = useState<number[]>();
   const [isFavourite, setIsFavourite] = useState(false);
+  const [hasCheckedFollow, setHasCheckedFollow] = useState(false);
+  const [showFollowTooltip, setShowFollowTooltip] = useState(false);
 
   const [galleryInfo, setGalleryInfo] = useState<GalleryInfoProps>();
 
@@ -74,6 +78,17 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
           social: { linkedin: gallery.social.linkdin, ...gallery.social },
         });
 
+        // Carica le favouriteGalleries subito per anticipare il follow automatico
+        if (auth.isAuthenticated) {
+          data.getFavouriteGalleries()
+            .then((favourites) => {
+              setFavouriteGalleries(favourites);
+            })
+            .catch((e) => {
+              console.error("Error fetching favourite galleries:", e);
+            });
+        }
+
         const getGalleryInfo = async () => {
           try {
             const artworks = await data.listArtworksForGallery(gallery.id.toString());
@@ -85,10 +100,6 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
             const artists = await data.listArtistsForGallery(gallery.id.toString());
             if (!artists) throw new Error("Error fetching artists");
             setGalleryArtists(artistsToGalleryItems(artists));
-
-            const favourites = await data.getFavouriteGalleries();
-            if (!favourites) throw new Error("Error fetching favourite galleries");
-            setFavouriteGalleries(favourites);
           } catch (e) {
             console.error(e);
             if (auth.isAuthenticated) {
@@ -99,11 +110,6 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
 
         getGalleryInfo();
 
-        if (favouriteGalleries?.length) {
-          if (favouriteGalleries.indexOf(gallery.id) !== -1) {
-            setIsFavourite(true);
-          }
-        }
         const galleryDescription = (gallery.shop?.description || "").split("\r\n").filter((val) => !!val);
         setGalleryInfo({ description: galleryDescription });
       })
@@ -119,6 +125,41 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
 
     // TODO: loadData
   }, [urlParams.slug]);
+
+  // Controlla se l'utente segue la galleria e gestisce il follow automatico
+  useEffect(() => {
+    if (!auth.isAuthenticated || !galleryContent?.id || !favouriteGalleries || hasCheckedFollow) {
+      return;
+    }
+
+    const isFollowing = favouriteGalleries.indexOf(galleryContent.id) !== -1;
+    setIsFavourite(isFollowing);
+
+    // Se l'utente non segue la galleria
+    if (!isFollowing) {
+      // Se non ha nessuna galleria seguita, seguila automaticamente
+      if (favouriteGalleries.length === 0) {
+        data.addFavouriteGallery(galleryContent.id.toString()).then(() => {
+          setIsFavourite(true);
+          snackbars.success("Hai iniziato a seguire questa galleria!", {
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: isMobile ? "center" : "right"
+            }
+          });
+        }).catch((e) => {
+          console.error("Error auto-following gallery:", e);
+        });
+      } else {
+        // Altrimenti mostra un tooltip sul bottone Follow
+        setShowFollowTooltip(true);
+        // Nascondi il tooltip dopo 5 secondi
+        setTimeout(() => setShowFollowTooltip(false), 5000);
+      }
+    }
+
+    setHasCheckedFollow(true);
+  }, [favouriteGalleries, galleryContent?.id, auth.isAuthenticated, hasCheckedFollow]);
 
   const handleSetFavourite = async (isFavourite: boolean) => {
     if (!auth.isAuthenticated) {
@@ -204,7 +245,29 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
           </div>
           <div className={"flex flex-col px-8 md:px-0 md:w-full"}>
             <div className={"flex items-center mb-2 md:mb-10"}>
-              <FollowButton isFavourite={isFavourite} onClick={handleSetFavourite} />
+              {auth.isAuthenticated && (
+                <Tooltip
+                  open={showFollowTooltip && !isFavourite}
+                  title="Segui questa galleria per vederla nel tuo feed!"
+                  placement="bottom-start"
+                  arrow
+                  slotProps={{
+                    popper: {
+                      modifiers: [
+                        {
+                          name: 'offset',
+                          options: {
+                            offset: [0, -8],
+                          },
+                        },
+                      ],
+                    },
+                  }}>
+                  <span>
+                    <FollowButton isFavourite={isFavourite} onClick={handleSetFavourite} />
+                  </span>
+                </Tooltip>
+              )}
               <Box flexGrow={1} />
               <IconButton onClick={handleShare} color="primary" size="small">
                 <ShareIcon />

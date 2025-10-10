@@ -9,6 +9,7 @@ import NewsletterBig from "../components/NewsletterBig.tsx";
 import FavouriteGalleriesList from "../components/FavouriteGalleriesList.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import { NavLink } from "react-router-dom";
+import { Gallery } from "../types/gallery.ts";
 //import ArtMatch from "../components/ArtMatch.tsx";
 
 const Skeleton = () => {
@@ -38,6 +39,7 @@ const Skeleton = () => {
 const DashboardPage = () => {
   const [artworks, setArtworks] = useState<ArtworkCardProps[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastFavouriteGallery, setLastFavouriteGallery] = useState<Gallery | null>(null);
   const data = useData();
   const snackbar = useSnackbars();
 
@@ -48,7 +50,19 @@ const DashboardPage = () => {
 
       const favArtworks = await data.getArtworks(responseIds);
       if (!favArtworks) throw new Error("Failed to fetch artworks");
-      setArtworks(artworksToGalleryItems(favArtworks.filter((artwork) => artwork.status != "trash")));
+      const filteredArtworks = artworksToGalleryItems(favArtworks.filter((artwork) => artwork.status != "trash"));
+      setArtworks(filteredArtworks);
+
+      // Se non ci sono opere preferite, prendi l'ultima galleria seguita
+      if (filteredArtworks.length === 0) {
+        const favouriteGalleriesIds = await data.getFavouriteGalleries();
+        if (favouriteGalleriesIds && favouriteGalleriesIds.length > 0) {
+          // Prendi l'ultima galleria (l'ultima aggiunta è in fondo all'array)
+          const lastGalleryId = favouriteGalleriesIds[favouriteGalleriesIds.length - 1];
+          const gallery = await data.getGallery(lastGalleryId);
+          setLastFavouriteGallery(gallery);
+        }
+      }
     } catch (error) {
       snackbar.error(error);
     } finally {
@@ -69,7 +83,7 @@ const DashboardPage = () => {
       </section>
       <section className={"space-y-24 mb-22"}>
         {/*<ArtMatch />*/}
-        <div >
+        <div>
           {loading ? (
             <>
               <div className={"flex justify-between pe-8 md:pe-0"}>
@@ -88,27 +102,47 @@ const DashboardPage = () => {
             </>
           ) : (
             <>
-            <div className={"flex justify-between pe-8 md:pe-0"}>
-              <h3 className={"ps-8 md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>
-                Lista dei desideri
-              </h3>
-              <NavLink
-                to={"/profile/opere-preferite"}
-                className={
-                  "cursor-pointer border border-primary py-2 px-4 text-primary rounded-full hover:bg-primary hover:text-white transition-all hidden md:block"
-                }>
-                Vedi tutte
-              </NavLink>
-            </div>
-            <div className={"my-12 min-h-80"}>
-              <ArtworksList items={artworks} disablePadding cardSize="medium" />
-            </div>
+              <div className={"flex justify-between pe-8 md:pe-0"}>
+                <h3 className={"ps-8 md:px-0 text-3xl leading-[105%] font-normal max-w-lg text-balance"}>
+                  Lista dei desideri
+                </h3>
+                {artworks.length !== 0 &&
+                  (<NavLink
+                    to={"/profile/opere-preferite"}
+                    className={
+                      "cursor-pointer border border-primary py-2 px-4 text-primary rounded-full hover:bg-primary hover:text-white transition-all hidden md:block"
+                    }>
+                    Vedi tutte
+                  </NavLink>)
+                }
+              </div>
+              <div className={`${artworks.length === 0 ? "h-fit" : "min-h-80 my-12 "}`}>
+                {artworks.length === 0 ? (
+                  <div className="p-8 md:ps-0 flex flex-col md:items-center justify-center py-16 md:text-center">
+                    <p className="text-secondary text-xl mb-6">
+                      Non hai ancora aggiunto opere alla tua lista dei desideri.
+                    </p>
+                    {lastFavouriteGallery && (
+                      <p className="text-lg">
+                        Scopri le opere di{" "}
+                        <NavLink
+                          to={`/gallerie/${lastFavouriteGallery.shop?.slug}`}
+                          className="text-primary font-medium underline hover:no-underline">
+                          {lastFavouriteGallery.display_name}
+                        </NavLink>
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <ArtworksList items={artworks} disablePadding cardSize="medium" />
+                )}
+              </div>
             </>
           )}
         </div>
-          <div className={"my-12 pl-8 md:pl-0"}>
-            <FavouriteGalleriesList />
-          </div>
+        <div className={"my-12 pl-8 md:pl-0"}>
+          <FavouriteGalleriesList />
+        </div>
         <div className={"tutorials-wrapper pl-8 md:pl-0"}>
           <div className={"flex justify-between pe-8 md:pe-0 items-center"}>
             <div className={"space-y-2"}>

@@ -63,13 +63,13 @@ const GalleryNavbar: React.FC<GalleryNavbarProps> = ({ onMenuToggle }) => {
   };
 
   const handleOnHoldOrder = async (orders: any) => {
-    const redirectToAcquistoEsterno = localStorage.getItem(STORAGE_KEYS.REDIRECT_TO_ACQUISTO_ESTERNO);
-
-    if (!redirectToAcquistoEsterno && location.pathname !== ROUTES.ACQUISTO_ESTERNO) {
-      navigate(ROUTES.ACQUISTO_ESTERNO);
-    }
-
     if (orders.created_via === "gallery_auction") {
+      const redirectToAcquistoEsterno = localStorage.getItem(STORAGE_KEYS.REDIRECT_TO_ACQUISTO_ESTERNO);
+
+      if (!redirectToAcquistoEsterno && location.pathname !== ROUTES.ACQUISTO_ESTERNO) {
+        navigate(ROUTES.ACQUISTO_ESTERNO);
+      }
+
       localStorage.removeItem(STORAGE_KEYS.SHOW_CHECKOUT);
       setPaymentData({ order: orders });
     } else {

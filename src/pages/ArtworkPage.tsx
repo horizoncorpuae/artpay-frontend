@@ -1,4 +1,4 @@
-import { Box, Button, Divider, IconButton, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Alert, Box, Button, Divider, IconButton, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
@@ -50,6 +50,7 @@ const ArtworkPage: React.FC = () => {
   const dialogs = useDialogs();
   const theme = useTheme();
   const snackbar = useSnackbars();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [isReady, setIsReady] = useState(false);
   const [artwork, setArtwork] = useState<Artwork>();
@@ -57,6 +58,8 @@ const ArtworkPage: React.FC = () => {
   const [galleryDetails, setGalleryDetails] = useState<Gallery | undefined>();
   const [artistDetails, setArtistDetails] = useState<Artist | undefined>();
   const [favouriteArtworks, setFavouriteArtworks] = useState<number[]>([]);
+  const [favouriteGalleries, setFavouriteGalleries] = useState<number[]>();
+  const [hasCheckedFollow, setHasCheckedFollow] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile>();
 
   const belowSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -179,9 +182,10 @@ const ArtworkPage: React.FC = () => {
         const artwork = await data.getArtworkBySlug(urlParams.slug_opera);
         setArtwork(artwork);
 
-        const [galleryArtworks, favouriteArtworks, galleryDetails, artistDetails, userProfile] = await Promise.all([
+        const [galleryArtworks, favouriteArtworks, favouriteGalleries, galleryDetails, artistDetails, userProfile] = await Promise.all([
           data.listArtworksForGallery(artwork.vendor),
           data.getFavouriteArtworks().catch(() => []),
+          data.getFavouriteGalleries().catch(() => []),
           artwork.vendor ? data.getGallery(artwork.vendor) : Promise.resolve(undefined),
           getPropertyFromMetadata(artwork.meta_data, "artist")?.ID
             ? data.getArtist(getPropertyFromMetadata(artwork.meta_data, "artist")!.ID)
@@ -190,6 +194,7 @@ const ArtworkPage: React.FC = () => {
         ]);
 
         setFavouriteArtworks(favouriteArtworks);
+        setFavouriteGalleries(favouriteGalleries);
         setGalleryDetails(galleryDetails);
         setArtistDetails(artistDetails);
         setUserProfile(userProfile);
@@ -224,6 +229,37 @@ const ArtworkPage: React.FC = () => {
       document.removeEventListener(FAVOURITES_UPDATED_EVENT, handleFavouritesUpdated);
     };
   }, [artwork?.id]);
+
+  // Controlla se l'utente segue la galleria e gestisce il follow automatico
+  useEffect(() => {
+    if (!auth.isAuthenticated || !galleryDetails?.id || !favouriteGalleries || hasCheckedFollow) {
+      return;
+    }
+
+    const isFollowing = favouriteGalleries.indexOf(galleryDetails.id) !== -1;
+
+    // Se l'utente non segue la galleria
+    if (!isFollowing) {
+      // Se non ha nessuna galleria seguita, seguila automaticamente
+      if (favouriteGalleries.length === 0) {
+        data.addFavouriteGallery(galleryDetails.id.toString()).then(() => {
+          snackbar.success("Hai iniziato a seguire questa galleria!", {
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: isMobile ? "center" : "right"
+            }
+          });
+        }).catch((e) => {
+          console.error("Error auto-following gallery:", e);
+        });
+      } else {
+        // Altrimenti mostra un tooltip/snackbar che invita a seguire
+        snackbar.snackbar(<Alert severity="info">Segui questa galleria per vederla nel tuo feed!</Alert>);
+      }
+    }
+
+    setHasCheckedFollow(true);
+  }, [favouriteGalleries, galleryDetails?.id, auth.isAuthenticated, hasCheckedFollow]);
 
   const px = useMemo(() => getDefaultPaddingX(), []);
 
