@@ -59,7 +59,7 @@ const DashboardPage = () => {
         if (favouriteGalleriesIds && favouriteGalleriesIds.length > 0) {
           // Prendi l'ultima galleria (l'ultima aggiunta è in fondo all'array)
           const lastGalleryId = favouriteGalleriesIds[favouriteGalleriesIds.length - 1];
-          const gallery = await data.getGallery(lastGalleryId);
+          const gallery = await data.getGallery(String(lastGalleryId));
           setLastFavouriteGallery(gallery);
         }
       }
