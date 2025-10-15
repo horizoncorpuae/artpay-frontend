@@ -1,7 +1,9 @@
 import { useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Typography, IconButton } from "@mui/material";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { Typography,
+//  IconButton
+} from "@mui/material";
+//import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import guide_artpay_img from "../assets/images/Guide.svg";
 import { PostGrid } from "../components/postGrid.tsx";
 import NewsletterBig from "../components/NewsletterBig.tsx";
@@ -76,7 +78,7 @@ const Tutorials = () => {
           </p>
         </div>
         <div className={"px-8 lg:px-0 space-y-24"}>
-          <div className={"slider"}>
+          {/*<div className={"slider"}>
             <Typography variant={"h3"} className={"text-balance mb-6!"}>
               Scopri artpay
             </Typography>
@@ -152,7 +154,7 @@ const Tutorials = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </div>*/}
           <div className={"tutorials-wrapper"}>
             <Typography variant={"h3"} className={"text-balance mb-6!"}>
               Tutte le guide artpay
