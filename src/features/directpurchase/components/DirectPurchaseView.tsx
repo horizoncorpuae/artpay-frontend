@@ -249,6 +249,24 @@ const DirectPurchaseView = () => {
 
       console.log(isReedemPurchase);
 
+      // Se lo stato è processing o ha documentazione caricata, mostra il BankTransfer flow
+      if (
+        pendingOrder?.status === "processing" ||
+        pendingOrder?.customer_note?.includes("Documentazione caricata, in attesa di conferma da artpay")
+      ) {
+        return (
+          <ContentCard
+            title="Pagamento"
+            icon={<PiCreditCardThin size="28px" />}
+            contentPadding={0}
+            contentPaddingMobile={0}>
+            <PaymentProviderCard>
+              <BankTransfer order={pendingOrder} handleRestoreOrder={handleCancelPaymentMethod} />
+            </PaymentProviderCard>
+          </ContentCard>
+        );
+      }
+
       if (isReedemPurchase) {
         return (
           <ContentCard
