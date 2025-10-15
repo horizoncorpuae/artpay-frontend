@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout.tsx";
-import { Box, IconButton, Tab, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, IconButton, Tab, Tooltip, Typography } from "@mui/material";
 import TabPanel from "../components/TabPanel.tsx";
 import GalleryInfo, { GalleryInfoProps } from "../components/GalleryInfo.tsx";
 import { GalleryContactsProps } from "../components/GalleryContacts.tsx";
@@ -21,6 +21,7 @@ import ShareIcon from "../components/icons/ShareIcon.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import GallerySkeleton from "../components/GallerySkeleton.tsx";
 import CardGridSkeleton from "../components/CardGridSkeleton.tsx";
+import useToolTipStore from "../features/cdspayments/stores/tooltipStore.ts";
 
 export interface GalleryProps {
   selectedTab?: number;
@@ -34,8 +35,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
   const navigate = useNavigate();
   const dialogs = useDialogs();
   const snackbars = useSnackbars();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { showToolTip } = useToolTipStore();
 
   const [isReady, setIsReady] = useState(false);
   const [selectedTabPanel, setSelectedTabPanel] = useState(selectedTab);
@@ -141,11 +141,10 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
       if (favouriteGalleries.length === 0) {
         data.addFavouriteGallery(galleryContent.id.toString()).then(() => {
           setIsFavourite(true);
-          snackbars.success("Hai iniziato a seguire questa galleria!", {
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: isMobile ? "center" : "right"
-            }
+          showToolTip({
+            message: "Hai iniziato a seguire questa galleria!",
+            visible: true,
+            type: "success"
           });
         }).catch((e) => {
           console.error("Error auto-following gallery:", e);

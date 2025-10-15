@@ -27,6 +27,7 @@ import FavouriteFilledIcon from "../components/icons/FavouriteFilledIcon.tsx";
 import { FavouritesMap } from "../types/post.ts";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 import { useAuth } from "../hoc/AuthProvider.tsx";
+import useToolTipStore from "../features/cdspayments/stores/tooltipStore.ts";
 import LockIcon from "../components/icons/LockIcon.tsx";
 import HourglassIcon from "../components/icons/HourglassIcon.tsx";
 import ShareIcon from "../components/icons/ShareIcon.tsx";
@@ -50,7 +51,7 @@ const ArtworkPage: React.FC = () => {
   const dialogs = useDialogs();
   const theme = useTheme();
   const snackbar = useSnackbars();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { showToolTip } = useToolTipStore();
 
   const [isReady, setIsReady] = useState(false);
   const [artwork, setArtwork] = useState<Artwork>();
@@ -243,11 +244,10 @@ const ArtworkPage: React.FC = () => {
       // Se non ha nessuna galleria seguita, seguila automaticamente
       if (favouriteGalleries.length === 0) {
         data.addFavouriteGallery(galleryDetails.id.toString()).then(() => {
-          snackbar.success("Hai iniziato a seguire questa galleria!", {
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: isMobile ? "center" : "right"
-            }
+          showToolTip({
+            message: "Hai iniziato a seguire questa galleria!",
+            visible: true,
+            type: "success"
           });
         }).catch((e) => {
           console.error("Error auto-following gallery:", e);
