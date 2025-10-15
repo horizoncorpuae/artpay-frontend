@@ -285,7 +285,7 @@ const ProfileDropdown: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   };
 
   return (
-    <div 
+    <div
       ref={anchorRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -299,9 +299,9 @@ const ProfileDropdown: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
       >
         <UserIcon />
       </IconButton>
-      
+
       {open && (
-        <div 
+        <div
           className="absolute right-0 top-full mt-2 w-64 bg-[#F5F5F5] rounded-lg  z-50"
           onMouseEnter={handleMenuMouseEnter}
           onMouseLeave={handleMenuMouseLeave}
