@@ -266,68 +266,70 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
         </div>
 
         {/* Coupon Section */}
-        <div className="py-4 px-6 border-b border-gray-950/20">
-          {!appliedCoupon ? (
-            <div className="space-y-2">
-              <Typography variant="body2" color="textSecondary">
-                Hai un coupon?
-              </Typography>
-              <div className="flex gap-2">
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="Inserisci codice"
-                    value={couponCode}
-                    onChange={(e) => {
-                      setCouponCode(e.target.value.toUpperCase());
-                      setCouponError("");
-                    }}
-                    disabled={isCouponApplying || isSaving}
-                    className={`w-full px-3 py-2.5 border ${
-                      couponError
-                        ? "border-red-500"
-                        : "border-[#CDCFD3] hover:border-primary focus:border-primary focus:border-2"
-                    } bg-white text-[#808791] placeholder:text-[#808791] disabled:opacity-50 disabled:cursor-not-allowed outline-none transition-colors`}
-                    style={{
-                      fontSize: "14px",
-                      lineHeight: "1.5",
-                      borderRadius: "12px",
-                    }}
-                  />
-                  {couponError && <p className="text-xs text-red-500 mt-1 ml-1">{couponError}</p>}
+        {orderMode != "loan" && (
+          <div className="py-4 px-6 border-b border-gray-950/20">
+            {!appliedCoupon ? (
+              <div className="space-y-2">
+                <Typography variant="body2" color="textSecondary">
+                  Hai un coupon?
+                </Typography>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      placeholder="Inserisci codice"
+                      value={couponCode}
+                      onChange={(e) => {
+                        setCouponCode(e.target.value.toUpperCase());
+                        setCouponError("");
+                      }}
+                      disabled={isCouponApplying || isSaving}
+                      className={`w-full px-3 py-2.5 border ${
+                        couponError
+                          ? "border-red-500"
+                          : "border-[#CDCFD3] hover:border-primary focus:border-primary focus:border-2"
+                      } bg-white text-[#808791] placeholder:text-[#808791] disabled:opacity-50 disabled:cursor-not-allowed outline-none transition-colors`}
+                      style={{
+                        fontSize: "14px",
+                        lineHeight: "1.5",
+                        borderRadius: "12px",
+                      }}
+                    />
+                    {couponError && <p className="text-xs text-red-500 mt-1 ml-1">{couponError}</p>}
+                  </div>
+                  <Button
+                    variant="contained"
+                    onClick={handleApplyCoupon}
+                    disabled={!couponCode.trim() || isCouponApplying || isSaving}
+                    sx={{
+                      minWidth: "100px",
+                      textTransform: "none",
+                      height: "42px",
+                    }}>
+                    {isCouponApplying ? "Applica..." : "Applica"}
+                  </Button>
                 </div>
-                <Button
-                  variant="contained"
-                  onClick={handleApplyCoupon}
-                  disabled={!couponCode.trim() || isCouponApplying || isSaving}
-                  sx={{
-                    minWidth: "100px",
-                    textTransform: "none",
-                    height: "42px",
-                  }}>
-                  {isCouponApplying ? "Applica..." : "Applica"}
-                </Button>
               </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Typography variant="body2" className="font-semibold">
-                  Coupon applicato:
-                </Typography>
-                <Typography variant="body2" className="text-green-600 font-mono">
-                  {appliedCoupon}
-                </Typography>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Typography variant="body2" className="font-semibold">
+                    Coupon applicato:
+                  </Typography>
+                  <Typography variant="body2" className="text-green-600 font-mono">
+                    {appliedCoupon}
+                  </Typography>
+                </div>
+                <button
+                  onClick={handleRemoveCoupon}
+                  disabled={isCouponApplying || isSaving}
+                  className="text-sm text-red-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed">
+                  Rimuovi
+                </button>
               </div>
-              <button
-                onClick={handleRemoveCoupon}
-                disabled={isCouponApplying || isSaving}
-                className="text-sm text-red-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed">
-                Rimuovi
-              </button>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         <Box>
           <Elements
