@@ -28,7 +28,7 @@ import ReactGA from "react-ga4";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect } from "react";
 import Error from "./pages/Error.tsx";
-import GalleryOnboarding from "./pages/GalleryOnboarding.tsx";
+//import GalleryOnboarding from "./pages/GalleryOnboarding.tsx";
 import CustomerOnboarding from "./pages/CustomerOnboarding.tsx";
 import ArtworkReserved from "./pages/ArtworkReserved.tsx";
 import Contacts from "./pages/Contacts.tsx";
@@ -132,7 +132,7 @@ function AppContent() {
                       element={<ContentPage slug="condizioni-generali-di-acquisto" />}
                     />
                     <Route path="/artpay-per-collezionisti" element={<CustomerOnboarding />} />
-                    <Route path="/artpay-per-gallerie" element={<GalleryOnboarding />} />
+                    {/*<Route path="/artpay-per-gallerie" element={<GalleryOnboarding />} />*/}
                     <Route path="/contatti" element={<Contacts />} />
                     <Route path="/profile/messaggi" element={<Messages />} />
                     <Route path="/errore/:code" element={<Error />} />
