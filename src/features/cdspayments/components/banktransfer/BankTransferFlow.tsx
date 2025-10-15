@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { useStepFlow } from "./hooks/useStepFlow.ts";
 import { useFileUpload } from "./hooks/useFileUpload.ts";
 import { useData } from "../../../../hoc/DataProvider.tsx";
@@ -10,6 +10,7 @@ import StepIndicator from "./components/StepIndicator.tsx";
 import { PaymentFlowStep, type PaymentFlowProps, type BankTransferConfig, type CopyableField as CopyableFieldType } from "./types.ts";
 import { useDirectPurchaseStore } from "../../../directpurchase";
 import usePaymentStore from "../../stores/paymentStore.ts";
+import { Button, Typography } from "@mui/material";
 
 // Default configuration - can be overridden
 const DEFAULT_BANK_CONFIG: BankTransferConfig = {
@@ -56,6 +57,12 @@ const BankTransferFlow = ({
     uploadSelectedFile
   } = useFileUpload(config.fileUpload);
 
+  // Coupon state
+  const [couponCode, setCouponCode] = useState("");
+  const [isCouponApplying, setIsCouponApplying] = useState(false);
+  const [couponError, setCouponError] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+
 
   // Bank transfer fields configuration
   const copyableFields: CopyableFieldType[] = useMemo(() => [
@@ -93,6 +100,60 @@ const BankTransferFlow = ({
   const handleFileUpload = useCallback((file: File) => {
     return selectFile(file);
   }, [selectFile]);
+
+  const handleApplyCoupon = useCallback(async () => {
+    if (!couponCode.trim()) {
+      setCouponError("Inserisci un codice coupon");
+      return;
+    }
+
+    setIsCouponApplying(true);
+    setCouponError("");
+
+    try {
+      const updatedOrder = await data.updateOrder(order.id, {
+        coupon_lines: [{ code: couponCode.trim() }],
+      });
+
+      updatePageData({ pendingOrder: updatedOrder });
+      setAppliedCoupon(couponCode);
+      setCouponCode("");
+
+      showToolTip({
+        visible: true,
+        message: "Coupon applicato con successo"
+      });
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error.message || "Coupon non valido";
+      setCouponError(errorMessage);
+      setAppliedCoupon(null);
+    } finally {
+      setIsCouponApplying(false);
+    }
+  }, [couponCode, order.id, data, updatePageData, showToolTip]);
+
+  const handleRemoveCoupon = useCallback(async () => {
+    setIsCouponApplying(true);
+
+    try {
+      const updatedOrder = await data.updateOrder(order.id, {
+        coupon_lines: [],
+      });
+
+      updatePageData({ pendingOrder: updatedOrder });
+      setAppliedCoupon(null);
+      setCouponCode("");
+
+      showToolTip({
+        visible: true,
+        message: "Coupon rimosso"
+      });
+    } catch (error: any) {
+      console.error("Error removing coupon:", error);
+    } finally {
+      setIsCouponApplying(false);
+    }
+  }, [order.id, data, updatePageData, showToolTip]);
 
   const handleCompleteOperation = useCallback(async () => {
     if (!selectedFile) return;
@@ -184,9 +245,83 @@ const BankTransferFlow = ({
               </g>
             </svg>
           </div>
-          
+
+          {/* Coupon Section - Before first step */}
+          {currentStep === PaymentFlowStep.INSTRUCTIONS && (
+            <div className="py-4 px-4 border-b border-gray-950/20">
+              {!appliedCoupon ? (
+                <div className="space-y-2">
+                  <Typography variant="body2" color="textSecondary">
+                    Hai un coupon?
+                  </Typography>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        placeholder="Inserisci codice"
+                        value={couponCode}
+                        onChange={(e) => {
+                          setCouponCode(e.target.value.toUpperCase());
+                          setCouponError("");
+                        }}
+                        disabled={isCouponApplying || isUploading}
+                        className={`w-full px-3 py-2.5 border ${
+                          couponError
+                            ? "border-red-500"
+                            : "border-[#CDCFD3] hover:border-primary focus:border-primary focus:border-2"
+                        } bg-white text-[#808791] placeholder:text-[#808791] disabled:opacity-50 disabled:cursor-not-allowed outline-none transition-colors`}
+                        style={{
+                          fontSize: "14px",
+                          lineHeight: "1.5",
+                          borderRadius: "12px",
+                        }}
+                      />
+                      {couponError && <p className="text-xs text-red-500 mt-1 ml-1">{couponError}</p>}
+                    </div>
+                    <Button
+                      variant="contained"
+                      onClick={handleApplyCoupon}
+                      disabled={!couponCode.trim() || isCouponApplying || isUploading}
+                      sx={{
+                        minWidth: "100px",
+                        textTransform: "none",
+                        height: "42px",
+                      }}>
+                      {isCouponApplying ? "Applica..." : "Applica"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="10" cy="10" r="10" fill="#42B396"/>
+                      <path d="M6 10L9 13L14 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <div>
+                      <Typography variant="body2" fontWeight={500}>
+                        Coupon applicato
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        {appliedCoupon}
+                      </Typography>
+                    </div>
+                  </div>
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={handleRemoveCoupon}
+                    disabled={isCouponApplying}
+                    sx={{ textTransform: "none", color: "error.main" }}>
+                    Rimuovi
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
           <div>
-            <StepIndicator 
+            <StepIndicator
               currentStep={currentStep}
               onStepClick={goToStep}
             />
