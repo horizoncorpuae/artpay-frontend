@@ -1,4 +1,4 @@
-import { Box, Button, Divider, IconButton, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Alert, Box, Button, Divider, IconButton, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
@@ -340,8 +340,8 @@ const ArtworkPage: React.FC = () => {
                   </>
                 )}
               </Box>
-              <Box display="flex" flexDirection={"column"} mt={12} bgcolor={"#EFF1FF"} borderRadius={2} padding={2}>
-                <div className={"flex w-full justify-between items-center mb-6 border-b border-[#010F22]/20  pb-6"}>
+              <Box display="flex" flexDirection={"column"} mt={12} bgcolor={"#EFF1FF"} borderRadius={2} padding={2} position="relative">
+                <div className={"flex w-full justify-between items-center mb-6 border-b border-[#010F22]/20  pb-6 relative"}>
                   <Typography variant="h2" sx={{ typography: { xs: "h4", sm: "h2" } }}>
                     € {formatCurrency(+(artwork?.price || 0))}
                   </Typography>
@@ -397,7 +397,7 @@ const ArtworkPage: React.FC = () => {
                 )}
               </Box>
 
-              {Number(artwork?.price) >= 2500 && (
+              {Number(artwork?.price) >= 2500 && auth.isAuthenticated && (
                 <>
                   <Box
                     mt={3}
