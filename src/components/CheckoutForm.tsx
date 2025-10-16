@@ -43,19 +43,35 @@ const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
     const [error, setError] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
 
-    const returnUrl: Record<any, any> = {
-      local:
-        (orderMode == "loan"
-          ? "http://localhost:5173/opera-bloccata"
-          : "http://localhost:5173/acquisto?order=" + pendingOrder?.id) ,
-      staging:
-        (orderMode == "loan"
-          ? "https://staging2.artpay.art/opera-bloccata"
-          : "https://staging2.artpay.art/acquisto?order=" + pendingOrder?.id),
-      production:
-        (orderMode == "loan"
-          ? "https://artpay.art/opera-bloccata"
-          : "https://artpay.art/acquisto?order=" + pendingOrder?.id),
+    // Costruisce il return URL dinamicamente per Vercel o usa URL fissi per altri ambienti
+    const getReturnUrl = () => {
+      const isVercel = window.location.hostname.includes('vercel.app');
+
+      if (isVercel) {
+        // Per Vercel, costruisci dinamicamente l'URL basandosi sull'host corrente
+        const baseUrl = `${window.location.protocol}//${window.location.host}`;
+        return orderMode == "loan"
+          ? `${baseUrl}/opera-bloccata`
+          : `${baseUrl}/acquisto?order=${pendingOrder?.id}`;
+      }
+
+      // Per altri ambienti usa gli URL fissi
+      const returnUrl: Record<any, any> = {
+        local:
+          (orderMode == "loan"
+            ? "http://localhost:5173/opera-bloccata"
+            : "http://localhost:5173/acquisto?order=" + pendingOrder?.id),
+        staging:
+          (orderMode == "loan"
+            ? "https://staging2.artpay.art/opera-bloccata"
+            : "https://staging2.artpay.art/acquisto?order=" + pendingOrder?.id),
+        production:
+          (orderMode == "loan"
+            ? "https://artpay.art/opera-bloccata"
+            : "https://artpay.art/acquisto?order=" + pendingOrder?.id),
+      };
+
+      return environment ? returnUrl[environment] : returnUrl.local;
     };
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -81,7 +97,7 @@ const CheckoutForm = React.forwardRef<HTMLButtonElement, CheckoutFormProps>(
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: environment ? returnUrl[environment] : returnUrl.local,
+          return_url: getReturnUrl(),
         }
       });
 
