@@ -196,7 +196,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
             </svg>
           )
         }>
-        <div className={"space-y-4 py-6 border-t border-b border-gray-950/20"}>
+        <div className={"space-y-4 py-6 border-t border-gray-950/20"}>
           <div className="flex items-center justify-between">
             <span className={"font-semibold"}>
               <span>Prezzo</span>
@@ -267,7 +267,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
 
         {/* Coupon Section */}
         {orderMode != "loan" && (
-          <div className="py-4 px-6 border-b border-gray-950/20">
+          <div className="pb-4 border-b border-gray-950/20">
             {!appliedCoupon ? (
               <div className="space-y-2">
                 <Typography variant="body2" color="textSecondary">

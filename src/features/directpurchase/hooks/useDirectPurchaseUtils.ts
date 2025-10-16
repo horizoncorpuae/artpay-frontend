@@ -18,7 +18,6 @@ export const useDirectPurchaseUtils = () => {
     artworks,
     updateState,
     updatePageData,
-    paymentMethod
   } = useDirectPurchaseStore();
 
   const showError = useCallback(async (err?: unknown, text: string = "Si è verificato un errore"): Promise<void> => {
@@ -55,33 +54,9 @@ export const useDirectPurchaseUtils = () => {
           });
         }
 
-        updateState({ paymentMethod: payment });
-        console.log(paymentMethod)
-        updatePageData({
-          pendingOrder: {
-            ...pendingOrder,
-            customer_note: "Pagamento da completare",
-          },
-        });
         console.log("Payment method updated to:", payment);
 
-
-
-        if (payment != "bank_transfer") {
-          const newPaymentIntent = await createPaymentIntent(pendingOrder, orderMode, payment);
-          console.log("New payment intent created:", newPaymentIntent);
-          updatePageData({ paymentIntent: newPaymentIntent });
-        }
-
-
-
-        // Force update after a short delay to override any async overwrites
-        setTimeout(() => {
-          updateState({ paymentMethod: payment });
-          console.log("Force updated payment method to:", payment);
-        }, 100);
-
-        // 4. Recupera l'ordine aggiornato da WooCommerce ma NON richiamare loadInitialData
+        // 2. Recupera l'ordine aggiornato da WooCommerce con le fee corrette
         let order;
         if (orderMode === "redeem" ) {
           const orderId = +window.location.pathname.split('/').pop()!;
@@ -91,14 +66,28 @@ export const useDirectPurchaseUtils = () => {
         } else {
           order = await data.getPendingOrder();
         }
-        if (order) {
-          // Aggiorna solo l'ordine, ma mantieni il paymentMethod e paymentIntent che abbiamo appena impostato
-          updatePageData({ pendingOrder: order });
-          console.log("Order updated both locally and on WooCommerce:", order);
 
-          // Riconferma il payment method per evitare che venga sovrascritto
-          updateState({ paymentMethod: payment });
+        if (!order) {
+          throw new Error("Failed to fetch updated order");
         }
+
+        console.log("Order fetched with updated fees:", order);
+
+        // 3. Aggiorna lo stato locale con l'ordine aggiornato
+        updatePageData({ pendingOrder: order });
+
+        // 4. Crea il payment intent usando l'ordine aggiornato (con le fee corrette)
+        if (payment != "bank_transfer") {
+          const newPaymentIntent = await createPaymentIntent(order, orderMode, payment);
+          console.log("New payment intent created with updated order:", newPaymentIntent);
+          updatePageData({ paymentIntent: newPaymentIntent });
+        } else {
+          // Per bonifico, rimuovi il payment intent
+          updatePageData({ paymentIntent: undefined });
+        }
+
+        // 5. Aggiorna il payment method nello stato locale
+        updateState({ paymentMethod: payment });
 
         updateState({ showCommissioni: true, isSaving: false });
       } catch (e) {
