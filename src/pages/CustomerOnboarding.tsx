@@ -38,7 +38,7 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
   const px = getDefaultPaddingX();
 
   return (
-    <DefaultLayout sx={{ overflowX: "hidden" }} hasNavBar={false}>
+    <DefaultLayout sx={{ overflowX: "hidden" }} hasNavBar={auth.isAuthenticated}>
       <Hero imgOffset={{ xs: 6, sm: 8 }}>
         <Typography variant="body1" color="primary" sx={{ textTransform: "uppercase" }}>
           artpay per collezionisti
@@ -94,7 +94,7 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
               direttamente l’istituto bancario erogante.
             </Typography>
           </PromoCard>
-          <PromoCard
+          <ProfixmoCard
             title={
               <>
                 Consegna <br />
@@ -110,7 +110,7 @@ const CustomerOnboarding: React.FC<CustomerOnboardingProps> = ({}) => {
               direttamente, attraverso il sistema di messaggistica integrato all’interno della piattaforma, con il
               personale dedicato della galleria stessa.
             </Typography>
-          </PromoCard>
+          </ProfixmoCard>
 
           <PromoCard titleVariant="h2" title="Cosa aspetti? Entra subito a far parte di artpay!" variant="contrast" titleWidth={'500px'}>
             {!auth.isAuthenticated && (
