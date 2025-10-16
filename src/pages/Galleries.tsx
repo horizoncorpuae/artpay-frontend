@@ -67,7 +67,7 @@ const Galleries: React.FC<GalleriesProps> = ({}) => {
     </Grid>
   );
 
-  return (<DefaultLayout authRequired>
+  return (<DefaultLayout>
     <Grid sx={{ px: px, mt: { xs: 14, md: 16, lg: 18 } }} container>
       <Grid xs={12} pb={3} item>
         <Typography variant="display3">Gallerie</Typography>
