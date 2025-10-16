@@ -1,9 +1,9 @@
-import { Alert, Box, Button, Divider, IconButton, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Divider, IconButton, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { FAVOURITES_UPDATED_EVENT, useData } from "../hoc/DataProvider.tsx";
 import { useParams } from "react-router-dom";
-import type { Artwork } from "../types/artwork.ts";
+import { Artwork } from "../types/artwork.ts";
 import ArtworksList from "../components/ArtworksList.tsx";
 import ArtworkDetails from "../components/ArtworkDetails.tsx";
 import {
@@ -304,7 +304,9 @@ const ArtworkPage: React.FC = () => {
                   <QrCodeIcon />
                 </IconButton>
               </div>
-              <Typography variant="h1">{artwork?.name}</Typography>
+              <Typography variant="h1">
+                {artwork?.name}
+              </Typography>
               <Typography variant="h1" color="textSecondary">
                 {getPropertyFromMetadata(artwork?.meta_data || [], "artist")?.artist_name}
               </Typography>
@@ -347,7 +349,7 @@ const ArtworkPage: React.FC = () => {
                     variant="contained"
                     disabled={isOutOfStock || isReserved}
                     onClick={() => handlePurchase(artwork?.id)}>
-                    Acquista subito
+                    Compra opera
                   </Button>
                 </div>
                 <div className={"flex flex-col w-full md:flex-row justify-between space-y-4 md:space-y-0"}>
@@ -364,6 +366,35 @@ const ArtworkPage: React.FC = () => {
                     </li>
                   </ul>
                 </div>
+
+                {/* Blur overlay for non-authenticated users */}
+                {!auth.isAuthenticated && (
+                  <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    sx={{
+                      backdropFilter: "blur(8px)",
+                      backgroundColor: "rgba(239, 241, 255, 0.8)",
+                      borderRadius: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 2,
+                      padding: 3,
+                      textAlign: "center",
+                    }}>
+                    <Typography variant="body1"  sx={{ maxWidth: "400px" }}>
+                      Registrati per vedere il prezzo e comprare
+                    </Typography>
+                    <Button variant="contained" onClick={() => auth.login(true)} sx={{ mt: 2 }}>
+                      Registrati ora
+                    </Button>
+                  </Box>
+                )}
               </Box>
 
               {Number(artwork?.price) >= 2500 && (
