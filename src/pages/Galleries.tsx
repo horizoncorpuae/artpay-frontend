@@ -14,17 +14,23 @@ const Galleries: React.FC<GalleriesProps> = ({}) => {
   const [isReady, setIsReady] = useState(false);
   const [galleries, setGalleries] = useState<Gallery[]>([]);
 
+  const filterGalleriesByIds = (galleries: Gallery[], hideIds: number[]) => {
+    return galleries.filter((gallery) => !hideIds.includes(gallery.id));
+  };
+
+
   useEffect(() => {
     data.getGalleries().then((resp) => {
-      console.log(resp);
-      setGalleries(resp.filter((gallery) => gallery.id != 220));
+      const hideIds = [220, 221, 144, 212, 76];
+      setGalleries(filterGalleriesByIds(resp, hideIds));
       setIsReady(true);
     });
   }, []);
 
+
   const GalleriesSkeleton = () => (
     <Grid container spacing={3}>
-      {Array.from({ length: 8 }).map((_, index) => (
+      {Array.from({ length: 12 }).map((_, index) => (
         <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
           <Box>
             <Skeleton variant="rectangular" width="100%" height={200} sx={{ borderRadius: 2, mb: 1.5 }} />
