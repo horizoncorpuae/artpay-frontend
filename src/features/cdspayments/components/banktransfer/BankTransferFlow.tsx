@@ -11,6 +11,8 @@ import { PaymentFlowStep, type PaymentFlowProps, type BankTransferConfig, type C
 import { useDirectPurchaseStore } from "../../../directpurchase";
 import usePaymentStore from "../../stores/paymentStore.ts";
 import { Button, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import Checkbox from "../../../../components/Checkbox.tsx";
 
 // Default configuration - can be overridden
 const DEFAULT_BANK_CONFIG: BankTransferConfig = {
@@ -62,6 +64,9 @@ const BankTransferFlow = ({
   const [isCouponApplying, setIsCouponApplying] = useState(false);
   const [couponError, setCouponError] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+
+  // Privacy checkbox state
+  const [privacyChecked, setPrivacyChecked] = useState(false);
 
 
   // Bank transfer fields configuration
@@ -336,18 +341,36 @@ const BankTransferFlow = ({
                 </ul>
 
                 {/* Actions for Instructions step */}
-                <div className="space-y-6 mt-8">
-                  <button
-                    className="artpay-button-style max-w-none! bg-primary py-3! text-white disabled:opacity-65"
-                    onClick={handleConfirmTransfer}>
-                    Conferma bonifico
-                  </button>
-                  <button
-                    type="button"
-                    className="artpay-button-style max-w-none! py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"
-                    onClick={onCancel}>
-                    Annulla
-                  </button>
+
+                <div className="space-y-4 mt-6">
+                  <Checkbox
+                    checked={privacyChecked}
+                    onChange={(e) => {
+                      setPrivacyChecked(e.target.checked)
+                    }}
+                    label={
+                      <Typography variant="body1">
+                        Accetto le{" "}
+                        <Link to="/condizioni-generali-di-acquisto" target="_blank" className={'underline text-primary'}>
+                          condizioni generali d'acquisto
+                        </Link>
+                      </Typography>
+                    }
+                  />
+                  <div className="space-y-6">
+                    <button
+                      disabled={!privacyChecked}
+                      className="artpay-button-style max-w-none! bg-primary py-3! text-white disabled:opacity-65"
+                      onClick={handleConfirmTransfer}>
+                      Conferma bonifico
+                    </button>
+                    <button
+                      type="button"
+                      className="artpay-button-style max-w-none! py-3! disabled:opacity-65 disabled:cursor-not-allowed text-secondary"
+                      onClick={onCancel}>
+                      Annulla
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
