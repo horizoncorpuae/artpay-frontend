@@ -251,9 +251,26 @@ const BankTransferFlow = ({
             </svg>
           </div>
 
+          <div className="py-4 ">
+            <div className="flex items-center justify-between">
+            <span className={"font-semibold"}>
+              <span>Prezzo opera</span>
+              <br />
+              <span className={"text-secondary text-sm font-light"}>Incluse commissioni artpay</span>
+            </span>
+              <span className={'font-semibold'}>
+              €&nbsp;
+                {(Number(order?.total) || 0).toLocaleString("it-IT", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+            </span>
+            </div>
+          </div>
+
           {/* Coupon Section - Before first step */}
           {currentStep === PaymentFlowStep.INSTRUCTIONS && (
-            <div className="py-4 px-4 border-b border-gray-950/20">
+            <div className="pb-4 border-b border-gray-950/20">
               {!appliedCoupon ? (
                 <div className="space-y-2">
                   <Typography variant="body2" color="textSecondary">
