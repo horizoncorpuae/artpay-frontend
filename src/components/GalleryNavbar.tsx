@@ -165,6 +165,7 @@ const GalleryNavbar: React.FC<GalleryNavbarProps> = ({ onMenuToggle }) => {
 
   const isGalleryPage = location.pathname.startsWith(ROUTES.GALLERIE);
   const isCompletedOrderPage = location.pathname.startsWith(ROUTES.COMPLETE);
+  const isDashboardPage = location.pathname === '/dashboard';
 
 
   return (
@@ -172,7 +173,7 @@ const GalleryNavbar: React.FC<GalleryNavbarProps> = ({ onMenuToggle }) => {
       {/* Desktop Navbar */}
       <header className="fixed w-full z-20 top-6 px-6 md:px-12 hidden md:block">
         <div className="flex items-center gap-8 justify-between max-w-8xl mx-auto">
-          <BackButton isVisible={!isGalleryPage && !isCompletedOrderPage} />
+          <BackButton isVisible={!isGalleryPage && !isCompletedOrderPage && !isDashboardPage} />
 
           <div className="flex items-center justify-center gap-8">
             <MainNavigation
@@ -189,7 +190,7 @@ const GalleryNavbar: React.FC<GalleryNavbarProps> = ({ onMenuToggle }) => {
       {/* Mobile Navbar */}
       <header className="fixed w-full z-50 top-6 px-6 md:hidden">
         <div className="flex items-center gap-4 justify-between max-w-8xl mx-auto">
-          <BackButton isVisible={!isGalleryPage} />
+          <BackButton isVisible={!isGalleryPage && !isDashboardPage} />
 
           <div className="flex items-center justify-center gap-4">
             <MobileNavigation
