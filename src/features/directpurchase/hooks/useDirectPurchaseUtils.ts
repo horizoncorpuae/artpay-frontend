@@ -152,11 +152,6 @@ export const useDirectPurchaseUtils = () => {
     updateState({ isSaving: true });
 
     try {
-      // Reset payment method and payment intent in store
-      console.log("Resetting payment method to null and payment intent to undefined");
-      updateState({ paymentMethod: null });
-      updatePageData({ paymentIntent: undefined });
-
       // Clear payment intent from localStorage
       if (pendingOrder?.order_key) {
         const paymentIntentKeys = [
@@ -171,18 +166,45 @@ export const useDirectPurchaseUtils = () => {
         });
       }
 
-      // Update order to remove payment method
+      // Update order to remove payment method on WooCommerce
       if (pendingOrder?.id) {
         await data.updateOrder(pendingOrder.id, {
           payment_method: "",
-          payment_method_title: ""
+          payment_method_title: "",
+          customer_note: "",
+          status: "pending" // Riporta l'ordine in pending quando si annulla il pagamento
         });
+        console.log("Order payment method cleared and status set to pending on WooCommerce");
 
-        // Refresh the order to get updated state
-        const updatedOrder = await data.getPendingOrder();
-        if (updatedOrder) {
-          updatePageData({ pendingOrder: updatedOrder });
+        // Refresh the order to get updated state based on orderMode
+        let updatedOrder;
+        if (orderMode === "redeem") {
+          updatedOrder = await data.getOrder(pendingOrder.id);
+        } else if (orderMode === "onHold") {
+          updatedOrder = await data.getOnHoldOrder();
+        } else {
+          updatedOrder = await data.getPendingOrder();
         }
+
+        if (updatedOrder) {
+          // Update both order and local state
+          updatePageData({
+            pendingOrder: updatedOrder,
+            paymentIntent: undefined
+          });
+
+          // Reset payment method based on the updated order
+          updateState({
+            paymentMethod: updatedOrder.payment_method || null,
+            showCommissioni: false
+          });
+
+          console.log("Order and local state updated after cancelling payment method:", updatedOrder);
+        }
+      } else {
+        // If no order ID, just reset local state
+        updateState({ paymentMethod: null });
+        updatePageData({ paymentIntent: undefined });
       }
     } catch (e) {
       console.error("Error cancelling payment method:", e);
@@ -190,7 +212,7 @@ export const useDirectPurchaseUtils = () => {
     } finally {
       updateState({ isSaving: false });
     }
-  }, [pendingOrder, data, updateState, updatePageData, showError]);
+  }, [pendingOrder, data, updateState, updatePageData, showError, orderMode]);
 
   return {
     showError,
