@@ -392,7 +392,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
             label={
               <Typography variant="body1">
                 Accetto le{" "}
-                <Link to="/condizioni-generali-di-acquisto" target="_blank" className={'underline'}>
+                <Link to="/condizioni-generali-di-acquisto" target="_blank" className={'underline text-primary'}>
                   condizioni generali d'acquisto
                 </Link>
               </Typography>

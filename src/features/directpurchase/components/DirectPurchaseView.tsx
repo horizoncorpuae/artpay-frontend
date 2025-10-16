@@ -140,6 +140,11 @@ const DirectPurchaseView = () => {
     handleUpdateCustomerNote("Richiesta prestito in corso", true);
   };
 
+  const handleLoanRequest = () => {
+
+    handleUpdateCustomerNote("Richiesta prestito in corso", false);
+  };
+
   const handleLoanCompleted = () => {
 
     handleUpdateCustomerNote("Ottenuto", false);
@@ -283,6 +288,7 @@ const DirectPurchaseView = () => {
                 !pendingOrder.payment_method.includes("bank_transfer")
               ) {
                 return (
+                  <>
                   <PaymentProviderCard
                     icon={<SantanderIcon />}
                     cardTitle={"Santander"}
@@ -323,13 +329,18 @@ const DirectPurchaseView = () => {
                       label={
                         <Typography variant="body1">
                           Accetto le{" "}
-                          <Link to="/condizioni-generali-di-acquisto" target="_blank">
+                          <Link to="/condizioni-generali-di-acquisto" target="_blank" className={'underline text-primary'}>
                             condizioni generali d'acquisto
                           </Link>
                         </Typography>
                       }
                     />
                   </PaymentProviderCard>
+
+                  <PaymentProviderCard backgroundColor={'bg-[#FAFAFB] mt-6'}>
+                    <Button variant={'link'} className={'!text-primary '} onClick={handleLoanRequest}>Ho già richiesto il prestito</Button>
+                  </PaymentProviderCard>
+                  </>
                 );
               }
 
