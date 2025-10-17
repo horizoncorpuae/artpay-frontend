@@ -278,7 +278,7 @@ const Gallery: React.FC<GalleryProps> = ({ selectedTab = 0 }) => {
               {galleryContent?.subtitle}
               {galleryContent?.foundationYear ? `, ${galleryContent.foundationYear}` : ""}
             </Typography>
-            <div className={"hidden md:block size-16 md:size-25 mt-6 overflow-hidden rounded"}>
+            <div className={"hidden md:block h-auto w-24 mt-6 overflow-hidden rounded"}>
               <img
                 src={galleryContent?.logoImage}
                 className="object-cover w-full h-full"
