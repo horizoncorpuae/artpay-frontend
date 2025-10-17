@@ -39,11 +39,14 @@ const TransactionCard = ({
     <div className="flex flex-col h-full border border-[#E2E6FC] rounded-lg max-w-md">
       <div className={"card-header flex p-4 gap-3 items-center justify-between border-b border-[#E2E6FC]"}>
         <div className="flex gap-3 items-center">
-          <div className={"overflow-hidden size-8 rounded-md"}>
-            <img src={imgSrc} alt="Img order" className={"object-cover h-full w-full"} />
-          </div>
-          <div className={"flex flex-col gap-1"}>
-            <span>{title}</span>
+          {imgSrc && (
+            <div className={"overflow-hidden size-8 rounded-md"}>
+              <img src={imgSrc} alt="Img order" className={"object-cover h-full w-full"} />
+            </div>
+          )
+          }
+          <div className={"flex flex-col gap-1 max-w-[120px] md:max-w-[200px]"}>
+            <span className="truncate">{title}</span>
           </div>
         </div>
         <div className={"flex flex-col gap-1"}>

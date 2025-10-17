@@ -95,7 +95,7 @@ export const useDirectPurchaseHandlers = (
   const handlePurchase = useCallback(async (checkoutButtonRef: React.RefObject<HTMLButtonElement>) => {
     if (!checkoutButtonRef?.current || !pendingOrder || !userProfile?.shipping) return;
     console.log(pendingOrder);
-    updateState({ isSaving: true, checkoutReady: false });
+    updateState({ isSaving: true, checkoutReady: false, isProcessingCheckout: true });
     try {
       await data.updateOrder(pendingOrder.id, {
         shipping: { ...userProfile.shipping },
@@ -108,7 +108,10 @@ export const useDirectPurchaseHandlers = (
       checkoutButtonRef.current.click();
       updateState({ checkoutReady: true });
     } catch (e) {
-      await showError(e);
+      /*await showError(e);*/
+      console.error(e);
+      // In caso di errore, resetta il flag
+      updateState({ isProcessingCheckout: false });
     } finally {
       updateState({ isSaving: false });
     }

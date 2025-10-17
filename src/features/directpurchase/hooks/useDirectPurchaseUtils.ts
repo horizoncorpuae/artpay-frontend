@@ -92,7 +92,6 @@ export const useDirectPurchaseUtils = () => {
         updateState({ showCommissioni: true, isSaving: false });
       } catch (e) {
         console.error("Update payment method error: ", e);
-        await showError(e, "Errore durante l'aggiornamento del metodo di pagamento");
         updateState({ showCommissioni: false, isSaving: false });
       }
     } else {

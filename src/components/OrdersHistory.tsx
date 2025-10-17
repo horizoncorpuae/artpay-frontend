@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useData } from "../hoc/DataProvider.tsx";
 import { Grid, Typography } from "@mui/material";
 import { ordersToOrderHistoryCardProps, useNavigate } from "../utils.ts";
-import { OrderStatus } from "../types/order.ts";
+import { Order, OrderStatus } from "../types/order.ts";
 import OrderHistoryCard, { OrderHistoryCardProps } from "./OrderHistoryCard.tsx";
 import { useSnackbars } from "../hoc/SnackbarProvider.tsx";
 
@@ -45,12 +45,20 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({ title = "Opere acquistate
   const snackbar = useSnackbars();
 
   const [orders, setOrders] = useState<OrderHistoryCardProps[]>();
+  const [rawOrders, setRawOrders] = useState<Order[]>([]);
 
   // Determina se usare 3 colonne (per pending/on-hold) o 2 colonne
   const useThreeColumns = mode.includes("pending") || mode.includes("on-hold") || mode.includes("failed") || mode.includes("cancelled");
 
   const handleClick = async (orderId: number) => {
-    navigate(`/completa-acquisto/${orderId}`);
+    // Trova l'ordine originale per controllare il created_via
+    const order = rawOrders.find(o => o.id === orderId);
+
+    if (order?.created_via === "gallery_auction") {
+      navigate(`/acquisto-esterno?order=${orderId}`);
+    } else {
+      navigate(`/completa-acquisto/${orderId}`);
+    }
   };
 
   const handleCompletedClick = async (orderId: number) => {
@@ -77,8 +85,10 @@ const OrdersHistory: React.FC<OrdersHistoryProps> = ({ title = "Opere acquistate
   useEffect(() => {
     data
       .listOrders({ status: mode, per_page: 10 })
-      .then((orders) => {
-        setOrders(ordersToOrderHistoryCardProps(orders.filter(o => !o.created_via.includes("mvx"))));
+      .then((fetchedOrders) => {
+        const filteredOrders = fetchedOrders.filter(o => !o.created_via.includes("mvx"));
+        setRawOrders(filteredOrders);
+        setOrders(ordersToOrderHistoryCardProps(filteredOrders));
       })
       .catch((e) => snackbar.error(e));
 
