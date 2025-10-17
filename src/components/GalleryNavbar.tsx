@@ -327,6 +327,12 @@ const ProfileDropdown: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
               Fatturazione e spedizione
             </button>
             <button
+              onClick={() => handleMenuItemClick("/gallerie")}
+              className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer "
+            >
+              Gallerie
+            </button>
+            <button
               onClick={() => handleMenuItemClick("/chi-siamo")}
               className="w-full text-left px-4 py-2 text-base hover:underline transition-all cursor-pointer "
             >
@@ -484,6 +490,9 @@ const MobileMenu: React.FC<{
                   <NavLink to={"/profile/shipping-invoice-settings"}>Fatturazione e spedizione</NavLink>
                 </li>
                 <li>
+                  <NavLink to={"/gallerie"}>Gallerie</NavLink>
+                </li>
+                <li>
                   <NavLink to={"/chi-siamo"}>Chi siamo</NavLink>
                 </li>
                 <li>
@@ -515,10 +524,10 @@ const MobileMenu: React.FC<{
           <button onClick={() => onNavigate("/terms")} className="hover:text-secondary transition-colors">
             Termini
           </button>
-          <button onClick={() => onNavigate("/help")} className="hover:text-secondary transition-colors">
+          <button onClick={() => onNavigate("/contatti")} className="hover:text-secondary transition-colors">
             Aiuto
           </button>
-          <button onClick={() => onNavigate("/about")} className="hover:text-secondary transition-colors">
+          <button onClick={() => onNavigate("/chi-siamo")} className="hover:text-secondary transition-colors">
             Info
           </button>
         </div>

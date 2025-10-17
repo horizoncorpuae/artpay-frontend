@@ -5,6 +5,7 @@ import { CardSize } from "../types";
 import FavouriteFilledIcon from "./icons/FavouriteFilledIcon.tsx";
 import QrCodeIcon from "./icons/QrCodeIcon.tsx";
 import { useDialogs } from "../hoc/DialogProvider.tsx";
+import { useAuth } from "../hoc/AuthProvider.tsx";
 
 export interface ArtworkCardProps {
   id: string;
@@ -48,6 +49,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
   fitWidth = false,
 }) => {
   const dialogs = useDialogs();
+  const auth = useAuth();
 
   const cardSizeClass = fitWidth ? `SwiperCard-fit` : `SwiperCard-${size}`;
 
@@ -94,9 +96,24 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
               {galleryName || "-"}
             </p>
             {price && (
-              <h4 className={'mt-4 text-2xl'}>
-                {formattedPrice}
-              </h4>
+              <div className="relative mt-4">
+                {!auth.isAuthenticated ? (
+                  <h4 className={`text-2xl blur-md`}>
+                    {formattedPrice}
+                  </h4>
+                ) : (
+                  <h4 className={`text-2xl `}>
+                    {formattedPrice}
+                  </h4>
+                )}
+                {!auth.isAuthenticated && (
+                  <div className="absolute rounded inset-0 flex items-center justify-center">
+                    <span className="text-xs text-primary px-2 py-1 rounded">
+                      Accedi per vedere il prezzo
+                    </span>
+                  </div>
+                )}
+              </div>
             )}
           </div>
           <div
