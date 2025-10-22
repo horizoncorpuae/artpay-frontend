@@ -7,14 +7,18 @@ import { quoteService } from "../../../../services/quoteService.ts";
 interface OfferCardProps {
   order: Order | Partial<Order>;
   sharingButton?: boolean;
+  onDeleted?: () => void;
 }
 
-const OfferCard = ({ order, sharingButton = false }: OfferCardProps) => {
+const OfferCard = ({ order, sharingButton = false, onDeleted }: OfferCardProps) => {
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
   const [customerEmail, setCustomerEmail] = useState("");
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [emailSuccess, setEmailSuccess] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [deletingQuote, setDeletingQuote] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   // Cerca la data di scadenza nei meta_data
   const expiryDateMeta = order.meta_data?.find((meta) => meta.key === "quote_expiry_date");
   const hasExpiryDate = !!expiryDateMeta;
@@ -62,6 +66,37 @@ const OfferCard = ({ order, sharingButton = false }: OfferCardProps) => {
       setEmailError(error?.response?.data?.message || error?.message || "Errore nell'invio dell'email");
     } finally {
       setSendingEmail(false);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    setOpenDeleteDialog(true);
+    setDeleteError("");
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!order.id) {
+      setDeleteError("ID ordine non disponibile");
+      return;
+    }
+
+    try {
+      setDeletingQuote(true);
+      setDeleteError("");
+
+      await quoteService.deleteQuote(order.id);
+
+      setOpenDeleteDialog(false);
+
+      // Chiama la callback per notificare il componente padre
+      if (onDeleted) {
+        onDeleted();
+      }
+    } catch (error: any) {
+      console.error("Errore nell'eliminazione dell'offerta:", error);
+      setDeleteError(error?.response?.data?.message || error?.message || "Errore nell'eliminazione dell'offerta");
+    } finally {
+      setDeletingQuote(false);
     }
   };
 
@@ -114,7 +149,7 @@ const OfferCard = ({ order, sharingButton = false }: OfferCardProps) => {
         ) : (
           <>
             <Button variant={"outlined"}>Vedi dettaglio</Button>
-            <Button variant={"text"} color={"inherit"}>
+            <Button variant={"text"} color={"inherit"} onClick={handleDeleteClick}>
               Elimina offerta
             </Button>
           </>
@@ -175,6 +210,48 @@ const OfferCard = ({ order, sharingButton = false }: OfferCardProps) => {
           startIcon={sendingEmail ? <CircularProgress size={20} color="inherit" /> : null}
         >
           {sendingEmail ? "Invio..." : "Invia"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    {/* Dialog di conferma eliminazione */}
+    <Dialog
+      open={openDeleteDialog}
+      onClose={() => !deletingQuote && setOpenDeleteDialog(false)}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+        },
+      }}
+    >
+      <DialogTitle>Conferma eliminazione</DialogTitle>
+      <DialogContent>
+        {deleteError ? (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {deleteError}
+          </Alert>
+        ) : (
+          <p className="mt-4 text-secondary">
+            Sei sicuro di voler eliminare l'offerta N.{order.number}?
+            <br />
+            Questa azione non può essere annullata.
+          </p>
+        )}
+      </DialogContent>
+      <DialogActions sx={{ p: 3, pt: 0 }}>
+        <Button onClick={() => setOpenDeleteDialog(false)} disabled={deletingQuote}>
+          Annulla
+        </Button>
+        <Button
+          onClick={handleDeleteConfirm}
+          variant="contained"
+          color="error"
+          disabled={deletingQuote}
+          startIcon={deletingQuote ? <CircularProgress size={20} color="inherit" /> : null}
+        >
+          {deletingQuote ? "Eliminazione..." : "Elimina"}
         </Button>
       </DialogActions>
     </Dialog>

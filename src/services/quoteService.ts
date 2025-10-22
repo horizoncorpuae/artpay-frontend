@@ -33,7 +33,7 @@ export const quoteService = {
   /**
    * Recupera i dati di un ordine usando order_key ed email
    */
-  async getQuoteOrder(orderId: number, orderKey: string, email: string): Promise<Order> {
+  async getQuoteOrder(orderKey: string, email: string): Promise<Order> {
     try {
       const resp = await axios.get<unknown, AxiosResponse<QuoteOrderDetailsResponse>>(
         `${baseUrl}/wp-json/wc-quote/v1/order`,
@@ -276,6 +276,35 @@ export const quoteService = {
       return resp.data;
     } catch (error) {
       console.error("Errore nell'aggiornamento dell'email:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Elimina un'offerta (cancella l'ordine)
+   */
+  async deleteQuote(orderId: number): Promise<Order> {
+    try {
+      // Recupera il token WooCommerce dal vendor-user
+      const vendorUserStr = localStorage.getItem("vendor-user");
+      if (!vendorUserStr) {
+        throw new Error("Vendor non autenticato");
+      }
+
+      const vendorUser = JSON.parse(vendorUserStr);
+      const { consumer_key, consumer_secret } = vendorUser.wc_api_user_keys;
+      const wcCredentials = btoa(`${consumer_key}:${consumer_secret}`);
+      const wcToken = "Basic " + wcCredentials;
+
+      const resp = await axios.delete<any, AxiosResponse<Order>>(`${baseUrl}/wp-json/wc/v3/orders/${orderId}`, {
+        headers: {
+          Authorization: wcToken,
+        },
+      });
+
+      return resp.data;
+    } catch (error) {
+      console.error("Errore nell'eliminazione dell'offerta:", error);
       throw error;
     }
   },

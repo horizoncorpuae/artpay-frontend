@@ -30,7 +30,7 @@ const QuotePage = () => {
 
       try {
         setStatus("loading");
-        const orderData = await quoteService.getQuoteOrder(+orderId, orderKey, email);
+        const orderData = await quoteService.getQuoteOrder(orderKey, email);
 
         if (orderData?.status !== "quote") {
           setErrorMessage(

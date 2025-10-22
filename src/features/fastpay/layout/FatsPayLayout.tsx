@@ -66,12 +66,10 @@ const Footer :  React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
           </Typography>
         </div>
       )}
-      <div>
+      <div className="flex flex-wrap gap-4">
         <Typography variant="body2" color="textSecondary">
           © artpay srl 2024 - Tutti i diritti riservati
         </Typography>
-      </div>
-      <div className="flex flex-wrap gap-4">
         <Typography variant="body2" color="primary">
           <Link
             sx={{ textDecoration: "none" }}
@@ -88,7 +86,7 @@ const Footer :  React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
             Informativa sui cookie
           </Link>
         </Typography>
-        <Typography variant="body2" color="primary">
+        {/*<Typography variant="body2" color="primary">
           <Link sx={{ textDecoration: "none" }} href="/termini-e-condizioni">
             Termini e condizioni
           </Link>
@@ -97,7 +95,7 @@ const Footer :  React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
           <Link sx={{ textDecoration: "none" }} href="/condizioni-generali-di-acquisto">
             Condizioni generali di acquisto
           </Link>
-        </Typography>
+        </Typography>*/}
         <Typography variant="body2"></Typography>
       </div>
     </footer>
@@ -121,7 +119,7 @@ const FatsPayLayout = () => {
     <>
       <div className="bg-tertiary min-h-screen w-full flex flex-col">
         <nav className="fixed top-0 left-0 right-0 z-50 pt-6 pb-6 w-full px-6">
-          <div className="flex items-center justify-between w-full max-w-lg md:mx-auto">
+          <div className={`flex items-center ${!isVisible ?'justify-between' : 'justify-center'} w-full max-w-lg md:mx-auto`}>
             <BackButton isVisible={!isVisible} />
             <div className="custom-navbar bg-white p-6 w-fit ">
               <Logo />

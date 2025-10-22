@@ -54,6 +54,11 @@ const FastPayDraw = () => {
     }
   }, [openListDraw]);
 
+  const handleOfferDeleted = () => {
+    // Chiudi il drawer dopo l'eliminazione
+    setOpenListDraw({ openListDraw: false });
+  };
+
   return (
     <aside
       className={`${
@@ -103,7 +108,7 @@ const FastPayDraw = () => {
         ) : (
           <ul className={"flex flex-col gap-6 mt-4 px-8"}>
             {orders.map((order) => (
-              <OfferCard key={order.id} order={order} />
+              <OfferCard key={order.id} order={order} onDeleted={handleOfferDeleted} />
             ))}
           </ul>
         )}
