@@ -75,7 +75,7 @@ const FastPayDraw = () => {
         <div className={"flex items-center justify-between"}>
           <div className={"space-y-2"}>
             <h3 className={"text-2xl leading-6"}>Lista offerte</h3>
-            <h3 className={"text-secondary leading-6"}>Offerte inviate</h3>
+            <h3 className={"text-secondary leading-6 text-balance"}>In questa sezione puoi vedere le offerte inviate ai tuoi clienti</h3>
           </div>
           <button
             className={"bg-primary rounded-full p-3"}

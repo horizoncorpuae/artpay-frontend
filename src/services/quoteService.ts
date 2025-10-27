@@ -365,4 +365,77 @@ export const quoteService = {
       throw error;
     }
   },
+
+  /**
+   * Crea una nuova opera d'arte (prodotto + artista)
+   */
+  async createArtwork(artworkData: {
+    artwork_title: string;
+    artist_name: string;
+    description?: string;
+    short_description?: string;
+    price: number;
+    image?: string; // URL o base64
+    sku?: string;
+    // Campi opzionali artista
+    artist_birth_year?: string;
+    artist_birth_nation?: string;
+    artist_location?: string;
+    // Campi opzionali prodotto
+    height?: string;
+    width?: string;
+    depth?: string;
+    weight?: string;
+    production_year?: string;
+    condition?: string;
+    estimated_shipping_cost?: number;
+  }): Promise<{
+    success: boolean;
+    message: string;
+    product: {
+      id: number;
+      title: string;
+      sku: string;
+      price: number;
+      status: string;
+      permalink: string;
+      edit_link: string;
+      image_id?: number;
+      image_url?: string;
+    };
+    artist: {
+      id: number;
+      name: string;
+      permalink: string;
+    };
+  }> {
+    try {
+      // Recupera il token WooCommerce dal vendor-user
+      const vendorUserStr = localStorage.getItem("vendor-user");
+      if (!vendorUserStr) {
+        throw new Error("Vendor non autenticato");
+      }
+
+      const vendorUser = JSON.parse(vendorUserStr);
+      const { consumer_key, consumer_secret } = vendorUser.wc_api_user_keys;
+      const wcCredentials = btoa(`${consumer_key}:${consumer_secret}`);
+      const wcToken = "Basic " + wcCredentials;
+
+      const resp = await axios.post<any, AxiosResponse<any>>(
+        `${baseUrl}/wp-json/wc-quote/v1/create-artwork`,
+        artworkData,
+        {
+          headers: {
+            Authorization: wcToken,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      return resp.data;
+    } catch (error) {
+      console.error("Errore nella creazione dell'opera:", error);
+      throw error;
+    }
+  },
 };

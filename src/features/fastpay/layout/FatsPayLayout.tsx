@@ -4,6 +4,7 @@ import Logo from "../../../components/icons/Logo.tsx";
 import ArrowLeftIcon from "../../../components/icons/ArrowLeftIcon.tsx";
 import { Link, Typography } from "@mui/material";
 import FastPayDraw from "../components/fast-pay-draw/fast-pay-draw.tsx";
+import { LogoutSharp } from "@mui/icons-material";
 
 const BackButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
   const navigate = useNavigate();
@@ -57,13 +58,15 @@ const Footer :  React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
         <div className="mb-4">
           <Typography variant="body2">
             <Link
-              className="!text-red-700"
+              className="!text-white flex gap-2 items-center"
               component="button"
               sx={{ textDecoration: "none", cursor: "pointer" }}
               onClick={handleLogout}>
-              Logout
+              Esci
+              <LogoutSharp />
             </Link>
           </Typography>
+          
         </div>
       )}
       <div className="flex flex-wrap gap-4">

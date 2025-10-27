@@ -37,6 +37,7 @@ const FastPayCreate = () => {
   const [isComplete, setComplete] = useState<boolean>(false);
   const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
   const [openArtworkDialog, setOpenArtworkDialog] = useState<boolean>(false);
+  const [openCreateArtworkDialog, setOpenCreateArtworkDialog] = useState<boolean>(false);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loadingArtworks, setLoadingArtworks] = useState<boolean>(false);
   const [artworksError, setArtworksError] = useState<string>("");
@@ -44,6 +45,8 @@ const FastPayCreate = () => {
   const [creatingOrder, setCreatingOrder] = useState<boolean>(false);
   const [createOrderError, setCreateOrderError] = useState<string>("");
   const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [creatingArtwork, setCreatingArtwork] = useState<boolean>(false);
+  const [createArtworkError, setCreateArtworkError] = useState<string>("");
 
   const [formData, setFormData] = useState({
     titolo: "",
@@ -237,128 +240,98 @@ const FastPayCreate = () => {
           <section className={"px-8 py-12"}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 3 }} onSubmit={handleSubmit}>
-                <div className={'flex flex-col gap-2 items-start'}>
-                  <TextField
-                    fullWidth
-                    label="Titolo Opera"
-                    value={formData.titolo}
-                    onChange={handleInputChange("titolo")}
-                    variant="outlined"
-                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2, height: 48 } }}
-                  />
-                  <Button
-                    className={'transition-all !text-primary hover:!text-primary-hover hover:!underline '}
-                    variant={'link'}
-                    onClick={handleOpenArtworkDialog}
-                    type="button"
+                {!selectedArtwork ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 2,
+                      py: 6,
+                      border: "2px dashed",
+                      borderColor: "divider",
+                      borderRadius: 2,
+                    }}
                   >
-                    Seleziona opera
-                  </Button>
-                </div>
-
-                <TextField
-                  fullWidth
-                  label="Artista"
-                  value={formData.artista}
-                  onChange={handleInputChange("artista")}
-                  variant="outlined"
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2, height: 48 } }}
-                />
-
-                <TextField
-                  fullWidth
-                  label="Descrizione"
-                  value={formData.descrizione}
-                  onChange={handleInputChange("descrizione")}
-                  variant="outlined"
-                  multiline
-                  rows={4}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                />
-
-                <Card
-                  variant="outlined"
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    borderRadius: 2,
-                    minHeight: 137,
-                  }}
-                >
-                  <CardContent sx={{ textAlign: "center", flexGrow: 1, width: "100%" }}>
-                    {formData.imageUrl || formData.immagine ? (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          gap: 2,
-                        }}
-                      >
-                        <Box
-                          component="img"
-                          src={formData.immagine ? URL.createObjectURL(formData.immagine) : formData.imageUrl}
-                          alt="Opera selezionata"
-                          sx={{
-                            width: "100%",
-                            maxWidth: 200,
-                            height: "auto",
-                            maxHeight: 150,
-                            objectFit: "contain",
-                            borderRadius: 1,
-                          }}
-                        />
-                        <input
-                          accept="image/*"
-                          style={{ display: "none" }}
-                          id="image-upload"
-                          type="file"
-                          onChange={handleImageChange}
-                        />
-                        <label htmlFor="image-upload">
-                          <Typography
-                            component="span"
-                            sx={{ cursor: "pointer" }}
-                            className={"text-primary hover:underline"}
-                          >
-                            Cambia immagine
-                          </Typography>
-                        </label>
-                      </Box>
-                    ) : (
-                      <>
-                        <span className={"block leading-6 text-secondary"}>Foto(JPG, PNG, PDF)</span>
-                        <input
-                          accept="image/*"
-                          style={{ display: "none" }}
-                          id="image-upload"
-                          type="file"
-                          onChange={handleImageChange}
-                        />
-                        <label htmlFor="image-upload">
-                          <Typography component="span" sx={{ ml: 1 }} className={"text-primary"}>
-                            Carica immagine
-                          </Typography>
-                        </label>
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <TextField
-                  fullWidth
-                  label="Prezzo Opera"
-                  value={formData.prezzo}
-                  onChange={handleInputChange("prezzo")}
-                  variant="outlined"
-                  type="number"
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                  }}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2, height: 48 } }}
-                />
+                    <Typography variant="body1" color="text.secondary" textAlign="center">
+                      Nessuna opera selezionata
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleOpenArtworkDialog}
+                      type="button"
+                    >
+                      Seleziona o Crea Opera
+                    </Button>
+                  </Box>
+                ) : (
+                  <>
+                    <Card
+                      variant="outlined"
+                      sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        bgcolor: "grey.50",
+                      }}
+                    >
+                      <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+                        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+                          {(formData.imageUrl || formData.immagine) && (
+                            <Box
+                              component="img"
+                              src={formData.immagine ? URL.createObjectURL(formData.immagine) : formData.imageUrl}
+                              alt="Opera selezionata"
+                              sx={{
+                                width: 100,
+                                height: 100,
+                                objectFit: "cover",
+                                borderRadius: 1,
+                                flexShrink: 0,
+                              }}
+                            />
+                          )}
+                          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                            <Typography variant="h6" sx={{ mb: 1, fontSize: "1.1rem" }}>
+                              {formData.titolo}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                              <strong>Artista:</strong> {formData.artista}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                              <strong>Prezzo:</strong> €{formData.prezzo}
+                            </Typography>
+                            {formData.descrizione && (
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                {formData.descrizione}
+                              </Typography>
+                            )}
+                          </Box>
+                        </Box>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          onClick={handleOpenArtworkDialog}
+                          type="button"
+                          sx={{ mt: 2 }}
+                        >
+                          Cambia Opera
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </>
+                )}
 
                 <TextField
                   fullWidth
@@ -455,42 +428,355 @@ const FastPayCreate = () => {
             </Alert>
           ) : artworks.length === 0 ? (
             <Box py={6} textAlign="center">
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                 Nessuna opera disponibile
               </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setOpenArtworkDialog(false);
+                  setOpenCreateArtworkDialog(true);
+                }}
+              >
+                Crea nuova opera
+              </Button>
             </Box>
           ) : (
-            <List sx={{ pt: 0 }}>
-              {artworks.map((artwork) => (
-                <ListItem key={artwork.id} disablePadding>
-                  <ListItemButton onClick={() => handleSelectArtwork(artwork)} sx={{ borderRadius: 2, mb: 1 }}>
-                    <ListItemAvatar>
-                      <Avatar
-                        src={artwork.images[0]?.src || "/images/immagine--galleria.png"}
-                        alt={artwork.name}
-                        variant="rounded"
-                        sx={{ width: 60, height: 60 }}
+            <>
+              <Box sx={{ mb: 2, py: 2 }}>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => {
+                    setOpenArtworkDialog(false);
+                    setOpenCreateArtworkDialog(true);
+                  }}
+                >
+                  + Crea nuova opera
+                </Button>
+              </Box>
+              <List sx={{ pt: 0 }}>
+                {artworks.map((artwork) => (
+                  <ListItem key={artwork.id} disablePadding>
+                    <ListItemButton onClick={() => handleSelectArtwork(artwork)} sx={{ borderRadius: 2, mb: 1 }}>
+                      <ListItemAvatar>
+                        <Avatar
+                          src={artwork.images[0]?.src || "/images/immagine--galleria.png"}
+                          alt={artwork.name}
+                          variant="rounded"
+                          sx={{ width: 60, height: 60 }}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={artwork.name}
+                        secondary={
+                          <>
+                            <Typography component="span" variant="body2" color="text.primary">
+                              {artwork.acf?.artist && artwork.acf.artist.length > 0
+                                ? artwork.acf.artist[0].post_title
+                                : artwork.store_name}
+                            </Typography>
+                            {" — "}€{artwork.price}
+                          </>
+                        }
+                        sx={{ ml: 2 }}
                       />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={artwork.name}
-                      secondary={
-                        <>
-                          <Typography component="span" variant="body2" color="text.primary">
-                            {artwork.acf?.artist && artwork.acf.artist.length > 0
-                              ? artwork.acf.artist[0].post_title
-                              : artwork.store_name}
-                          </Typography>
-                          {" — "}€{artwork.price}
-                        </>
-                      }
-                      sx={{ ml: 2 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog per creare nuova opera */}
+      <Dialog
+        open={openCreateArtworkDialog}
+        onClose={() => setOpenCreateArtworkDialog(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            maxHeight: "90vh",
+          },
+        }}
+      >
+        <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", pb: 1 }}>
+          <Typography variant="h6">Crea nuova opera</Typography>
+          <IconButton onClick={() => setOpenCreateArtworkDialog(false)} size="small">
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box
+            component="form"
+            id="create-artwork-form"
+            sx={{ display: "flex", flexDirection: "column", gap: 2.5, pt: 1 }}
+            onSubmit={async (e: React.FormEvent) => {
+              e.preventDefault();
+              try {
+                setCreatingArtwork(true);
+                setCreateArtworkError("");
+
+                // Converte l'immagine in base64 se presente
+                let imageBase64 = "";
+                if (formData.immagine) {
+                  imageBase64 = await new Promise<string>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result as string);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(formData.immagine!);
+                  });
+                }
+
+                const artworkData = {
+                  artwork_title: formData.titolo,
+                  artist_name: formData.artista,
+                  description: formData.descrizione,
+                  price: parseFloat(formData.prezzo),
+                  image: imageBase64,
+                };
+
+                const result = await quoteService.createArtwork(artworkData);
+
+                // Crea un oggetto Artwork compatibile dalla risposta
+                const now = new Date().toISOString();
+                const newArtwork: Artwork = {
+                  id: result.product.id,
+                  name: result.product.title,
+                  slug: "",
+                  permalink: result.product.permalink,
+                  date_created: now,
+                  date_created_gmt: now,
+                  date_modified: now,
+                  date_modified_gmt: now,
+                  price_html: `€${result.product.price}`,
+                  has_options: false,
+                  date_on_sale_from: null,
+                  date_on_sale_from_gmt: null,
+                  date_on_sale_to: null,
+                  date_on_sale_to_gmt: null,
+                  type: "simple",
+                  status: "draft",
+                  featured: false,
+                  catalog_visibility: "visible",
+                  description: formData.descrizione,
+                  short_description: "",
+                  sku: result.product.sku,
+                  price: result.product.price.toString(),
+                  regular_price: result.product.price.toString(),
+                  sale_price: "",
+                  on_sale: false,
+                  purchasable: true,
+                  total_sales: 0,
+                  virtual: false,
+                  downloadable: false,
+                  downloads: [],
+                  download_limit: -1,
+                  download_expiry: -1,
+                  external_url: "",
+                  button_text: "",
+                  tax_status: "taxable",
+                  tax_class: "",
+                  manage_stock: true,
+                  stock_quantity: 1,
+                  stock_status: "instock",
+                  backorders: "no",
+                  backorders_allowed: false,
+                  backordered: false,
+                  sold_individually: true,
+                  weight: "",
+                  dimensions: { length: "", width: "", height: "" },
+                  shipping_required: true,
+                  shipping_taxable: true,
+                  shipping_class: "",
+                  shipping_class_id: 0,
+                  reviews_allowed: false,
+                  average_rating: "0",
+                  rating_count: 0,
+                  related_ids: [],
+                  upsell_ids: [],
+                  cross_sell_ids: [],
+                  parent_id: 0,
+                  purchase_note: "",
+                  categories: [],
+                  tags: [],
+                  images: result.product.image_url
+                    ? [
+                        {
+                          id: result.product.image_id || 0,
+                          date_created: now,
+                          date_created_gmt: now,
+                          date_modified: now,
+                          date_modified_gmt: now,
+                          src: result.product.image_url,
+                          woocommerce_single: result.product.image_url,
+                          woocommerce_thumbnail: result.product.image_url,
+                          woocommerce_gallery_thumbnail: result.product.image_url,
+                          name: result.product.title,
+                          alt: result.product.title,
+                        },
+                      ]
+                    : [],
+                  attributes: [],
+                  default_attributes: [],
+                  variations: [],
+                  grouped_products: [],
+                  menu_order: 0,
+                  meta_data: [],
+                  store_name: "",
+                  post_password: "",
+                  vendor: {
+                    id: 0,
+                    name: "",
+                    shop_name: "",
+                    url: "",
+                  },
+                  _links: {
+                    self: [{ href: result.product.permalink }],
+                    collection: [{ href: "" }],
+                  },
+                  acf: {
+                    artist: [
+                      {
+                        ID: result.artist.id,
+                        post_title: result.artist.name,
+                        post_author: "0",
+                        post_date: now,
+                        post_date_gmt: now,
+                        post_content: "",
+                        post_excerpt: "",
+                        post_status: "publish",
+                        comment_status: "closed",
+                        ping_status: "closed",
+                        post_password: "",
+                        post_name: result.artist.name.toLowerCase().replace(/\s+/g, "-"),
+                        to_ping: "",
+                        pinged: "",
+                        post_modified: now,
+                        post_modified_gmt: now,
+                        post_content_filtered: "",
+                        post_parent: 0,
+                        guid: result.artist.permalink,
+                        menu_order: 0,
+                        post_type: "artisti",
+                        post_mime_type: "",
+                        comment_count: "0",
+                        filter: "raw",
+                      },
+                    ],
+                    anno_di_produzione: "",
+                    condizioni: "",
+                    estimated_shipping_cost: "",
+                    customer_buy_reserved: false,
+                    customer_reserved_until: "",
+                  },
+                };
+
+                // Seleziona automaticamente l'opera appena creata
+                handleSelectArtwork(newArtwork);
+                setOpenCreateArtworkDialog(false);
+              } catch (error: any) {
+                console.error("Errore nella creazione dell'opera:", error);
+                setCreateArtworkError(
+                  error?.response?.data?.message || error?.message || "Errore nella creazione dell'opera",
+                );
+              } finally {
+                setCreatingArtwork(false);
+              }
+            }}
+          >
+            <TextField
+              fullWidth
+              required
+              label="Titolo Opera"
+              value={formData.titolo}
+              onChange={handleInputChange("titolo")}
+              variant="outlined"
+              size="small"
+            />
+
+            <TextField
+              fullWidth
+              required
+              label="Nome Artista"
+              value={formData.artista}
+              onChange={handleInputChange("artista")}
+              variant="outlined"
+              size="small"
+            />
+
+            <TextField
+              fullWidth
+              label="Descrizione"
+              value={formData.descrizione}
+              onChange={handleInputChange("descrizione")}
+              variant="outlined"
+              multiline
+              rows={3}
+              size="small"
+            />
+
+            <TextField
+              fullWidth
+              required
+              label="Prezzo"
+              value={formData.prezzo}
+              onChange={handleInputChange("prezzo")}
+              variant="outlined"
+              type="number"
+              InputProps={{
+                startAdornment: <InputAdornment position="start">€</InputAdornment>,
+              }}
+              size="small"
+            />
+
+            <Box>
+              <input
+                accept="image/*"
+                style={{ display: "none" }}
+                id="create-artwork-image-upload"
+                type="file"
+                onChange={handleImageChange}
+              />
+              <label htmlFor="create-artwork-image-upload">
+                <Button variant="outlined" component="span" fullWidth size="small">
+                  {formData.immagine ? "Cambia immagine" : "Carica immagine"}
+                </Button>
+              </label>
+              {formData.immagine && (
+                <Typography variant="caption" display="block" sx={{ mt: 1, textAlign: "center" }}>
+                  {formData.immagine.name}
+                </Typography>
+              )}
+            </Box>
+
+            {createArtworkError && <Alert severity="error">{createArtworkError}</Alert>}
+
+            <Box sx={{ display: "flex", flexDirection: 'column', gap: 2, mt: 2, py: 2 }}>
+              <Button variant="contained" color="primary" fullWidth type="submit" disabled={creatingArtwork}>
+                {creatingArtwork ? (
+                  <>
+                    <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                    Creazione...
+                  </>
+                ) : (
+                  "Crea Opera"
+                )}
+              </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => setOpenCreateArtworkDialog(false)}
+                disabled={creatingArtwork}
+              >
+                Annulla
+              </Button>
+            </Box>
+          </Box>
         </DialogContent>
       </Dialog>
     </>
