@@ -15,10 +15,12 @@ const QuotePage = () => {
   const [status, setStatus] = useState<PageStatus>("loading");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [processing, setProcessing] = useState<boolean>(false);
+  const [vendorName, setVendorName] = useState<string>("");
 
   const orderId = searchParams.get("order_id");
   const orderKey = searchParams.get("key");
   const email = searchParams.get("email");
+  const vendorId = searchParams.get("vendor_id");
 
   useEffect(() => {
     const loadOrder = async () => {
@@ -34,7 +36,7 @@ const QuotePage = () => {
 
         if (orderData?.status !== "quote") {
           setErrorMessage(
-            `Questo preventivo non è più disponibile. Lo stato attuale dell'ordine è: ${orderData.status}`
+            `Questa offerta non è più disponibile. Lo stato attuale dell'ordine è: ${orderData.status}`
           );
           setStatus("error");
           return;
@@ -46,7 +48,7 @@ const QuotePage = () => {
         console.error("Errore nel caricamento dell'ordine:", error);
         setErrorMessage(
           error?.response?.data?.message ||
-            "Impossibile recuperare i dati del preventivo. Verifica il link ricevuto via email."
+            "Impossibile recuperare i dati dell'offerta. Verifica il link ricevuto via email."
         );
         setStatus("error");
       }
@@ -54,6 +56,23 @@ const QuotePage = () => {
 
     loadOrder();
   }, [orderId, orderKey, email]);
+
+  // Fetch vendor data when vendorId is available
+  useEffect(() => {
+    const loadVendor = async () => {
+      if (!vendorId) return;
+
+      try {
+        const vendorData = await quoteService.getVendor(vendorId);
+        setVendorName(vendorData?.shop_name || vendorData?.display_name || "");
+      } catch (error) {
+        console.error("Errore nel recupero dei dati della galleria:", error);
+        // Non bloccare l'UI se il vendor non viene recuperato
+      }
+    };
+
+    loadVendor();
+  }, [vendorId]);
 
   const handleAccept = async () => {
     if (!orderKey || !email || processing) return;
@@ -63,10 +82,10 @@ const QuotePage = () => {
       await quoteService.acceptQuote({ order_key: orderKey, email });
       setStatus("accepted");
     } catch (error: any) {
-      console.error("Errore nell'accettazione del preventivo:", error);
+      console.error("Errore nell'accettazione dell'offerta:", error);
       setErrorMessage(
         error?.response?.data?.message ||
-          "Si è verificato un errore durante l'accettazione del preventivo. Riprova."
+          "Si è verificato un errore durante l'accettazione dell'offerta. Riprova."
       );
       setStatus("error");
     } finally {
@@ -82,10 +101,10 @@ const QuotePage = () => {
       await quoteService.rejectQuote({ order_key: orderKey, email });
       setStatus("rejected");
     } catch (error: any) {
-      console.error("Errore nel rifiuto del preventivo:", error);
+      console.error("Errore nel rifiuto dell'offerta:", error);
       setErrorMessage(
         error?.response?.data?.message ||
-          "Si è verificato un errore durante il rifiuto del preventivo. Riprova."
+          "Si è verificato un errore durante il rifiuto dell'offerta. Riprova."
       );
       setStatus("error");
     } finally {
@@ -98,7 +117,7 @@ const QuotePage = () => {
       <main className="text-white flex flex-col items-center justify-center h-full mx-auto max-w-lg px-6 py-12">
         <CircularProgress size={60} sx={{ color: "white" }} />
         <Typography variant="h6" className="mt-6 text-white">
-          Caricamento preventivo...
+          Caricamento offerta...
         </Typography>
       </main>
     );
@@ -123,10 +142,10 @@ const QuotePage = () => {
       <main className="text-white flex flex-col items-center justify-center h-full mx-auto max-w-lg px-6 py-12">
         <CheckCircle sx={{ fontSize: 80, color: "#22c55e", mb: 2 }} />
         <Typography variant="h4" className="mb-4 text-white" gutterBottom>
-          Preventivo Accettato!
+          Offerta Accettata!
         </Typography>
         <Typography variant="body1" className="mt-4 text-center text-white max-w-md">
-          Grazie per aver accettato il preventivo. Riceverai a breve una email con le istruzioni per completare il
+          Grazie per aver accettato l'offerta a te dedicata. Riceverai a breve una email con le istruzioni per completare il
           pagamento.
         </Typography>
       </main>
@@ -138,10 +157,10 @@ const QuotePage = () => {
       <main className="text-white flex flex-col items-center justify-center h-full mx-auto max-w-lg px-6 py-12">
         <Cancel sx={{ fontSize: 80, color: "#f59e0b", mb: 2 }} />
         <Typography variant="h4" className="mb-4 text-white" gutterBottom>
-          Preventivo Rifiutato
+          Offerta Rifiutata
         </Typography>
         <Typography variant="body1" className="mt-4 text-center text-white max-w-md">
-          Hai rifiutato questo preventivo. L'ordine è stato annullato.
+          Hai rifiutato questa offerta. L'ordine è stato annullato.
         </Typography>
       </main>
     );
@@ -149,7 +168,7 @@ const QuotePage = () => {
 
   if (!order) return null;
 
-0  // Cerca la data di scadenza nei meta_data
+  // Cerca la data di scadenza nei meta_data
   const expiryDateMeta = order.meta_data?.find((meta) => meta.key === "quote_expiry_date");
   const hasExpiryDate = !!expiryDateMeta;
   const expiryDate = hasExpiryDate ? new Date(expiryDateMeta.value) : null;
@@ -170,10 +189,10 @@ const QuotePage = () => {
 
   return (
     <main className="text-white w-full max-w-lg mx-auto px-6 pb-6">
-      <h1 className="text-4xl font-light mb-8">Dettaglio Preventivo</h1>
+      <h1 className="text-4xl font-light mb-8">Dettaglio Offerta Dedicata</h1>
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Hai ricevuto un preventivo. Controlla i dettagli qui sotto e decidi se accettare o rifiutare.
+        Hai ricevuto un offerta. Controlla i dettagli qui sotto e decidi se accettare o rifiutare.
       </Alert>
 
       <div className="bg-white rounded-3xl p-6 space-y-6">
@@ -188,8 +207,13 @@ const QuotePage = () => {
           )}
           <div className="flex-1">
             <Typography variant="h6" className="!font-semibold text-tertiary">
-              Preventivo N.{order?.id}
+              Offerta N.{order?.id}
             </Typography>
+            {vendorName && (
+              <Typography variant="body2" color="text.secondary" className="!mt-1">
+                Galleria: {vendorName}
+              </Typography>
+            )}
             <Typography variant="body1" className="!mt-2 text-tertiary">
               {mainItem?.name || "Opera d'arte"}
             </Typography>
@@ -207,7 +231,7 @@ const QuotePage = () => {
         {hasExpiryDate && expiryDate && (
           <Box className="mt-6">
             <Typography variant="body2" color="text.secondary" className="!mb-2">
-              Il preventivo scade tra:
+              L'offerta scade tra:
             </Typography>
             <CountdownTimer expiryDate={expiryDate} />
           </Box>
@@ -310,7 +334,7 @@ const QuotePage = () => {
             startIcon={processing ? <CircularProgress size={20} color="inherit" /> : <CheckCircle />}
             sx={{ py: 1.5 }}
           >
-            {processing ? "Elaborazione..." : "Accetta Preventivo"}
+            {processing ? "Elaborazione..." : "Accetta Offerta"}
           </Button>
 
           <Button
@@ -322,7 +346,7 @@ const QuotePage = () => {
             startIcon={<Cancel />}
             sx={{ py: 1.5 }}
           >
-            Rifiuta Preventivo
+            Rifiuta Offerta
           </Button>
         </Box>
       </div>

@@ -67,18 +67,34 @@ export const quoteService = {
       const wcCredentials = btoa(`${consumer_key}:${consumer_secret}`);
       const wcToken = "Basic " + wcCredentials;
 
-      const resp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}//wp-json/wc/v2/orders/?`, {
+      // Recupera tutti gli ordini del vendor
+      const ordersResp = await axios.get<unknown, AxiosResponse<Order[]>>(`${baseUrl}/wp-json/wc/v2/orders/?`, {
         params: {
           vendor: vendorId,
-          status: "quote",
           parent: 0,
+          per_page: 100,
         },
         headers: {
           Authorization: wcToken,
         },
       });
 
-      return resp.data;
+      // Filtra gli ordini per includere:
+      // - Tutti i quote
+      // - Solo i cancelled e on-hold che hanno il meta "_is_fastpay_quote"
+      const allOrders = ordersResp.data
+        .filter((order) => {
+          if (order.status === "quote") return true;
+          if (order.status === "cancelled" || order.status === "on-hold") {
+            return order.meta_data?.some((meta) => meta.key === "_is_fastpay_quote" && meta.value === "yes");
+          }
+          return false;
+        })
+        .sort((a, b) => {
+          return new Date(b.date_created).getTime() - new Date(a.date_created).getTime();
+        });
+
+      return allOrders;
     } catch (error) {
       console.error("Errore nel recupero degli ordini del vendor:", error);
       throw error;

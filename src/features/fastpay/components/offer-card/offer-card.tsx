@@ -1,5 +1,5 @@
 import CountdownTimer from "../../../../components/CountdownTimer.tsx";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Alert } from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Alert, Chip } from "@mui/material";
 import { Order } from "../../../../types/order.ts";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,6 +38,10 @@ const OfferCard = ({ order, sharingButton = false, onDeleted }: OfferCardProps) 
 
   // Prendi il primo line_item per mostrare i dettagli principali
   const mainItem = order.line_items?.[0];
+
+  // Controlla se l'offerta è stata rifiutata
+  const isCancelled = order.status === "cancelled";
+  const isOnHold = order.status === "on-hold";
 
   const handleShareClick = () => {
     setOpenEmailDialog(true);
@@ -121,9 +125,33 @@ const OfferCard = ({ order, sharingButton = false, onDeleted }: OfferCardProps) 
 
   return (
     <>
-    <li className={"border border-[#E2E6FC] rounded-lg space-y-4 max-w-sm"}>
+    <li className={`border rounded-lg space-y-4 max-w-sm ${isCancelled ? 'border-gray-300 opacity-75' : 'border-[#E2E6FC]'}`}>
       <div className={"card-header pt-4 px-4"}>
-        <span>Offerta N.{order.number || "---"}</span>
+        <div className="flex items-center justify-between mb-2">
+          <span>Offerta N.{order.number || "---"}</span>
+          {isCancelled && (
+            <Chip
+              label="Rifiutata"
+              size="small"
+              color="error"
+              sx={{
+                fontWeight: 500,
+                fontSize: '0.75rem',
+              }}
+            />
+          )}
+          {isOnHold && (
+            <Chip
+              label="Accettata"
+              size="small"
+              color="success"
+              sx={{
+                fontWeight: 500,
+                fontSize: '0.75rem',
+              }}
+            />
+          )}
+        </div>
         <div className="flex items-center gap-3 my-4">
           <img
             src={mainItem?.image?.src || "/images/immagine--galleria.png"}

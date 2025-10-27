@@ -179,15 +179,22 @@ const FastPayCreate = () => {
         ],
         // Aggiungi il coupon direttamente alla creazione dell'ordine
         coupon_lines: couponCode ? [{ code: couponCode }] : [],
-        meta_data:
-          formData.hasScadenza && formData.dataScadenza
+        meta_data: [
+          // Marca questo ordine come preventivo FastPay
+          {
+            key: "_is_fastpay_quote",
+            value: "yes",
+          },
+          // Aggiungi la data di scadenza se presente
+          ...(formData.hasScadenza && formData.dataScadenza
             ? [
                 {
                   key: "quote_expiry_date",
                   value: formData.dataScadenza.toISOString(),
                 },
               ]
-            : [],
+            : []),
+        ],
       };
 
       // Chiama l'API per creare l'ordine con il coupon già applicato
@@ -542,6 +549,29 @@ const FastPayCreate = () => {
 
                 const result = await quoteService.createArtwork(artworkData);
 
+                // Recupera i dati del vendor dal localStorage
+                const vendorUserStr = localStorage.getItem("vendor-user");
+                let vendorData = {
+                  id: 0,
+                  name: "",
+                  shop_name: "",
+                  url: "",
+                };
+
+                if (vendorUserStr) {
+                  try {
+                    const vendorUser = JSON.parse(vendorUserStr);
+                    vendorData = {
+                      id: vendorUser.id || vendorUser.vendor_id || 0,
+                      name: vendorUser.display_name || vendorUser.name || "",
+                      shop_name: vendorUser.shop_name || vendorUser.store_name || "",
+                      url: vendorUser.shop_url || vendorUser.store_url || "",
+                    };
+                  } catch (e) {
+                    console.error("Errore nel parsing vendor-user:", e);
+                  }
+                }
+
                 // Crea un oggetto Artwork compatibile dalla risposta
                 const now = new Date().toISOString();
                 const newArtwork: Artwork = {
@@ -627,14 +657,9 @@ const FastPayCreate = () => {
                   grouped_products: [],
                   menu_order: 0,
                   meta_data: [],
-                  store_name: "",
+                  store_name: vendorData.shop_name,
                   post_password: "",
-                  vendor: {
-                    id: 0,
-                    name: "",
-                    shop_name: "",
-                    url: "",
-                  },
+                  vendor: vendorData,
                   _links: {
                     self: [{ href: result.product.permalink }],
                     collection: [{ href: "" }],
