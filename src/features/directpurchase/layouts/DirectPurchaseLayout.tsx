@@ -40,9 +40,9 @@ const DirectPurchaseLayout = ({ children }: { children: ReactNode }) => {
   const [isCancelling, setIsCancelling] = useState(false);
   const { refreshOrders } = usePaymentStore()
 
-  /*// Blocca la navigazione in modalità loan o standard quando lo status è pending
+  // Blocca la navigazione in modalità loan o standard quando lo status è pending
   // ma NON bloccare quando si sta processando il checkout
-  const shouldBlock = (orderMode === "loan" || orderMode === "standard") &&
+  /*const shouldBlock = (orderMode === "loan" || orderMode === "standard") &&
                       pendingOrder?.status === "pending" &&
                       !isProcessingCheckout;
 
