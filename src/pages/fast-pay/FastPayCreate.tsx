@@ -236,7 +236,7 @@ const FastPayCreate = () => {
                 <p className={'text-2xl text-center'}>La tua offerta è stata creata con successo.</p>
               </div>
               {createdOrder && (
-                <ul className={'flex flex-col gap-6 mt-4 px-8'}>
+                <ul className={'flex flex-col gap-6 mt-4 '}>
                   <OfferCard order={createdOrder} sharingButton />
                 </ul>
               )}
@@ -270,7 +270,7 @@ const FastPayCreate = () => {
                       onClick={handleOpenArtworkDialog}
                       type="button"
                     >
-                      Seleziona o Crea Opera
+                      Seleziona o Aggiungi un'opera
                     </Button>
                   </Box>
                 ) : (

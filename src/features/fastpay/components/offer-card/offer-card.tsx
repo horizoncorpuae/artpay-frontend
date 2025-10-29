@@ -21,6 +21,7 @@ const OfferCard = ({ order, sharingButton = false, onDeleted }: OfferCardProps) 
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [emailSuccess, setEmailSuccess] = useState(false);
+  const [isShared, setIsShared] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [deletingQuote, setDeletingQuote] = useState(false);
   const [deleteError, setDeleteError] = useState("");
@@ -77,6 +78,7 @@ const OfferCard = ({ order, sharingButton = false, onDeleted }: OfferCardProps) 
       await quoteService.updateOrderEmail(order.id, customerEmail, customerFirstName, customerLastName);
 
       setEmailSuccess(true);
+      setIsShared(true);
       setTimeout(() => {
         setOpenEmailDialog(false);
         setCustomerEmail("");
@@ -192,7 +194,9 @@ const OfferCard = ({ order, sharingButton = false, onDeleted }: OfferCardProps) 
       </div>
       <div className={"card-footer border-t border-[#E2E6FC] text-secondary p-4 flex flex-col gap-4"}>
         {sharingButton ? (
-          <Button variant={"contained"} onClick={handleShareClick}>Condividi</Button>
+          <Button variant={"contained"} onClick={handleShareClick} disabled={isShared}>
+            {isShared ? "Condivisa" : "Condividi"}
+          </Button>
         ) : (
           <>
             <Button variant={"outlined"} onClick={() => {
