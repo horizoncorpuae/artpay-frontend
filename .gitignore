@@ -86,3 +86,5 @@ dist-ssr
 /wp/
 
 /backup
+/src/features/cdspayments-copy/
+/wc-quote.php

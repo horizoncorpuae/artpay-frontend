@@ -55,7 +55,7 @@ const Galleries: React.FC<GalleriesProps> = ({}) => {
           {!isReady ? (
             <GalleriesSkeleton />
           ) : (
-            <GalleriesGrid items={galleriesToGalleryItems(galleries)} disablePadding cardSize="medium" />
+            <GalleriesGrid items={galleriesToGalleryItems([...galleries].reverse())} disablePadding cardSize="medium" />
           )}
         </Grid>
       </section>

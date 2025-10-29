@@ -33,6 +33,7 @@ export type OrderUpdateRequest = {
   shipping?: ShippingData;
   shipping_lines?: ShippingLineUpdateRequest[];
   line_items?: LineItemRequest[];
+  coupon_lines?: { code: string }[];
 };
 
 export type LineItemRequest = {
@@ -190,6 +191,7 @@ export type LineItem = {
 
 export type PaymentIntentRequest = {
   wc_order_key: string;
+  payment_method: string;
 };
 
 export type UpdatePaymentIntentRequest = {
@@ -251,7 +253,7 @@ export type PaymentIntentResponse = {
   transfer_data: null | string;
   transfer_group: null | string;
 };
-export type OrderStatus = "pending" | "processing" | "on-hold" | "completed" | "cancelled" | "refunded" | "failed";
+export type OrderStatus = "pending" | "processing" | "on-hold" | "completed" | "cancelled" | "refunded" | "failed" | "quote";
 export type OrderFilters = {
   status?: OrderStatus | OrderStatus[] | string;
   orderby?: string;
@@ -281,4 +283,15 @@ export type BankTransferAction = {
     type: string;
   };
   type: "display_bank_transfer_instructions";
+};
+
+export type PaymentMethod = {
+  id: string;
+  title: string;
+  description: string;
+  enabled: boolean;
+};
+
+export type PaymentMethodsResponse = {
+  available_methods: PaymentMethod[];
 };
