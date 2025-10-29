@@ -17,7 +17,7 @@ const MiddleInfoLayout = ({ children }: { children: ReactNode }) => {
     try {
       //const galleryId = environment == 'production' ? '76' : '21'
 
-      const vendorResp: Gallery = await data.getGallery("21");
+      const vendorResp: Gallery = await data.getGallery("76");
       if (!vendorResp) throw new Error("Vendor not found");
       setVendor(vendorResp);
     } catch (e) {
