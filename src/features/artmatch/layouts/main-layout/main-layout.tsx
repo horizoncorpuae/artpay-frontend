@@ -28,7 +28,7 @@ const ArtMAtchLabel = () => (
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
-    <div className={"min-h-screen w-full bg-tertiary flex relative"}>
+    <div className={"min-h-screen w-full bg-tertiary flex relative "}>
       <nav className={"absolute flex flex-col lg:flex-row lg:items-center top-6 left-6 gap-6"}>
         <div className={"custom-navbar "}>
           <BackButton />
