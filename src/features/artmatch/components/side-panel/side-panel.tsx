@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Drawer, useMediaQuery, useTheme } from "@mui/material";
 import { useState } from "react";
 import { FiltersPanel } from "../index.ts";
 
@@ -51,15 +51,22 @@ const MessagesCard = ({ hasNotification, date }: { hasNotification: boolean; dat
   </li>
 );
 
-const SidePanel = () => {
+interface SidePanelProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+const SidePanel = ({ open = true, onClose }: SidePanelProps) => {
   const [tab, setTab] = useState<"like" | "match">("like");
   const [filtersPanelOpen, setFiltersPanelOpen] = useState<boolean>(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
   const handleFiltersPanelOpen = () => {
     setFiltersPanelOpen(!filtersPanelOpen);
   };
 
-  return (
+  const panelContent = (
     <aside className={"h-screen rounded-r-2xl w-full max-w-xs lg:max-w-sm bg-white pt-38 lg:pt-30 px-6 pb-12 overflow-y-hidden"}>
       <Button className={"custom-navbar flex items-center gap-2.5 py-6!"} onClick={handleFiltersPanelOpen}>
         <FilterIcon color={filtersPanelOpen ? "primary" : "tertiary"} />
@@ -116,6 +123,18 @@ const SidePanel = () => {
       )}
     </aside>
   );
+
+  // Su mobile: mostra come Drawer
+  if (isMobile) {
+    return (
+      <Drawer anchor="left" open={open} onClose={onClose}>
+        {panelContent}
+      </Drawer>
+    );
+  }
+
+  // Su desktop: mostra sempre fisso
+  return panelContent;
 };
 
 export default SidePanel;

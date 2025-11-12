@@ -1,6 +1,6 @@
 import { useState, useRef, CSSProperties } from "react";
 import { Artwork } from "../../../../types/artwork";
-import { IconButton, Typography, Box } from "@mui/material";
+import { IconButton, Typography, Box, useTheme, useMediaQuery } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -13,6 +13,8 @@ interface SwipeCardProps {
 
 const SwipeCard = ({ artwork, onLike, onDislike, isTop = false }: SwipeCardProps) => {
   const [startX, setStartX] = useState<number>(0);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [currentX, setCurrentX] = useState<number>(0);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -133,7 +135,7 @@ const SwipeCard = ({ artwork, onLike, onDislike, isTop = false }: SwipeCardProps
         position: "absolute",
         width: "100%",
         maxWidth: "448px",
-        height: "720px",
+        height: isMobile ? "620px" : "720px",
         borderRadius: "20px",
         overflow: "hidden",
         boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
@@ -163,8 +165,7 @@ const SwipeCard = ({ artwork, onLike, onDislike, isTop = false }: SwipeCardProps
             opacity: likeOpacity,
             transition: "opacity 0.2s",
             pointerEvents: "none",
-          }}>
-        </Box>
+          }}></Box>
 
         {/* Overlay Dislike */}
         <Box
@@ -176,8 +177,7 @@ const SwipeCard = ({ artwork, onLike, onDislike, isTop = false }: SwipeCardProps
             opacity: dislikeOpacity,
             transition: "opacity 0.2s",
             pointerEvents: "none",
-          }}>
-        </Box>
+          }}></Box>
       </Box>
 
       {/* Info prodotto */}

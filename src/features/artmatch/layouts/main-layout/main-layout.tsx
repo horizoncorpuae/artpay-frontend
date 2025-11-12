@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import logo_artpay from "../../../../assets/images/logo.svg";
 import { useNavigate } from "react-router-dom";
-import { Favorite } from "@mui/icons-material";
+import { Favorite, Menu } from "@mui/icons-material";
+import { IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { SidePanel } from "../../components";
 
 const BackButton = () => {
@@ -26,17 +27,39 @@ const ArtMatchLabel = () => (
 
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
 
   return (
     <div className={"min-h-screen w-full bg-tertiary flex relative "}>
-      <nav className={"absolute flex flex-col lg:flex-row lg:items-center top-6 left-6 gap-6"}>
-        <div className={"custom-navbar "}>
+      <nav className={"absolute flex flex-col lg:flex-row lg:items-center top-6 left-6 gap-6 z-10"}>
+        <div className={"custom-navbar flex items-center gap-2 bg-white"}>
+          {isMobile && (
+            <IconButton
+              onClick={toggleDrawer}
+              className={"hidden!"}
+              sx={{
+                color: "white",
+                backgroundColor: "rgba(255,255,255,0.1)",
+                "&:hover": {
+                  backgroundColor: "rgba(255,255,255,0.2)",
+                },
+              }}>
+              <Menu />
+            </IconButton>
+          )}
           <BackButton />
         </div>
         <ArtMatchLabel />
       </nav>
-      <SidePanel />
-      <div className={'flex justify-center items-center w-full'}>{children}</div>
+      {!isMobile && <SidePanel open={true} onClose={toggleDrawer} />}
+      {isMobile && <SidePanel open={drawerOpen} onClose={toggleDrawer} />}
+      <div className={'flex justify-center items-center flex-1'}>{children}</div>
     </div>
   );
 };

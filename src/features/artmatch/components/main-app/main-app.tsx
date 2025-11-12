@@ -120,6 +120,7 @@ const MainApp = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "600px",
+        width: "100%",
         padding: 4,
         position: "relative",
       }}>
@@ -128,8 +129,8 @@ const MainApp = () => {
         sx={{
           position: "relative",
           width: "100%",
-          maxWidth: "400px",
-          height: "600px",
+          maxWidth: "500px",
+          minHeight: "600px",
         }}>
         {/* Card successiva (sfondo) */}
         {nextProduct && (
