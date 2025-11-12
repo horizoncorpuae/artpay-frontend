@@ -60,14 +60,14 @@ const SidePanel = ({ open = true, onClose }: SidePanelProps) => {
   const [tab, setTab] = useState<"like" | "match">("like");
   const [filtersPanelOpen, setFiltersPanelOpen] = useState<boolean>(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleFiltersPanelOpen = () => {
     setFiltersPanelOpen(!filtersPanelOpen);
   };
 
   const panelContent = (
-    <aside className={"h-screen rounded-r-2xl w-full max-w-xs lg:max-w-sm bg-white pt-38 lg:pt-30 px-6 pb-12 overflow-y-hidden"}>
+    <aside className={"h-screen rounded-r-2xl w-full max-w-xs lg:max-w-sm bg-white pt-16 lg:pt-30 px-6 pb-12 overflow-y-hidden"}>
       <Button className={"custom-navbar flex items-center gap-2.5 py-6!"} onClick={handleFiltersPanelOpen}>
         <FilterIcon color={filtersPanelOpen ? "primary" : "tertiary"} />
         <span className={`${filtersPanelOpen ? "text-primary" : "text-tertiary"}`}>Filtri</span>

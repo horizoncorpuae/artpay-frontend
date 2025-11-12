@@ -6,7 +6,7 @@ const FeedCard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="feed-card bg-[#1B2738] p-8 flex justify-between rounded-2xl h-full w-full max-w-4xl">
+    <div className="feed-card bg-[#1B2738] p-8 flex justify-between rounded-2xl h-full w-full max-w-xs md:max-w-4xl overflow-hidden">
       <div className="flex flex-col justify-between">
         <div className={'flex flex-col gap-6 '}>
           <Typography variant="display3" color={'white'}>Voglia di match?</Typography>
@@ -14,7 +14,7 @@ const FeedCard = () => {
         </div>
         <Button variant={'contained'} className={'w-fit'} onClick={() => navigate('/artmatch')}>Vai a fare swipe</Button>
       </div>
-      <img src={artmatchPreview} alt="Anteprima artmatch" />
+      <img src={artmatchPreview} alt="Anteprima artmatch"  className={'relative -right-16'}/>
     </div>
   );
 };

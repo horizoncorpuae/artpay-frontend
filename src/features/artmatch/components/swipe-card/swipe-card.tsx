@@ -134,7 +134,7 @@ const SwipeCard = ({ artwork, onLike, onDislike, isTop = false }: SwipeCardProps
       sx={{
         position: "absolute",
         width: "100%",
-        maxWidth: "448px",
+        maxWidth: "400px",
         height: isMobile ? "620px" : "720px",
         borderRadius: "20px",
         overflow: "hidden",

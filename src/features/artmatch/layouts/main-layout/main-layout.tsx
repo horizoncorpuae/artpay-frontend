@@ -29,7 +29,7 @@ const ArtMatchLabel = () => (
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -37,14 +37,14 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className={"min-h-screen w-full bg-tertiary flex relative "}>
-      <nav className={"absolute flex flex-col lg:flex-row lg:items-center top-6 left-6 gap-6 z-10"}>
+      <nav className={"absolute flex flex-col lg:flex-row lg:items-center top-6 left-6 gap-6 z-80"}>
         <div className={"custom-navbar flex items-center gap-2 bg-white"}>
           {isMobile && (
             <IconButton
               onClick={toggleDrawer}
-              className={"hidden!"}
               sx={{
-                color: "white",
+                paddingLeft: "16px",
+                color: "text.secondary",
                 backgroundColor: "rgba(255,255,255,0.1)",
                 "&:hover": {
                   backgroundColor: "rgba(255,255,255,0.2)",
